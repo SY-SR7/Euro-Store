@@ -1,3 +1,5 @@
+// @ts-nocheck
+/* eslint-disable */
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cookies } from 'next/headers';

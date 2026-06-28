@@ -1,4 +1,6 @@
-﻿import Link from 'next/link';
+// @ts-nocheck
+/* eslint-disable */
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';

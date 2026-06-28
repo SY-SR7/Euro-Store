@@ -12,3 +12,5 @@ export {
   createSupabaseAdminClient,
   createSupabaseAdminClientFromEnv
 } from './supabase-client';
+
+export { createClient } from './compat-client';

@@ -8,7 +8,7 @@ export type EurostoreSupabaseClient = SupabaseClient<Database>;
 export interface SupabaseCookieAdapter {
   get: (name: string) => string | undefined;
   set: (name: string, value: string, options: CookieOptions) => void;
-  remove: (name: string, options: CookieOptions) => void;
+  remove?: (name: string, options: CookieOptions) => void;
 }
 
 export function createSupabaseBrowserClient(
@@ -32,7 +32,7 @@ export function createSupabaseServerClient(
         cookies.set(name, value, options);
       },
       remove(name: string, options: CookieOptions) {
-        cookies.remove(name, options);
+        cookies.remove?.(name, options);
       },
     },
   });

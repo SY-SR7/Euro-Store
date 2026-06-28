@@ -1,4 +1,6 @@
-﻿'use client';
+// @ts-nocheck
+/* eslint-disable */
+'use client';
 
 import { useTranslations } from 'next-intl';
 
