@@ -1,4 +1,4 @@
-﻿{
+{
   "common": {
     "appName": "EuroStore",
     "loading": "Loading...",
@@ -20,7 +20,10 @@
     "new": "New",
     "logout": "Log out",
     "rightsReserved": "All rights reserved.",
-    "currency": "SYP"
+    "currency": "SYP",
+    "refresh": "Refresh",
+    "prev": "Previous",
+    "page": "Page"
   },
   "nav": {
     "home": "Home",
@@ -154,7 +157,19 @@
       "helpers": "Team (Helpers)",
       "partners": "Partners",
       "settings": "Settings"
-    }
+    },
+    "orders": "Orders",
+    "order": "Order",
+    "allStatuses": "All Statuses",
+    "customer": "Customer",
+    "governorate": "Governorate",
+    "total": "Total",
+    "status": "Status",
+    "date": "Date",
+    "viewOrder": "View",
+    "panel": "Admin Panel",
+    "dashboard": "Dashboard",
+    "allOrders": "All Orders"
   },
   "helper": {
     "dashboardTitle": "Helper Portal",
@@ -163,7 +178,11 @@
     "quickLinks": "Quick links",
     "orders": "Orders",
     "grantLoyalty": "Grant loyalty points",
-    "generateExchange": "Generate exchange code"
+    "generateExchange": "Generate exchange code",
+    "orderQueue": "Order Queue",
+    "noOrders": "No active orders",
+    "markProcessing": "Mark Processing",
+    "markShipped": "Mark Shipped"
   },
   "partner": {
     "pendingExchanges": "Exchange requests pending"
@@ -201,7 +220,7 @@
     "brandName": "Brand name",
     "brandSlug": "URL slug",
     "saveBrand": "Save brand",
-    "confirmDelete": "Are you sure you want to delete this?",
+    "confirmDelete": "Are you sure?",
     "deleteSuccess": "Deleted successfully",
     "saveSuccess": "Saved successfully",
     "saveFailed": "Save failed. Check the data and try again.",
@@ -211,11 +230,24 @@
     "imageUpload": "Upload image",
     "imageUrl": "Image URL",
     "sortOrderHint": "Lower number = appears first",
-    "homepageSections": "Homepage sections",
+    "homepageSections": "Homepage Sections",
     "sectionKey": "Section key",
     "sectionTitleAr": "Title (Arabic)",
     "sectionTitleEn": "Title (English)",
     "sectionContent": "Content (JSON)",
-    "saveSection": "Save section","editProduct": "Edit product","editVariants": "Edit variants","editImages": "Manage images","deleteImage": "Delete image","setPrimary": "Set as primary","variantsLink": "Variants & Pricing","imagesLink": "Images"
+    "saveSection": "Save section",
+    "editProduct": "Edit product",
+    "editVariants": "Edit variants",
+    "editImages": "Manage images",
+    "deleteImage": "Delete image",
+    "setPrimary": "Set as primary",
+    "variantsLink": "Variants & Pricing",
+    "imagesLink": "Images",
+    "addSection": "Add Section",
+    "position": "Position",
+    "inactive": "Inactive",
+    "quantity": "Qty",
+    "type": "Type",
+    "actions": "Actions"
   }
 }

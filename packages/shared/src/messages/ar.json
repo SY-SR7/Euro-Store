@@ -1,7 +1,7 @@
-﻿{
+{
   "common": {
     "appName": "يورو ستور",
-    "loading": "جاري التحميل...",
+    "loading": "جارٍ التحميل...",
     "error": "حدث خطأ ما",
     "notFound": "الصفحة غير موجودة",
     "save": "حفظ",
@@ -20,7 +20,10 @@
     "new": "جديد",
     "logout": "تسجيل الخروج",
     "rightsReserved": "جميع الحقوق محفوظة.",
-    "currency": "ل.س"
+    "currency": "ل.س",
+    "refresh": "تحديث",
+    "prev": "السابق",
+    "page": "صفحة"
   },
   "nav": {
     "home": "الرئيسية",
@@ -154,7 +157,19 @@
       "helpers": "فريق العمل (Helpers)",
       "partners": "الشركاء (Partners)",
       "settings": "الإعدادات"
-    }
+    },
+    "orders": "الطلبات",
+    "order": "طلب",
+    "allStatuses": "كل الحالات",
+    "customer": "العميل",
+    "governorate": "المحافظة",
+    "total": "الإجمالي",
+    "status": "الحالة",
+    "date": "التاريخ",
+    "viewOrder": "عرض",
+    "panel": "لوحة الإدارة",
+    "dashboard": "الرئيسية",
+    "allOrders": "كل الطلبات"
   },
   "helper": {
     "dashboardTitle": "بوابة المندوب",
@@ -163,7 +178,11 @@
     "quickLinks": "روابط سريعة",
     "orders": "الطلبات",
     "grantLoyalty": "منح نقاط الولاء",
-    "generateExchange": "توليد رمز استبدال"
+    "generateExchange": "توليد رمز استبدال",
+    "orderQueue": "قائمة الطلبات",
+    "noOrders": "لا توجد طلبات حالياً",
+    "markProcessing": "← قيد التجهيز",
+    "markShipped": "← تم الإرسال"
   },
   "partner": {
     "pendingExchanges": "طلبات التبديل في الانتظار"
@@ -182,7 +201,7 @@
     "category": "التصنيف",
     "brand": "العلامة التجارية",
     "featured": "منتج مميز",
-    "active": "مفعل",
+    "active": "نشط",
     "saveProduct": "حفظ المنتج",
     "variantsTitle": "الخيارات والأسعار",
     "addVariant": "إضافة خيار",
@@ -216,6 +235,19 @@
     "sectionTitleAr": "العنوان (عربي)",
     "sectionTitleEn": "العنوان (إنجليزي)",
     "sectionContent": "المحتوى (JSON)",
-    "saveSection": "حفظ القسم","editProduct": "تعديل المنتج","editVariants": "تعديل الخيارات","editImages": "إدارة الصور","deleteImage": "حذف الصورة","setPrimary": "تعيين كرئيسية","variantsLink": "الخيارات والأسعار","imagesLink": "الصور"
+    "saveSection": "حفظ القسم",
+    "editProduct": "تعديل المنتج",
+    "editVariants": "تعديل الخيارات",
+    "editImages": "إدارة الصور",
+    "deleteImage": "حذف الصورة",
+    "setPrimary": "تعيين كرئيسية",
+    "variantsLink": "الخيارات والأسعار",
+    "imagesLink": "الصور",
+    "addSection": "إضافة قسم",
+    "position": "الترتيب",
+    "inactive": "معطل",
+    "quantity": "الكمية",
+    "type": "النوع",
+    "actions": "الإجراءات"
   }
 }
