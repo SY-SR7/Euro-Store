@@ -40,11 +40,7 @@ const ar = {
     "submit": "إرسال",
     "language": "اللغة",
     "dontHaveAccount": "ليس لديك حساب؟",
-    "loginTitle": "تسجيل الدخول",
-    "customerLogin": "تسجيل دخول العميل",
-    "createNewAccount": "إنشاء حساب جديد",
-    "customerRegister": "إنشاء حساب عميل",
-    "backToLogin": "العودة إلى تسجيل الدخول"
+    "loginTitle": "تسجيل الدخول"
   }
 } as const;
 const en = {
@@ -86,11 +82,7 @@ const en = {
     "submit": "Submit",
     "language": "Language",
     "dontHaveAccount": "Don't have an account?",
-    "loginTitle": "Login",
-    "customerLogin": "Customer login",
-    "createNewAccount": "Create a new account",
-    "customerRegister": "Create customer account",
-    "backToLogin": "Back to login"
+    "loginTitle": "Login"
   }
 } as const;
 

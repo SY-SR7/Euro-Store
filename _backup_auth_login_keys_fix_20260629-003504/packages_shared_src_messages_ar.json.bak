@@ -37,10 +37,6 @@
     "submit": "إرسال",
     "language": "اللغة",
     "dontHaveAccount": "ليس لديك حساب؟",
-    "loginTitle": "تسجيل الدخول",
-    "customerLogin": "تسجيل دخول العميل",
-    "createNewAccount": "إنشاء حساب جديد",
-    "customerRegister": "إنشاء حساب عميل",
-    "backToLogin": "العودة إلى تسجيل الدخول"
+    "loginTitle": "تسجيل الدخول"
   }
 }

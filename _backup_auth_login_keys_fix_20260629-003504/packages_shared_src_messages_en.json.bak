@@ -37,10 +37,6 @@
     "submit": "Submit",
     "language": "Language",
     "dontHaveAccount": "Don't have an account?",
-    "loginTitle": "Login",
-    "customerLogin": "Customer login",
-    "createNewAccount": "Create a new account",
-    "customerRegister": "Create customer account",
-    "backToLogin": "Back to login"
+    "loginTitle": "Login"
   }
 }
