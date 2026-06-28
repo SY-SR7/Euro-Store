@@ -1,0 +1,3 @@
+# supabase/seed — Development seed data
+# Run with: supabase db seed
+# NEVER include real user data or production credentials

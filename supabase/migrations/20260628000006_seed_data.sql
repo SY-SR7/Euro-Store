@@ -1,0 +1,30 @@
+INSERT INTO shipping_rates (governorate, base_rate_syp, free_shipping_threshold_syp) VALUES
+  ('دمشق', 5000, 150000),
+  ('ريف دمشق', 7000, 200000),
+  ('حلب', 10000, 250000),
+  ('حمص', 10000, 250000),
+  ('حماه', 10000, 250000),
+  ('اللاذقية', 12000, 300000),
+  ('طرطوس', 12000, 300000),
+  ('إدلب', 15000, 350000),
+  ('الحسكة', 18000, 400000),
+  ('دير الزور', 18000, 400000),
+  ('الرقة', 18000, 400000),
+  ('السويداء', 10000, 250000),
+  ('درعا', 10000, 250000),
+  ('القنيطرة', 10000, 250000);
+
+INSERT INTO system_settings (key, value, description) VALUES
+  ('loyalty_earn_amount_syp', '1000', 'SYP spent to earn 1 cycle of points'),
+  ('loyalty_earn_points', '10', 'Points earned per earn_amount_syp spent'),
+  ('loyalty_point_value_syp', '10', 'SYP value of 1 loyalty point'),
+  ('loyalty_min_redemption_pts', '100', 'Minimum points required to redeem'),
+  ('loyalty_max_redemption_pct', '30', 'Maximum % of order total payable by points'),
+  ('exchange_window_days', '7', 'Days after delivery to submit exchange request'),
+  ('exchange_qr_expiry_hours', '72', 'Hours until exchange QR code expires'),
+  ('exchange_per_order_limit', '1', 'Maximum exchange requests per order'),
+  ('referral_bonus_points', '50', 'Loyalty points awarded for successful referral'),
+  ('new_badge_days', '30', 'Days a product displays the New badge'),
+  ('min_order_value_syp', '0', 'Minimum order value in SYP (0 = disabled)'),
+  ('usd_exchange_rate', '15000', 'SYP per 1 USD — admin updates manually'),
+  ('free_shipping_global_threshold_syp', '', 'Global free shipping threshold');

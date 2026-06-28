@@ -1,0 +1,12 @@
+{
+  "name": "@eurostore/database",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "description": "Supabase database client and types for EuroStore",
+  "dependencies": {
+    "@supabase/supabase-js": "latest",
+    "@supabase/ssr": "latest"
+  }
+}

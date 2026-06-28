@@ -1,0 +1,2 @@
+# packages/adapters — Adapter interfaces + all service implementations (@eurostore/adapters)
+# IEmailAdapter | IPushAdapter | IPaymentAdapter | ISearchAdapter | IStorageAdapter

@@ -1,0 +1,8 @@
+# EuroStore — Code Owners
+# All changes require review from project owner
+* @SY-SR7
+
+# Critical security files
+_handoff/SECURITY_RULES.md @SY-SR7
+supabase/migrations/ @SY-SR7
+.env.example @SY-SR7

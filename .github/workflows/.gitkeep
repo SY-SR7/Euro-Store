@@ -1,0 +1,2 @@
+# .github/workflows — CI/CD pipeline definitions
+# All PRs must pass: lint + type-check + tests before merge

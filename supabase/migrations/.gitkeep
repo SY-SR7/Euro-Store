@@ -1,0 +1,3 @@
+# supabase/migrations — Forward-only SQL migrations
+# Naming convention: YYYYMMDDHHMMSS_description.sql
+# NEVER delete or modify existing migration files

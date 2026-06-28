@@ -1,0 +1,20 @@
+{
+  "name": "@eurostore/ui",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "description": "Shared UI components for EuroStore",
+  "dependencies": {
+    "framer-motion": "latest",
+    "lenis": "latest",
+    "sonner": "latest",
+    "lucide-react": "latest",
+    "clsx": "latest",
+    "tailwind-merge": "latest"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0",
+    "react-dom": "^18.2.0 || ^19.0.0"
+  }
+}
