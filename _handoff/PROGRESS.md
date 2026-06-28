@@ -455,3 +455,25 @@
 - Phase 6 completion: Order confirmation emails (Resend adapter), helper exchange queue.
 - Phase 7: Exchange System (QR flows).
 - Phase 8: Loyalty & Referral.
+
+
+---
+
+### Session 014 -- 2026-06-28
+**Agent:** PowerShell Session 014 Script
+**Work Done:**
+- i18n: أضيفت مجموعتا cart + checkout كاملتين في ar.json + en.json.
+- API validate-discount: أُصلح استخدام الأعمدة الصحيحة (used_count, valid_until) من migration.
+- API orders/route.ts: يحسب shipping_syp حقيقي من جدول shipping_rates (map من gov ID لاسم عربي)، يقبل discount_id + loyalty_points_used + loyalty_discount_syp، يضيف نقاط ولاء earned بعد إنشاء الطلب.
+- API checkout/shipping: GET endpoint يُرجع base_rate_syp + free_shipping_threshold_syp.
+- API loyalty/balance: GET endpoint يُرجع رصيد نقاط العميل.
+- checkout/page.tsx: كامل -- discount code UI (apply/remove/error)، shipping يُحسب لحظياً عند اختيار المحافظة، loyalty points toggle لمن سجّل دخوله، ملخص يعرض subtotal + shipping + discount + loyalty + total.
+
+**Phase Status:**
+- Phase 5: 100% مكتملة
+- Phase 6: 65% (admin orders + helper queue + shipping -- notifications متبقية)
+
+**Next Agent Must Start With:**
+- Phase 7: Exchange System -- QR token generation + exchange request pages.
+- Phase 6 notifications: Resend email بعد تأكيد الطلب (يحتاج RESEND_API_KEY في .env).
+- Admin: discount_codes management page (/admin/discounts).
