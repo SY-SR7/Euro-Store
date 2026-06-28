@@ -1,0 +1,192 @@
+﻿const fs = require('fs');
+const path = require('path');
+
+const root = process.cwd();
+const backupDir = path.join(root, process.argv[2]);
+
+const skipDirs = new Set([
+  '.git', 'node_modules', '.next', '.turbo', 'dist', 'build',
+  'coverage', '.vercel'
+]);
+
+const allowedExt = new Set([
+  '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs',
+  '.json', '.jsonc', '.md', '.mdx', '.css', '.scss', '.html', '.sql'
+]);
+
+function walk(dir, files = []) {
+  if (!fs.existsSync(dir)) return files;
+
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (skipDirs.has(entry.name)) continue;
+    if (entry.name.startsWith('_backup_')) continue;
+
+    const full = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      walk(full, files);
+    } else if (entry.isFile() && allowedExt.has(path.extname(entry.name))) {
+      files.push(full);
+    }
+  }
+
+  return files;
+}
+
+function backup(file) {
+  const rel = path.relative(root, file);
+  const safe = rel.replace(/[\\/:*?"<>|]/g, '_');
+  const out = path.join(backupDir, safe + '.bak');
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  fs.copyFileSync(file, out);
+}
+
+const cp1252 = {
+  '€': 0x80, '‚': 0x82, 'ƒ': 0x83, '„': 0x84, '…': 0x85,
+  '†': 0x86, '‡': 0x87, 'ˆ': 0x88, '‰': 0x89, 'Š': 0x8A,
+  '‹': 0x8B, 'Œ': 0x8C, 'Ž': 0x8E, '‘': 0x91, '’': 0x92,
+  '“': 0x93, '”': 0x94, '•': 0x95, '–': 0x96, '—': 0x97,
+  '˜': 0x98, '™': 0x99, 'š': 0x9A, '›': 0x9B, 'œ': 0x9C,
+  'ž': 0x9E, 'Ÿ': 0x9F
+};
+
+function encodeCp1252(s) {
+  const bytes = [];
+  for (const ch of s) {
+    const code = ch.codePointAt(0);
+    if (code <= 0xff) bytes.push(code);
+    else if (Object.prototype.hasOwnProperty.call(cp1252, ch)) bytes.push(cp1252[ch]);
+    else return null;
+  }
+  return Buffer.from(bytes);
+}
+
+function decodeMojibakeToken(token) {
+  if (!/[ØÙÛÐÑÃÂ]/.test(token)) return token;
+  const buf = encodeCp1252(token);
+  if (!buf) return token;
+
+  const decoded = buf.toString('utf8');
+  if (decoded.includes('�')) return token;
+  if (!/[\u0600-\u06FF]/.test(decoded)) return token;
+
+  return decoded;
+}
+
+const mojibakeToken =
+  /[\u00A0-\u00FF\u0152\u0153\u0160\u0161\u0178\u017D\u017E\u0192\u02C6\u02DC\u2013\u2014\u2018\u2019\u201A\u201C\u201D\u201E\u2020\u2021\u2022\u2026\u2030\u2039\u203A\u20AC\u2122]{2,}/g;
+
+function genericFix(text) {
+  let out = text;
+  for (let i = 0; i < 8; i++) {
+    const next = out.replace(mojibakeToken, decodeMojibakeToken);
+    if (next === out) break;
+    out = next;
+  }
+  return out;
+}
+
+function targetedFix(text) {
+  let out = text;
+
+  const replacements = [
+    ['تسوق حسب �التصنيف', 'تسوق حسب التصنيف'],
+    ['تسوق حسب □التصنيف', 'تسوق حسب التصنيف'],
+    ['تسوق حسب  التصنيف', 'تسوق حسب التصنيف'],
+    ['آخر Ø§Ù„ÙƒÙˆÙ„ÙƒØ´Ù†', 'آخر الكولكشن'],
+    ['آخر الكولكشن', 'آخر الكولكشن'],
+
+    ['Ø§Ù„Ù‡Ø§ØªÙ� رقم', 'رقم الهاتف'],
+    ['Ø§Ù„Ù‡Ø§ØªÙف رقم', 'رقم الهاتف'],
+    ['Ø§Ù„Ù‡Ø§ØªÙ�', 'الهاتف'],
+    ['Ø§Ù„Ù‡Ø§ØªÙف', 'الهاتف'],
+    ['رقم Ø§Ù„Ù‡Ø§ØªÙ�', 'رقم الهاتف'],
+    ['رقم Ø§Ù„Ù‡Ø§ØªÙف', 'رقم الهاتف'],
+
+    ['Ø§Ù„Ù…Ù�Ø¶Ù„Ø© اللغة', 'اللغة المفضلة'],
+    ['Ø§Ù„Ù…ÙفضÙ„Ø© اللغة', 'اللغة المفضلة'],
+    ['اللغة Ø§Ù„Ù…Ù�Ø¶Ù„Ø©', 'اللغة المفضلة'],
+    ['اللغة Ø§Ù„Ù…ÙفضÙ„Ø©', 'اللغة المفضلة'],
+
+    ['لدي حساب Ø§Ù„Ù�Ø¹Ù„', 'لدي حساب بالفعل'],
+    ['لدي حساب Ø§Ù„ÙفØ¹Ù„', 'لدي حساب بالفعل'],
+    ['Ø§Ù„Ù�Ø¹Ù„', 'بالفعل'],
+    ['Ø§Ù„ÙفØ¹Ù„', 'بالفعل'],
+
+    ['ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„', 'تسجيل الدخول'],
+    ['Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø­Ø³Ø§Ø¨', 'إنشاء الحساب'],
+    ['Ø§Ù„Ø§Ø³Ù… Ø§Ù„ÙƒØ§Ù…Ù„', 'الاسم الكامل'],
+    ['Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ', 'البريد الإلكتروني'],
+    ['ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±', 'كلمة المرور'],
+    ['Ø§Ù„Ø¹Ø±Ø¨ÙŠØ©', 'العربية']
+  ];
+
+  for (const [bad, good] of replacements) {
+    out = out.split(bad).join(good);
+  }
+
+  out = out.replace(/تسوق\s+حسب\s+[�□\uFFFD\s]*التصنيف/g, 'تسوق حسب التصنيف');
+  out = out.replace(/آخر\s+[ØÙÛÐÑÃÂ][^'"`<>{}\r\n]{2,50}/g, 'آخر الكولكشن');
+
+  out = out.replace(/[�□\uFFFD]\s*(التصنيف|الهاتف|المفضلة|الحساب|الدخول)/g, '$1');
+  out = out.replace(/(حسب|رقم|اللغة|حساب)\s+[�□\uFFFD]\s*/g, '$1 ');
+
+  return out;
+}
+
+function fixText(text) {
+  return targetedFix(genericFix(text));
+}
+
+let changed = 0;
+const files = walk(root);
+
+for (const file of files) {
+  let oldText;
+  try {
+    oldText = fs.readFileSync(file, 'utf8');
+  } catch {
+    continue;
+  }
+
+  const newText = fixText(oldText);
+
+  if (newText !== oldText) {
+    backup(file);
+    fs.writeFileSync(file, newText, 'utf8');
+    changed++;
+    console.log('fixed:', path.relative(root, file));
+  }
+}
+
+console.log('');
+console.log(`changed files: ${changed}`);
+console.log(`backup: ${backupDir}`);
+
+console.log('');
+console.log('Remaining suspicious snippets:');
+
+let remaining = 0;
+
+for (const file of files) {
+  let text;
+  try {
+    text = fs.readFileSync(file, 'utf8');
+  } catch {
+    continue;
+  }
+
+  if (!/[ØÙÛÐÑÃÂ�□\uFFFD]/.test(text)) continue;
+
+  const lines = text.split(/\r?\n/);
+  lines.forEach((line, index) => {
+    if (/[ØÙÛÐÑÃÂ�□\uFFFD]/.test(line)) {
+      remaining++;
+      console.log(`${path.relative(root, file)}:${index + 1}: ${line.trim().slice(0, 220)}`);
+    }
+  });
+}
+
+if (remaining === 0) {
+  console.log('none');
+}
