@@ -1,36 +1,60 @@
-﻿'use client';
+'use client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
-  LayoutDashboard, Package, ShoppingCart,
-  Users, Settings, Tag, Award,
+  LayoutDashboard, Package, Tag, Bookmark,
+  ShoppingCart, Home, LogOut
 } from 'lucide-react';
 
-export function Sidebar() {
-  const t    = useTranslations('admin.sidebar');
-  const tCat = useTranslations('adminCatalog');
+const navItems = [
+  { href: '/',                icon: LayoutDashboard, labelKey: 'admin.dashboard'       },
+  { href: '/products',        icon: Package,         labelKey: 'adminCatalog.products'  },
+  { href: '/categories',      icon: Tag,             labelKey: 'adminCatalog.categories'},
+  { href: '/brands',          icon: Bookmark,        labelKey: 'adminCatalog.brands'    },
+  { href: '/orders',          icon: ShoppingCart,    labelKey: 'admin.orders'           },
+  { href: '/homepage',        icon: Home,            labelKey: 'adminCatalog.homepageSections' },
+];
 
-  const items = [
-    { label: t('dashboard'),          href: '/',            icon: LayoutDashboard },
-    { label: t('products'),           href: '/products',    icon: Package         },
-    { label: tCat('categoriesTitle'), href: '/categories',  icon: Tag             },
-    { label: tCat('brandsTitle'),     href: '/brands',      icon: Award           },
-    { label: t('orders'),             href: '/orders',      icon: ShoppingCart    },
-    { label: t('helpers'),            href: '/team/helpers',icon: Users           },
-    { label: t('partners'),           href: '/team/partners',icon: Users          },
-    { label: t('settings'),           href: '/settings',    icon: Settings        },
-  ];
+export function Sidebar() {
+  const t = useTranslations();
+  const pathname = usePathname();
 
   return (
-    <aside className="w-60 border-e border-[#2E2E2E] bg-[#0A0A0A] min-h-screen p-4 flex flex-col gap-1 shrink-0">
-      <p className="text-xl font-semibold text-[#C9A84C] px-3 py-4 tracking-wide">EUROSTORE</p>
-      {items.map(({ label, href, icon: Icon }) => (
-        <Link key={href} href={href}
-          className="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#9CA3AF] hover:bg-[#1C1C1C] hover:text-[#E2E2E2] transition-colors">
-          <Icon className="h-4 w-4 shrink-0" />
-          {label}
-        </Link>
-      ))}
+    <aside className="flex h-full w-64 flex-col bg-[#111111] border-e border-[#2E2E2E]">
+      <div className="flex h-20 items-center px-6 border-b border-[#2E2E2E]">
+        <span className="font-headline text-xl text-[#C9A84C] tracking-wider">EUROSTORE</span>
+        <span className="ms-2 text-xs text-[#9CA3AF]">{t('admin.panel')}</span>
+      </div>
+
+      <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+        {navItems.map(({ href, icon: Icon, labelKey }) => {
+          const active = pathname === href || (href !== '/' && pathname.startsWith(href));
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                active
+                  ? 'bg-[#C9A84C]/10 text-[#C9A84C]'
+                  : 'text-[#9CA3AF] hover:bg-[#1A1A1A] hover:text-[#E2E2E2]'
+              }`}
+            >
+              <Icon className="h-4 w-4 flex-shrink-0" />
+              {t(labelKey)}
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-4 border-t border-[#2E2E2E]">
+        <form action="/api/auth/logout" method="POST">
+          <button type="submit" className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#9CA3AF] hover:bg-[#1A1A1A] hover:text-red-400 transition-colors">
+            <LogOut className="h-4 w-4" />
+            {t('auth.logout')}
+          </button>
+        </form>
+      </div>
     </aside>
   );
 }
