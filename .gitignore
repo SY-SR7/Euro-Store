@@ -1,0 +1,102 @@
+# ============================================
+# Environment Variables — NEVER commit these
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.development
+.env.staging
+.env.production
+
+# ============================================
+# Node / pnpm
+# ============================================
+node_modules/
+.pnpm-store/
+*.lock.bak
+
+# ============================================
+# Next.js
+# ============================================
+.next/
+out/
+build/
+dist/
+
+# ============================================
+# Expo / React Native
+# ============================================
+.expo/
+.expo-shared/
+android/
+ios/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# ============================================
+# Supabase
+# ============================================
+supabase/.branches/
+supabase/.temp/
+
+# ============================================
+# Build & Cache
+# ============================================
+.turbo/
+.vercel/
+.cache/
+*.tsbuildinfo
+next-env.d.ts
+
+# ============================================
+# Logs
+# ============================================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ============================================
+# OS Files
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ============================================
+# IDE & Editor
+# ============================================
+.idea/
+.vscode/settings.json
+.vscode/launch.json
+*.swp
+*.swo
+*~
+
+# ============================================
+# Testing
+# ============================================
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# ============================================
+# Secrets & Keys
+# ============================================
+*.pem
+*.p12
+*.key
+serviceAccount*.json
+firebase-adminsdk*.json
