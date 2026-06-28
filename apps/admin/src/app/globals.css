@@ -1,3 +1,5 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.input-admin { @apply rounded-md border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-2 text-sm text-[#E2E2E2] placeholder:text-[#6B7280] focus:border-[#C9A84C] focus:outline-none w-full; }

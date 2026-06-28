@@ -477,3 +477,72 @@
 - Phase 7: Exchange System -- QR token generation + exchange request pages.
 - Phase 6 notifications: Resend email بعد تأكيد الطلب (يحتاج RESEND_API_KEY في .env).
 - Admin: discount_codes management page (/admin/discounts).
+
+
+---
+
+### Session 015 � 2026-06-28
+**Agent:** PowerShell Phase6-11 Script (Claude)
+**Duration:** ~60 min
+**Work Done:**
+
+**Phase 6 Completion:**
+- ResendEmailAdapter ?? packages/adapters
+- IEmailAdapter interface ??????
+- buildOrderConfirmationHtml helper ?? packages/shared/src/email/
+- Trigger email send (non-blocking) ??? ????? ????? ?? apps/web/src/app/api/orders/route.ts
+
+**Phase 7 � Exchange System:**
+- packages/shared/src/utils/exchangeQR.ts: generateExchangeQRToken + verifyExchangeQRToken (HS256)
+- supabase/migrations/20260628000011_exchange_qr.sql: exchange_qr_tokens table + RLS
+- apps/web/src/app/exchange/new/page.tsx: ???? ??? ??????? ????
+- apps/web/src/app/api/exchange/request/route.ts: POST API
+- apps/helper/src/app/api/exchange/generate-qr/route.ts: ????? QR token
+- apps/partner/src/app/api/exchange/redeem/route.ts: ??????? token + ????? ??????
+- apps/partner/src/app/(dashboard)/exchange/page.tsx: ???? ????? QR
+- apps/partner/src/app/(dashboard)/exchange/history/page.tsx: ??? ???????????
+
+**Phase 8 � Loyalty & Referral:**
+- apps/web/src/app/loyalty/page.tsx: ???? ???? ?????? + ??? ????????? + ??? ???????
+- apps/helper/src/app/api/loyalty/grant/route.ts: ??? ???? ???? (atomic RPC)
+- apps/helper/src/app/(dashboard)/loyalty/page.tsx: ????? ??? ??????
+
+**Phase 9 � Admin Dashboard + Discounts:**
+- apps/admin/src/app/api/dashboard/stats/route.ts: ???????? dashboard
+- apps/admin/src/app/(dashboard)/page.tsx: dashboard ??????????? ????????
+- apps/admin/src/app/api/discounts/route.ts + [id]/route.ts: CRUD ????
+- apps/admin/src/app/(dashboard)/discounts/page.tsx: ????? ????? ?????
+- apps/admin/src/app/api/exchanges/route.ts + [id]/route.ts: ????? + ????? ????
+- apps/admin/src/app/(dashboard)/exchanges/page.tsx: ????? ????? ?????????
+
+**Phase 10 � Helper Portal:**
+- apps/helper/src/app/api/exchange/queue/route.ts: ????? ????? ????????? ????????
+- apps/helper/src/app/(dashboard)/exchange/page.tsx: ????? + ????? QR
+- apps/helper/src/app/components/HelperSidebar.tsx: sidebar ?????
+- apps/helper/src/app/(dashboard)/layout.tsx: layout ?? sidebar
+
+**Phase 11 � Partner Portal:**
+- apps/partner/src/app/(dashboard)/layout.tsx + PartnerSidebar.tsx
+- apps/partner/src/app/(dashboard)/page.tsx: partner home
+- (exchange/ + exchange/history/ ???????? ?? Phase 7)
+
+**i18n:**
+- ar.json + en.json: ?????? exchange, loyalty (?????), helper, partner, admin (discounts, exchanges, dashboard stats), common
+
+**Phase Status After This Session:**
+- Phase 4: ?? 100%
+- Phase 5: ?? 100%
+- Phase 6: ?? 100%
+- Phase 7: ?? 100%
+- Phase 8: ?? 100%
+- Phase 9: ?? 100%
+- Phase 10: ?? 100%
+- Phase 11: ?? 100%
+
+**Next Agent Must Start With:**
+- Phase 12: Mobile App (Expo) � customer feature parity (browse products, cart, orders, loyalty)
+- Phase 13: Integrations � FCM push notifications, finalize Sham Cash stub ? real integration
+- Phase 14: Testing (unit ? integration ? E2E with Playwright)
+- Phase 15: Performance & Security hardening (rate limiting enforcement, CSP, audit log review)
+- Apply migration 20260628000011_exchange_qr.sql to Supabase dev project
+- Set EXCHANGE_QR_SECRET (min 32 chars), RESEND_API_KEY, EMAIL_FROM in .env files

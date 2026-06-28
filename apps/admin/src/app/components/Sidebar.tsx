@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   LayoutDashboard, Package, Tag, Bookmark,
-  ShoppingCart, Home, LogOut
+  ShoppingCart, Home, LogOut, Percent, RefreshCw
 } from 'lucide-react';
 
 const navItems = [
@@ -13,7 +13,9 @@ const navItems = [
   { href: '/categories',      icon: Tag,             labelKey: 'adminCatalog.categories'},
   { href: '/brands',          icon: Bookmark,        labelKey: 'adminCatalog.brands'    },
   { href: '/orders',          icon: ShoppingCart,    labelKey: 'admin.orders'           },
-  { href: '/homepage',        icon: Home,            labelKey: 'adminCatalog.homepageSections' },
+  { href: '/homepage',   icon: Home,      labelKey: 'adminCatalog.homepageSections' },
+  { href: '/discounts',  icon: Percent,   labelKey: 'admin.discounts'              },
+  { href: '/exchanges',  icon: RefreshCw, labelKey: 'admin.exchanges'              },
 ];
 
 export function Sidebar() {
@@ -58,3 +60,4 @@ export function Sidebar() {
     </aside>
   );
 }
+

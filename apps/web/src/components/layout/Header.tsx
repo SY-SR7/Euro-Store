@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import Link from 'next/link';
 import { Search, Menu, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';

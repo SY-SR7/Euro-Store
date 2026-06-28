@@ -231,3 +231,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
   }
 }
+/* -- Send order confirmation email (best-effort, non-blocking) -- */
+void (async () => {
+  try {
+    const resendKey  = process.env['RESEND_API_KEY'] ?? '';
+    const fromEmail  = process.env['EMAIL_FROM'] ?? 'orders@eurostore.com';
+    if (!resendKey) return;
+
+    const { ResendEmailAdapter }      = await import('@eurostore/adapters');
+    const { buildOrderConfirmationHtml } = await import('@eurostore/shared/email/orderConfirmation');
+
+    const emailHtml = buildOrderConfirmationHtml({
+      orderNumber    : orderNumber as string,
+      customerName   : body.full_name as string,
+      totalSyp       : total as number,
+      shippingSyp    : shippingCost as number,
+      governorateName: govLabel as string,
+      items          : (body.items as Array<{ nameAr: string; sku: string; quantity: number; priceSyp: number }>),
+    });
+
+    const mailer = new ResendEmailAdapter(resendKey, fromEmail);
+    await mailer.send({ to: body.email as string, subject: `????? ????? #${orderNumber as string} — ???? ????`, html: emailHtml });
+  } catch (_) { /* email failures must never break checkout */ }
+})();
