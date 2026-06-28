@@ -11,7 +11,6 @@
     "dependencies":  {
                          "@eurostore/config":  "workspace:*",
                          "@eurostore/database":  "workspace:*",
-                         "@eurostore/shared":  "workspace:*",
                          "@eurostore/ui":  "workspace:*",
                          "bcryptjs":  "^3.0.3",
                          "framer-motion":  "^11.2.10",
@@ -26,6 +25,7 @@
                          "react-dom":  "^18",
                          "zod":  "^3.25.76",
                          "zustand":  "^5.0.14",
+                         "@eurostore/shared":  "workspace:*",
                          "@eurostore/adapters":  "workspace:*"
                      },
     "devDependencies":  {
