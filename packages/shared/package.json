@@ -25,6 +25,20 @@
                     ".":  {
                               "types":  "./src/index.ts",
                               "default":  "./src/index.ts"
-                          }
+                          },
+                    "./src/messages":  {
+                                           "types":  "./src/messages/index.ts",
+                                           "default":  "./src/messages/index.ts"
+                                       },
+                    "./src/messages/*":  {
+                                             "default":  "./src/messages/*"
+                                         },
+                    "./messages":  {
+                                       "types":  "./src/messages/index.ts",
+                                       "default":  "./src/messages/index.ts"
+                                   },
+                    "./messages/*":  {
+                                         "default":  "./src/messages/*"
+                                     }
                 }
 }
