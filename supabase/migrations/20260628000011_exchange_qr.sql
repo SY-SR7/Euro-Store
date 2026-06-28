@@ -1,4 +1,4 @@
-﻿-- Exchange QR token store (one active token per request)
+-- Exchange QR token store (one active token per request)
 CREATE TABLE IF NOT EXISTS exchange_qr_tokens (
   id                  UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
   exchange_request_id UUID        NOT NULL REFERENCES exchange_requests(id) ON DELETE CASCADE,
