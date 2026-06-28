@@ -53,9 +53,26 @@ export function createSupabaseAdminClient(
   });
 }
 
+export function createSupabasePublicClient(
+  supabaseUrl: string,
+  supabaseAnonKey: string
+): EurostoreSupabaseClient {
+  return createSupabaseJSClient<Database>(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}
+
 export function createSupabaseBrowserClientFromEnv(): EurostoreSupabaseClient {
   const { supabaseUrl, supabaseAnonKey } = getSupabasePublicEnv();
   return createSupabaseBrowserClient(supabaseUrl, supabaseAnonKey);
+}
+
+export function createSupabasePublicClientFromEnv(): EurostoreSupabaseClient {
+  const { supabaseUrl, supabaseAnonKey } = getSupabasePublicEnv();
+  return createSupabasePublicClient(supabaseUrl, supabaseAnonKey);
 }
 
 export function createSupabaseServerClientFromEnv(

@@ -7,9 +7,9 @@
 
 ## Current Status
 
-**Phase:** 🟡 PHASE 2 — Core Packages (Adapters)
+**Phase:** 🟡 PHASE 3 — Supabase Project Connected
 **Date:** 2026-06-28
-**Overall Progress:** 7% (1 of 15 phases complete/in progress)
+**Overall Progress:** 15% (Supabase dev project created, linked, and migrated)
 
 ---
 
@@ -18,9 +18,9 @@
 | Phase | Name | Status | Notes |
 |-------|------|--------|-------|
 | 0 | Monorepo & Tooling Setup | 🟡 In Progress | CI/CD pipeline, ESLint, Prettier, EditorConfig done |
-| 1 | Database (migrations, types, RLS, seed) | 🟡 In Progress | Migrations, RLS, RPCs, indexes, seed data created; types pending |
-| 2 | Core Packages (adapters, shared, UI primitives) | 🟡 In Progress | @eurostore/adapters interfaces and ShamCash stub completed |
-| 3 | Auth System (all 5 roles, TOTP) | 🔴 Not Started | |
+| 1 | Database (migrations, types, RLS, seed) | 🟡 In Progress | Supabase dev project linked; migrations 00001-00009 applied; seed and storage buckets verified |
+| 2 | Core Packages (adapters, shared, UI primitives) | 🟡 In Progress | Supabase env clients, auth schemas, role helpers, TOTP helpers added |
+| 3 | Auth System (all 5 roles, TOTP) | 🟡 In Progress | Customer register/login, admin/sub-admin login + mandatory TOTP, helper/partner login, middleware guards wired to Supabase profiles |
 | 4 | Product Catalog (categories → products → variants) | 🔴 Not Started | |
 | 5 | Cart & Checkout (guest cart, merge, atomic) | 🔴 Not Started | |
 | 6 | Order Management (state machine, notifications) | 🔴 Not Started | |
@@ -39,6 +39,98 @@
 ---
 
 ## Session Log
+
+### Session 009 — 2026-06-28
+**Agent:** Codex
+**Duration:** ~40 min
+**Work Done:**
+- Created Supabase project `eurostore-dev` under organization `Khabiaa`.
+- Project ref: `jnxvoadadedqqrthxjem`.
+- Linked local repo to the Supabase project using Supabase CLI `2.108.0`.
+- Applied migrations `20260628000001` through `20260628000009`.
+- Added migration `20260628000008_storage_buckets.sql` for:
+  - `product-images` public, 5MB
+  - `product-videos` public, 100MB
+  - `exchange-images` private, 5MB
+  - `loyalty-qr-codes` private, 1MB
+  - `exchange-qr-codes` private, 1MB
+- Added migration `20260628000009_public_catalog_policies.sql` for public catalog/home/shipping reads under RLS.
+- Wrote ignored local env files for `apps/web`, `apps/admin`, `apps/helper`, `apps/partner`, and `apps/mobile`.
+- Added Expo/public env fallback support so browser/mobile clients can use safe public provider hints.
+- Added public Supabase client helper for non-cookie public reads.
+- Connected mobile app to Supabase public data by reading active shipping governorate count.
+
+**Verification:**
+- Remote migration list matches local through `20260628000009`.
+- Remote database query verified `29` public tables, `14` shipping rates, and `13` system settings.
+- Storage bucket query verified all five buckets with correct public/private flags and size limits.
+- Anonymous REST read verified `14` active shipping rates visible to public clients.
+- `tsc --noEmit --incremental false` passed for `packages/database`, `packages/shared`, `apps/web`, and `apps/mobile`.
+- Targeted ESLint passed for database env/client, runtime config, and mobile app.
+
+**Next Agent Must Start With:**
+- Create real catalog seed/admin-created records for categories, products, variants, images, and homepage sections.
+- Configure Supabase Auth dashboard settings: email templates, site URL, redirect URLs, Google OAuth if needed.
+- Keep service role only in server apps; mobile must remain anon/public only.
+
+---
+
+### Session 008 — 2026-06-28
+**Agent:** Codex
+**Duration:** ~20 min
+**Work Done:**
+- Formalized provider portability as a project rule after owner direction that EuroStore may move to Hostinger or another provider.
+- Added runtime provider config helpers in `@eurostore/shared` for hosting, database, auth, storage, email, payment, and public app URLs.
+- Expanded `.env.example` so domains and providers are env-driven instead of using fixed `eurostore.com` placeholders.
+- Added provider guard in `@eurostore/database`: Supabase helpers now only run when `EUROSTORE_DATABASE_PROVIDER=supabase`; future Postgres/Hostinger providers must be implemented inside the database package.
+- Added `_handoff/PORTABILITY.md` and `_handoff/PROVIDER_SWITCH_RUNBOOK.md`.
+- Added ADR-012: Provider Portability Contract.
+
+**Verification:**
+- `tsc --noEmit --incremental false` passed for `packages/shared`, `packages/database`, and `apps/web`.
+- Targeted ESLint passed for runtime config, database env, and updated web page.
+
+**Next Agent Must Start With:**
+- Keep all new URLs/domains/provider choices in env/config.
+- Do not add direct vendor SDK calls outside provider packages/adapters.
+- Before launch, move design experiment media URLs into configured storage/database records.
+
+---
+
+### Session 007 — 2026-06-28
+**Agent:** Codex
+**Duration:** ~45 min
+**Work Done:**
+- Began real Supabase integration; no new mock/hardcoded data paths were added.
+- Added env-driven Supabase clients in `@eurostore/database` and fail-fast validation for missing Supabase env vars.
+- Updated app-facing database types for auth/profile, catalog, homepage, order, exchange, loyalty, and audit tables.
+- Added shared auth validation, role helpers, TOTP secret/URI verification, and signed httpOnly TOTP session cookie helpers.
+- Added migration `20260628000007_auth_profile_policies.sql` for own-profile reads across admin/sub-admin/helper/partner and customer self-profile insert.
+- Added customer login/register through Supabase Auth, with customer profile creation through server-only service role.
+- Added admin login with mandatory TOTP setup/verify; no admin page is accessible without TOTP verification cookie.
+- Added helper and partner login flows tied to `helper_profiles` and `partner_profiles`.
+- Added middleware guards for web protected paths, admin, helper, and partner apps.
+- Converted main app landing pages from static placeholders to Supabase-backed reads/counts.
+- Converted the `/1` design experiment product grid from mock products to Supabase product reads.
+- Changed ShamCash placeholder behavior to fail closed instead of returning mock successful payments.
+
+**Verification:**
+- `tsc --noEmit --incremental false` passed for `packages/database`, `packages/shared`, `apps/web`, `apps/admin`, `apps/helper`, and `apps/partner`.
+- Targeted ESLint passed for all new/changed auth, middleware, env, and Supabase type/client files.
+- `@eurostore/adapters` TypeScript and targeted ESLint passed after ShamCash fail-closed update.
+- Full `pnpm turbo run lint` could not run because pnpm attempted to reinstall/purge modules in a non-interactive environment; local direct lint/type checks were used instead.
+
+**Required Environment Variables Added:**
+- `EUROSTORE_AUTH_COOKIE_SECRET`
+- `EUROSTORE_AUTH_TOTP_ISSUER`
+
+**Next Agent Must Start With:**
+- Apply migrations to the real Supabase project and verify policies against live roles.
+- Replace ShamCash stub behavior before payment flows become user-facing.
+- Continue Phase 3 with logout, password reset, email verification UX, audit logging for staff auth events, and TOTP lockout/rate-limit enforcement.
+- Continue portability hardening: move any production-bound design experiment media URLs into configured storage/database records before launch.
+
+---
 
 ### Session 006 — 2026-06-28
 **Agent:** AI Senior Engineer (Antigravity)

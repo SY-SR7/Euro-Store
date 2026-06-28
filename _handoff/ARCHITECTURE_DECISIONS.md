@@ -178,3 +178,18 @@ packages/adapters/
 ---
 
 *Add new ADRs below this line.*
+
+---
+
+## ADR-012: Provider Portability Contract
+
+**Date:** 2026-06-28
+**Status:** Accepted
+**Context:** EuroStore may move from the initial hosting/data stack to Hostinger or another provider for domain, hosting, database, storage, email, or payment services.
+**Decision:** Provider choices are runtime configuration, not application code. Domains and providers are selected by env vars; vendor SDKs stay inside `packages/database` or `packages/adapters`. Feature code must not hardcode provider URLs or call external service SDKs directly.
+**Consequences:**
+- (+) Moving domains/hosting/storage/email can be done by changing env and DNS/provider dashboards.
+- (+) Database/auth migrations are isolated to provider packages instead of feature pages.
+- (+) Code review has a clear portability gate.
+- (-) More upfront adapter/config discipline is required.
+- (-) Non-Supabase database/auth providers still need implementation inside provider packages before switching production env.

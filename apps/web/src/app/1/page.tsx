@@ -1,10 +1,19 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createSupabaseBrowserClientFromEnv } from "@eurostore/database";
 import { useScroll, useTransform, motion, useSpring } from "framer-motion";
 
-export default function Design1Page() {
+interface CatalogProduct {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  slug: string;
+}
+
+export default function Design1Page(): JSX.Element {
   const heroContainerRef = useRef<HTMLDivElement>(null);
+  const [products, setProducts] = useState<CatalogProduct[]>([]);
 
   // Smooth the scroll progress for the hero
   const { scrollYProgress } = useScroll({
@@ -53,12 +62,26 @@ export default function Design1Page() {
     hover: { scale: 1.03, transition: { type: "spring", stiffness: 300, damping: 20 } },
   };
 
-  const mockProducts = [
-    { id: 1, name: "فستان سهرة كلاسيكي", brand: "VOGUE", price: "450,000", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80" },
-    { id: 2, name: "حقيبة يد فاخرة", brand: "ELEGANCE", price: "220,000", image: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=800&q=80" },
-    { id: 3, name: "حذاء كعب عالي", brand: "MILANO", price: "185,000", image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&q=80" },
-    { id: 4, name: "نظارات شمسية ذهبية", brand: "AURA", price: "120,000", image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=800&q=80" },
-  ];
+  useEffect(() => {
+    let isMounted = true;
+    const supabase = createSupabaseBrowserClientFromEnv();
+
+    void supabase
+      .from("products")
+      .select("id, name_ar, name_en, slug")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false })
+      .limit(4)
+      .then(({ data }) => {
+        if (isMounted) {
+          setProducts(data ?? []);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className="bg-[#121414] min-h-screen text-[#E2E2E2] selection:bg-[#C9A84C] selection:text-[#121414] overflow-x-hidden">
@@ -86,7 +109,6 @@ export default function Design1Page() {
             style={{ y: productY, scale: productScale, opacity: productOpacity }}
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
           >
-            {/* Using a placeholder image for the hero */}
             <div className="relative w-full max-w-2xl aspect-square">
               <img
                 src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&q=80"
@@ -159,7 +181,7 @@ export default function Design1Page() {
           viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
         >
-          {mockProducts.map((product) => (
+          {products.map((product) => (
             <motion.div
               key={product.id}
               variants={fadeUpVariants}
@@ -173,20 +195,18 @@ export default function Design1Page() {
                   style={{ transformStyle: "preserve-3d" }}
                   className="w-full h-full"
                 >
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700"
-                  />
+                  <div className="flex h-full w-full items-center justify-center bg-[#242424] p-6 text-center">
+                    <span className="text-2xl font-serif text-[#C9A84C]">{product.name_ar}</span>
+                  </div>
                 </motion.div>
                 <span className="absolute top-3 start-3 bg-[#C9A84C] text-[#1A1A1A] text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider shadow-lg">
                   جديد
                 </span>
               </div>
               <div className="p-5 text-center bg-gradient-to-t from-[#1A1C1C] to-[#1E2020]">
-                <p className="text-[#9CA3AF] text-xs uppercase tracking-widest mb-2">{product.brand}</p>
-                <h3 className="text-[#E2E2E2] font-medium line-clamp-1 mb-2 group-hover:text-[#C9A84C] transition-colors">{product.name}</h3>
-                <p className="text-[#C9A84C] font-semibold">{product.price} ل.س</p>
+                <p className="text-[#9CA3AF] text-xs uppercase tracking-widest mb-2">{product.slug}</p>
+                <h3 className="text-[#E2E2E2] font-medium line-clamp-1 mb-2 group-hover:text-[#C9A84C] transition-colors">{product.name_ar}</h3>
+                <p className="text-[#C9A84C] font-semibold">{product.name_en}</p>
               </div>
             </motion.div>
           ))}

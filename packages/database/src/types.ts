@@ -56,11 +56,21 @@ export interface Database {
           created_at: string;
           updated_at: string;
         };
-        Insert: InsertWithoutGenerated<
-          Database['public']['Tables']['customer_profiles']['Row'],
-          'id' | 'loyalty_points' | 'referral_code' | 'created_at' | 'updated_at'
-        >;
+        Insert: {
+          id?: string;
+          full_name: string;
+          email: string;
+          phone?: string | null;
+          avatar_url?: string | null;
+          loyalty_points?: number;
+          referral_code?: string | null;
+          referred_by?: string | null;
+          preferred_language?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
         Update: Partial<Database['public']['Tables']['customer_profiles']['Insert']>;
+        Relationships: [];
       };
       admin_profiles: {
         Row: {
@@ -78,6 +88,7 @@ export interface Database {
           'id' | 'totp_secret' | 'totp_enabled' | 'is_active' | 'created_at' | 'updated_at'
         >;
         Update: Partial<Database['public']['Tables']['admin_profiles']['Insert']>;
+        Relationships: [];
       };
       sub_admin_profiles: {
         Row: {
@@ -95,6 +106,7 @@ export interface Database {
           'id' | 'totp_secret' | 'totp_enabled' | 'is_active' | 'created_at'
         >;
         Update: Partial<Database['public']['Tables']['sub_admin_profiles']['Insert']>;
+        Relationships: [];
       };
       helper_profiles: {
         Row: {
@@ -111,6 +123,7 @@ export interface Database {
           'id' | 'is_active' | 'created_at'
         >;
         Update: Partial<Database['public']['Tables']['helper_profiles']['Insert']>;
+        Relationships: [];
       };
       partner_profiles: {
         Row: {
@@ -130,6 +143,7 @@ export interface Database {
           'id' | 'is_active' | 'created_at'
         >;
         Update: Partial<Database['public']['Tables']['partner_profiles']['Insert']>;
+        Relationships: [];
       };
       products: {
         Row: {
@@ -144,7 +158,7 @@ export interface Database {
           is_active: boolean;
           is_featured: boolean;
           tags: string[] | null;
-          search_vector: unknown | null;
+          search_vector: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -153,6 +167,7 @@ export interface Database {
           'id' | 'is_active' | 'is_featured' | 'search_vector' | 'created_at' | 'updated_at'
         >;
         Update: Partial<Database['public']['Tables']['products']['Insert']>;
+        Relationships: [];
       };
       categories: {
         Row: {
@@ -171,6 +186,149 @@ export interface Database {
           'id' | 'sort_order' | 'is_active' | 'created_at'
         >;
         Update: Partial<Database['public']['Tables']['categories']['Insert']>;
+        Relationships: [];
+      };
+      brands: {
+        Row: {
+          id: string;
+          name: string;
+          slug: string;
+          logo_url: string | null;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          slug: string;
+          logo_url?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['brands']['Insert']>;
+        Relationships: [];
+      };
+      attribute_types: {
+        Row: {
+          id: string;
+          name_ar: string;
+          name_en: string;
+          slug: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name_ar: string;
+          name_en: string;
+          slug: string;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['attribute_types']['Insert']>;
+        Relationships: [];
+      };
+      attribute_values: {
+        Row: {
+          id: string;
+          attribute_type_id: string | null;
+          value_ar: string;
+          value_en: string;
+          hex_color: string | null;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          attribute_type_id?: string | null;
+          value_ar: string;
+          value_en: string;
+          hex_color?: string | null;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['attribute_values']['Insert']>;
+        Relationships: [];
+      };
+      product_variants: {
+        Row: {
+          id: string;
+          product_id: string | null;
+          sku: string;
+          price_syp: number;
+          compare_price_syp: number | null;
+          stock_quantity: number;
+          weight_grams: number | null;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id?: string | null;
+          sku: string;
+          price_syp: number;
+          compare_price_syp?: number | null;
+          stock_quantity?: number;
+          weight_grams?: number | null;
+          is_active?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['product_variants']['Insert']>;
+        Relationships: [];
+      };
+      variant_attributes: {
+        Row: {
+          variant_id: string;
+          attribute_value_id: string;
+        };
+        Insert: {
+          variant_id: string;
+          attribute_value_id: string;
+        };
+        Update: Partial<Database['public']['Tables']['variant_attributes']['Insert']>;
+        Relationships: [];
+      };
+      product_images: {
+        Row: {
+          id: string;
+          product_id: string | null;
+          variant_id: string | null;
+          url: string;
+          alt_ar: string | null;
+          alt_en: string | null;
+          sort_order: number;
+          is_primary: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id?: string | null;
+          variant_id?: string | null;
+          url: string;
+          alt_ar?: string | null;
+          alt_en?: string | null;
+          sort_order?: number;
+          is_primary?: boolean;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['product_images']['Insert']>;
+        Relationships: [];
+      };
+      product_videos: {
+        Row: {
+          id: string;
+          product_id: string | null;
+          url: string;
+          thumbnail_url: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id?: string | null;
+          url: string;
+          thumbnail_url: string;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['product_videos']['Insert']>;
+        Relationships: [];
       };
       orders: {
         Row: {
@@ -208,6 +366,7 @@ export interface Database {
           | 'updated_at'
         >;
         Update: Partial<Database['public']['Tables']['orders']['Insert']>;
+        Relationships: [];
       };
       exchange_requests: {
         Row: {
@@ -239,6 +398,7 @@ export interface Database {
           'id' | 'status' | 'created_at' | 'updated_at'
         >;
         Update: Partial<Database['public']['Tables']['exchange_requests']['Insert']>;
+        Relationships: [];
       };
       loyalty_points_transactions: {
         Row: {
@@ -258,6 +418,7 @@ export interface Database {
           'id' | 'created_at'
         >;
         Update: Partial<Database['public']['Tables']['loyalty_points_transactions']['Insert']>;
+        Relationships: [];
       };
       audit_logs: {
         Row: {
@@ -275,6 +436,19 @@ export interface Database {
         };
         Insert: InsertWithoutGenerated<Database['public']['Tables']['audit_logs']['Row'], 'id' | 'created_at'>;
         Update: Partial<Database['public']['Tables']['audit_logs']['Insert']>;
+        Relationships: [];
+      };
+      shipping_rates: {
+        Row: {
+          id: string;
+          governorate: string;
+          base_rate_syp: number;
+          free_shipping_threshold_syp: number | null;
+          is_active: boolean;
+        };
+        Insert: InsertWithoutGenerated<Database['public']['Tables']['shipping_rates']['Row'], 'id' | 'is_active'>;
+        Update: Partial<Database['public']['Tables']['shipping_rates']['Insert']>;
+        Relationships: [];
       };
       homepage_sections: {
         Row: {
@@ -292,6 +466,7 @@ export interface Database {
           'id' | 'is_active' | 'sort_order' | 'updated_at'
         >;
         Update: Partial<Database['public']['Tables']['homepage_sections']['Insert']>;
+        Relationships: [];
       };
     };
     Views: {

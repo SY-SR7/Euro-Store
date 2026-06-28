@@ -3,7 +3,8 @@
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 import { getFormString, loginSchema, registerCustomerSchema } from '@eurostore/shared';
 import { redirect } from 'next/navigation';
-import { createServerSupabaseClient } from '../../supabase-server';
+import { cookies } from 'next/headers';
+import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 
 function collectLoginForm(formData: FormData) {
   return {
@@ -29,7 +30,8 @@ export async function loginCustomerAction(formData: FormData): Promise<void> {
     redirect('/auth/login?status=invalid');
   }
 
-  const supabase = createServerSupabaseClient();
+  const cookieStore = cookies();
+  const supabase = createSupabaseServerClientFromEnv(cookieStore);
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
@@ -65,7 +67,8 @@ export async function registerCustomerAction(formData: FormData): Promise<void> 
     redirect('/auth/register?status=invalid');
   }
 
-  const supabase = createServerSupabaseClient();
+  const cookieStore = cookies();
+  const supabase = createSupabaseServerClientFromEnv(cookieStore);
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
@@ -77,16 +80,21 @@ export async function registerCustomerAction(formData: FormData): Promise<void> 
     },
   });
 
-  if (error || !data.user) {
+  if (error) {
     redirect('/auth/register?status=failed');
   }
 
+  if (!data.user) {
+    redirect('/auth/register?status=failed');
+  }
+
+  const phone = parsed.data.phone === '' || parsed.data.phone === undefined ? null : parsed.data.phone;
   const admin = createSupabaseAdminClientFromEnv();
   const { error: profileError } = await admin.from('customer_profiles').upsert({
     id: data.user.id,
     full_name: parsed.data.fullName,
     email: parsed.data.email,
-    phone: parsed.data.phone || null,
+    phone,
     preferred_language: parsed.data.preferredLanguage,
   });
 
