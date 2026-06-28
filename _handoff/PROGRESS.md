@@ -429,3 +429,29 @@
   - Phase 5 completion: discount code input at checkout, loyalty points redemption
   - Phase 6: Order management (admin order list, status updates, helper order queue)
   - Add CartBadge to Header.tsx (import CartBadge client component)
+
+
+---
+
+### Session 013 — 2026-06-28
+**Agent:** PowerShell Session 013 Script
+**Work Done:**
+- CartBadge مضافة بشكل صحيح في Header.tsx (استبدال أيقونة السلة الثابتة).
+- Admin Homepage Sections: API (GET/POST/PATCH/DELETE) + صفحة UI كاملة.
+- Admin Orders: API قائمة الطلبات مع فلتر الحالة + pagination.
+- Admin Order Detail: صفحة تفاصيل الطلب مع state machine transitions.
+- Helper Portal: API orders queue (confirmed/processing) + PATCH advance status + صفحة dashboard كاملة.
+- Discount Code API: validate-discount route (percentage + fixed, min_order, expiry, max_uses).
+- Admin Sidebar محدّث: روابط Orders + Homepage Sections مضافة.
+- ar.json + en.json: مفاتيح admin.orders, helper.orderQueue, common.refresh/prev/next/page/loading مضافة.
+
+**Phase Status After This Session:**
+- Phase 4: 🟢 100% (homepage sections admin مكتملة)
+- Phase 5: 🟡 85% (discount codes API جاهز — UI في checkout متبقي)
+- Phase 6: 🟡 60% (admin orders + helper queue جاهز — notifications + exchange متبقي)
+
+**Next Agent Must Start With:**
+- Phase 5 final: إضافة discount code input في checkout/page.tsx (استدعاء /api/checkout/validate-discount).
+- Phase 6 completion: Order confirmation emails (Resend adapter), helper exchange queue.
+- Phase 7: Exchange System (QR flows).
+- Phase 8: Loyalty & Referral.
