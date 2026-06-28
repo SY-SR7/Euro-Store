@@ -1,16 +1,11 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 import {
-  ProductCard,
-  createCatalogLookup,
-  type CatalogBrand,
-  type CatalogCategory,
-  type CatalogProduct,
-  type CatalogVariant,
-} from '../../catalog-components';
+  ProductCard } from '../../catalog-components';
+import { createCatalogLookup, type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '../../catalog-types';
 
 export const dynamic = 'force-dynamic';
 

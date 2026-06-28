@@ -13,15 +13,8 @@ export type CatalogVariant = Pick<
   'id' | 'product_id' | 'sku' | 'price_syp' | 'compare_price_syp' | 'stock_quantity'
 >;
 
-export type CatalogCategory = Pick<
-  Tables['categories']['Row'],
-  'id' | 'name_ar' | 'name_en' | 'slug'
->;
-
-export type CatalogBrand = Pick<
-  Tables['brands']['Row'],
-  'id' | 'name' | 'slug'
->;
+export type CatalogCategory = Pick<Tables['categories']['Row'], 'id' | 'name_ar' | 'name_en' | 'slug'>;
+export type CatalogBrand    = Pick<Tables['brands']['Row'], 'id' | 'name' | 'slug'>;
 
 export interface ProductPriceSummary {
   priceLabel: string;
@@ -30,22 +23,16 @@ export interface ProductPriceSummary {
   totalStock: number;
 }
 
-export function variantsForProduct(productId: string, variants: readonly CatalogVariant[]): CatalogVariant[] {
-  return variants.filter((variant) => variant.product_id === productId);
+export function variantsForProduct(productId: string, variants: CatalogVariant[]): CatalogVariant[] {
+  return variants.filter((v) => v.product_id === productId);
 }
 
-export function summarizeProductVariants(variants: readonly CatalogVariant[]): ProductPriceSummary {
-  const prices = variants
-    .map((variant) => variant.price_syp)
-    .filter((price): price is number => typeof price === 'number');
-
+export function summarizeProductVariants(variants: CatalogVariant[]): ProductPriceSummary {
+  const prices = variants.map((v) => v.price_syp);
   const comparePrices = variants
-    .map((variant) => variant.compare_price_syp)
-    .filter((price): price is number => typeof price === 'number');
-
-  const totalStock = variants.reduce((sum, variant) => {
-    return sum + (typeof variant.stock_quantity === 'number' ? variant.stock_quantity : 0);
-  }, 0);
+    .map((v) => v.compare_price_syp)
+    .filter((p): p is number => typeof p === 'number');
+  const totalStock = variants.reduce((sum, v) => sum + v.stock_quantity, 0);
 
   if (prices.length === 0) {
     return {
@@ -67,6 +54,6 @@ export function summarizeProductVariants(variants: readonly CatalogVariant[]): P
   };
 }
 
-export function createCatalogLookup<Row extends { id: string }>(rows: readonly Row[]): Map<string, Row> {
-  return new Map(rows.map((row) => [row.id, row]));
+export function createCatalogLookup<Row extends { id: string }>(rows: Row[]): Map<string, Row> {
+  return new Map(rows.map((r) => [r.id, r]));
 }

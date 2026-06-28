@@ -1,16 +1,12 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { formatSYP } from '@eurostore/shared';
 import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 import {
-  summarizeProductVariants,
-  type CatalogBrand,
-  type CatalogCategory,
-  type CatalogProduct,
-  type CatalogVariant,
-} from '../../catalog-components';
+  summarizeProductVariants } from '../../catalog-components';
+import { type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '../../catalog-types';
 import { AddToCartButton } from '../../../components/cart/AddToCartButton';
 
 export const dynamic = 'force-dynamic';
