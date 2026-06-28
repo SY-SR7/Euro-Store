@@ -1,6 +1,6 @@
-﻿import { getTranslations } from 'next-intl/server';
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { cookies } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 import {
   ProductCard,
@@ -14,22 +14,21 @@ import {
 export const dynamic = 'force-dynamic';
 
 interface ProductsPageProps {
-  searchParams?: {
-    q?: string | string[];
-  };
+  searchParams?: { q?: string | string[] };
 }
 
 function getSearchTerm(searchParams?: ProductsPageProps['searchParams']): string {
-  const rawValue = searchParams?.q;
-  const value = Array.isArray(rawValue) ? rawValue[0] : rawValue;
-
-  return value?.trim() ?? '';
+  const raw = searchParams?.q;
+  const val = Array.isArray(raw) ? raw[0] : raw;
+  return val?.trim() ?? '';
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps): Promise<JSX.Element> {
+  const t = await getTranslations();
   const cookieStore = cookies();
   const supabase = createSupabaseServerClientFromEnv(cookieStore);
   const search = getSearchTerm(searchParams);
+
   const productsQuery = search
     ? supabase
         .from('products')
@@ -49,10 +48,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps):
     supabase.from('brands').select('id, name, slug').eq('is_active', true).order('name'),
   ]);
 
-  const products = (productsData ?? []) as CatalogProduct[];
+  const products   = (productsData   ?? []) as CatalogProduct[];
   const categories = (categoriesData ?? []) as CatalogCategory[];
-  const brands = (brandsData ?? []) as CatalogBrand[];
-  const productIds = products.map((product) => product.id);
+  const brands     = (brandsData     ?? []) as CatalogBrand[];
+  const productIds = products.map((p) => p.id);
+
   const { data: variantsData } =
     productIds.length > 0
       ? await supabase
@@ -61,44 +61,49 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps):
           .eq('is_active', true)
           .in('product_id', productIds)
       : { data: [] };
-  const variants = (variantsData ?? []) as CatalogVariant[];
+
+  const variants    = (variantsData ?? []) as CatalogVariant[];
   const categoryById = createCatalogLookup(categories);
-  const brandById = createCatalogLookup(brands);
+  const brandById    = createCatalogLookup(brands);
 
   return (
     <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-10">
+
+        {/* ── Nav ── */}
         <nav className="flex items-center justify-between border-b border-[#2E2E2E] pb-5">
           <Link href="/" className="text-xl font-semibold text-[#C9A84C]">
-            EuroStore
+            {t('common.appName')}
           </Link>
           <div className="flex gap-4 text-sm text-[#D6D3C7]">
-            <Link href="/auth/login">دخول</Link>
-            <Link href="/auth/register">حساب جديد</Link>
+            <Link href="/auth/login">{t('nav.login')}</Link>
+            <Link href="/auth/register">{t('nav.register')}</Link>
           </div>
         </nav>
 
+        {/* ── Header + Search ── */}
         <header className="grid gap-6 py-8 md:grid-cols-[1fr_0.9fr] md:items-end">
           <div>
-            <p className="text-sm text-[#C9A84C]">الكتالوج</p>
-            <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">منتجات EuroStore</h1>
+            <p className="text-sm text-[#C9A84C]">{t('catalog.catalogTag')}</p>
+            <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">{t('catalog.title')}</h1>
           </div>
           <form action="/products" className="flex gap-3">
             <input
               name="q"
               defaultValue={search}
-              placeholder="ابحث عن فستان، حذاء، حقيبة..."
+              placeholder={t('catalog.searchPlaceholder')}
               className="min-w-0 flex-1 rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-sm text-[#F4F1E8] outline-none transition placeholder:text-[#6B7280] focus:border-[#C9A84C]"
             />
             <button
               type="submit"
               className="rounded-md bg-[#C9A84C] px-5 py-3 text-sm font-semibold text-[#111111] transition hover:bg-[#D8B95F]"
             >
-              بحث
+              {t('catalog.searchBtn')}
             </button>
           </form>
         </header>
 
+        {/* ── Category Pills ── */}
         <section className="flex flex-wrap gap-2">
           {categories.map((category) => (
             <Link
@@ -111,10 +116,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps):
           ))}
         </section>
 
+        {/* ── Product Grid ── */}
         <section>
           <div className="mb-5 flex items-center justify-between gap-4">
-            <h2 className="text-2xl font-semibold">{search ? `نتائج "${search}"` : 'كل المنتجات'}</h2>
-            <span className="text-sm text-[#9CA3AF]">{products.length} منتج</span>
+            <h2 className="text-2xl font-semibold">
+              {search ? t('catalog.searchResults', { query: search }) : t('catalog.allProducts')}
+            </h2>
+            <span className="text-sm text-[#9CA3AF]">{t('catalog.productCount', { count: products.length })}</span>
           </div>
 
           {products.length > 0 ? (
@@ -131,7 +139,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps):
             </div>
           ) : (
             <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-8 text-center text-[#9CA3AF]">
-              لا توجد منتجات مطابقة حالياً.
+              {t('catalog.noProducts')}
             </div>
           )}
         </section>
@@ -139,4 +147,3 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps):
     </main>
   );
 }
-

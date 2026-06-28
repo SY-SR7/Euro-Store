@@ -343,3 +343,38 @@
 **Next Agent Must Start With:**
 - أكمل ترجمة الصفحات المتبقية المذكورة أعلاه.
 - ابدأ Phase 4: Product Catalog (categories → products → variants).
+
+---
+
+### Session 011 — 2026-06-28
+**Agent:** PowerShell Phase 4 Script
+**Work Done:**
+- أُكملت ترجمة جميع الصفحات المتبقية:
+  - apps/web/src/app/(shop)/products/page.tsx
+  - apps/web/src/app/categories/[slug]/page.tsx
+  - apps/web/src/app/products/[slug]/page.tsx
+  - apps/web/src/app/catalog-components.tsx (نسخة محسّنة تحافظ على الـ types الأصلية)
+- أُضيفت مفاتيح adminCatalog لملفي ar.json و en.json.
+- بدأت Phase 4 — Product Catalog:
+  - apps/admin/src/app/(dashboard)/layout.tsx (Dashboard layout with Sidebar)
+  - apps/admin/src/app/(dashboard)/products/page.tsx (قائمة المنتجات)
+  - apps/admin/src/app/(dashboard)/products/new/page.tsx (نموذج منتج جديد)
+  - apps/admin/src/app/(dashboard)/categories/page.tsx + NewCategoryForm.tsx
+  - apps/admin/src/app/(dashboard)/brands/page.tsx + NewBrandForm.tsx
+  - apps/admin/src/app/api/catalog/products/route.ts (GET + POST)
+  - apps/admin/src/app/api/catalog/categories/route.ts (GET + POST)
+  - apps/admin/src/app/api/catalog/brands/route.ts (GET + POST)
+  - apps/admin/src/app/api/catalog/variants/route.ts (POST)
+  - Sidebar updated with categories + brands links
+
+**Phase 4 Status:** 🟡 In Progress
+**المتبقي من Phase 4:**
+  - صفحة تعديل المنتج (edit): /products/[id]/edit/page.tsx
+  - صفحة إضافة/تعديل الـ variants لمنتج معين
+  - image upload integration (Supabase Storage: product-images bucket)
+  - homepage sections management (/admin/homepage)
+  - PATCH/DELETE API routes للمنتجات والتصنيفات
+
+**Next Agent Must Start With:**
+  - أكمل Phase 4: صفحة تعديل المنتج + variant management + image upload.
+  - بعدها Phase 5: Cart & Checkout.
