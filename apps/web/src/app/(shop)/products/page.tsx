@@ -1,3 +1,4 @@
+﻿import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { createSupabaseServerClientFromEnv } from '@eurostore/database';
@@ -138,3 +139,4 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps):
     </main>
   );
 }
+

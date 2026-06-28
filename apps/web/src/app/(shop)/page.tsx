@@ -1,5 +1,6 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { cookies } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 import {
   ProductCard,
@@ -13,6 +14,7 @@ import {
 export const dynamic = 'force-dynamic';
 
 export default async function Home(): Promise<JSX.Element> {
+  const t = await getTranslations();
   const cookieStore = cookies();
   const supabase = createSupabaseServerClientFromEnv(cookieStore);
 
@@ -22,29 +24,10 @@ export default async function Home(): Promise<JSX.Element> {
     { data: featuredProductsData },
     { data: brandsData },
   ] = await Promise.all([
-    supabase
-      .from('homepage_sections')
-      .select('section_key, title_ar, title_en, content')
-      .eq('section_key', 'hero')
-      .eq('is_active', true)
-      .maybeSingle(),
-    supabase
-      .from('categories')
-      .select('id, name_ar, name_en, slug')
-      .eq('is_active', true)
-      .order('sort_order', { ascending: true })
-      .limit(6),
-    supabase
-      .from('products')
-      .select('id, name_ar, name_en, slug, description_ar, category_id, brand_id, is_featured')
-      .eq('is_featured', true)
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-      .limit(4),
-    supabase
-      .from('brands')
-      .select('id, name, slug')
-      .eq('is_active', true),
+    supabase.from('homepage_sections').select('section_key, title_ar, title_en, content').eq('section_key', 'hero').eq('is_active', true).maybeSingle(),
+    supabase.from('categories').select('id, name_ar, name_en, slug').eq('is_active', true).order('sort_order', { ascending: true }).limit(6),
+    supabase.from('products').select('id, name_ar, name_en, slug, description_ar, category_id, brand_id, is_featured').eq('is_featured', true).eq('is_active', true).order('created_at', { ascending: false }).limit(4),
+    supabase.from('brands').select('id, name, slug').eq('is_active', true),
   ]);
 
   const featuredProducts = (featuredProductsData ?? []) as CatalogProduct[];
@@ -53,11 +36,7 @@ export default async function Home(): Promise<JSX.Element> {
 
   const { data: variantsData } =
     featuredIds.length > 0
-      ? await supabase
-          .from('product_variants')
-          .select('id, product_id, sku, price_syp, compare_price_syp, stock_quantity')
-          .eq('is_active', true)
-          .in('product_id', featuredIds)
+      ? await supabase.from('product_variants').select('id, product_id, sku, price_syp, compare_price_syp, stock_quantity').eq('is_active', true).in('product_id', featuredIds)
       : { data: [] };
 
   const variants = (variantsData ?? []) as CatalogVariant[];
@@ -69,34 +48,30 @@ export default async function Home(): Promise<JSX.Element> {
       {/* ── Header ── */}
       <header className="border-b border-[#2E2E2E] px-6 py-4">
         <nav className="mx-auto flex w-full max-w-6xl items-center justify-between">
-          <p className="text-xl font-semibold text-[#C9A84C]">EuroStore</p>
+          <p className="text-xl font-semibold text-[#C9A84C]">{t('common.appName')}</p>
           <div className="flex gap-4 text-sm text-[#D6D3C7]">
-            <Link href="/products" className="hover:text-[#C9A84C] transition-colors">المتجر</Link>
-            <Link href="/auth/login" className="hover:text-[#C9A84C] transition-colors">دخول</Link>
-            <Link href="/auth/register" className="rounded-sm bg-[#C9A84C] px-4 py-1.5 text-[#111] font-medium hover:bg-[#D8B95F] transition-colors">حساب جديد</Link>
+            <Link href="/products" className="hover:text-[#C9A84C] transition-colors">{t('nav.shop')}</Link>
+            <Link href="/auth/login" className="hover:text-[#C9A84C] transition-colors">{t('nav.login')}</Link>
+            <Link href="/auth/register" className="rounded-sm bg-[#C9A84C] px-4 py-1.5 text-[#111] font-medium hover:bg-[#D8B95F] transition-colors">{t('nav.register')}</Link>
           </div>
         </nav>
       </header>
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 py-12">
-
         {/* ── Hero ── */}
         <section className="grid gap-8 md:grid-cols-[1.3fr_0.7fr] md:items-end">
           <div>
-            <p className="text-sm text-[#C9A84C] tracking-widest uppercase">أزياء راقية</p>
+            <p className="text-sm text-[#C9A84C] tracking-widest uppercase">{t('home.tagline')}</p>
             <h1 className="mt-4 text-5xl font-semibold leading-tight md:text-7xl">
-              {heroSection?.title_ar ?? 'اختيارات أوروبية تصل إلى بابك'}
+              {heroSection?.title_ar ?? t('home.heroTitle')}
             </h1>
           </div>
           <div className="flex flex-col gap-4">
             <p className="text-sm leading-7 text-[#9CA3AF]">
-              {heroSection?.title_en ?? 'European fashion delivered to your door'}
+              {heroSection?.title_en ?? t('home.heroSubtitle')}
             </p>
-            <Link
-              href="/products"
-              className="inline-flex w-fit items-center gap-2 rounded-sm bg-[#C9A84C] px-6 py-3 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors"
-            >
-              تسوقي الآن
+            <Link href="/products" className="inline-flex w-fit items-center gap-2 rounded-sm bg-[#C9A84C] px-6 py-3 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors">
+              {t('home.shopNow')}
               <span aria-hidden>←</span>
             </Link>
           </div>
@@ -107,14 +82,11 @@ export default async function Home(): Promise<JSX.Element> {
           <section>
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <p className="text-xs text-[#C9A84C] uppercase tracking-widest">منتقاة بعناية</p>
-                <h2 className="mt-2 text-3xl font-semibold">منتجات مختارة</h2>
+                <p className="text-xs text-[#C9A84C] uppercase tracking-widest">{t('home.featuredTag')}</p>
+                <h2 className="mt-2 text-3xl font-semibold">{t('home.featuredTitle')}</h2>
               </div>
-              <Link
-                href="/products"
-                className="text-sm text-[#C9A84C] hover:underline underline-offset-4"
-              >
-                عرض الكل
+              <Link href="/products" className="text-sm text-[#C9A84C] hover:underline underline-offset-4">
+                {t('common.viewAll')}
               </Link>
             </div>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -135,8 +107,8 @@ export default async function Home(): Promise<JSX.Element> {
         {(categories ?? []).length > 0 && (
           <section className="border-t border-[#2E2E2E] pt-12">
             <div className="mb-6">
-              <p className="text-xs text-[#C9A84C] uppercase tracking-widest">اكتشفي أكثر</p>
-              <h2 className="mt-2 text-3xl font-semibold">تسوق حسب التصنيف</h2>
+              <p className="text-xs text-[#C9A84C] uppercase tracking-widest">{t('home.categoriesTag')}</p>
+              <h2 className="mt-2 text-3xl font-semibold">{t('home.categoriesTitle')}</h2>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {(categories ?? []).map((category) => (
@@ -158,7 +130,7 @@ export default async function Home(): Promise<JSX.Element> {
 
         {/* ── Footer Strip ── */}
         <footer className="border-t border-[#2E2E2E] pt-8 text-center text-xs text-[#6B7280]">
-          <p>© {new Date().getFullYear()} EuroStore · أزياء راقية</p>
+          <p>© {new Date().getFullYear()} EuroStore · {t('home.footerTagline')}</p>
         </footer>
       </div>
     </main>

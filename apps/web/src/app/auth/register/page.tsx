@@ -1,63 +1,57 @@
-import Link from 'next/link';
-import { registerCustomerAction } from '../actions';
+﻿import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
+import { register } from '../actions';
 
-const statusMessages: Record<string, string> = {
-  invalid: 'تحقق من الاسم والبريد وكلمة المرور. كلمة المرور يجب أن تكون قوية.',
-  failed: 'تعذر إنشاء الحساب الآن. حاول مرة أخرى لاحقًا.',
-};
-
-interface RegisterPageProps {
-  searchParams?: {
-    status?: string;
+export default async function RegisterPage({
+  searchParams,
+}: {
+  searchParams: { error?: string };
+}) {
+  const t = await getTranslations('auth');
+  const errorMap: Record<string, string> = {
+    invalid: t('errors.registerInvalid'),
+    failed:  t('errors.registerFailed'),
   };
-}
-
-export default function RegisterPage({ searchParams }: RegisterPageProps) {
-  const message = searchParams?.status ? statusMessages[searchParams.status] : undefined;
+  const errorMsg = searchParams.error ? (errorMap[searchParams.error] ?? '') : '';
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-16 text-[#E2E2E2]">
-      <section className="mx-auto flex w-full max-w-md flex-col gap-8">
-        <div>
-          <p className="text-sm text-[#C9A84C]">EuroStore</p>
-          <h1 className="mt-3 text-3xl font-semibold">إنشاء حساب عميل</h1>
-        </div>
-
-        {message && <p className="rounded border border-[#2E2E2E] p-4 text-sm">{message}</p>}
-
-        <form action={registerCustomerAction} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-2 text-sm">
-            الاسم الكامل
-            <input name="fullName" required className="rounded border border-[#2E2E2E] bg-transparent px-4 py-3" />
+    <main className="min-h-screen bg-[#0F0F0F] text-[#E2E2E2] flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <p className="text-xs text-[#C9A84C] uppercase tracking-widest">EuroStore</p>
+        <h1 className="mt-3 text-3xl font-semibold">{t('createAccount')}</h1>
+        {errorMsg && <p className="mt-4 rounded border border-[#2E2E2E] p-4 text-sm text-red-400">{errorMsg}</p>}
+        <form action={register} className="mt-8 flex flex-col gap-4">
+          <label className="flex flex-col gap-1 text-sm">
+            {t('fullName')}
+            <input name="full_name" type="text" required className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
           </label>
-          <label className="flex flex-col gap-2 text-sm">
-            البريد الإلكتروني
-            <input name="email" type="email" required className="rounded border border-[#2E2E2E] bg-transparent px-4 py-3" />
+          <label className="flex flex-col gap-1 text-sm">
+            {t('email')}
+            <input name="email" type="email" required className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
           </label>
-          <label className="flex flex-col gap-2 text-sm">
-            رقم الهاتف
-            <input name="phone" className="rounded border border-[#2E2E2E] bg-transparent px-4 py-3" />
+          <label className="flex flex-col gap-1 text-sm">
+            {t('phone')}
+            <input name="phone" type="tel" className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
           </label>
-          <label className="flex flex-col gap-2 text-sm">
-            اللغة المفضلة
-            <select name="preferredLanguage" className="rounded border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-3">
-              <option value="ar">العربية</option>
-              <option value="en">English</option>
+          <label className="flex flex-col gap-1 text-sm">
+            {t('preferredLanguage')}
+            <select name="preferred_language" className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]">
+              <option value="ar">{t('langAr')}</option>
+              <option value="en">{t('langEn')}</option>
             </select>
           </label>
-          <label className="flex flex-col gap-2 text-sm">
-            كلمة المرور
-            <input name="password" type="password" required className="rounded border border-[#2E2E2E] bg-transparent px-4 py-3" />
+          <label className="flex flex-col gap-1 text-sm">
+            {t('password')}
+            <input name="password" type="password" required className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
           </label>
-          <button className="rounded bg-[#C9A84C] px-5 py-3 font-semibold text-[#111111]" type="submit">
-            إنشاء الحساب
+          <button type="submit" className="mt-2 rounded-sm bg-[#C9A84C] py-2.5 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors">
+            {t('registerBtn')}
           </button>
         </form>
-
-        <Link className="text-sm text-[#C9A84C]" href="/auth/login">
-          لدي حساب بالفعل
-        </Link>
-      </section>
+        <p className="mt-6 text-center text-sm text-[#9CA3AF]">
+          <Link href="/auth/login" className="text-[#C9A84C] hover:underline">{t('alreadyHaveAccount')}</Link>
+        </p>
+      </div>
     </main>
   );
 }

@@ -1,47 +1,37 @@
-import { redirect } from 'next/navigation';
-import { getAdminAccess } from '../auth';
-import { createServerSupabaseClient } from '../supabase-server';
+﻿import { getTranslations } from 'next-intl/server';
+import { cookies } from 'next/headers';
+import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Home() {
-  const supabase = createServerSupabaseClient();
-  const access = await getAdminAccess(supabase);
+export default async function AdminDashboard() {
+  const t = await getTranslations('admin');
+  const cookieStore = cookies();
+  const supabase = createSupabaseServerClientFromEnv(cookieStore);
 
-  if (!access) {
-    redirect('/login');
-  }
-
-  const [orders, products, customers] = await Promise.all([
-    supabase.from('orders').select('id', { count: 'exact', head: true }),
-    supabase.from('products').select('id', { count: 'exact', head: true }),
-    supabase.from('customer_profiles').select('id', { count: 'exact', head: true }),
+  const [{ count: orders }, { count: products }, { count: customers }] = await Promise.all([
+    supabase.from('orders').select('*', { count: 'exact', head: true }),
+    supabase.from('products').select('*', { count: 'exact', head: true }),
+    supabase.from('customer_profiles').select('*', { count: 'exact', head: true }),
   ]);
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
-      <section className="mx-auto flex w-full max-w-6xl flex-col gap-8">
-        <header className="border-b border-[#2E2E2E] pb-6">
-          <p className="text-sm text-[#C9A84C]">{access.role}</p>
-          <h1 className="mt-3 text-4xl font-semibold">لوحة الإدارة</h1>
-          <p className="mt-3 text-sm text-[#9CA3AF]">{access.fullName}</p>
-        </header>
-
-        <section className="grid gap-4 md:grid-cols-3">
-          <article className="rounded border border-[#2E2E2E] p-5">
-            <p className="text-sm text-[#9CA3AF]">الطلبات</p>
-            <strong className="mt-3 block text-3xl">{orders.count ?? 0}</strong>
-          </article>
-          <article className="rounded border border-[#2E2E2E] p-5">
-            <p className="text-sm text-[#9CA3AF]">المنتجات</p>
-            <strong className="mt-3 block text-3xl">{products.count ?? 0}</strong>
-          </article>
-          <article className="rounded border border-[#2E2E2E] p-5">
-            <p className="text-sm text-[#9CA3AF]">العملاء</p>
-            <strong className="mt-3 block text-3xl">{customers.count ?? 0}</strong>
-          </article>
-        </section>
-      </section>
-    </main>
+    <div>
+      <h1 className="mt-3 text-4xl font-semibold">{t('dashboardTitle')}</h1>
+      <div className="mt-8 grid grid-cols-3 gap-4">
+        <div className="rounded border border-[#2E2E2E] bg-[#151515] p-4">
+          <p className="text-2xl font-semibold">{orders ?? 0}</p>
+          <p className="text-sm text-[#9CA3AF]">{t('ordersLabel')}</p>
+        </div>
+        <div className="rounded border border-[#2E2E2E] bg-[#151515] p-4">
+          <p className="text-2xl font-semibold">{products ?? 0}</p>
+          <p className="text-sm text-[#9CA3AF]">{t('productsLabel')}</p>
+        </div>
+        <div className="rounded border border-[#2E2E2E] bg-[#151515] p-4">
+          <p className="text-2xl font-semibold">{customers ?? 0}</p>
+          <p className="text-sm text-[#9CA3AF]">{t('customersLabel')}</p>
+        </div>
+      </div>
+    </div>
   );
 }

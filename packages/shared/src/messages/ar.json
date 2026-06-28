@@ -1,0 +1,171 @@
+﻿{
+  "common": {
+    "appName": "يورو ستور",
+    "loading": "جاري التحميل...",
+    "error": "حدث خطأ ما",
+    "notFound": "الصفحة غير موجودة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "close": "إغلاق",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "submit": "إرسال",
+    "search": "بحث",
+    "filter": "تصفية",
+    "all": "الكل",
+    "viewAll": "عرض الكل",
+    "new": "جديد",
+    "logout": "تسجيل الخروج",
+    "rightsReserved": "جميع الحقوق محفوظة.",
+    "currency": "ل.س"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "shop": "تسوق",
+    "categories": "الأقسام",
+    "products": "المنتجات",
+    "cart": "السلة",
+    "login": "دخول",
+    "register": "حساب جديد",
+    "account": "حسابي"
+  },
+  "auth": {
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "fullName": "الاسم الكامل",
+    "phone": "رقم الهاتف",
+    "preferredLanguage": "اللغة المفضلة",
+    "langAr": "العربية",
+    "langEn": "الإنجليزية",
+    "createAccount": "إنشاء حساب عميل",
+    "customerLogin": "تسجيل دخول العملاء",
+    "adminLogin": "دخول الإدارة",
+    "helperLogin": "دخول المندوب",
+    "partnerLogin": "دخول الشريك",
+    "alreadyHaveAccount": "لدي حساب بالفعل",
+    "createNewAccount": "إنشاء حساب جديد",
+    "loginBtn": "دخول",
+    "registerBtn": "إنشاء الحساب",
+    "continueBtn": "متابعة",
+    "errors": {
+      "invalidCredentials": "تحقق من البريد وكلمة المرور ثم حاول مرة أخرى.",
+      "loginFailed": "تعذر تسجيل الدخول. تحقق من البيانات وحاول مجددًا.",
+      "registerInvalid": "تحقق من الاسم والبريد وكلمة المرور. كلمة المرور يجب أن تكون قوية.",
+      "registerFailed": "تعذر إنشاء الحساب الآن. حاول مرة أخرى لاحقًا.",
+      "registered": "تم إنشاء الحساب. يمكنك تسجيل الدخول الآن."
+    }
+  },
+  "totp": {
+    "setupTitle": "تفعيل المصادقة الثنائية",
+    "verifyTitle": "رمز المصادقة الثنائية",
+    "accountLabel": "الحساب",
+    "manualKey": "المفتاح اليدوي",
+    "setupLink": "رابط الإعداد",
+    "codeInput": "رمز التطبيق",
+    "activateBtn": "تفعيل",
+    "enterBtn": "دخول",
+    "codeLabel": "الرمز",
+    "errors": {
+      "invalid": "أدخل رمزًا من 6 أرقام.",
+      "failed": "الرمز غير صحيح. حاول مرة أخرى.",
+      "wrongCode": "الرمز غير صحيح. حاول مرة أخرى."
+    }
+  },
+  "home": {
+    "tagline": "أزياء راقية",
+    "heroTitle": "اختيارات أوروبية تصل إلى بابك",
+    "heroSubtitle": "European fashion delivered to your door",
+    "shopNow": "تسوقي الآن",
+    "featuredTag": "منتقاة بعناية",
+    "featuredTitle": "منتجات مختارة",
+    "categoriesTag": "اكتشفي أكثر",
+    "categoriesTitle": "تسوق حسب التصنيف",
+    "footerTagline": "أزياء راقية",
+    "scrollDown": "مرر للأسفل"
+  },
+  "catalog": {
+    "title": "منتجات EuroStore",
+    "searchPlaceholder": "ابحث عن فستان، حذاء، حقيبة...",
+    "searchBtn": "بحث",
+    "searchResults": "نتائج \"{query}\"",
+    "allProducts": "كل المنتجات",
+    "productCount": "{count} منتج",
+    "noProducts": "لا توجد منتجات مطابقة حالياً.",
+    "noCategoryProducts": "لا توجد منتجات مفعلة في هذا التصنيف حالياً.",
+    "categoryTag": "تصنيف",
+    "allCategoriesLink": "كل المنتجات",
+    "catalogTag": "الكتالوج",
+    "availableOptions": "الخيارات المتاحة",
+    "priceFrom": "السعر يبدأ من",
+    "priceSoon": "السعر قريباً",
+    "stockUpdate": "سيتم تحديث التوفر قريباً",
+    "inStock": "{count} قطعة متاحة",
+    "outOfStock": "غير متوفر حالياً",
+    "price": "السعر",
+    "stock": "المخزون",
+    "featured": "مختار",
+    "discount": "خصم",
+    "noImage": "لا توجد صورة",
+    "uncategorized": "منتقى",
+    "newBadge": "جديد",
+    "newArrivals": "وصل حديثاً",
+    "newCollections": "أحدث التشكيلات",
+    "viewAll": "عرض الكل",
+    "auraCollection": "مجموعة Aura الخريفية",
+    "auraDescription": "اكتشفي التفاصيل الدقيقة والأقمشة الفاخرة التي تجسد جوهر الأناقة. تصميمات صُنعت بعناية لتبرز جمالك في كل مناسبة.",
+    "exploreMore": "اكتشفي المزيد"
+  },
+  "product": {
+    "wornWithElegance": "يُرتدى بأناقة",
+    "heroDescription": "أزياء أوروبية راقية تصلك إلى سوريا. اختبري فخامة التصميم وجاذبية الحضور.",
+    "shopCollection": "تسوقي المجموعة"
+  },
+  "loyalty": {
+    "title": "نقاط الولاء (Loyalty Points)",
+    "referralTitle": "دعوة الأصدقاء",
+    "referralDescription": "شارك كود الدعوة الخاص بك مع أصدقائك. ستحصل على 500 نقطة ولاء عندما يقوم صديقك بإتمام أول طلب له!",
+    "copyCode": "نسخ الكود",
+    "share": "مشاركة",
+    "referralMessage": "سجل في يورو ستور باستخدام كود الدعوة الخاص بي واحصل على خصم! كود الدعوة: {code}"
+  },
+  "footer": {
+    "description": "أزياء أوروبية راقية تصلك إلى سوريا. نقدم تجربة تسوق فريدة ومميزة مع نظام نقاط متكامل وخدمة عملاء استثنائية.",
+    "shopSection": "تسوق",
+    "newArrivals": "وصل حديثاً",
+    "categories": "الأقسام",
+    "sales": "التخفيضات",
+    "helpSection": "مساعدة",
+    "faq": "الأسئلة الشائعة",
+    "exchangePolicy": "سياسة الاستبدال",
+    "contact": "اتصل بنا"
+  },
+  "admin": {
+    "dashboardTitle": "لوحة الإدارة",
+    "ordersLabel": "الطلبات",
+    "productsLabel": "المنتجات",
+    "customersLabel": "العملاء",
+    "sidebar": {
+      "dashboard": "لوحة القيادة",
+      "products": "المنتجات",
+      "orders": "الطلبات",
+      "helpers": "فريق العمل (Helpers)",
+      "partners": "الشركاء (Partners)",
+      "settings": "الإعدادات"
+    }
+  },
+  "helper": {
+    "dashboardTitle": "بوابة المندوب",
+    "pendingOrders": "طلبات تحتاج متابعة",
+    "pendingLoyalty": "طلبات نقاط الولاء (بانتظار الموافقة)",
+    "quickLinks": "روابط سريعة",
+    "orders": "الطلبات",
+    "grantLoyalty": "منح نقاط الولاء",
+    "generateExchange": "توليد رمز استبدال"
+  },
+  "partner": {
+    "pendingExchanges": "طلبات التبديل في الانتظار"
+  }
+}

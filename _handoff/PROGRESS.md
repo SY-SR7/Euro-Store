@@ -317,3 +317,29 @@
 
 *This file is the single source of truth for project progress.*
 *Last updated: 2026-06-28 by Session 001*
+
+---
+
+### Session 010 — 2026-06-28
+**Agent:** PowerShell i18n Script
+**Work Done:**
+- أُنشئ نظام i18n كامل باستخدام next-intl لجميع التطبيقات الأربعة.
+- ملفات الترجمة في packages/shared/src/messages/{ar,en}.json.
+- لا يوجد أي نص هاردكود — كل النصوص تُستدعى عبر t('key').
+- اللغة الافتراضية: العربية (ar). يمكن التبديل عبر LanguageSwitcher (cookie: EUROSTORE_LOCALE).
+- اتجاه HTML يتغير تلقائياً: rtl للعربية، ltr للإنجليزية.
+- الملفات المُحدَّثة:
+  - packages/shared/src/i18n.ts + messages/ar.json + messages/en.json
+  - apps/web: layout, next.config, middleware, Header, Footer, (shop)/page, auth/login, auth/register, catalog-components, loyalty/*
+  - apps/admin: layout, next.config, login, totp/setup, totp/verify, page, Sidebar
+  - apps/helper: layout, next.config, login, dashboard
+  - apps/partner: layout, next.config, login, page
+- الصفحات التي تحتاج مراجعة يدوية إضافية:
+  - apps/web/src/app/(shop)/products/page.tsx
+  - apps/web/src/app/categories/[slug]/page.tsx
+  - apps/web/src/app/products/[slug]/page.tsx
+  - صفحات A/B: 1/ 2/ 3/ (تجريبية — يمكن تأجيلها)
+
+**Next Agent Must Start With:**
+- أكمل ترجمة الصفحات المتبقية المذكورة أعلاه.
+- ابدأ Phase 4: Product Catalog (categories → products → variants).

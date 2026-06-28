@@ -1,44 +1,36 @@
-import { verifyTotpAction, getOrCreateTotpSetup } from '../actions';
+﻿import { getTranslations } from 'next-intl/server';
+import { totpSetup } from '../actions';
 
-interface TotpSetupPageProps {
-  searchParams?: {
-    status?: string;
-  };
-}
-
-export default async function TotpSetupPage({ searchParams }: TotpSetupPageProps) {
-  const setup = await getOrCreateTotpSetup();
-  const hasError = searchParams?.status === 'failed' || searchParams?.status === 'invalid';
+export default async function TotpSetupPage({ searchParams }: { searchParams: { error?: string; uri?: string; secret?: string; account?: string } }) {
+  const t = await getTranslations('totp');
+  const hasError = searchParams.error === 'invalid';
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-16 text-[#E2E2E2]">
-      <section className="mx-auto flex w-full max-w-xl flex-col gap-8">
-        <div>
-          <p className="text-sm text-[#C9A84C]">{setup.issuer}</p>
-          <h1 className="mt-3 text-3xl font-semibold">تفعيل المصادقة الثنائية</h1>
+    <main className="min-h-screen bg-[#0F0F0F] text-[#E2E2E2] flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <p className="text-xs text-[#C9A84C] uppercase tracking-widest">EuroStore</p>
+        <h1 className="mt-3 text-3xl font-semibold">{t('setupTitle')}</h1>
+        {hasError && <p className="mt-4 rounded border border-[#2E2E2E] p-4 text-sm">{t('errors.wrongCode')}</p>}
+        <div className="mt-8 flex flex-col gap-4 text-sm">
+          <p className="text-sm text-[#9CA3AF]">{t('accountLabel')}</p>
+          <p className="font-mono text-[#E2E2E2]">{searchParams.account ?? '—'}</p>
+          <p className="mt-6 text-sm text-[#9CA3AF]">{t('manualKey')}</p>
+          <p className="font-mono text-xs break-all text-[#E2E2E2]">{searchParams.secret ?? '—'}</p>
+          <p className="mt-6 text-sm text-[#9CA3AF]">{t('setupLink')}</p>
+          <p className="font-mono text-xs break-all text-[#E2E2E2]">{searchParams.uri ?? '—'}</p>
         </div>
-
-        {hasError && <p className="rounded border border-[#2E2E2E] p-4 text-sm">الرمز غير صحيح. حاول مرة أخرى.</p>}
-
-        <div className="rounded border border-[#2E2E2E] p-5">
-          <p className="text-sm text-[#9CA3AF]">الحساب</p>
-          <p className="mt-2">{setup.accountName}</p>
-          <p className="mt-6 text-sm text-[#9CA3AF]">المفتاح اليدوي</p>
-          <code className="mt-2 block break-all rounded bg-[#1A1A1A] p-4 text-sm">{setup.secret}</code>
-          <p className="mt-6 text-sm text-[#9CA3AF]">رابط الإعداد</p>
-          <code className="mt-2 block break-all rounded bg-[#1A1A1A] p-4 text-xs">{setup.uri}</code>
-        </div>
-
-        <form action={verifyTotpAction} className="flex flex-col gap-4">
-          <label className="flex flex-col gap-2 text-sm">
-            رمز التطبيق
-            <input name="code" inputMode="numeric" required className="rounded border border-[#2E2E2E] bg-transparent px-4 py-3" />
+        <form action={totpSetup} className="mt-8 flex flex-col gap-4">
+          <input type="hidden" name="uri" value={searchParams.uri ?? ''} />
+          <input type="hidden" name="secret" value={searchParams.secret ?? ''} />
+          <label className="flex flex-col gap-1 text-sm">
+            {t('codeInput')}
+            <input name="token" type="text" inputMode="numeric" maxLength={6} required className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
           </label>
-          <button className="rounded bg-[#C9A84C] px-5 py-3 font-semibold text-[#111111]" type="submit">
-            تفعيل
+          <button type="submit" className="mt-2 rounded-sm bg-[#C9A84C] py-2.5 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors">
+            {t('activateBtn')}
           </button>
         </form>
-      </section>
+      </div>
     </main>
   );
 }

@@ -1,0 +1,171 @@
+﻿{
+  "common": {
+    "appName": "EuroStore",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "notFound": "Page not found",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "viewAll": "View all",
+    "new": "New",
+    "logout": "Log out",
+    "rightsReserved": "All rights reserved.",
+    "currency": "SYP"
+  },
+  "nav": {
+    "home": "Home",
+    "shop": "Shop",
+    "categories": "Categories",
+    "products": "Products",
+    "cart": "Cart",
+    "login": "Login",
+    "register": "Sign up",
+    "account": "My Account"
+  },
+  "auth": {
+    "email": "Email address",
+    "password": "Password",
+    "fullName": "Full name",
+    "phone": "Phone number",
+    "preferredLanguage": "Preferred language",
+    "langAr": "Arabic",
+    "langEn": "English",
+    "createAccount": "Create a customer account",
+    "customerLogin": "Customer login",
+    "adminLogin": "Admin login",
+    "helperLogin": "Helper login",
+    "partnerLogin": "Partner login",
+    "alreadyHaveAccount": "I already have an account",
+    "createNewAccount": "Create a new account",
+    "loginBtn": "Login",
+    "registerBtn": "Create account",
+    "continueBtn": "Continue",
+    "errors": {
+      "invalidCredentials": "Check your email and password then try again.",
+      "loginFailed": "Login failed. Check your credentials and try again.",
+      "registerInvalid": "Check your name, email and password. Password must be strong.",
+      "registerFailed": "Could not create account right now. Please try again later.",
+      "registered": "Account created. You can now log in."
+    }
+  },
+  "totp": {
+    "setupTitle": "Enable Two-Factor Authentication",
+    "verifyTitle": "Two-Factor Authentication Code",
+    "accountLabel": "Account",
+    "manualKey": "Manual key",
+    "setupLink": "Setup link",
+    "codeInput": "App code",
+    "activateBtn": "Activate",
+    "enterBtn": "Login",
+    "codeLabel": "Code",
+    "errors": {
+      "invalid": "Enter a 6-digit code.",
+      "failed": "Incorrect code. Please try again.",
+      "wrongCode": "Incorrect code. Please try again."
+    }
+  },
+  "home": {
+    "tagline": "Premium Fashion",
+    "heroTitle": "European choices delivered to your door",
+    "heroSubtitle": "أزياء أوروبية راقية تصلك إلى سوريا",
+    "shopNow": "Shop now",
+    "featuredTag": "Handpicked",
+    "featuredTitle": "Featured products",
+    "categoriesTag": "Discover more",
+    "categoriesTitle": "Shop by category",
+    "footerTagline": "Premium fashion",
+    "scrollDown": "Scroll down"
+  },
+  "catalog": {
+    "title": "EuroStore Products",
+    "searchPlaceholder": "Search for a dress, shoes, bag...",
+    "searchBtn": "Search",
+    "searchResults": "Results for \"{query}\"",
+    "allProducts": "All products",
+    "productCount": "{count} products",
+    "noProducts": "No matching products at the moment.",
+    "noCategoryProducts": "No active products in this category at the moment.",
+    "categoryTag": "Category",
+    "allCategoriesLink": "All products",
+    "catalogTag": "Catalog",
+    "availableOptions": "Available options",
+    "priceFrom": "Starting from",
+    "priceSoon": "Price coming soon",
+    "stockUpdate": "Availability will be updated soon",
+    "inStock": "{count} pieces available",
+    "outOfStock": "Currently unavailable",
+    "price": "Price",
+    "stock": "Stock",
+    "featured": "Featured",
+    "discount": "Sale",
+    "noImage": "No image",
+    "uncategorized": "Curated",
+    "newBadge": "New",
+    "newArrivals": "New arrivals",
+    "newCollections": "Latest collections",
+    "viewAll": "View all",
+    "auraCollection": "Aura Autumn Collection",
+    "auraDescription": "Discover refined details and luxurious fabrics that embody the essence of elegance. Designs crafted to highlight your beauty on every occasion.",
+    "exploreMore": "Explore more"
+  },
+  "product": {
+    "wornWithElegance": "Worn with elegance",
+    "heroDescription": "Premium European fashion delivered to Syria. Experience the luxury of design and the allure of presence.",
+    "shopCollection": "Shop the collection"
+  },
+  "loyalty": {
+    "title": "Loyalty Points",
+    "referralTitle": "Invite friends",
+    "referralDescription": "Share your referral code with friends. You will earn 500 loyalty points when your friend completes their first order!",
+    "copyCode": "Copy code",
+    "share": "Share",
+    "referralMessage": "Sign up to EuroStore using my referral code and get a discount! Referral code: {code}"
+  },
+  "footer": {
+    "description": "Premium European fashion delivered to Syria. We offer a unique shopping experience with an integrated loyalty system and exceptional customer service.",
+    "shopSection": "Shop",
+    "newArrivals": "New arrivals",
+    "categories": "Categories",
+    "sales": "Sales",
+    "helpSection": "Help",
+    "faq": "FAQ",
+    "exchangePolicy": "Exchange policy",
+    "contact": "Contact us"
+  },
+  "admin": {
+    "dashboardTitle": "Admin Panel",
+    "ordersLabel": "Orders",
+    "productsLabel": "Products",
+    "customersLabel": "Customers",
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "orders": "Orders",
+      "helpers": "Team (Helpers)",
+      "partners": "Partners",
+      "settings": "Settings"
+    }
+  },
+  "helper": {
+    "dashboardTitle": "Helper Portal",
+    "pendingOrders": "Orders needing follow-up",
+    "pendingLoyalty": "Loyalty point requests (awaiting approval)",
+    "quickLinks": "Quick links",
+    "orders": "Orders",
+    "grantLoyalty": "Grant loyalty points",
+    "generateExchange": "Generate exchange code"
+  },
+  "partner": {
+    "pendingExchanges": "Exchange requests pending"
+  }
+}

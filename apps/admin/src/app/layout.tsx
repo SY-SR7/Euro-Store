@@ -1,28 +1,20 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+﻿import type { Metadata } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import './globals.css';
-import Sidebar from './components/Sidebar';
 
-const inter = Inter({ subsets: ['latin'] });
+export const metadata: Metadata = { title: 'EuroStore Admin', description: 'EuroStore Admin Panel' };
 
-export const metadata: Metadata = {
-  title: 'EuroStore Admin',
-  description: 'EuroStore Admin Panel',
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+  const dir = locale === 'ar' ? 'rtl' : 'ltr';
   return (
-    <html lang="ar" dir="rtl">
-      <body className={`${inter.className} bg-[#0F1117] text-white min-h-screen flex`}>
-        {/* We will render the sidebar conditionally or assume it's part of the dashboard layout.
-            Wait, if the login page is shown, we shouldn't show the sidebar. 
-            So Sidebar should only be shown inside (dashboard) layout. Let me update this.
-         */}
-        {children}
+    <html lang={locale} dir={dir}>
+      <body>
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );
