@@ -32,15 +32,7 @@ const ar = {
     "password": "كلمة المرور",
     "createAccount": "إنشاء الحساب",
     "alreadyHaveAccount": "لدي حساب بالفعل",
-    "login": "تسجيل الدخول",
-    "langAr": "العربية",
-    "langEn": "الإنجليزية",
-    "registerBtn": "إنشاء الحساب",
-    "loginBtn": "تسجيل الدخول",
-    "submit": "إرسال",
-    "language": "اللغة",
-    "dontHaveAccount": "ليس لديك حساب؟",
-    "loginTitle": "تسجيل الدخول"
+    "login": "تسجيل الدخول"
   }
 } as const;
 const en = {
@@ -74,15 +66,7 @@ const en = {
     "password": "Password",
     "createAccount": "Create account",
     "alreadyHaveAccount": "Already have an account",
-    "login": "Login",
-    "langAr": "Arabic",
-    "langEn": "English",
-    "registerBtn": "Create account",
-    "loginBtn": "Login",
-    "submit": "Submit",
-    "language": "Language",
-    "dontHaveAccount": "Don't have an account?",
-    "loginTitle": "Login"
+    "login": "Login"
   }
 } as const;
 

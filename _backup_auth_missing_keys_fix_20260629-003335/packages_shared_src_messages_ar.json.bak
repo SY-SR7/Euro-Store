@@ -29,14 +29,6 @@
     "password": "كلمة المرور",
     "createAccount": "إنشاء الحساب",
     "alreadyHaveAccount": "لدي حساب بالفعل",
-    "login": "تسجيل الدخول",
-    "langAr": "العربية",
-    "langEn": "الإنجليزية",
-    "registerBtn": "إنشاء الحساب",
-    "loginBtn": "تسجيل الدخول",
-    "submit": "إرسال",
-    "language": "اللغة",
-    "dontHaveAccount": "ليس لديك حساب؟",
-    "loginTitle": "تسجيل الدخول"
+    "login": "تسجيل الدخول"
   }
 }

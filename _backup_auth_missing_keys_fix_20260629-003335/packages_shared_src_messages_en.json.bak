@@ -29,14 +29,6 @@
     "password": "Password",
     "createAccount": "Create account",
     "alreadyHaveAccount": "Already have an account",
-    "login": "Login",
-    "langAr": "Arabic",
-    "langEn": "English",
-    "registerBtn": "Create account",
-    "loginBtn": "Login",
-    "submit": "Submit",
-    "language": "Language",
-    "dontHaveAccount": "Don't have an account?",
-    "loginTitle": "Login"
+    "login": "Login"
   }
 }
