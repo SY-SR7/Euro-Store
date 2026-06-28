@@ -378,3 +378,54 @@
 **Next Agent Must Start With:**
   - أكمل Phase 4: صفحة تعديل المنتج + variant management + image upload.
   - بعدها Phase 5: Cart & Checkout.
+
+---
+
+### Session 012 -- 2026-06-28
+**Agent:** PowerShell Phase4-Complete + Phase5 Script
+**Work Done:**
+
+**PART A -- Phase 4 APIs (PATCH + DELETE):**
+  - apps/admin/src/app/api/catalog/products/[id]/route.ts          (GET + PATCH + DELETE)
+  - apps/admin/src/app/api/catalog/categories/[id]/route.ts        (PATCH + DELETE)
+  - apps/admin/src/app/api/catalog/brands/[id]/route.ts            (PATCH + DELETE)
+  - apps/admin/src/app/api/catalog/variants/[id]/route.ts          (PATCH + DELETE)
+  - apps/admin/src/app/api/catalog/products/[id]/images/route.ts   (GET + POST to Supabase Storage)
+
+**PART B -- Phase 4 Admin UI:**
+  - apps/admin/.../products/[id]/edit/page.tsx          (server -- fetches product + cats + brands)
+  - apps/admin/.../products/[id]/edit/EditProductForm.tsx (client -- PATCH + DELETE)
+  - apps/admin/.../products/[id]/variants/page.tsx      (server -- variants list)
+  - apps/admin/.../products/[id]/variants/AddVariantForm.tsx (client)
+  - apps/admin/.../products/[id]/variants/VariantRow.tsx    (client -- inline edit + delete)
+  - apps/admin/.../products/[id]/images/page.tsx        (server -- image grid)
+  - apps/admin/.../products/[id]/images/ImageUploadForm.tsx (client -- upload to storage)
+
+**PART C -- i18n + Sidebar:**
+  - ar.json + en.json: added editProduct, cart, checkout keys
+  - Sidebar.tsx: cleaned up
+
+**PART D -- Phase 5: Cart:**
+  - apps/web/src/lib/cart/cartStore.ts (Zustand + persist, full CartItem type)
+  - apps/web/src/lib/cart/cartUtils.ts (order payload helpers)
+  - apps/web/src/components/cart/AddToCartButton.tsx
+  - apps/web/src/components/cart/CartBadge.tsx
+  - apps/web/src/app/cart/page.tsx (full cart UI)
+
+**PART E -- Phase 5: Checkout + Orders:**
+  - apps/web/src/app/checkout/page.tsx (form + governorate dropdown + order summary)
+  - apps/web/src/app/api/orders/route.ts (POST -- address_snapshot JSONB + order_items)
+  - apps/web/src/app/orders/[orderNumber]/page.tsx (confirmation page)
+
+**PART F -- Product page updated:**
+  - products/[slug]/page.tsx now includes AddToCartButton + primary image display
+
+**Phase Status After This Session:**
+  - Phase 4: 95% (only homepage sections admin remaining)
+  - Phase 5: 70% (missing: discount codes, loyalty points at checkout, Sham Cash payment)
+
+**Next Agent Must Start With:**
+  - Phase 4 final: apps/admin/.../homepage/page.tsx + api/catalog/homepage/route.ts
+  - Phase 5 completion: discount code input at checkout, loyalty points redemption
+  - Phase 6: Order management (admin order list, status updates, helper order queue)
+  - Add CartBadge to Header.tsx (import CartBadge client component)

@@ -216,6 +216,6 @@
     "sectionTitleAr": "العنوان (عربي)",
     "sectionTitleEn": "العنوان (إنجليزي)",
     "sectionContent": "المحتوى (JSON)",
-    "saveSection": "حفظ القسم"
+    "saveSection": "حفظ القسم","editProduct": "تعديل المنتج","editVariants": "تعديل الخيارات","editImages": "إدارة الصور","deleteImage": "حذف الصورة","setPrimary": "تعيين كرئيسية","variantsLink": "الخيارات والأسعار","imagesLink": "الصور"
   }
 }

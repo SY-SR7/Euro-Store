@@ -216,6 +216,6 @@
     "sectionTitleAr": "Title (Arabic)",
     "sectionTitleEn": "Title (English)",
     "sectionContent": "Content (JSON)",
-    "saveSection": "Save section"
+    "saveSection": "Save section","editProduct": "Edit product","editVariants": "Edit variants","editImages": "Manage images","deleteImage": "Delete image","setPrimary": "Set as primary","variantsLink": "Variants & Pricing","imagesLink": "Images"
   }
 }

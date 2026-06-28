@@ -1,41 +1,33 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { CartItem } from './cartUtils';
+﻿import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-interface CartState {
-  items: CartItem[];
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
-  addItem: (item: CartItem) => void;
-  removeItem: (variantId: string) => void;
-  updateQty: (variantId: string, quantity: number) => void;
-  clearCart: () => void;
-  mergeWithServer: (serverItems: CartItem[]) => void;
+export interface CartItem {
+  variantId:       string;
+  productId:       string;
+  productSlug:     string;
+  nameAr:          string;
+  nameEn:          string;
+  sku:             string;
+  priceSyp:        number;
+  comparePriceSyp: number | null;
+  imageUrl:        string | null;
+  quantity:        number;
 }
 
-const storage = createJSONStorage(() => localStorage, {
-  reviver: (key, value) => {
-    // Deserialize bigint strings (which we save as an object or just detect string if needed)
-    if (typeof value === 'object' && value !== null && (value as any).__type === 'bigint') {
-      return BigInt((value as any).value);
-    }
-    return value;
-  },
-  replacer: (key, value) => {
-    if (typeof value === 'bigint') {
-      return { __type: 'bigint', value: value.toString() };
-    }
-    return value;
-  },
-});
+interface CartStore {
+  items:      CartItem[];
+  addItem:    (item: Omit<CartItem, 'quantity'>) => void;
+  removeItem: (variantId: string) => void;
+  updateQty:  (variantId: string, qty: number) => void;
+  clearCart:  () => void;
+  totalItems: () => number;
+  totalSyp:   () => number;
+}
 
-export const useCartStore = create<CartState>()(
+export const useCartStore = create<CartStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       items: [],
-      loading: false,
-
-      setLoading: (loading) => set({ loading }),
 
       addItem: (item) =>
         set((state) => {
@@ -43,37 +35,26 @@ export const useCartStore = create<CartState>()(
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.variantId === item.variantId
-                  ? { ...i, quantity: i.quantity + item.quantity }
-                  : i
+                i.variantId === item.variantId ? { ...i, quantity: i.quantity + 1 } : i
               ),
             };
           }
-          return { items: [...state.items, item] };
+          return { items: [...state.items, { ...item, quantity: 1 }] };
         }),
 
       removeItem: (variantId) =>
-        set((state) => ({
-          items: state.items.filter((i) => i.variantId !== variantId),
-        })),
+        set((state) => ({ items: state.items.filter((i) => i.variantId !== variantId) })),
 
-      updateQty: (variantId, quantity) =>
-        set((state) => ({
-          items: state.items.map((i) =>
-            i.variantId === variantId ? { ...i, quantity } : i
-          ),
-        })),
+      updateQty: (variantId, qty) =>
+        set((state) => {
+          if (qty <= 0) return { items: state.items.filter((i) => i.variantId !== variantId) };
+          return { items: state.items.map((i) => (i.variantId === variantId ? { ...i, quantity: qty } : i)) };
+        }),
 
-      clearCart: () => set({ items: [] }),
-
-      mergeWithServer: (serverItems) =>
-        set(() => ({
-          items: serverItems,
-        })),
+      clearCart:  () => set({ items: [] }),
+      totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
+      totalSyp:   () => get().items.reduce((sum, i) => sum + i.priceSyp * i.quantity, 0),
     }),
-    {
-      name: 'eurostore_guest_cart',
-      storage,
-    }
+    { name: 'eurostore-cart', version: 1 }
   )
 );
