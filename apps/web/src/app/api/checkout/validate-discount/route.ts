@@ -1,5 +1,5 @@
-// @ts-nocheck
 /* eslint-disable */
+// @ts-nocheck
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 import { cookies } from 'next/headers';

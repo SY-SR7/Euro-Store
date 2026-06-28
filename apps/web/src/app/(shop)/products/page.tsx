@@ -1,12 +1,12 @@
-// @ts-nocheck
 /* eslint-disable */
+// @ts-nocheck
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 import {
-  ProductCard } from '../catalog-components';
-import { createCatalogLookup, type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '../catalog-types';
+  ProductCard } from '../../catalog-components';
+import { createCatalogLookup, type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '../../catalog-types';
 
 export const dynamic = 'force-dynamic';
 

@@ -1,5 +1,5 @@
-// @ts-nocheck
 /* eslint-disable */
+// @ts-nocheck
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { login } from '../actions';

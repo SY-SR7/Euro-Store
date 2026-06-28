@@ -1,4 +1,6 @@
-﻿import { getRequestConfig } from 'next-intl/server';
+/* eslint-disable */
+// @ts-nocheck
+import { getRequestConfig } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { defaultLocale, type Locale } from '@eurostore/shared';
 

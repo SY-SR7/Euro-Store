@@ -1,5 +1,5 @@
-// @ts-nocheck
 /* eslint-disable */
+// @ts-nocheck
 'use server';
 
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
