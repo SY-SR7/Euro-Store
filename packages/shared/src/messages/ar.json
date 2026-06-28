@@ -1,1 +1,34 @@
-{}
+{
+  "common": {
+    "appName": "يورو ستور",
+    "viewAll": "عرض الكل",
+    "loading": "جاري التحميل...",
+    "notFound": "الصفحة غير موجودة",
+    "save": "حفظ"
+  },
+  "nav": {
+    "register": "إنشاء حساب",
+    "login": "تسجيل الدخول",
+    "shop": "تسوق"
+  },
+  "home": {
+    "tagline": "أزياء أوروبية تصل إلى بابك",
+    "shopNow": "تسوق الآن",
+    "featuredTag": "مختاراتنا",
+    "featuredTitle": "منتجات مميزة",
+    "categoriesTag": "اكتشفي أكثر",
+    "categoriesTitle": "تسوق حسب التصنيف",
+    "footerTagline": "أزياء راقية"
+  },
+  "auth": {
+    "registerTitle": "إنشاء حساب عميل",
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "preferredLanguage": "اللغة المفضلة",
+    "password": "كلمة المرور",
+    "createAccount": "إنشاء الحساب",
+    "alreadyHaveAccount": "لدي حساب بالفعل",
+    "login": "تسجيل الدخول"
+  }
+}
