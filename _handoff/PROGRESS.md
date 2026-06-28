@@ -23,7 +23,7 @@
 | 1 | Database (migrations, types, RLS, seed) | 🟢 VERIFIED | All 11 migrations confirmed applied on live Supabase via `supabase migration list` + REST checks (2026-06-28): `shipping_rates`=14, `categories`=6, `exchange_qr_tokens` table exists (migration 011 had NOT been applied until this session — now fixed), `homepage_sections`=3. Catalog has 6 demo products / 9 variants in migration 010 — **product_images table is empty (0 rows), no product photos exist yet.** |
 | 2 | Core Packages (adapters, shared, UI primitives) | 🟡 Claimed by agent, not independently verified | Supabase env clients, auth schemas, role helpers, TOTP helpers added per session logs |
 | 3 | Auth System (all 5 roles, TOTP) | 🟡 Claimed by agent, not independently verified | Customer register/login, admin/sub-admin login + mandatory TOTP, helper/partner login, middleware guards wired to Supabase profiles per session logs |
-| 4 | Product Catalog (categories → products → variants) | 🟡 Claimed 100% by Session 013; DB-level data confirmed (6 products, 9 variants), UI/API flow not re-tested this session | **No product images exist in storage/DB — needs uploading before storefront is presentable.** |
+| 4 | Product Catalog (categories → products → variants) | 🟢 VERIFIED | 6 products, 9 variants, and now 6 placeholder product images all confirmed live on Supabase (2026-06-28). Images are Lorem Picsum placeholders, not real product photography — swap before launch. |
 | 5 | Cart & Checkout (guest cart, merge, atomic) | 🟡 Claimed 100% by Session 014, not independently verified | |
 | 6 | Order Management (state machine, notifications) | 🟡 Claimed 100% by Session 015, not independently verified | |
 | 7 | Exchange System (QR flows, paths A & B) | 🟡 Claimed 100% by Session 015; DB table now confirmed live (was missing until this session) | App code unverified beyond file existence |
@@ -579,8 +579,13 @@
 - Phases 2, 3, 5, 6, 8, 9, 10, 11 are still only verified by file-existence checks from a prior session (Claude read the files and confirmed they exist), not by running the apps or hitting the endpoints — treat as plausible but not confirmed working end-to-end.
 
 **Next Agent Must Start With:**
-- Upload at least 1 image per demo product to the `product-images` bucket and link via `product_images` table (UI exists at `/admin/products/[id]/images`).
+- ~~Upload at least 1 image per demo product~~ — **DONE, see follow-up note below.**
 - Pick one already-claimed phase (e.g. Phase 5 checkout) and actually exercise it end-to-end (run `pnpm dev`, place a real order) before trusting the 100% label.
 - Start Phase 12 (Mobile) for real — `apps/mobile/App.tsx` only reads a shipping-rate count today.
 - Set `RESEND_API_KEY` + `EMAIL_FROM` to unblock order-confirmation emails.
 - When closing out a phase in a session log, also update the Phase Completion Tracker table at the top of this file in the same edit — don't let the two drift apart again.
+
+**Follow-up (same day, 2026-06-28) — Product images uploaded:**
+- All 6 demo products now have a placeholder image in `product_images` (`is_primary=true`), uploaded to the `product-images` Storage bucket and verified byte-for-byte after upload (downloaded the uploaded file and compared size to the local source).
+- Images are generic placeholder stock photos from Lorem Picsum (`picsum.photos`, seeded per product slug for stable/reproducible results) — **not real product photography.** Replace with actual product photos via `/admin/products/[id]/images` before any real launch.
+- **PowerShell gotcha worth recording:** uploading binary image bytes to the Supabase Storage REST endpoint from PowerShell is not safe with `Invoke-RestMethod -Body $byteArray` (silently corrupts/loses binary data — the call may even report success) nor with `System.Net.Http.HttpClient` + `ByteArrayContent` on Windows PowerShell 5.1 (throws "Cannot find an overload for ByteArrayContent and the argument count: N" because 5.1's type-conversion treats the `byte[]` as N separate constructor arguments instead of one array argument). The reliable, version-agnostic fix is `System.Net.WebClient.UploadData($uri, "POST", [byte[]]$bytes)` — works identically on PowerShell 5.1 and 7+. Always verify a binary upload by re-downloading the uploaded object and comparing byte length, not by trusting an HTTP success status alone.
