@@ -88,6 +88,40 @@
 - Start Phase 12: Mobile App (Expo) — apps/mobile/App.tsx is still a placeholder
 - Set RESEND_API_KEY + EMAIL_FROM to unblock order-confirmation emails
 
+
+### Session 019 — 2026-06-29
+**Agent:** Claude (PowerShell script — web + admin only)
+**Duration:** ~30 min
+**Work Done:**
+
+**Admin App:**
+- Added apps/admin/src/app/(dashboard)/products/[id]/page.tsx — Product Hub page
+- Added apps/admin/src/app/api/orders/[id]/route.ts — GET + PATCH (status update with audit log)
+- Added apps/admin/src/app/(dashboard)/orders/[id]/page.tsx — Order detail with status buttons
+- Added apps/admin/src/app/api/exchanges/[id]/route.ts — GET + PATCH (approve/reject/complete)
+- Added apps/admin/src/app/(dashboard)/exchanges/[id]/page.tsx — Exchange detail + action buttons
+- Fixed apps/admin/next.config.js — CSP now allows Google Fonts + Supabase connect-src
+
+**Web App:**
+- Added apps/web/src/app/api/orders/[orderNumber]/route.ts — GET single order (auth-scoped)
+- Removed apps/web/src/app/(shop)/ — orphan redirect group deleted
+- Rewrote apps/web/src/app/(main)/products/[slug]/page.tsx — now joins product_images
+- Rewrote apps/web/src/app/(main)/exchange/new/page.tsx — shows QR token after submit
+- Updated apps/web/src/components/layout/Header.tsx — loyalty + exchange in desktop nav
+- Fixed apps/web/next.config.js — CSP allows Google Fonts + api.qrserver.com
+
+**Phase Updates:**
+- Phase 9 (Admin): products hub + orders status flow + exchanges approve/reject all added
+- Phase 7 (Exchange): web QR display on new-request success implemented
+- Phase 4 (Catalog): product detail now shows images from product_images table
+
+**Next Agent Must Start With:**
+- Phase 12: Mobile App — apps/mobile/App.tsx is still a placeholder
+- Phase 13: Set RESEND_API_KEY + EMAIL_FROM to unblock order confirmation emails
+- Smoke-test: pnpm dev for both apps/web + apps/admin
+
+---
+
 ### Session 009 — 2026-06-28
 **Agent:** Codex
 **Duration:** ~40 min
