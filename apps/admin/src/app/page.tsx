@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import {
   Bookmark, FileText, Home, Package, Percent, RefreshCw,
   Settings, ShoppingCart, Star, Tag, Truck, UserCog, Users, TrendingUp
@@ -52,8 +52,7 @@ export default async function AdminRootPage() {
     .from('orders')
     .select('id, order_number, status, total_syp, created_at, address_snapshot')
     .order('created_at', { ascending: false })
-    .limit(6)
-    .catch(() => ({ data: [] }));
+    .limit(6);
 
   const stats = [
     { label: 'إجمالي الطلبات',   value: (ordersRes.count ?? 0).toLocaleString('ar'), icon: ShoppingCart, href: '/orders',    color: 'text-blue-600',  bg: 'bg-blue-50' },

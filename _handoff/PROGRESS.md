@@ -1,4 +1,16 @@
-﻿
+---
+
+### Session 031 — Admin Root Supabase Runtime Fix
+**Scope:** apps/admin + _handoff only
+
+**Fix:**
+- Removed invalid `.catch(...)` calls chained after Supabase query builders in `apps/admin/src/app/page.tsx`.
+- Supabase query builders are awaited directly; query errors are returned in the response object instead of using `.catch()` on the builder.
+
+**Smoke Test:**
+- Run `pnpm --filter admin dev`
+- Open `http://localhost:3001/`
+
 ---
 
 ### Session 030 — 2026-06-29
