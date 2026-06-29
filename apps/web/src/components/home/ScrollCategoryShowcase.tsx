@@ -26,129 +26,27 @@ function clamp(value: number, min = 0, max = 1) {
   return Math.min(max, Math.max(min, value));
 }
 
-function useScrollProgress(sectionRef: React.RefObject<HTMLElement>) {
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    let raf = 0;
-
-    function update() {
-      const element = sectionRef.current;
-      if (!element) return;
-
-      const rect = element.getBoundingClientRect();
-      const vh = window.innerHeight || 1;
-
-      /*
-        يبدأ التحريك عندما يصل أول القسم إلى منتصف الشاشة.
-        قبل ذلك يبقى الفيديو على أول فريم.
-        بعد ذلك يصبح التقدم مربوطاً بالسكرول.
-      */
-      const startLine = vh * 0.5;
-      const scrollableDistance = Math.max(1, rect.height - vh * 0.55);
-      const next = clamp((startLine - rect.top) / scrollableDistance);
-
-      setProgress(next);
-    }
-
-    function onScroll() {
-      window.cancelAnimationFrame(raf);
-      raf = window.requestAnimationFrame(update);
-    }
-
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-
-    return () => {
-      window.cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
-  }, [sectionRef]);
-
-  return progress;
-}
-
-function ScrollVideo({
-  src,
-  title,
-  fallbackImage,
-  progress,
-}: {
-  src: string;
-  title: string;
-  fallbackImage?: string | null;
-  progress: number;
-}) {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [duration, setDuration] = useState(0);
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video || !duration || failed) return;
-
-    const targetTime = clamp(progress) * duration;
-
-    try {
-      if (Math.abs(video.currentTime - targetTime) > 0.025) {
-        video.currentTime = targetTime;
-      }
-    } catch {
-      // بعض المتصفحات تحتاج تحميل metadata أولاً
-    }
-  }, [progress, duration, failed]);
-
-  if (failed) {
-    return <StaticProductIntro title={title} imageUrl={fallbackImage} progress={progress} />;
-  }
-
+function productImage(product?: CatalogProduct | null) {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-[#F3EEE3] shadow-2xl">
-      <video
-        ref={videoRef}
-        src={src}
-        muted
-        playsInline
-        preload="auto"
-        className="h-full w-full object-cover"
-        onLoadedMetadata={(event) => {
-          setDuration(event.currentTarget.duration || 0);
-          event.currentTarget.currentTime = 0;
-          event.currentTarget.pause();
-        }}
-        onError={() => setFailed(true)}
-      />
-
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1F1B16]/60 to-transparent p-6 text-white">
-        <p className="text-sm font-bold text-[#E8DCC3]">Scroll Controlled Intro</p>
-        <h3 className="mt-2 text-3xl font-black">{title}</h3>
-      </div>
-    </div>
+    product?.image_url ||
+    product?.thumbnail_url ||
+    product?.primary_image_url ||
+    product?.main_image_url ||
+    product?.cover_image_url ||
+    null
   );
 }
 
 function StaticProductIntro({
   title,
   imageUrl,
-  progress,
 }: {
   title: string;
   imageUrl?: string | null;
-  progress: number;
 }) {
-  const rotate = -8 + progress * 16;
-  const translate = 18 - progress * 28;
-
   return (
     <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-[#F3EEE3] shadow-2xl">
-      <div
-        className="relative aspect-[4/5] w-[68%] overflow-hidden rounded-[1.5rem] border border-[#E8DCC3] bg-[#FFFDF8] shadow-2xl transition-transform duration-100"
-        style={{
-          transform: `translateY(${translate}px) rotate(${rotate}deg) scale(${0.95 + progress * 0.08})`,
-        }}
-      >
+      <div className="relative aspect-[4/5] w-[68%] overflow-hidden rounded-[1.5rem] border border-[#E8DCC3] bg-[#FFFDF8] shadow-2xl">
         {imageUrl ? (
           <img src={imageUrl} alt={title} className="h-full w-full object-cover" />
         ) : (
@@ -166,6 +64,228 @@ function StaticProductIntro({
   );
 }
 
+function ScrollLockedVideo({
+  src,
+  title,
+  fallbackImage,
+  sectionRef,
+}: {
+  src: string;
+  title: string;
+  fallbackImage?: string | null;
+  sectionRef: React.RefObject<HTMLElement>;
+}) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const progressRef = useRef(0);
+  const durationRef = useRef(0);
+  const touchYRef = useRef<number | null>(null);
+  const rafRef = useRef(0);
+
+  const [progress, setProgress] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+
+  function applyProgress(nextProgress: number) {
+    const safe = clamp(nextProgress);
+    progressRef.current = safe;
+    setProgress(safe);
+
+    const video = videoRef.current;
+    const duration = durationRef.current;
+
+    if (!video || !duration || failed) return;
+
+    window.cancelAnimationFrame(rafRef.current);
+
+    rafRef.current = window.requestAnimationFrame(() => {
+      const targetTime = safe * duration;
+
+      try {
+        if (Math.abs(video.currentTime - targetTime) > 0.035) {
+          if ('fastSeek' in video && typeof video.fastSeek === 'function') {
+            video.fastSeek(targetTime);
+          } else {
+            video.currentTime = targetTime;
+          }
+        }
+      } catch {
+        try {
+          video.currentTime = targetTime;
+        } catch {
+          // ignore
+        }
+      }
+    });
+  }
+
+  function sectionAtLockLine() {
+    const section = sectionRef.current;
+    if (!section) return false;
+
+    const rect = section.getBoundingClientRect();
+    const vh = window.innerHeight || 1;
+    const lockLine = vh * 0.5;
+
+    return rect.top <= lockLine && rect.bottom >= lockLine;
+  }
+
+  useEffect(() => {
+    function updateLockState() {
+      const active = sectionAtLockLine();
+      const p = progressRef.current;
+
+      /*
+        القفل يعمل عندما يكون الفيديو عند منتصف الشاشة
+        ولم ننتهِ بالكامل، أو عندما نرجع للأعلى والفيديو ليس في البداية.
+      */
+      setIsLocked(active && p > 0.001 && p < 0.999);
+    }
+
+    updateLockState();
+    window.addEventListener('scroll', updateLockState, { passive: true });
+    window.addEventListener('resize', updateLockState);
+
+    return () => {
+      window.removeEventListener('scroll', updateLockState);
+      window.removeEventListener('resize', updateLockState);
+    };
+  }, [sectionRef]);
+
+  useEffect(() => {
+    function shouldCapture(deltaY: number) {
+      if (!sectionAtLockLine()) return false;
+
+      const p = progressRef.current;
+
+      if (deltaY > 0 && p >= 0.999) return false;
+      if (deltaY < 0 && p <= 0.001) return false;
+
+      return true;
+    }
+
+    function onWheel(event: WheelEvent) {
+      if (!shouldCapture(event.deltaY)) return;
+
+      event.preventDefault();
+
+      const speed = 1 / 2600;
+      const next = progressRef.current + event.deltaY * speed;
+      applyProgress(next);
+      setIsLocked(progressRef.current > 0.001 && progressRef.current < 0.999);
+    }
+
+    function onTouchStart(event: TouchEvent) {
+      touchYRef.current = event.touches[0]?.clientY ?? null;
+    }
+
+    function onTouchMove(event: TouchEvent) {
+      const currentY = event.touches[0]?.clientY ?? null;
+      const lastY = touchYRef.current;
+
+      if (currentY === null || lastY === null) return;
+
+      const deltaY = lastY - currentY;
+
+      if (!shouldCapture(deltaY)) {
+        touchYRef.current = currentY;
+        return;
+      }
+
+      event.preventDefault();
+
+      const speed = 1 / 1600;
+      const next = progressRef.current + deltaY * speed;
+      applyProgress(next);
+      touchYRef.current = currentY;
+      setIsLocked(progressRef.current > 0.001 && progressRef.current < 0.999);
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      const keys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End'];
+
+      if (!keys.includes(event.key)) return;
+
+      let deltaY = 0;
+
+      if (event.key === 'ArrowDown') deltaY = 120;
+      if (event.key === 'PageDown' || event.key === ' ') deltaY = 520;
+      if (event.key === 'ArrowUp') deltaY = -120;
+      if (event.key === 'PageUp') deltaY = -520;
+      if (event.key === 'Home') deltaY = -9999;
+      if (event.key === 'End') deltaY = 9999;
+
+      if (!shouldCapture(deltaY)) return;
+
+      event.preventDefault();
+
+      const speed = 1 / 2600;
+      applyProgress(progressRef.current + deltaY * speed);
+      setIsLocked(progressRef.current > 0.001 && progressRef.current < 0.999);
+    }
+
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      window.cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [sectionRef, failed]);
+
+  if (failed) {
+    return <StaticProductIntro title={title} imageUrl={fallbackImage} />;
+  }
+
+  const completed = progress >= 0.999;
+  const scale = completed ? 0.58 : 1;
+  const translateY = completed ? -18 : 0;
+
+  return (
+    <div
+      className="relative h-full w-full origin-top overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-[#F3EEE3] shadow-2xl transition-transform duration-300"
+      style={{
+        transform: `translateY(${translateY}px) scale(${scale})`,
+      }}
+    >
+      <video
+        ref={videoRef}
+        src={src}
+        muted
+        playsInline
+        preload="auto"
+        className="h-full w-full object-cover"
+        onLoadedMetadata={(event) => {
+          const video = event.currentTarget;
+          durationRef.current = video.duration || 0;
+          video.pause();
+          video.currentTime = 0;
+        }}
+        onError={() => setFailed(true)}
+      />
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1F1B16]/70 to-transparent p-6 text-white">
+        <div className="mb-3 h-1 overflow-hidden rounded-full bg-white/25">
+          <div
+            className="h-full rounded-full bg-[#C9A84C]"
+            style={{ width: `${Math.round(progress * 100)}%` }}
+          />
+        </div>
+
+        <p className="text-sm font-bold text-[#E8DCC3]">
+          {completed ? 'اكتملت مقدمة الفيديو — تابع القسم' : isLocked ? 'السكرول يتحكم بالفيديو الآن' : 'تابع السكرول حتى منتصف الشاشة'}
+        </p>
+
+        <h3 className="mt-2 text-3xl font-black">{title}</h3>
+      </div>
+    </div>
+  );
+}
+
 function CategorySection({
   section,
   variants,
@@ -176,46 +296,36 @@ function CategorySection({
   brandLookup: Map<string, CatalogBrand>;
 }) {
   const ref = useRef<HTMLElement | null>(null);
-  const progress = useScrollProgress(ref);
 
   const introTitle = section.introProduct?.name_ar || section.category.name_ar;
-  const introImage =
-    section.introProduct?.image_url ||
-    section.introProduct?.thumbnail_url ||
-    section.introProduct?.primary_image_url ||
-    null;
-
-  const mediaScale = progress > 0.92 ? 1 - (progress - 0.92) * 3.2 : 1;
-  const safeScale = Math.max(0.72, mediaScale);
+  const introImage = productImage(section.introProduct);
+  const isShoesVideo = Boolean(section.introVideoSrc);
 
   return (
     <section
       ref={ref}
       id={`section-${section.category.slug}`}
-      className="relative min-h-[230vh] border-t border-[#E8DCC3] py-16"
+      className="relative min-h-[260vh] border-t border-[#E8DCC3] py-16"
     >
       <div className="sticky top-24 z-10 grid min-h-[calc(100vh-7rem)] items-start gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-        <div
-          className="h-[62vh] min-h-[430px] origin-top transition-transform duration-150"
-          style={{
-            transform: `scale(${safeScale})`,
-          }}
-        >
+        <div className="h-[62vh] min-h-[430px]">
           {section.introVideoSrc ? (
-            <ScrollVideo
+            <ScrollLockedVideo
               src={section.introVideoSrc}
               title={introTitle}
               fallbackImage={introImage}
-              progress={progress}
+              sectionRef={ref}
             />
           ) : (
-            <StaticProductIntro title={introTitle} imageUrl={introImage} progress={progress} />
+            <StaticProductIntro title={introTitle} imageUrl={introImage} />
           )}
         </div>
 
-        <div className="rounded-[2rem] border border-[#E8DCC3] bg-[#FFFDF8]/80 p-6 shadow-xl backdrop-blur">
+        <div className="rounded-[2rem] border border-[#E8DCC3] bg-[#FFFDF8]/90 p-6 shadow-xl backdrop-blur">
           <div className="mb-6 text-right">
-            <p className="text-sm font-bold text-[#C9A84C]">قسم</p>
+            <p className="text-sm font-bold text-[#C9A84C]">
+              {isShoesVideo ? 'القسم الأول — تجربة فيديو تفاعلية' : 'قسم'}
+            </p>
             <h2 className="mt-2 text-5xl font-black text-[#1F1B16]">{section.category.name_ar}</h2>
             {section.category.name_en ? (
               <p className="mt-2 text-[#6F6658]">{section.category.name_en}</p>

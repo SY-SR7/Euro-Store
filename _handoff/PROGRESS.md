@@ -1,5 +1,17 @@
 ---
 
+### Session 043 — Locked Scroll Video Scrub Fix
+**Scope:** apps/web + _handoff only
+
+**Fix:**
+- Replaced passive scroll-position video scrubbing with real wheel/touch/key scroll lock.
+- When the shoes video reaches the middle of the viewport, page scrolling is captured and converted into video progress.
+- Scrolling down advances the video, scrolling up reverses it.
+- Page scroll is released only when the video reaches the end or returns to the start.
+- After completion, the video frame shrinks and remains sticky near the top while the shoes section continues.
+- Added smoother CSS and overscroll containment.
+---
+
 ### Session 042 — Scroll-Controlled Homepage Category Showcase
 **Scope:** apps/web + _handoff only
 

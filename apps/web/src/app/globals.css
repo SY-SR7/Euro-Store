@@ -333,3 +333,22 @@ video::-webkit-media-controls {
   }
 }
 /* EURO STORE SCROLL SHOWCASE END */
+
+/* EURO STORE SCROLL LOCK FIX START */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overscroll-behavior-y: contain;
+}
+
+video {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+video::-webkit-media-controls {
+  display: none !important;
+}
+/* EURO STORE SCROLL LOCK FIX END */
