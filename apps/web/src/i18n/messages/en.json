@@ -236,7 +236,8 @@
                      "discountCode": "Discount code",
                      "applyCode": "Apply",
                      "confirmOrder": "Complete order",
-                     "freeShipping": "Free shipping"
+                     "freeShipping": "Free shipping",
+                     "selectGov": "Select Governorate"
                  },
     "inStock":  "In stock",
     "rightsReserved":  "All rights reserved",
