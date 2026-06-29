@@ -1,5 +1,54 @@
 ---
 
+### Session 044 — Cascading Faceted Filters (Web + Admin)
+**Scope:** apps/web + apps/admin + _handoff only
+
+**Features delivered:**
+
+**Web:**
+- New API route: pps/web/src/app/api/catalog/filters/route.ts
+  - Accepts multi-select params: categories, rands, ttrs (typeSlug:valueSlug pairs), minPrice, maxPrice, q, eatured
+  - Returns filtered products + fully cascading facets (each facet computed by applying ALL other active filters)
+  - Dynamic attribute support: any ttribute_type (color, size, material, etc.) generates a facet automatically
+  - Color facets render as circular swatches using hex_color; all others as checkboxes
+- New component: pps/web/src/app/filterable-product-grid.tsx (Client Component)
+  - Multi-select checkboxes for categories, brands, all attribute types
+  - Color swatches for slug === 'color' attribute type
+  - Price range inputs (min/max)
+  - Text search
+  - Featured toggle
+  - Active filter chips with remove buttons
+  - Collapsible sidebar with toggle button
+  - Skeleton loading grid
+  - URL sync via useRouter.replace + useSearchParams (wrapped in Suspense)
+- Updated pps/web/src/app/(main)/products/page.tsx — uses FilterableProductGrid
+- Updated pps/web/src/app/(main)/categories/[slug]/page.tsx
+  - Server component fetches category by slug
+  - Passes lockedCategorySlug to FilterableProductGrid — category filter hidden, pre-applied
+  - All other filters (brand, attributes, price) still cascade correctly within that category
+
+**Admin:**
+- New API route: pps/admin/src/app/api/catalog/products/filters/route.ts
+  - Same cascading logic but uses service-role client (sees inactive products too)
+  - Extra status param: ll | active | inactive | featured
+- Updated pps/admin/src/app/(dashboard)/products/page.tsx
+  - Collapsible left sidebar with cascading filters (status, categories, brands, attributes, price)
+  - Product card grid with image, prices, status badges
+  - Click-to-open modal for viewing/editing product fields + toggle active/featured
+  - Search bar in toolbar
+  - Link to /products/new
+
+**Cascade logic:**
+- When computing facet X, all filters EXCEPT X are applied → only items reachable via remaining filters appear in X
+- Multi-select within same type = OR; across different types = AND
+- Attribute values matched by alue_en slug OR raw UUID (future-proof)
+
+**Smoke Test:**
+- pnpm --filter web dev → open /products, select a brand → categories update to only show categories that brand has products in; select a category → brands narrow; select a color → sizes narrow to sizes available in that color+category+brand combo.
+- Open /categories/shoes → same filters appear but category filter is hidden (locked to shoes).
+- pnpm --filter admin dev → open /products, use sidebar to filter by category/brand/color/price.
+---
+
 ### Session 043 — Locked Scroll Video Scrub Fix
 **Scope:** apps/web + _handoff only
 
