@@ -1,7 +1,6 @@
-/// <reference lib="dom" />
+'use client';
 /* eslint-disable */
 // @ts-nocheck
-'use client';
 const locales = ['ar', 'en'] as const;
 type Locale = (typeof locales)[number];
 

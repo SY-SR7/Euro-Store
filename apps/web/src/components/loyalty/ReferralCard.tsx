@@ -1,4 +1,3 @@
-﻿/// <reference lib="dom" />
 'use client';
 import { useTranslations } from 'next-intl';
 

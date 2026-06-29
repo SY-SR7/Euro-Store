@@ -1,13 +1,12 @@
-/// <reference lib="dom" />
+'use client';
 /* eslint-disable */
 // @ts-nocheck
-'use client';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useCartStore } from '../../lib/cart/cartStore';
-import { cartItemsToOrderPayload, getCartSubtotal } from '../../lib/cart/cartUtils';
+import { useCartStore } from '@/lib/cart/cartStore';
+import { cartItemsToOrderPayload, getCartSubtotal } from '@/lib/cart/cartUtils';
 import { formatSYP, GOVERNORATES } from '@eurostore/shared';
 
 /* â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */

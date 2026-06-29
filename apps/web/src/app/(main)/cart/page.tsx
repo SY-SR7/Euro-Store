@@ -1,9 +1,9 @@
+'use client';
 /* eslint-disable */
 // @ts-nocheck
-'use client';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { useCartStore } from '../../lib/cart/cartStore';
+import { useCartStore } from '@/lib/cart/cartStore';
 import { formatSYP } from '@eurostore/shared';
 
 export default function CartPage() {

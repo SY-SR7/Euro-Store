@@ -1,4 +1,5 @@
-﻿/* eslint-disable */
+'use client';
+/* eslint-disable */
 // @ts-nocheck
 import { redirect } from 'next/navigation';
 import Link from 'next/link';

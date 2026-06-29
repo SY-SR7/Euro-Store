@@ -1,6 +1,6 @@
-﻿'use client';
+'use client';
 import { useTranslations } from 'next-intl';
-import { useCartStore, type CartItem } from '../../lib/cart/cartStore';
+import { useCartStore, type CartItem } from '@/lib/cart/cartStore';
 
 type Props = Omit<CartItem, 'quantity'> & { outOfStock?: boolean };
 

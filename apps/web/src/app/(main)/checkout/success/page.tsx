@@ -1,6 +1,6 @@
-﻿/* eslint-disable */
-// @ts-nocheck
 'use client';
+/* eslint-disable */
+// @ts-nocheck
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';

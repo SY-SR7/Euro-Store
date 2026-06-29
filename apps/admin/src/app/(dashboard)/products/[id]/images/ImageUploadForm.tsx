@@ -1,4 +1,3 @@
-/// <reference lib="dom" />
 'use client';
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';

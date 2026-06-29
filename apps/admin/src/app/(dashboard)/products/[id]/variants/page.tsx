@@ -1,4 +1,5 @@
-﻿import { notFound } from 'next/navigation';
+'use client';
+import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 import Link from 'next/link';

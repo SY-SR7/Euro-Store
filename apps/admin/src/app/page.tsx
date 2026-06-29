@@ -1,4 +1,3 @@
-﻿/// <reference lib="dom" />
 import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 

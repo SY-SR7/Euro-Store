@@ -1,6 +1,6 @@
-﻿/* eslint-disable */
-// @ts-nocheck
 'use client';
+/* eslint-disable */
+// @ts-nocheck
 import Link from 'next/link';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';

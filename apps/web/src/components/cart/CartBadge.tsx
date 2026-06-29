@@ -1,6 +1,6 @@
-﻿'use client';
+'use client';
 import Link from 'next/link';
-import { useCartStore } from '../../lib/cart/cartStore';
+import { useCartStore } from '@/lib/cart/cartStore';
 import { ShoppingBag } from 'lucide-react';
 
 export function CartBadge() {
