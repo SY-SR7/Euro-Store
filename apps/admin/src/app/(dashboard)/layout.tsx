@@ -1,3 +1,4 @@
+import AdminActivityProvider from '../components/AdminActivityProvider';
 import { Sidebar } from '../components/Sidebar';
 import { Navbar } from '../components/Navbar';
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -8,7 +9,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 <main className="min-h-screen w-full px-4 py-6 md:px-6">
           <div className="mx-auto max-w-5xl">
 <Navbar />
-        {children}
+        <AdminActivityProvider>{children}</AdminActivityProvider>
           </div>
         </main>
       </div>
