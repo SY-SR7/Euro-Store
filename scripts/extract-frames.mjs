@@ -61,16 +61,18 @@ const duration = await new Promise((resolve, reject) => {
 
 console.log(`   ⏱  مدة الفيديو: ${Math.round(duration)} ثانية`);
 
-// Calculate fps to get exactly `frameCount` frames
-const fps = frameCount / duration;
+// Calculate fps to get exactly `frameCount` frames over max 5 seconds
+const targetDuration = Math.min(duration, 5);
+const fps = frameCount / targetDuration;
 
 await new Promise((resolve, reject) => {
   let lastPercent = -1;
 
   ffmpeg(absVideo)
     .outputOptions([
+      '-t 5',                           // Only process first 5 seconds max
       `-vf fps=${fps.toFixed(4)}`,      // evenly spread frames
-      '-q:v 3',                          // JPEG quality (1=best, 31=worst; 3 = high quality ~92%)
+      '-q:v 3',                         // JPEG quality (1=best, 31=worst)
       '-vframes', String(frameCount),
     ])
     .output(`${absOutput}/frame_%04d.jpg`)
