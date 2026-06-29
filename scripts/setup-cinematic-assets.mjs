@@ -47,7 +47,7 @@ for (const asset of assets) {
   if (!existsSync(videoPath)) {
     console.log(`\n⬇️  جاري تحميل الفيديو لـ ${asset.category}...`);
     try {
-      execSync(`C:\\Users\\Ammar\\AppData\\Local\\Python\\pythoncore-3.14-64\\Scripts\\yt-dlp.exe "${asset.searchQuery}" --no-playlist --max-downloads 1 -f "best[ext=mp4]" --match-filter "duration < 180" -o "${videoPath}"`, {
+      execSync(`C:\\Users\\Ammar\\AppData\\Local\\Python\\pythoncore-3.14-64\\Scripts\\yt-dlp.exe "${asset.searchQuery}" --no-playlist --max-downloads 1 -f "best[ext=mp4]" -o "${videoPath}"`, {
         cwd: rootDir,
         stdio: 'inherit',
       });
