@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMotionValue, useSpring, useAnimationFrame } from 'framer-motion';
 import { ProductCard } from '@/app/catalog-components';
 import type {
   CatalogBrand,
@@ -82,6 +83,13 @@ function ScrollLockedVideo({
   const rafRef = useRef<number | null>(null);
   const metadataReadyRef = useRef(false);
 
+  const targetProgress = useMotionValue(0);
+  const smoothProgress = useSpring(targetProgress, {
+    damping: 30,
+    stiffness: 120,
+    mass: 0.1,
+  });
+
   const [progress, setProgress] = useState(0);
   const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(false);
@@ -101,31 +109,32 @@ function ScrollLockedVideo({
   function seekVideo(nextProgress: number) {
     const safeProgress = clamp(nextProgress);
     progressRef.current = safeProgress;
-    setProgress(safeProgress);
+    targetProgress.set(safeProgress);
+  }
 
+  useAnimationFrame(() => {
     const video = videoRef.current;
     const duration = durationRef.current;
-
     if (!video || !duration || !metadataReadyRef.current || failed) return;
 
-    if (rafRef.current !== null) {
-      window.cancelAnimationFrame(rafRef.current);
+    const currentSmooth = smoothProgress.get();
+    
+    // Only update state occasionally or just let framer motion handle it if we used motion.div, 
+    // but here we just update state for the progress bar.
+    if (Math.abs(progress - currentSmooth) > 0.005) {
+      setProgress(currentSmooth);
     }
 
-    rafRef.current = window.requestAnimationFrame(() => {
-      const targetTime = Math.min(duration - 0.001, Math.max(0.001, safeProgress * duration));
-
-      try {
-        video.pause();
-
-        if (Math.abs(video.currentTime - targetTime) > 0.025) {
-          video.currentTime = targetTime;
-        }
-      } catch {
-        // بعض ترميزات الفيديو قد ترفض seek مؤقتًا
+    const targetTime = Math.min(duration - 0.001, Math.max(0.001, currentSmooth * duration));
+    
+    try {
+      if (Math.abs(video.currentTime - targetTime) > 0.03) {
+        video.currentTime = targetTime;
       }
-    });
-  }
+    } catch {
+      // ignore
+    }
+  });
 
   function shouldCaptureScroll(deltaY: number) {
     if (!ready || failed) return false;
