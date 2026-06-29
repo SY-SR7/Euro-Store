@@ -42,6 +42,7 @@ function ScrollBeat({
 }: {
   beat: StoryBeat;
   scrollProgress: ReturnType<typeof useSpring>;
+  isLightBg?: boolean;
 }) {
   const opacity = useTransform(
     scrollProgress,
@@ -83,13 +84,14 @@ function ScrollBeat({
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
+            filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.15))'
           }}
         >
           {beat.title}
         </motion.h2>
 
         {beat.subtitle && (
-          <p className="mt-2 text-xs md:text-sm leading-relaxed font-semibold tracking-wide text-[#1A1A1A] drop-shadow-sm">
+          <p className="mt-2 text-xs md:text-sm leading-relaxed font-semibold tracking-wide drop-shadow-sm" style={{ color: 'inherit', opacity: 0.85 }}>
             {beat.subtitle}
           </p>
         )}
@@ -223,7 +225,7 @@ export function CinematicShowcaseSection({
 
         {/* Story text beats */}
         {storyBeats.map((beat, i) => (
-          <ScrollBeat key={i} beat={beat} scrollProgress={smoothProgress} />
+          <ScrollBeat key={i} beat={beat} scrollProgress={smoothProgress} isLightBg={bgColor === '#dfdcd3'} />
         ))}
 
         {/* Brand mark */}
