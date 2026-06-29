@@ -12,7 +12,9 @@
                     "productCount":  "Product count",
                     "all":  "All",
                     "tag":  "Catalog",
-                    "allProducts":  "All products"
+                    "allProducts":  "All products",
+                    "allCategoriesLink":  "All categories",
+                    "categoryTag":  "Category"
                 },
     "home":  {
                  "categoriesTitle":  "Shop by category",

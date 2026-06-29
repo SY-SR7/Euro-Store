@@ -12,7 +12,9 @@
                     "productCount":  "عدد المنتجات",
                     "all":  "الكل",
                     "tag":  "التصنيفات",
-                    "allProducts":  "كل المنتجات"
+                    "allProducts":  "كل المنتجات",
+                    "allCategoriesLink":  "كل التصنيفات",
+                    "categoryTag":  "تصنيف"
                 },
     "home":  {
                  "categoriesTitle":  "تسوق حسب التصنيف",
