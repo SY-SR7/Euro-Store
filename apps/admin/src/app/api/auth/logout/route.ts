@@ -1,29 +1,23 @@
 import { NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/supabase-server';
 
-const COOKIES_TO_CLEAR = [
-  'sb-access-token',
-  'supabase-auth-token',
-  'admin_session',
-  'eurostore_admin_session',
-  'eurostore_totp_verified',
-  'EUROSTORE_TOTP_SESSION'
-];
+export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request) {
-  const supabase = createServerSupabaseClient();
-  await supabase.auth.signOut();
+export async function POST() {
+  const response = NextResponse.json({ ok: true });
 
-  const origin = new URL(request.url).origin;
-  const response = NextResponse.redirect(new URL('/login', origin), { status: 303 });
+  response.cookies.set('sb-access-token', '', {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+  });
 
-  for (const cookieName of COOKIES_TO_CLEAR) {
-    response.cookies.set(cookieName, '', {
-      maxAge: 0,
-      path: '/',
-      sameSite: 'strict'
-    });
-  }
+  response.cookies.set('sb-refresh-token', '', {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+  });
 
   return response;
 }

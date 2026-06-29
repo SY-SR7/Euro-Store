@@ -1,5 +1,22 @@
 ---
 
+### Session 037 — Admin Login Cookie Session Fix
+**Scope:** apps/admin + _handoff only
+
+**Fix:**
+- Added `/api/auth/login` to sign in with Supabase Auth on the server.
+- The login API now sets `sb-access-token` and `sb-refresh-token` cookies, matching `requireAdminContext()`.
+- Rewrote `/login` to submit with `fetch(..., POST)` instead of browser GET.
+- Added timeout and visible error message so the button cannot remain loading forever.
+- Added `/api/auth/logout`.
+- Redirected `/auth/login` to `/login`.
+
+**Smoke Test:**
+- Run `pnpm --filter admin dev`.
+- Open `/login`.
+- Sign in and verify redirect to `/`.
+---
+
 ### Session 036 — Missing [id] Admin API Routes Recovery
 **Scope:** apps/admin + _handoff only
 
