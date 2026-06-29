@@ -1,9 +1,8 @@
-'use client';
-/* eslint-disable */
 // @ts-nocheck
+/* eslint-disable */
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 import { formatSYP } from '@eurostore/shared';
 
@@ -26,8 +25,8 @@ const STATUS_COLOR: Record<string, string> = {
   cancelled:  'bg-red-900/30 text-red-400',
 };
 
-export default function CustomerOrdersPage(): Promise<JSX.Element> {
-  const t = useTranslations();
+export default async function CustomerOrdersPage(): Promise<JSX.Element> {
+  const t = await getTranslations();
   const supabase = createServerSupabaseClient();
 
   const { data: { user } } = await supabase.auth.getUser();

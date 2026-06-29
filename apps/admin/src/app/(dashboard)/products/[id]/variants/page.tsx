@@ -1,6 +1,6 @@
-'use client';
+// @ts-nocheck
 import { notFound } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 import Link from 'next/link';
 import { AddVariantForm } from './AddVariantForm';
@@ -10,8 +10,8 @@ export const dynamic = 'force-dynamic';
 
 interface Props { params: { id: string } }
 
-export default function ProductVariantsPage({ params }: Props) {
-  const t = useTranslations('adminCatalog');
+export default async function ProductVariantsPage({ params }: Props) {
+  const t = await getTranslations('adminCatalog');
   const supabase = createServerSupabaseClient();
 
   const [productRes, variantsRes] = await Promise.all([

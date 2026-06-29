@@ -1,16 +1,15 @@
-'use client';
-/* eslint-disable */
 // @ts-nocheck
+/* eslint-disable */
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 import { User, ShoppingBag, Star, RefreshCw, LogOut } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-export default function AccountPage(): Promise<JSX.Element> {
-  const t = useTranslations();
+export default async function AccountPage(): Promise<JSX.Element> {
+  const t = await getTranslations();
   const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/auth/login');
