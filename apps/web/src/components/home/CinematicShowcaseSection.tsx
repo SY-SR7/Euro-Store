@@ -63,23 +63,24 @@ function ScrollBeat({
   return (
     <motion.div
       style={{ opacity, y }}
-      className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none will-change-transform"
+      className="absolute inset-0 flex flex-col justify-end pointer-events-none will-change-transform"
       dir="rtl"
     >
-      {/* Dark radial scrim — fades to transparent at edges, always readable */}
+      {/* Bottom gradient — the ONLY overlay, like DJI */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-x-0 bottom-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 70% 55% at 50% 50%, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0) 100%)',
+          height: '55%',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
         }}
       />
 
-      {/* Text content — above the scrim */}
-      <div className="relative z-10 flex flex-col items-center gap-3 max-w-2xl">
+      {/* Text anchored to bottom-left, DJI style */}
+      <div className="relative z-10 px-10 pb-16 md:px-16 md:pb-20 text-right max-w-3xl mr-auto">
         <motion.h2
-          className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight"
+          className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight"
           style={{
-            textShadow: '0 2px 8px rgba(0,0,0,0.9), 0 4px 32px rgba(0,0,0,0.7), 0 0 80px rgba(0,0,0,0.5)',
+            textShadow: '0 1px 4px rgba(0,0,0,0.8)',
           }}
         >
           {beat.title}
@@ -87,13 +88,8 @@ function ScrollBeat({
 
         {beat.subtitle && (
           <p
-            className="text-base md:text-lg text-white max-w-lg leading-relaxed px-4 py-2 rounded-lg"
-            style={{
-              textShadow: '0 1px 6px rgba(0,0,0,1), 0 2px 20px rgba(0,0,0,0.9)',
-              background: 'rgba(0,0,0,0.35)',
-              backdropFilter: 'blur(6px)',
-              WebkitBackdropFilter: 'blur(6px)',
-            }}
+            className="mt-3 text-sm md:text-base text-white/85 max-w-md leading-relaxed font-medium"
+            style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}
           >
             {beat.subtitle}
           </p>
@@ -102,9 +98,8 @@ function ScrollBeat({
         {beat.ctaLabel && beat.ctaHref && (
           <motion.a
             href={beat.ctaHref}
-            className="pointer-events-auto mt-4 inline-flex items-center gap-3 border border-[#C9A84C] text-[#C9A84C] px-8 py-3.5 text-sm font-bold tracking-widest uppercase hover:bg-[#C9A84C] hover:text-black transition-colors duration-300"
-            style={{ backdropFilter: 'blur(4px)', background: 'rgba(0,0,0,0.4)' }}
-            whileHover={{ scale: 1.04 }}
+            className="pointer-events-auto mt-6 inline-flex items-center gap-2 border border-[#C9A84C] text-[#C9A84C] px-6 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#C9A84C] hover:text-black transition-colors duration-300"
+            whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
             {beat.ctaLabel}
