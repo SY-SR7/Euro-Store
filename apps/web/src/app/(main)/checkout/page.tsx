@@ -256,7 +256,7 @@ export default function CheckoutPage() {
               {discount ? (
                 <div className="flex items-center justify-between rounded border border-green-800 bg-green-900/10 px-4 py-2.5">
                   <span className="text-sm text-green-400">
-                    {t('checkout.codeApplied')} â€” {discount.type === 'percentage' ? `${discount.value}%` : formatSYP(discount.discount_amount)}
+                    {t('checkout.codeApplied')} ” {discount.type === 'percentage' ? `${discount.value}%` : formatSYP(discount.discount_amount)}
                   </span>
                   <button
                     type="button"
@@ -336,7 +336,7 @@ export default function CheckoutPage() {
             <div className="flex flex-col gap-2 text-sm mb-4">
               {items.map(i => (
                 <div key={i.variantId} className="flex justify-between text-[#9CA3AF]">
-                  <span className="truncate me-2">{i.nameAr} Ã— {i.quantity}</span>
+                  <span className="truncate me-2">{i.nameAr} — {i.quantity}</span>
                   <span className="shrink-0">{formatSYP(i.priceSyp * i.quantity)}</span>
                 </div>
               ))}
@@ -354,7 +354,7 @@ export default function CheckoutPage() {
                 <span>{t('checkout.shipping')}</span>
                 <span>
                   {!governorate
-                    ? 'â€”'
+                    ? '”'
                     : loadingShip
                     ? '...'
                     : shippingSyp === 0

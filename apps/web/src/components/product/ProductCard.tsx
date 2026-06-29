@@ -51,12 +51,12 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         {/* Badges */}
         <div className="absolute top-3 start-3 flex flex-col gap-2">
           {isNew && (
-            <span className="bg-[#C9A84C] text-black text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wide shimmer">
+            <span className="bg-[#C9A84C] text-black text-[10px] font-bold px-2 py-1 rounded-sm uppercase shimmer">
               Ø¬Ø¯ÙŠØ¯
             </span>
           )}
           {isOnSale && (
-            <span className="bg-[#FF4444] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wide">
+            <span className="bg-[#FF4444] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase">
               Ø®ØµÙ…
             </span>
           )}
@@ -70,7 +70,7 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
       
       <div className="p-4 text-center flex flex-col flex-grow justify-between">
         <div>
-          <p className="text-[#9CA3AF] text-[10px] uppercase tracking-widest mb-1">
+          <p className="text-[#9CA3AF] text-[10px] uppercase mb-1">
             {product.brand?.name_en || product.brand?.name_ar || 'EuroStore'}
           </p>
           <Link href={`/products/${product.slug}`} className="block">

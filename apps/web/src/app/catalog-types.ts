@@ -51,9 +51,9 @@ export function summarizeProductVariants(variants: readonly CatalogVariant[]): P
 
   if (prices.length === 0) {
     return {
-      priceLabel: 'â€”',
+      priceLabel: '”',
       comparePriceLabel: null,
-      stockLabel: 'â€”',
+      stockLabel: '”',
       totalStock,
     };
   }

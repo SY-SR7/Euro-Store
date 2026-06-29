@@ -96,7 +96,7 @@ export default function AdminSubAdminsPage() {
           </div>
           <div>
             <label className="block text-xs text-[#9CA3AF] mb-1">ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± (8 Ø£Ø­Ø±Ù Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„)</label>
-            <input className={inputCls} type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: (e.target as unknown as HTMLInputElement).value }))} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" minLength={8} required />
+            <input className={inputCls} type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: (e.target as unknown as HTMLInputElement).value }))} placeholder="¢¢¢¢¢¢¢¢" minLength={8} required />
           </div>
           <button
             type="submit"
@@ -130,7 +130,7 @@ export default function AdminSubAdminsPage() {
             <tbody className="divide-y divide-[#2E2E2E]">
               {subAdmins.map((sa) => (
                 <tr key={sa.user_id} className="hover:bg-[#161616]">
-                  <td className="px-4 py-3 font-medium">{sa.display_name ?? 'â€”'}</td>
+                  <td className="px-4 py-3 font-medium">{sa.display_name ?? '”'}</td>
                   <td className="px-4 py-3 text-[#9CA3AF]">{sa.email}</td>
                   <td className="px-4 py-3">
                     <span className={`rounded-sm px-2 py-0.5 text-xs font-medium ${sa.is_active ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>

@@ -51,7 +51,7 @@ export default async function LoyaltyPage() {
             <p className="text-sm font-semibold text-[#E2E2E2]">{t('loyalty.referralTitle')}</p>
             <p className="mt-1 text-xs text-[#9CA3AF]">{t('loyalty.referralDescription')}</p>
             <div className="mt-4 flex items-center gap-3">
-              <code className="flex-1 rounded-md border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-2 text-[#C9A84C] font-mono text-lg tracking-widest">
+              <code className="flex-1 rounded-md border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-2 text-[#C9A84C] font-mono text-lg">
                 {profile.referral_code}
               </code>
               <button

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -33,7 +33,7 @@ export function Sidebar() {
     <aside className="flex h-full w-64 flex-col bg-[#111111] border-e border-[#2E2E2E]">
       {/* Logo */}
       <div className="flex h-20 items-center px-6 border-b border-[#2E2E2E] flex-shrink-0">
-        <span className="font-headline text-xl text-[#C9A84C] tracking-wider">EUROSTORE</span>
+        <span className="font-headline text-xl text-[#C9A84C]">EUROSTORE</span>
         <span className="ms-2 text-xs text-[#9CA3AF]">{t('admin.panel')}</span>
       </div>
 

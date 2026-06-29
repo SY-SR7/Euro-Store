@@ -1,4 +1,4 @@
-﻿import { getTranslations } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { verifyTotpAction } from '../actions';
 
 export default async function TotpSetupPage({ searchParams }: { searchParams: { error?: string; uri?: string; secret?: string; account?: string } }) {
@@ -8,7 +8,7 @@ export default async function TotpSetupPage({ searchParams }: { searchParams: { 
   return (
     <main className="min-h-screen bg-[#0F0F0F] text-[#E2E2E2] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <p className="text-xs text-[#C9A84C] uppercase tracking-widest">EuroStore</p>
+        <p className="text-xs text-[#C9A84C] uppercase">EuroStore</p>
         <h1 className="mt-3 text-3xl font-semibold">{t('setupTitle')}</h1>
         {hasError && <p className="mt-4 rounded border border-[#2E2E2E] p-4 text-sm">{t('errors.wrongCode')}</p>}
         <div className="mt-8 flex flex-col gap-4 text-sm">

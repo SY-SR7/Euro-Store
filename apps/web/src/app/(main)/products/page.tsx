@@ -89,7 +89,7 @@ export default async function ProductsPage({
       {/* â”€â”€ Page Header + Search â”€â”€ */}
       <header className="grid gap-6 py-4 md:grid-cols-[1fr_0.9fr] md:items-end">
         <div>
-          <p className="text-xs text-[#C9A84C] uppercase tracking-widest">
+          <p className="text-xs text-[#C9A84C] uppercase">
             {t('catalog.catalogTag')}
           </p>
           <h1 className="mt-3 font-headline text-4xl font-bold leading-tight md:text-6xl">

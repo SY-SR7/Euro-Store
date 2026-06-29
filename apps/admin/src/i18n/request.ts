@@ -1,9 +1,17 @@
+import { cookies, headers } from 'next/headers';
 import { getRequestConfig } from 'next-intl/server';
 import messages, { defaultLocale, locales, type Locale } from './messages';
 
+function normalizeLocale(value: unknown): Locale {
+  return typeof value === 'string' && (locales as readonly string[]).includes(value)
+    ? (value as Locale)
+    : defaultLocale;
+}
+
 export default getRequestConfig(async (params: any) => {
   const requestLocale = params?.requestLocale;
-  const rawLocale =
+
+  const rawFromParams =
     typeof params?.locale === 'string'
       ? params.locale
       : typeof requestLocale === 'string'
@@ -12,10 +20,14 @@ export default getRequestConfig(async (params: any) => {
           ? await requestLocale
           : undefined;
 
-  const locale: Locale =
-    typeof rawLocale === 'string' && (locales as readonly string[]).includes(rawLocale)
-      ? (rawLocale as Locale)
-      : defaultLocale;
+  const cookieStore = cookies();
+  const cookieLocale =
+    cookieStore.get('NEXT_LOCALE')?.value ??
+    cookieStore.get('EUROSTORE_LOCALE')?.value;
+
+  const headerLocale = headers().get('x-eurostore-locale');
+
+  const locale = normalizeLocale(rawFromParams ?? cookieLocale ?? headerLocale);
 
   return {
     locale,

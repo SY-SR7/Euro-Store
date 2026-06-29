@@ -69,7 +69,7 @@ export default async function Home(): Promise<JSX.Element> {
       {/* â”€â”€ Hero â”€â”€ */}
       <section className="grid gap-8 md:grid-cols-[1.3fr_0.7fr] md:items-end pt-4">
         <div>
-          <p className="text-sm text-[#C9A84C] tracking-widest uppercase">
+          <p className="text-sm text-[#C9A84C] uppercase">
             {t('home.tagline')}
           </p>
           <h1 className="mt-4 font-headline text-5xl font-bold leading-tight md:text-7xl">
@@ -95,7 +95,7 @@ export default async function Home(): Promise<JSX.Element> {
         <section>
           <div className="mb-6 flex items-center justify-between">
             <div>
-              <p className="text-xs text-[#C9A84C] uppercase tracking-widest">
+              <p className="text-xs text-[#C9A84C] uppercase">
                 {t('home.featuredTag')}
               </p>
               <h2 className="mt-2 font-headline text-3xl font-semibold">
@@ -133,7 +133,7 @@ export default async function Home(): Promise<JSX.Element> {
       {(categories ?? []).length > 0 && (
         <section className="border-t border-[#2E2E2E] pt-12">
           <div className="mb-6">
-            <p className="text-xs text-[#C9A84C] uppercase tracking-widest">
+            <p className="text-xs text-[#C9A84C] uppercase">
               {t('home.categoriesTag')}
             </p>
             <h2 className="mt-2 font-headline text-3xl font-semibold">

@@ -101,8 +101,8 @@ export default function AdminDashboardPage() {
                     {orders.map((order: any) => (
                       <tr key={order.id} className="hover:bg-[#161616] transition-colors">
                         <td className="px-4 py-3 font-mono text-[#C9A84C] text-xs">#{order.order_number}</td>
-                        <td className="px-4 py-3">{order.address_snapshot?.full_name ?? 'â€”'}</td>
-                        <td className="px-4 py-3 text-[#9CA3AF]">{order.address_snapshot?.governorate ?? 'â€”'}</td>
+                        <td className="px-4 py-3">{order.address_snapshot?.full_name ?? '”'}</td>
+                        <td className="px-4 py-3 text-[#9CA3AF]">{order.address_snapshot?.governorate ?? '”'}</td>
                         <td className="px-4 py-3 font-semibold">{formatSYP(order.total_syp)}</td>
                         <td className="px-4 py-3">
                           <span className={`rounded-sm px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[order.status] ?? 'text-[#9CA3AF]'}`}>

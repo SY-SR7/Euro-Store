@@ -107,7 +107,7 @@ export default function AdminShippingRatesPage() {
                         placeholder="0 = Ù…Ø¹Ø·Ù„"
                       />
                     ) : (
-                      <span>{rate.free_shipping_threshold_syp ? formatSYP(rate.free_shipping_threshold_syp) : 'â€”'}</span>
+                      <span>{rate.free_shipping_threshold_syp ? formatSYP(rate.free_shipping_threshold_syp) : '”'}</span>
                     )}
                   </td>
 

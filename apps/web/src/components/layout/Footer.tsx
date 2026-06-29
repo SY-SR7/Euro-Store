@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 export function Footer() {
@@ -13,7 +13,7 @@ export function Footer() {
             <p className="text-sm leading-7 text-[#9CA3AF]">{t('description')}</p>
           </div>
           <div>
-            <h4 className="text-[#E2E2E2] font-semibold mb-6 uppercase tracking-wider text-sm">{t('shopSection')}</h4>
+            <h4 className="text-[#E2E2E2] font-semibold mb-6 uppercase text-sm">{t('shopSection')}</h4>
             <ul className="space-y-3">
               <li><Link href="/products" className="text-[#9CA3AF] hover:text-[#C9A84C] text-sm transition-colors">{t('newArrivals')}</Link></li>
               <li><Link href="/categories" className="text-[#9CA3AF] hover:text-[#C9A84C] text-sm transition-colors">{t('categories')}</Link></li>
@@ -21,7 +21,7 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="text-[#E2E2E2] font-semibold mb-6 uppercase tracking-wider text-sm">{t('helpSection')}</h4>
+            <h4 className="text-[#E2E2E2] font-semibold mb-6 uppercase text-sm">{t('helpSection')}</h4>
             <ul className="space-y-3">
               <li><Link href="/faq" className="text-[#9CA3AF] hover:text-[#C9A84C] text-sm transition-colors">{t('faq')}</Link></li>
               <li><Link href="/exchange" className="text-[#9CA3AF] hover:text-[#C9A84C] text-sm transition-colors">{t('exchangePolicy')}</Link></li>
