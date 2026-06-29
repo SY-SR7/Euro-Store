@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
@@ -166,7 +166,7 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-5 py-3 text-xs text-[#57534E] hidden md:table-cell">{catName(p.category_id)}</td>
                     <td className="px-5 py-3 text-left">
-                      <Link href={`/products/${p.id}`} onClick={e => e.stopPropagation()} className="font-bold text-[#B8860B] hover:underline text-xs">هاب</Link>
+                      <Link href={`/products/${p.id}`} onClick={e => e.stopPropagation()} className="font-bold text-[#B8860B] hover:underline text-xs">تفاصيل</Link>
                     </td>
                   </tr>
                 ))}
@@ -206,7 +206,7 @@ export default function AdminProductsPage() {
               </div>
               <div className="flex flex-wrap gap-2 pt-3">
                 <button onClick={startEdit} className="rounded-xl bg-[#B8860B] px-4 py-2 text-sm font-bold text-white hover:bg-[#9A7209]">تعديل</button>
-                <Link href={`/products/${selected.id}`} className="rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#1C1917] hover:border-[#B8860B]">هاب المنتج</Link>
+                <Link href={`/products/${selected.id}`} className="rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#1C1917] hover:border-[#B8860B]">تفاصيل المنتج</Link>
                 <Link href={`/products/${selected.id}/variants`} className="rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#1C1917] hover:border-[#B8860B]">المتغيرات</Link>
                 <Link href={`/products/${selected.id}/images`} className="rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#1C1917] hover:border-[#B8860B]">الصور</Link>
                 <button onClick={() => void deleteProduct(selected)} className="rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50">حذف</button>
