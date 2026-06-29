@@ -228,8 +228,12 @@
     "activateBtn": "Activate",
     "verifyTitle": "Two-Factor Auth",
     "verifyBtn": "Verify",
+    "codeLabel": "Verification Code",
+    "enterBtn": "Enter",
     "errors": {
-      "wrongCode": "Invalid code, please try again."
+      "wrongCode": "Invalid code, please try again.",
+      "invalid": "Invalid code, make sure you enter 6 digits.",
+      "failed": "Verification failed, please try again."
     }
   }
 }
