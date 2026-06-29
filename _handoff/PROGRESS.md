@@ -1,3 +1,20 @@
+---
+
+### Session 030 — 2026-06-29
+**Agent:** ChatGPT PowerShell patch — web/admin scope respected
+**Scope:** apps/web + _handoff only
+
+**Fixes:**
+- Rewrote `apps/web/src/app/(main)/loyalty/page.tsx` to fix the syntax error around `Promise.all`.
+- Kept the clipboard action inside `CopyReferralButton` as a client component.
+- Added clear customer-facing loyalty explanation blocks.
+- Patched missing i18n keys:
+  - `catalog.allCategoriesLink`
+  - `catalog.categoryTag`
+
+**Smoke Test:**
+- Run `pnpm --filter web dev`
+- Open `/`, `/categories`, `/categories/shoes`, `/products`, `/loyalty`
 
 ---
 
