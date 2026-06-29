@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useEffect, useState } from 'react';
 
 interface Brand { id: string; name: string; slug: string|null; is_active: boolean|null; }
@@ -69,7 +69,7 @@ export default function AdminBrandsPage() {
         <form onSubmit={handleCreate} className="flex flex-wrap gap-3">
           <input value={name} onChange={e=>setName(e.target.value)} placeholder="اسم العلامة *" className="input-field flex-1 min-w-[140px]" />
           <input value={slug} onChange={e=>setSlug(e.target.value)} placeholder="الرابط (en-slug) *" className="input-field flex-1 min-w-[140px]" dir="ltr" />
-          <button type="submit" disabled={creating} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
+          <button type="submit" disabled={creating} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
             {creating ? '...' : '+ إضافة'}
           </button>
         </form>

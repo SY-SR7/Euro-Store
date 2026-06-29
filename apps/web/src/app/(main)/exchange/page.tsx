@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
@@ -38,7 +38,7 @@ export default async function ExchangeIndexPage() {
             <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('exchange.title')}</h1>
           </div>
           <Link href="/exchange/new"
-            className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] transition-colors">
+            className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
             + {t('exchange.newRequest')}
           </Link>
         </div>
@@ -52,7 +52,7 @@ export default async function ExchangeIndexPage() {
         {!user ? (
           <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 text-center shadow-sm">
             <p className="text-[#A8A29E] mb-4">سجّل دخولك لمتابعة طلبات الاستبدال الخاصة بك</p>
-            <Link href="/auth/login" className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] transition-colors">
+            <Link href="/auth/login" className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
               تسجيل الدخول
             </Link>
           </div>

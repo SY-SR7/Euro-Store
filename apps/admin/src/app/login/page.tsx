@@ -75,7 +75,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#FAF7EF] px-4 py-10" dir="rtl">
-      <section className="w-full max-w-md rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-8 shadow-2xl">
+      <section className="w-full max-w-md rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-8 shadow-xl">
         <div className="mb-8 text-center">
           <p className="text-sm font-black tracking-[0.35em] text-[#C9A84C]">EURO STORE</p>
           <h1 className="mt-4 text-3xl font-black text-[#1F1B16]">تسجيل دخول الأدمن</h1>

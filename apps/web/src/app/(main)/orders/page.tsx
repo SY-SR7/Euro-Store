@@ -1,4 +1,4 @@
-﻿// @ts-nocheck
+// @ts-nocheck
 /* eslint-disable */
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
@@ -40,7 +40,7 @@ export default async function CustomerOrdersPage() {
         {(!orders || orders.length === 0) ? (
           <div className="rounded-2xl border border-[#E7E3DC] bg-white p-10 text-center shadow-sm">
             <p className="text-[#A8A29E]">لا توجد طلبات حتى الآن</p>
-            <Link href="/products" className="mt-4 inline-block rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#9A7209] transition-colors">
+            <Link href="/products" className="mt-4 inline-block rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-bold text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
               تصفح المنتجات
             </Link>
           </div>

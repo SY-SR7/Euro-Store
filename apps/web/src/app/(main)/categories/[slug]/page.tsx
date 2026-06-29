@@ -55,21 +55,21 @@ export default async function CategoryPage({ params }: CategoryPageProps): Promi
   const brandById = createCatalogLookup(brands);
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
+    <main className="min-h-screen bg-[#FAF7EF] px-6 py-10 text-[#1F1B16]">
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-10">
-        <nav className="flex items-center justify-between border-b border-[#2E2E2E] pb-5">
+        <nav className="flex items-center justify-between border-b border-[#E8DCC3] pb-5">
           <Link href="/" className="text-xl font-semibold text-[#C9A84C]">{t('common.appName')}</Link>
           <Link href="/products" className="text-sm text-[#D6D3C7]">{t('catalog.allCategoriesLink')}</Link>
         </nav>
         <header className="py-8">
           <p className="text-sm text-[#C9A84C]">{t('catalog.categoryTag')}</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-6xl">{category.name_ar}</h1>
-          <p className="mt-3 text-[#9CA3AF]">{category.name_en}</p>
+          <p className="mt-3 text-[#6F6658]">{category.name_en}</p>
         </header>
         <section>
           <div className="mb-5 flex items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold">{t('catalog.allProducts')}</h2>
-            <span className="text-sm text-[#9CA3AF]">{t('catalog.productCount', { count: products.length })}</span>
+            <span className="text-sm text-[#6F6658]">{t('catalog.productCount', { count: products.length })}</span>
           </div>
           {products.length > 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -84,7 +84,7 @@ export default async function CategoryPage({ params }: CategoryPageProps): Promi
               ))}
             </div>
           ) : (
-            <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-8 text-center text-[#9CA3AF]">
+            <div className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-8 text-center text-[#6F6658]">
               {t('catalog.noCategoryProducts')}
             </div>
           )}

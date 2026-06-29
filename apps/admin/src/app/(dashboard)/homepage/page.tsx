@@ -98,22 +98,22 @@ export default function HomepagePage() {
     void load();
   }
 
-  const inp = 'w-full rounded-2xl border border-white/10 bg-[#151515] px-4 py-3 text-white outline-none focus:border-[#C9A84C]';
+  const inp = 'w-full rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-3 text-[#1F1B16] outline-none focus:border-[#C9A84C]';
 
   return (
     <div className="space-y-6" dir="rtl">
-      <section className="rounded-3xl border border-white/10 bg-[#101010] p-6 shadow-2xl">
-        <h1 className="text-3xl font-black text-white">أقسام الصفحة الرئيسية</h1>
-        <p className="mt-2 text-sm text-[#9CA3AF]">إدارة ترتيب وإظهار أقسام الواجهة الرئيسية للمتجر.</p>
+      <section className="rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6 shadow-xl">
+        <h1 className="text-3xl font-black text-[#1F1B16]">أقسام الصفحة الرئيسية</h1>
+        <p className="mt-2 text-sm text-[#6F6658]">إدارة ترتيب وإظهار أقسام الواجهة الرئيسية للمتجر.</p>
       </section>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
         {/* Sections List */}
-        <section className="overflow-hidden rounded-3xl border border-white/10 bg-[#101010] shadow-2xl">
+        <section className="overflow-hidden rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] shadow-xl">
           {loading ? (
-            <div className="p-10 text-center text-[#9CA3AF]">جار التحميل...</div>
+            <div className="p-10 text-center text-[#6F6658]">جار التحميل...</div>
           ) : sections.length === 0 ? (
-            <div className="p-10 text-center text-[#9CA3AF]">لا توجد أقسام. أضف أول قسم من النموذج.</div>
+            <div className="p-10 text-center text-[#6F6658]">لا توجد أقسام. أضف أول قسم من النموذج.</div>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
@@ -128,13 +128,13 @@ export default function HomepagePage() {
                 </thead>
                 <tbody className="divide-y divide-white/10">
                   {sections.sort((a, b) => a.sort_order - b.sort_order).map(s => (
-                    <tr key={s.id} className="text-[#EDE7DD] hover:bg-white/[0.03]">
+                    <tr key={s.id} className="text-[#1F1B16] hover:bg-[#FFFDF8]">
                       <td className="px-4 py-4 font-mono text-xs text-[#C9A84C]">{s.section_key}</td>
-                      <td className="px-4 py-4 font-bold text-white">{s.title_ar}</td>
-                      <td className="px-4 py-4 text-[#9CA3AF]">{s.sort_order}</td>
+                      <td className="px-4 py-4 font-bold text-[#1F1B16]">{s.title_ar}</td>
+                      <td className="px-4 py-4 text-[#6F6658]">{s.sort_order}</td>
                       <td className="px-4 py-4">
                         <button type="button" onClick={() => void toggle(s.id, s.is_active)}
-                          className={['rounded-full border px-3 py-1 text-xs font-black', s.is_active ? 'border-green-400/20 bg-green-400/10 text-green-200' : 'border-white/10 bg-white/5 text-[#9CA3AF]'].join(' ')}>
+                          className={['rounded-full border px-3 py-1 text-xs font-black', s.is_active ? 'border-green-400/20 bg-green-400/10 text-green-200' : 'border-[#E8DCC3] bg-white/5 text-[#6F6658]'].join(' ')}>
                           {s.is_active ? 'مرئي' : 'مخفي'}
                         </button>
                       </td>
@@ -150,31 +150,31 @@ export default function HomepagePage() {
         </section>
 
         {/* Add Section Form */}
-        <aside className="rounded-3xl border border-white/10 bg-[#101010] p-6 shadow-2xl">
-          <h2 className="mb-5 text-xl font-black text-white">قسم جديد</h2>
+        <aside className="rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6 shadow-xl">
+          <h2 className="mb-5 text-xl font-black text-[#1F1B16]">قسم جديد</h2>
           {error && <div className="mb-4 rounded-2xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-100">{error}</div>}
           <form onSubmit={e => void submit(e)} className="space-y-4">
             <label className="block space-y-2">
-              <span className="text-sm font-bold text-[#B8B1A4]">نوع القسم</span>
+              <span className="text-sm font-bold text-[#6F6658]">نوع القسم</span>
               <select value={form.section_key} onChange={e => setForm(f => ({ ...f, section_key: e.target.value }))} className={inp}>
                 {SECTION_KEY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </label>
             <label className="block space-y-2">
-              <span className="text-sm font-bold text-[#B8B1A4]">العنوان بالعربية *</span>
+              <span className="text-sm font-bold text-[#6F6658]">العنوان بالعربية *</span>
               <input value={form.title_ar} onChange={e => setForm(f => ({ ...f, title_ar: e.target.value }))} placeholder="منتجاتنا المميزة" className={inp} />
             </label>
             <label className="block space-y-2">
-              <span className="text-sm font-bold text-[#B8B1A4]">العنوان بالإنجليزية</span>
+              <span className="text-sm font-bold text-[#6F6658]">العنوان بالإنجليزية</span>
               <input value={form.title_en} onChange={e => setForm(f => ({ ...f, title_en: e.target.value }))} placeholder="Our Featured Products" className={inp} />
             </label>
             <label className="block space-y-2">
-              <span className="text-sm font-bold text-[#B8B1A4]">الترتيب</span>
+              <span className="text-sm font-bold text-[#6F6658]">الترتيب</span>
               <input type="number" min="0" value={form.sort_order} onChange={e => setForm(f => ({ ...f, sort_order: parseInt(e.target.value, 10) || 0 }))} className={inp} />
             </label>
             <label className="flex items-center gap-3 cursor-pointer">
               <input type="checkbox" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))} className="accent-[#C9A84C] w-4 h-4" />
-              <span className="text-sm text-[#B8B1A4]">مرئي في الصفحة الرئيسية</span>
+              <span className="text-sm text-[#6F6658]">مرئي في الصفحة الرئيسية</span>
             </label>
             <button type="submit" disabled={saving}
               className="w-full rounded-2xl bg-[#C9A84C] py-3 text-sm font-black text-[#111111] transition hover:bg-[#D8B95F] disabled:opacity-50">

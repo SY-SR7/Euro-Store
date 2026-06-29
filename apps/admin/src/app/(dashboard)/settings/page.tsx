@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useEffect, useMemo, useState } from 'react';
 
 interface Setting { key: string; value: string; description?: string|null; }
@@ -69,7 +69,7 @@ export default function AdminSettingsPage() {
           <h1 className="text-2xl font-black text-[#1C1917]">إعدادات النظام</h1>
           <p className="mt-1 text-sm text-[#A8A29E]">الإعدادات العامة للمتجر</p>
         </div>
-        <button onClick={()=>void handleSave()} disabled={saving || loading} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
+        <button onClick={()=>void handleSave()} disabled={saving || loading} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
           {saving ? 'جاري الحفظ...' : 'حفظ الإعدادات'}
         </button>
       </div>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
@@ -43,7 +43,7 @@ export default function AdminProductsPage() {
           <h1 className="text-2xl font-black text-[#1C1917]">إدارة المنتجات</h1>
           <p className="mt-1 text-sm text-[#A8A29E]">{products.length} منتج إجمالاً</p>
         </div>
-        <Link href="/products/new" className="inline-flex items-center gap-2 rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] transition-colors whitespace-nowrap">
+        <Link href="/products/new" className="inline-flex items-center gap-2 rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors whitespace-nowrap">
           + منتج جديد
         </Link>
       </div>
@@ -53,7 +53,7 @@ export default function AdminProductsPage() {
         <div className="flex flex-wrap gap-2">
           {filters.map(btn => (
             <button key={btn.key} onClick={() => setFilter(btn.key)}
-              className={['rounded-lg px-4 py-2 text-xs font-black transition-colors border', filter === btn.key ? 'bg-[#B8860B] text-white border-[#B8860B]' : 'border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]'].join(' ')}>
+              className={['rounded-lg px-4 py-2 text-xs font-black transition-colors border', filter === btn.key ? 'bg-[#B8860B] text-[#1F1B16] border-[#B8860B]' : 'border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]'].join(' ')}>
               {btn.label}
             </button>
           ))}

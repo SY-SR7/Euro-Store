@@ -1,5 +1,19 @@
 ---
 
+### Session 038 — Admin/Web Color Consistency Polish
+**Scope:** apps/admin + apps/web + _handoff only
+
+**Fix:**
+- Removed remaining heavy black/dark panels from admin and web UI.
+- Unified product cards, admin product hub panels, tables, inputs, and placeholders to a light luxury palette.
+- Preserved gold brand accent while replacing black backgrounds with ivory/cream surfaces.
+- Used .NET file IO only for PowerShell compatibility.
+
+**Smoke Test:**
+- Run `pnpm --filter admin dev` and inspect product detail pages.
+- Run `pnpm --filter web dev` and inspect homepage featured products and product listing.
+---
+
 ### Session 037 — Admin Login Cookie Session Fix
 **Scope:** apps/admin + _handoff only
 

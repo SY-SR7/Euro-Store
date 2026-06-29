@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -44,13 +44,13 @@ export function ImageUploadForm({ productId }: { productId: string }) {
     <div className="flex flex-col gap-5">
       {/* File input */}
       <div>
-        <p className="mb-2 text-xs text-[#9CA3AF]">اختر صورة (JPG / PNG / WebP — max 5 MB)</p>
+        <p className="mb-2 text-xs text-[#6F6658]">اختر صورة (JPG / PNG / WebP — max 5 MB)</p>
         <input
           ref={fileRef}
           type="file"
           accept="image/jpeg,image/png,image/webp,image/avif"
           onChange={handleFile}
-          className="w-full rounded-xl border border-white/10 bg-[#151515] px-3 py-2.5 text-sm text-[#9CA3AF]
+          className="w-full rounded-xl border border-[#E8DCC3] bg-[#FFFDF8] px-3 py-2.5 text-sm text-[#6F6658]
             file:mr-3 file:cursor-pointer file:rounded-lg file:border-0
             file:bg-[#C9A84C] file:px-4 file:py-1.5 file:text-xs file:font-black file:text-[#111]
             hover:border-[#C9A84C]/50 transition-colors"
@@ -59,7 +59,7 @@ export function ImageUploadForm({ productId }: { productId: string }) {
 
       {/* Preview */}
       {preview && (
-        <div className="overflow-hidden rounded-2xl border border-white/10">
+        <div className="overflow-hidden rounded-2xl border border-[#E8DCC3]">
           <img src={preview} alt="معاينة" className="aspect-square w-full object-cover" />
         </div>
       )}
@@ -72,7 +72,7 @@ export function ImageUploadForm({ productId }: { productId: string }) {
           onChange={e => setIsPrimary(e.target.checked)}
           className="h-4 w-4 accent-[#C9A84C]"
         />
-        <span className="text-sm text-[#EDE7DD]">صورة رئيسية</span>
+        <span className="text-sm text-[#1F1B16]">صورة رئيسية</span>
       </label>
 
       {/* Status */}

@@ -268,17 +268,17 @@ export default function AdminLoyaltySettingsPage() {
     .sort()
     .at(-1);
 
-  const inputClass = 'w-full rounded-2xl border border-white/10 bg-[#151515] px-4 py-3 text-white outline-none transition focus:border-[#C9A84C] disabled:opacity-60';
-  const cardClass = 'rounded-3xl border border-white/10 bg-[#101010] p-5 shadow-2xl';
+  const inputClass = 'w-full rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-3 text-[#1F1B16] outline-none transition focus:border-[#C9A84C] disabled:opacity-60';
+  const cardClass = 'rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-5 shadow-xl';
 
   return (
     <div className="space-y-6" dir="rtl">
-      <section className="rounded-3xl border border-white/10 bg-[#101010] p-6 shadow-2xl">
+      <section className="rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6 shadow-xl">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="mb-2 text-sm font-black text-[#C9A84C]">Admin / Loyalty</p>
-            <h1 className="text-3xl font-black text-white">إعدادات الولاء</h1>
-            <p className="mt-2 max-w-3xl text-sm leading-7 text-[#9CA3AF]">
+            <h1 className="text-3xl font-black text-[#1F1B16]">إعدادات الولاء</h1>
+            <p className="mt-2 max-w-3xl text-sm leading-7 text-[#6F6658]">
               هذه الصفحة توضّح معنى كل رقم: هل هو مبلغ بالليرة السورية، عدد نقاط، أو نسبة مئوية.
               التغييرات تؤثر على الطلبات الجديدة فقط ولا تعدّل الطلبات القديمة.
             </p>
@@ -295,7 +295,7 @@ export default function AdminLoyaltySettingsPage() {
         </div>
 
         {lastUpdated && (
-          <p className="mt-4 text-xs text-[#6B7280]">
+          <p className="mt-4 text-xs text-[#8B8172]">
             آخر تحديث مسجّل: {new Date(lastUpdated).toLocaleString('ar-SY')}
           </p>
         )}
@@ -326,67 +326,67 @@ export default function AdminLoyaltySettingsPage() {
 
       <section className="grid gap-4 lg:grid-cols-4">
         <div className={cardClass}>
-          <p className="text-xs font-black text-[#9CA3AF]">معادلة الكسب</p>
-          <p className="mt-3 text-lg font-black text-white">
+          <p className="text-xs font-black text-[#6F6658]">معادلة الكسب</p>
+          <p className="mt-3 text-lg font-black text-[#1F1B16]">
             كل {formatSyp(numbers.earnAmount)} = {formatNumber(numbers.earnPoints)} نقطة
           </p>
-          <p className="mt-2 text-xs leading-6 text-[#9CA3AF]">
+          <p className="mt-2 text-xs leading-6 text-[#6F6658]">
             هذه معادلة رصيد، وليست خصماً مباشراً.
           </p>
         </div>
 
         <div className={cardClass}>
-          <p className="text-xs font-black text-[#9CA3AF]">معادلة الاستبدال</p>
-          <p className="mt-3 text-lg font-black text-white">
+          <p className="text-xs font-black text-[#6F6658]">معادلة الاستبدال</p>
+          <p className="mt-3 text-lg font-black text-[#1F1B16]">
             {formatNumber(numbers.redeemPointsPerSyp)} نقطة = 1 ل.س
           </p>
-          <p className="mt-2 text-xs leading-6 text-[#9CA3AF]">
+          <p className="mt-2 text-xs leading-6 text-[#6F6658]">
             كلما زادت هذه القيمة أصبح الخصم بالنقاط أقل.
           </p>
         </div>
 
         <div className={cardClass}>
-          <p className="text-xs font-black text-[#9CA3AF]">حد الخصم بالنقاط</p>
-          <p className="mt-3 text-lg font-black text-white">
+          <p className="text-xs font-black text-[#6F6658]">حد الخصم بالنقاط</p>
+          <p className="mt-3 text-lg font-black text-[#1F1B16]">
             حتى {formatNumber(numbers.maxRedeemPercent)}% من الطلب
           </p>
-          <p className="mt-2 text-xs leading-6 text-[#9CA3AF]">
+          <p className="mt-2 text-xs leading-6 text-[#6F6658]">
             يحمي المتجر من دفع الطلب كاملًا بالنقاط.
           </p>
         </div>
 
         <div className={cardClass}>
-          <p className="text-xs font-black text-[#9CA3AF]">مكافأة الإحالة</p>
-          <p className="mt-3 text-lg font-black text-white">
+          <p className="text-xs font-black text-[#6F6658]">مكافأة الإحالة</p>
+          <p className="mt-3 text-lg font-black text-[#1F1B16]">
             {formatNumber(numbers.referralBonus)} نقطة
           </p>
-          <p className="mt-2 text-xs leading-6 text-[#9CA3AF]">
+          <p className="mt-2 text-xs leading-6 text-[#6F6658]">
             تمنح عند تحقق الإحالة حسب منطق النظام.
           </p>
         </div>
       </section>
 
       <section className={cardClass}>
-        <h2 className="text-xl font-black text-white">مثال مباشر حسب القيم الحالية</h2>
+        <h2 className="text-xl font-black text-[#1F1B16]">مثال مباشر حسب القيم الحالية</h2>
         <div className="mt-5 grid gap-4 lg:grid-cols-4">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="text-xs text-[#9CA3AF]">طلب بقيمة</p>
+          <div className="rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-4">
+            <p className="text-xs text-[#6F6658]">طلب بقيمة</p>
             <p className="mt-2 text-2xl font-black text-[#C9A84C]">{formatSyp(numbers.exampleOrder)}</p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="text-xs text-[#9CA3AF]">النقاط المكتسبة</p>
+          <div className="rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-4">
+            <p className="text-xs text-[#6F6658]">النقاط المكتسبة</p>
             <p className="mt-2 text-2xl font-black text-[#C9A84C]">{formatNumber(numbers.exampleEarned)} نقطة</p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="text-xs text-[#9CA3AF]">قيمة النقاط كخصم</p>
+          <div className="rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-4">
+            <p className="text-xs text-[#6F6658]">قيمة النقاط كخصم</p>
             <p className="mt-2 text-2xl font-black text-[#C9A84C]">{formatSyp(numbers.exampleDiscount)}</p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="text-xs text-[#9CA3AF]">المسموح استخدامه فعلياً</p>
+          <div className="rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-4">
+            <p className="text-xs text-[#6F6658]">المسموح استخدامه فعلياً</p>
             <p className="mt-2 text-2xl font-black text-[#C9A84C]">{formatSyp(numbers.allowedDiscount)}</p>
           </div>
         </div>
-        <p className="mt-4 text-sm leading-7 text-[#9CA3AF]">
+        <p className="mt-4 text-sm leading-7 text-[#6F6658]">
           إذا كانت قيمة النقاط أكبر من حد الخصم، سيُطبّق النظام الحد الأقصى فقط:
           {` ${formatSyp(numbers.exampleMaxRedeem)} `}
           من طلب قيمته {formatSyp(numbers.exampleOrder)} عند حد {formatNumber(numbers.maxRedeemPercent)}%.
@@ -395,38 +395,38 @@ export default function AdminLoyaltySettingsPage() {
 
       <section className="grid gap-5">
         {loading ? (
-          <div className={cardClass + ' text-center text-[#9CA3AF]'}>جار تحميل الإعدادات...</div>
+          <div className={cardClass + ' text-center text-[#6F6658]'}>جار تحميل الإعدادات...</div>
         ) : (
           FIELDS.map((field) => (
             <article key={field.key} className={cardClass}>
               <div className="grid gap-5 lg:grid-cols-[1fr_280px] lg:items-start">
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
-                    <h2 className="text-xl font-black text-white">{field.title}</h2>
+                    <h2 className="text-xl font-black text-[#1F1B16]">{field.title}</h2>
                     <span className="rounded-full border border-[#C9A84C]/20 bg-[#C9A84C]/10 px-3 py-1 text-xs font-black text-[#C9A84C]">
                       {field.unit}
                     </span>
                   </div>
 
-                  <p className="mt-3 text-sm leading-7 text-[#B8B1A4]">{field.description}</p>
+                  <p className="mt-3 text-sm leading-7 text-[#6F6658]">{field.description}</p>
 
                   <div className="mt-4 grid gap-3 md:grid-cols-2">
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <div className="rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-4">
                       <p className="text-xs font-black text-[#C9A84C]">معناه للإدارة</p>
                       <p className="mt-2 text-sm leading-7 text-[#D1D5DB]">{field.adminMeaning}</p>
                     </div>
 
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <div className="rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-4">
                       <p className="text-xs font-black text-[#C9A84C]">معناه للعميل</p>
                       <p className="mt-2 text-sm leading-7 text-[#D1D5DB]">{field.customerMeaning}</p>
                     </div>
                   </div>
 
-                  <p className="mt-4 font-mono text-xs text-[#6B7280]">{field.key}</p>
+                  <p className="mt-4 font-mono text-xs text-[#8B8172]">{field.key}</p>
                 </div>
 
                 <label className="block space-y-2">
-                  <span className="text-sm font-black text-[#EDE7DD]">القيمة الحالية</span>
+                  <span className="text-sm font-black text-[#1F1B16]">القيمة الحالية</span>
                   <input
                     type="number"
                     min={field.min}
@@ -440,7 +440,7 @@ export default function AdminLoyaltySettingsPage() {
                     }}
                     className={inputClass}
                   />
-                  <span className="block text-xs leading-6 text-[#9CA3AF]">
+                  <span className="block text-xs leading-6 text-[#6F6658]">
                     أدنى قيمة: {formatNumber(field.min)} — أعلى قيمة: {formatNumber(field.max)}
                   </span>
                 </label>
@@ -452,7 +452,7 @@ export default function AdminLoyaltySettingsPage() {
 
       <section className="rounded-3xl border border-[#C9A84C]/20 bg-[#C9A84C]/10 p-5">
         <h2 className="text-lg font-black text-[#C9A84C]">ملخص سريع للقيم الحالية</h2>
-        <p className="mt-3 text-sm leading-8 text-[#EDE7DD]">
+        <p className="mt-3 text-sm leading-8 text-[#1F1B16]">
           العميل يكسب {formatNumber(numbers.earnPoints)} نقطة مقابل كل {formatSyp(numbers.earnAmount)} من المشتريات.
           وعند الاستبدال، كل {formatNumber(numbers.redeemPointsPerSyp)} نقطة تعطي خصم 1 ل.س.
           ولا يمكن أن يتجاوز خصم النقاط {formatNumber(numbers.maxRedeemPercent)}% من قيمة الطلب.

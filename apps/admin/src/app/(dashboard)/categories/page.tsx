@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useEffect, useState } from 'react';
 
 interface Category {
@@ -76,7 +76,7 @@ export default function AdminCategoriesPage() {
           <input value={nameAr} onChange={e=>setNameAr(e.target.value)} placeholder="الاسم بالعربية *" className="input-field" />
           <input value={nameEn} onChange={e=>setNameEn(e.target.value)} placeholder="الاسم بالإنجليزية" className="input-field" />
           <input value={slug} onChange={e=>setSlug(e.target.value)} placeholder="الرابط (en-slug) *" className="input-field" dir="ltr" />
-          <button type="submit" disabled={creating} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors sm:col-span-3 w-fit">
+          <button type="submit" disabled={creating} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] disabled:opacity-50 transition-colors sm:col-span-3 w-fit">
             {creating ? 'جاري الإضافة...' : '+ إضافة'}
           </button>
         </form>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -49,19 +49,19 @@ export default function NewProductPage() {
     }
   }
 
-  const inputCls = 'w-full rounded-xl border border-white/10 bg-[#151515] px-4 py-3 text-sm text-[#EDE7DD] outline-none focus:border-[#C9A84C] transition-colors';
+  const inputCls = 'w-full rounded-xl border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-3 text-sm text-[#1F1B16] outline-none focus:border-[#C9A84C] transition-colors';
   const labelCls = 'flex flex-col gap-2 text-sm';
-  const spanCls  = 'text-[#9CA3AF] font-medium';
+  const spanCls  = 'text-[#6F6658] font-medium';
 
   return (
     <div className="space-y-6" dir="rtl">
       {/* Header */}
-      <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-[#101010] p-6">
+      <div className="flex items-center justify-between rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6">
         <div>
-          <Link href="/products" className="text-xs text-[#9CA3AF] hover:text-[#C9A84C] transition-colors">
+          <Link href="/products" className="text-xs text-[#6F6658] hover:text-[#C9A84C] transition-colors">
             ← المنتجات
           </Link>
-          <h1 className="mt-1 text-2xl font-black text-white">منتج جديد</h1>
+          <h1 className="mt-1 text-2xl font-black text-[#1F1B16]">منتج جديد</h1>
         </div>
       </div>
 
@@ -70,7 +70,7 @@ export default function NewProductPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
 
           {/* Main column */}
-          <div className="space-y-4 rounded-3xl border border-white/10 bg-[#101010] p-6">
+          <div className="space-y-4 rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6">
             <h2 className="text-base font-black text-[#C9A84C]">المعلومات الأساسية</h2>
 
             {error && <p className="rounded-xl border border-red-800 bg-red-900/20 p-3 text-sm text-red-400">{error}</p>}
@@ -105,7 +105,7 @@ export default function NewProductPage() {
           <div className="space-y-4">
 
             {/* Category & Brand */}
-            <div className="space-y-4 rounded-3xl border border-white/10 bg-[#101010] p-6">
+            <div className="space-y-4 rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6">
               <h2 className="text-base font-black text-[#C9A84C]">التصنيف والعلامة</h2>
 
               <label className={labelCls}>
@@ -130,17 +130,17 @@ export default function NewProductPage() {
             </div>
 
             {/* Flags */}
-            <div className="space-y-3 rounded-3xl border border-white/10 bg-[#101010] p-6">
+            <div className="space-y-3 rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6">
               <h2 className="text-base font-black text-[#C9A84C]">الخيارات</h2>
 
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" name="is_active" defaultChecked className="accent-[#C9A84C] w-4 h-4" />
-                <span className="text-sm text-[#EDE7DD]">منتج مفعّل</span>
+                <span className="text-sm text-[#1F1B16]">منتج مفعّل</span>
               </label>
 
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" name="is_featured" className="accent-[#C9A84C] w-4 h-4" />
-                <span className="text-sm text-[#EDE7DD]">منتج مميز</span>
+                <span className="text-sm text-[#1F1B16]">منتج مميز</span>
               </label>
             </div>
 
@@ -156,7 +156,7 @@ export default function NewProductPage() {
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="rounded-2xl border border-white/10 px-4 py-3 text-sm text-[#9CA3AF] hover:border-[#C9A84C] hover:text-[#EDE7DD] transition-colors"
+                className="rounded-2xl border border-[#E8DCC3] px-4 py-3 text-sm text-[#6F6658] hover:border-[#C9A84C] hover:text-[#1F1B16] transition-colors"
               >
                 إلغاء
               </button>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -65,7 +65,7 @@ export default function OrderDetailPage() {
         <div className="flex flex-wrap gap-2">
           {allowed.map(s => (
             <button key={s} onClick={() => void changeStatus(s)} disabled={updating}
-              className="rounded-xl bg-[#B8860B] px-4 py-2 text-sm font-bold text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
+              className="rounded-xl bg-[#B8860B] px-4 py-2 text-sm font-bold text-[#1F1B16] hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
               → {STATUS_AR[s] ?? s}
             </button>
           ))}

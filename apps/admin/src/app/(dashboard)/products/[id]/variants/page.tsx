@@ -32,7 +32,7 @@ export default async function ProductVariantsPage({ params }: Props) {
     <div className="max-w-5xl">
       <div className="mb-8 flex items-center gap-4">
         <Link href={`/products/${product.id}/edit`}
-          className="text-sm text-[#9CA3AF] hover:text-[#C9A84C] transition-colors">
+          className="text-sm text-[#6F6658] hover:text-[#C9A84C] transition-colors">
            {product.name_ar}
         </Link>
       </div>
@@ -41,13 +41,13 @@ export default async function ProductVariantsPage({ params }: Props) {
       <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
         <div>
           {variants.length === 0 ? (
-            <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-8 text-center text-[#9CA3AF]">
+            <div className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-8 text-center text-[#6F6658]">
               لا توجد خيارات بعد — أضف أول خيار من النموذج
             </div>
           ) : (
-            <div className="overflow-hidden rounded-md border border-[#2E2E2E]">
+            <div className="overflow-hidden rounded-md border border-[#E8DCC3]">
               <table className="w-full text-sm">
-                <thead className="bg-[#161616] text-[#9CA3AF]">
+                <thead className="bg-[#161616] text-[#6F6658]">
                   <tr>
                     <th className="px-4 py-3 text-start font-medium">SKU</th>
                     <th className="px-4 py-3 text-start font-medium">{t('priceSYP')}</th>

@@ -1,4 +1,4 @@
-﻿// @ts-nocheck
+// @ts-nocheck
 /* eslint-disable */
 'use client';
 import { useState } from 'react';
@@ -60,7 +60,7 @@ export default function RegisterPage() {
                 placeholder="8 أحرف على الأقل" dir="ltr" />
             </div>
             <button type="submit" disabled={loading}
-              className="w-full rounded-xl bg-[#B8860B] py-3 text-sm font-black text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
+              className="w-full rounded-xl bg-[#B8860B] py-3 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
               {loading ? 'جاري الإنشاء...' : 'إنشاء الحساب'}
             </button>
           </form>

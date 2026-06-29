@@ -37,18 +37,18 @@ export function VariantRow({ variant, productId: _productId }: { variant: Varian
 
   if (editing) {
     return (
-      <tr className="bg-[#1A1A1A]">
+      <tr className="bg-[#F3EEE3]">
         <td className="px-4 py-3 font-mono text-xs text-[#D6D3C7]">{variant.sku}</td>
         <td className="px-4 py-3">
           <input type="number" value={price} onChange={e => setPrice(Number(e.target.value))} min={0}
-            className="w-28 rounded border border-[#C9A84C] bg-[#111] px-2 py-1 text-sm text-[#E2E2E2] outline-none" />
+            className="w-28 rounded border border-[#C9A84C] bg-[#111] px-2 py-1 text-sm text-[#1F1B16] outline-none" />
         </td>
-        <td className="px-4 py-3 text-[#6B7280]">
+        <td className="px-4 py-3 text-[#8B8172]">
           {variant.compare_price_syp ? formatSYP(variant.compare_price_syp) : '—'}
         </td>
         <td className="px-4 py-3">
           <input type="number" value={stock} onChange={e => setStock(Number(e.target.value))} min={0}
-            className="w-20 rounded border border-[#C9A84C] bg-[#111] px-2 py-1 text-sm text-[#E2E2E2] outline-none" />
+            className="w-20 rounded border border-[#C9A84C] bg-[#111] px-2 py-1 text-sm text-[#1F1B16] outline-none" />
         </td>
         <td colSpan={2} className="px-4 py-3">
           <div className="flex gap-2">
@@ -57,7 +57,7 @@ export function VariantRow({ variant, productId: _productId }: { variant: Varian
               {tC('save')}
             </button>
             <button onClick={() => setEditing(false)}
-              className="rounded-sm border border-[#2E2E2E] px-3 py-1 text-xs text-[#9CA3AF] hover:text-[#E2E2E2]">
+              className="rounded-sm border border-[#E8DCC3] px-3 py-1 text-xs text-[#6F6658] hover:text-[#1F1B16]">
               {tC('cancel')}
             </button>
           </div>
@@ -70,7 +70,7 @@ export function VariantRow({ variant, productId: _productId }: { variant: Varian
     <tr className="hover:bg-[#161616] transition-colors">
       <td className="px-4 py-3 font-mono text-xs text-[#D6D3C7]">{variant.sku}</td>
       <td className="px-4 py-3 text-[#C9A84C]">{formatSYP(variant.price_syp)}</td>
-      <td className="px-4 py-3 text-[#6B7280]">
+      <td className="px-4 py-3 text-[#8B8172]">
         {variant.compare_price_syp ? <span className="line-through">{formatSYP(variant.compare_price_syp)}</span> : '—'}
       </td>
       <td className="px-4 py-3 text-[#D6D3C7]">{variant.stock_quantity}</td>

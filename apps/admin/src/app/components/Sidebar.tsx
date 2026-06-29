@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -53,7 +53,7 @@ function NavContent({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?
           collapsed ? 'justify-center p-3' : 'p-4',
         ].join(' ')}
       >
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#B8860B] text-white text-xs font-black">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#B8860B] text-[#1F1B16] text-xs font-black">
           ES
         </div>
         {!collapsed && (
@@ -86,7 +86,7 @@ function NavContent({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?
                       'flex items-center rounded-xl text-sm font-semibold transition-all',
                       collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2.5',
                       active
-                        ? 'bg-[#B8860B] text-white shadow-sm'
+                        ? 'bg-[#B8860B] text-[#1F1B16] shadow-sm'
                         : 'text-[#57534E] hover:bg-[#F5F5F4] hover:text-[#1C1917]',
                     ].join(' ')}
                   >

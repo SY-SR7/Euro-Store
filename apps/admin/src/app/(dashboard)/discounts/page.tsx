@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useEffect, useState } from 'react';
 
 interface Discount {
@@ -90,7 +90,7 @@ export default function AdminDiscountsPage() {
           <input value={validUntil} onChange={e=>setValidUntil(e.target.value)} type="date" className="input-field" />
           <input value={maxUses} onChange={e=>setMaxUses(e.target.value)} placeholder="أقصى استخدام" type="number" className="input-field" />
         </div>
-        <button onClick={()=>void handleCreate()} disabled={creating} className="mt-4 rounded-xl bg-[#B8860B] px-6 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
+        <button onClick={()=>void handleCreate()} disabled={creating} className="mt-4 rounded-xl bg-[#B8860B] px-6 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
           {creating ? 'جاري الإنشاء...' : '+ إنشاء كود'}
         </button>
       </div>

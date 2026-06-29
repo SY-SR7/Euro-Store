@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -52,22 +52,22 @@ export function EditProductForm({ product, categories, brands }: { product: Prod
     else { setError('فشل الحذف'); setDeleting(false); }
   }
 
-  const inputCls = 'w-full rounded-xl border border-white/10 bg-[#151515] px-4 py-3 text-sm text-[#EDE7DD] outline-none focus:border-[#C9A84C] transition-colors';
+  const inputCls = 'w-full rounded-xl border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-3 text-sm text-[#1F1B16] outline-none focus:border-[#C9A84C] transition-colors';
   const labelCls = 'flex flex-col gap-2 text-sm';
-  const spanCls  = 'text-[#9CA3AF] font-medium';
+  const spanCls  = 'text-[#6F6658] font-medium';
 
   return (
     <div className="space-y-6" dir="rtl">
       {/* Header */}
-      <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-[#101010] p-6">
+      <div className="flex items-center justify-between rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6">
         <div>
-          <Link href={`/products/${product.id}`} className="text-xs text-[#9CA3AF] hover:text-[#C9A84C] transition-colors">
+          <Link href={`/products/${product.id}`} className="text-xs text-[#6F6658] hover:text-[#C9A84C] transition-colors">
             ← {product.name_ar}
           </Link>
-          <h1 className="mt-1 text-2xl font-black text-white">تعديل المنتج</h1>
+          <h1 className="mt-1 text-2xl font-black text-[#1F1B16]">تعديل المنتج</h1>
         </div>
         <div className="flex gap-2">
-          <Link href={`/products/${product.id}/variants`} className="rounded-2xl border border-white/10 px-4 py-2 text-xs font-bold text-[#EDE7DD] hover:border-[#C9A84C] transition-colors">المتغيرات</Link>
+          <Link href={`/products/${product.id}/variants`} className="rounded-2xl border border-[#E8DCC3] px-4 py-2 text-xs font-bold text-[#1F1B16] hover:border-[#C9A84C] transition-colors">المتغيرات</Link>
           <Link href={`/products/${product.id}/images`}   className="rounded-2xl border border-[#C9A84C]/30 px-4 py-2 text-xs font-bold text-[#C9A84C] hover:bg-[#C9A84C]/10 transition-colors">الصور</Link>
         </div>
       </div>
@@ -76,7 +76,7 @@ export function EditProductForm({ product, categories, brands }: { product: Prod
         <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
 
           {/* Main */}
-          <div className="space-y-4 rounded-3xl border border-white/10 bg-[#101010] p-6">
+          <div className="space-y-4 rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6">
             <h2 className="text-base font-black text-[#C9A84C]">المعلومات الأساسية</h2>
 
             {error && <p className="rounded-xl border border-red-800 bg-red-900/20 p-3 text-sm text-red-400">{error}</p>}
@@ -111,7 +111,7 @@ export function EditProductForm({ product, categories, brands }: { product: Prod
           {/* Sidebar */}
           <div className="space-y-4">
 
-            <div className="space-y-4 rounded-3xl border border-white/10 bg-[#101010] p-6">
+            <div className="space-y-4 rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6">
               <h2 className="text-base font-black text-[#C9A84C]">التصنيف والعلامة</h2>
 
               <label className={labelCls}>
@@ -131,15 +131,15 @@ export function EditProductForm({ product, categories, brands }: { product: Prod
               </label>
             </div>
 
-            <div className="space-y-3 rounded-3xl border border-white/10 bg-[#101010] p-6">
+            <div className="space-y-3 rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6">
               <h2 className="text-base font-black text-[#C9A84C]">الخيارات</h2>
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" name="is_active" defaultChecked={product.is_active} className="accent-[#C9A84C] w-4 h-4" />
-                <span className="text-sm text-[#EDE7DD]">منتج مفعّل</span>
+                <span className="text-sm text-[#1F1B16]">منتج مفعّل</span>
               </label>
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" name="is_featured" defaultChecked={product.is_featured} className="accent-[#C9A84C] w-4 h-4" />
-                <span className="text-sm text-[#EDE7DD]">منتج مميز</span>
+                <span className="text-sm text-[#1F1B16]">منتج مميز</span>
               </label>
             </div>
 

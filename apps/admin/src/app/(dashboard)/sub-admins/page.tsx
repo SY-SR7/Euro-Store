@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 
@@ -63,7 +63,7 @@ export default function AdminSubAdminsPage() {
           <h1 className="text-2xl font-black text-[#1C1917]">المسؤولون الفرعيون</h1>
           <p className="mt-1 text-sm text-[#A8A29E]">{subAdmins.length} مسؤول</p>
         </div>
-        <button onClick={()=>setShowForm(v=>!v)} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] transition-colors">
+        <button onClick={()=>setShowForm(v=>!v)} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
           {showForm ? 'إلغاء' : '+ مسؤول جديد'}
         </button>
       </div>
@@ -78,7 +78,7 @@ export default function AdminSubAdminsPage() {
             <input value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} placeholder="البريد الإلكتروني *" type="email" className="input-field" dir="ltr" />
             <input value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} placeholder="كلمة المرور (8 أحرف+) *" type="password" className="input-field" dir="ltr" />
             <input value={form.display_name} onChange={e=>setForm(f=>({...f,display_name:e.target.value}))} placeholder="الاسم" className="input-field sm:col-span-2" />
-            <button type="submit" disabled={creating} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors sm:col-span-2 w-fit">
+            <button type="submit" disabled={creating} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] disabled:opacity-50 transition-colors sm:col-span-2 w-fit">
               {creating ? 'جاري الإنشاء...' : 'إنشاء الحساب'}
             </button>
           </form>

@@ -1,4 +1,4 @@
-﻿// @ts-nocheck
+// @ts-nocheck
 /* eslint-disable */
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -52,7 +52,7 @@ export default async function ProductPage({ params }: Props) {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10" dir="rtl">
       {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-2 text-xs text-[#9CA3AF]">
+      <nav className="mb-6 flex items-center gap-2 text-xs text-[#6F6658]">
         <Link href="/" className="hover:text-[#C9A84C] transition-colors">الرئيسية</Link>
         <span>/</span>
         <Link href="/products" className="hover:text-[#C9A84C] transition-colors">المنتجات</Link>
@@ -63,7 +63,7 @@ export default async function ProductPage({ params }: Props) {
           </>
         )}
         <span>/</span>
-        <span className="text-[#EDE7DD]">{productData.name_ar}</span>
+        <span className="text-[#1F1B16]">{productData.name_ar}</span>
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-2">
@@ -99,17 +99,17 @@ export default async function ProductPage({ params }: Props) {
           )}
           <h1 className="text-3xl font-black text-[#171411] leading-tight">{productData.name_ar}</h1>
           {productData.name_en && (
-            <p className="text-sm text-[#9CA3AF]" dir="ltr">{productData.name_en}</p>
+            <p className="text-sm text-[#6F6658]" dir="ltr">{productData.name_en}</p>
           )}
 
           {/* Price */}
           {minPrice > 0 ? (
             <div className="flex items-baseline gap-3">
               <span className="text-3xl font-black text-[#171411]">{formatSYP(minPrice)}</span>
-              {variants.length > 1 && <span className="text-sm text-[#9CA3AF]">يبدأ من</span>}
+              {variants.length > 1 && <span className="text-sm text-[#6F6658]">يبدأ من</span>}
             </div>
           ) : (
-            <p className="text-lg text-[#9CA3AF]">السعر قريباً</p>
+            <p className="text-lg text-[#6F6658]">السعر قريباً</p>
           )}
 
           {/* Stock badge */}
@@ -164,7 +164,7 @@ export default async function ProductPage({ params }: Props) {
 
           {/* Category link */}
           {category && (
-            <p className="text-xs text-[#9CA3AF]">
+            <p className="text-xs text-[#6F6658]">
               التصنيف:{' '}
               <Link href={`/categories/${category.slug}`} className="text-[#C9A84C] hover:underline">
                 {category.name_ar}

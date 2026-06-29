@@ -1,4 +1,4 @@
-﻿@tailwind base;
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -92,3 +92,169 @@ body {
 .badge-purple { background: var(--purple-bg); color: var(--purple); border-radius: 9999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; }
 .badge-gold   { background: var(--gold-badge); color: var(--gold);  border-radius: 9999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; }
 .badge-gray   { background: #F5F5F4; color: var(--text-secondary); border-radius: 9999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; }
+
+/* EURO STORE UNIFIED LIGHT LUXURY THEME PATCH START */
+:root {
+  --es-bg: #FAF7EF;
+  --es-surface: #FFFDF8;
+  --es-surface-soft: #F3EEE3;
+  --es-border: #E8DCC3;
+  --es-border-strong: #D7BE79;
+  --es-text: #1F1B16;
+  --es-muted: #6F6658;
+  --es-muted-2: #8B8172;
+  --es-gold: #C9A84C;
+  --es-gold-hover: #D8B95F;
+}
+
+/* الصفحة العامة */
+html,
+body,
+main {
+  background: var(--es-bg) !important;
+  color: var(--es-text) !important;
+}
+
+/* إلغاء الصناديق السوداء الثقيلة */
+body [class*="bg-[#0"],
+body [class*="bg-[#1"],
+body [class*="bg-[#202020"],
+body [class*="bg-[#222222"],
+body [class*="bg-black"],
+body [class*="bg-white/[0.03]"],
+body [class*="bg-white/[0.04]"],
+body [class*="bg-white/[0.05]"] {
+  background-color: var(--es-surface) !important;
+  color: var(--es-text) !important;
+}
+
+/* أماكن الصور والـ placeholders */
+body [class*="bg-[#1F1F1F"],
+body [class*="bg-[#252525"],
+body [class*="bg-[#2A2A2A"],
+body [class*="bg-[#2a2a2a"] {
+  background-color: var(--es-surface-soft) !important;
+}
+
+/* الحدود */
+body [class*="border-[#2"],
+body [class*="border-[#333"],
+body [class*="border-white/"],
+body [class*="border-black/10"] {
+  border-color: var(--es-border) !important;
+}
+
+/* النصوص */
+body [class*="text-white"],
+body [class*="text-[#E"],
+body [class*="text-[#F"] {
+  color: var(--es-text) !important;
+}
+
+body [class*="text-[#9"],
+body [class*="text-[#B"],
+body [class*="text-[#6B"],
+body [class*="text-gray-400"],
+body [class*="text-gray-500"] {
+  color: var(--es-muted) !important;
+}
+
+/* الذهبي يبقى هوية المتجر */
+body [class*="text-[#C9A84C"],
+body [class*="text-[#c9a84c"] {
+  color: var(--es-gold) !important;
+}
+
+body [class*="bg-[#C9A84C"],
+body [class*="bg-[#c9a84c"] {
+  background-color: var(--es-gold) !important;
+  color: var(--es-text) !important;
+}
+
+/* المدخلات */
+input,
+select,
+textarea {
+  background-color: var(--es-surface) !important;
+  color: var(--es-text) !important;
+  border-color: var(--es-border) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--es-muted-2) !important;
+}
+
+/* الكروت */
+.rounded-md.border,
+.rounded-lg.border,
+.rounded-xl.border,
+.rounded-2xl.border,
+.rounded-3xl.border {
+  box-shadow: 0 18px 45px rgba(31, 27, 22, 0.07) !important;
+}
+
+/* الجداول */
+table,
+thead,
+tbody,
+tr,
+td,
+th {
+  border-color: var(--es-border) !important;
+}
+
+/* hover */
+body [class*="hover:bg-[#1"]:hover,
+body [class*="hover:bg-white/"]:hover,
+body [class*="hover:bg-black/"]:hover {
+  background-color: var(--es-surface-soft) !important;
+}
+
+body [class*="hover:text-white"]:hover {
+  color: var(--es-text) !important;
+}
+
+/* إصلاح خاص للكروت المميزة السوداء */
+body article[class*="bg"],
+body div[class*="bg"] article,
+body a[class*="bg"] {
+  border-color: var(--es-border) !important;
+}
+
+/* EURO STORE UNIFIED LIGHT LUXURY THEME PATCH END */
+
+/* EURO STORE TARGETED PRODUCT POLISH START */
+
+/* web product cards */
+body a[href*="/products/"],
+body article,
+body .product-card {
+  background-color: var(--es-surface) !important;
+  border-color: var(--es-border) !important;
+  color: var(--es-text) !important;
+}
+
+/* product image boxes */
+body a[href*="/products/"] img,
+body a[href*="/products/"] [class*="aspect"],
+body article [class*="aspect"] {
+  background-color: var(--es-surface-soft) !important;
+  border-color: var(--es-border) !important;
+}
+
+/* admin product detail big panels */
+body [class*="shadow-2xl"],
+body [class*="shadow-xl"] {
+  box-shadow: 0 18px 45px rgba(31, 27, 22, 0.08) !important;
+}
+
+/* active/status chips should stay readable */
+body [class*="bg-green"],
+body [class*="bg-red"],
+body [class*="bg-yellow"],
+body [class*="bg-blue"] {
+  color: inherit;
+}
+
+/* EURO STORE TARGETED PRODUCT POLISH END */

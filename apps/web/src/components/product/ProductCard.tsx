@@ -55,15 +55,15 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
             </span>
           )}
           {isOnSale && (
-            <span className="bg-[#FF4444] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase">
+            <span className="bg-[#FF4444] text-[#1F1B16] text-[10px] font-bold px-2 py-1 rounded-sm uppercase">
               Ø®ØµÙ…
             </span>
           )}
         </div>
 
         {/* Wishlist */}
-        <button className="absolute top-3 end-3 opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-full bg-black/20 hover:bg-black/40 backdrop-blur-sm z-10">
-          <Heart className="w-5 h-5 text-white" />
+        <button className="absolute top-3 end-3 opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-full bg-[#FFFDF8]/20 hover:bg-[#FFFDF8]/40 backdrop-blur-sm z-10">
+          <Heart className="w-5 h-5 text-[#1F1B16]" />
         </button>
       </div>
       

@@ -36,27 +36,27 @@ export function AddVariantForm({ productId }: { productId: string }) {
     setSaving(false);
   }
 
-  const inputCls = "rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 text-[#E2E2E2] outline-none focus:border-[#C9A84C] w-full";
+  const inputCls = "rounded border border-[#E8DCC3] bg-[#FFFDF8] px-3 py-2 text-[#1F1B16] outline-none focus:border-[#C9A84C] w-full";
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <label className="flex flex-col gap-1.5 text-sm">
-        <span className="text-[#9CA3AF]">{t('sku')} *</span>
+        <span className="text-[#6F6658]">{t('sku')} *</span>
         <input name="sku" required className={`${inputCls} font-mono`} placeholder="ES-RED-L" />
       </label>
       <label className="flex flex-col gap-1.5 text-sm">
-        <span className="text-[#9CA3AF]">{t('priceSYP')} *</span>
+        <span className="text-[#6F6658]">{t('priceSYP')} *</span>
         <input name="price_syp" required type="number" min={0} className={inputCls} placeholder="150000" />
       </label>
       <label className="flex flex-col gap-1.5 text-sm">
-        <span className="text-[#9CA3AF]">{t('comparePriceSYP')}</span>
+        <span className="text-[#6F6658]">{t('comparePriceSYP')}</span>
         <input name="compare_price_syp" type="number" min={0} className={inputCls} placeholder="200000" />
       </label>
       <label className="flex flex-col gap-1.5 text-sm">
-        <span className="text-[#9CA3AF]">{t('stockQty')}</span>
+        <span className="text-[#6F6658]">{t('stockQty')}</span>
         <input name="stock_quantity" type="number" min={0} defaultValue={0} className={inputCls} />
       </label>
-      <label className="flex items-center gap-2 text-sm text-[#9CA3AF] cursor-pointer">
+      <label className="flex items-center gap-2 text-sm text-[#6F6658] cursor-pointer">
         <input type="checkbox" name="is_active" defaultChecked className="accent-[#C9A84C]" />
         {t('active')}
       </label>

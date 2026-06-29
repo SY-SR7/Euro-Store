@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -57,7 +57,7 @@ export default function AdminExchangesPage() {
       <div className="flex flex-wrap gap-2 rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
         {filters.map(f => (
           <button key={f.v} onClick={() => setFilter(f.v)}
-            className={['rounded-lg px-4 py-2 text-xs font-black border transition-colors', filter===f.v ? 'bg-[#B8860B] text-white border-[#B8860B]' : 'border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B]'].join(' ')}>
+            className={['rounded-lg px-4 py-2 text-xs font-black border transition-colors', filter===f.v ? 'bg-[#B8860B] text-[#1F1B16] border-[#B8860B]' : 'border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B]'].join(' ')}>
             {f.l}
           </button>
         ))}

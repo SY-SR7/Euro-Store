@@ -137,7 +137,7 @@ export default function ExchangeDetailPage() {
         <button
           onClick={saveNotes}
           disabled={saving}
-          className="px-4 py-2 bg-primary text-white rounded text-sm disabled:opacity-40"
+          className="px-4 py-2 bg-primary text-[#1F1B16] rounded text-sm disabled:opacity-40"
         >
           حفظ الملاحظات
         </button>

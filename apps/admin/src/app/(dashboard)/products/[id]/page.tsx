@@ -31,21 +31,21 @@ export default async function ProductHubPage({ params }: Props) {
   const totalStock = variants.reduce((s, v) => s + (v.stock_quantity ?? 0), 0);
   const minPrice   = variants.length > 0 ? Math.min(...variants.map(v => v.price_syp)) : 0;
 
-  const card  = 'rounded-3xl border border-white/10 bg-[#101010] p-5 shadow-2xl';
-  const label = 'text-xs text-[#9CA3AF] mt-1';
+  const card  = 'rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-5 shadow-xl';
+  const label = 'text-xs text-[#6F6658] mt-1';
 
   return (
     <div className="space-y-6" dir="rtl">
       {/* Header */}
-      <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-[#101010] p-6 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <Link href="/products" className="text-sm text-[#9CA3AF] hover:text-[#C9A84C] transition-colors"> المنتجات</Link>
-          <h1 className="mt-1 text-2xl font-black text-white">{product.name_ar}</h1>
-          <p className="text-sm text-[#9CA3AF]">{product.name_en}</p>
+          <Link href="/products" className="text-sm text-[#6F6658] hover:text-[#C9A84C] transition-colors"> المنتجات</Link>
+          <h1 className="mt-1 text-2xl font-black text-[#1F1B16]">{product.name_ar}</h1>
+          <p className="text-sm text-[#6F6658]">{product.name_en}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link href={`/products/${params.id}/edit`}
-            className="rounded-2xl border border-white/10 px-4 py-2 text-sm font-bold text-[#EDE7DD] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors">
+            className="rounded-2xl border border-[#E8DCC3] px-4 py-2 text-sm font-bold text-[#1F1B16] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors">
             تعديل المعلومات
           </Link>
           <Link href={`/products/${params.id}/variants`}
@@ -84,10 +84,10 @@ export default async function ProductHubPage({ params }: Props) {
       {/* Details */}
       <div className={card + ' space-y-3 text-sm'}>
         <h2 className="font-black text-[#C9A84C]">تفاصيل المنتج</h2>
-        <div className="flex justify-between border-b border-white/5 pb-2"><span className="text-[#9CA3AF]">التصنيف</span><span className="text-[#EDE7DD]">{category?.name_ar ?? '—'}</span></div>
-        <div className="flex justify-between border-b border-white/5 pb-2"><span className="text-[#9CA3AF]">الماركة</span><span className="text-[#EDE7DD]">{brand?.name ?? '—'}</span></div>
-        <div className="flex justify-between border-b border-white/5 pb-2"><span className="text-[#9CA3AF]">slug</span><span className="font-mono text-xs text-[#9CA3AF]">{product.slug}</span></div>
-        <div className="flex justify-between"><span className="text-[#9CA3AF]">مميّز</span><span className="text-[#EDE7DD]">{product.is_featured ? '✓ نعم' : '—'}</span></div>
+        <div className="flex justify-between border-b border-[#E8DCC3] pb-2"><span className="text-[#6F6658]">التصنيف</span><span className="text-[#1F1B16]">{category?.name_ar ?? '—'}</span></div>
+        <div className="flex justify-between border-b border-[#E8DCC3] pb-2"><span className="text-[#6F6658]">الماركة</span><span className="text-[#1F1B16]">{brand?.name ?? '—'}</span></div>
+        <div className="flex justify-between border-b border-[#E8DCC3] pb-2"><span className="text-[#6F6658]">slug</span><span className="font-mono text-xs text-[#6F6658]">{product.slug}</span></div>
+        <div className="flex justify-between"><span className="text-[#6F6658]">مميّز</span><span className="text-[#1F1B16]">{product.is_featured ? '✓ نعم' : '—'}</span></div>
       </div>
 
       {/* Images */}
@@ -101,7 +101,7 @@ export default async function ProductHubPage({ params }: Props) {
             {images.map(img => (
               <div key={img.id} className="relative">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img.url} alt="" className={['h-20 w-20 rounded-xl object-cover border-2', img.is_primary ? 'border-[#C9A84C]' : 'border-white/10'].join(' ')} />
+                <img src={img.url} alt="" className={['h-20 w-20 rounded-xl object-cover border-2', img.is_primary ? 'border-[#C9A84C]' : 'border-[#E8DCC3]'].join(' ')} />
                 {img.is_primary && <span className="absolute -top-1 -right-1 rounded-full bg-[#C9A84C] px-1.5 py-0.5 text-[9px] font-black text-[#111]">رئيسية</span>}
               </div>
             ))}
@@ -111,14 +111,14 @@ export default async function ProductHubPage({ params }: Props) {
 
       {/* Variants table */}
       {variants.length > 0 && (
-        <div className="overflow-hidden rounded-3xl border border-white/10 bg-[#101010] shadow-2xl">
+        <div className="overflow-hidden rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] shadow-xl">
           <div className="flex items-center justify-between p-5">
             <h2 className="font-black text-[#C9A84C]">المتغيرات والأسعار</h2>
             <Link href={`/products/${params.id}/variants`} className="text-xs text-[#C9A84C] hover:underline">إدارة المتغيرات</Link>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
-              <thead className="bg-white/5 text-[#9CA3AF]">
+              <thead className="bg-white/5 text-[#6F6658]">
                 <tr>
                   <th className="px-4 py-3 text-right font-medium">SKU</th>
                   <th className="px-4 py-3 text-right font-medium">السعر (ل.س)</th>
@@ -128,8 +128,8 @@ export default async function ProductHubPage({ params }: Props) {
               </thead>
               <tbody className="divide-y divide-white/10">
                 {variants.map(v => (
-                  <tr key={v.id} className="text-[#EDE7DD] hover:bg-white/[0.03]">
-                    <td className="px-4 py-3 font-mono text-xs text-[#9CA3AF]">{v.sku}</td>
+                  <tr key={v.id} className="text-[#1F1B16] hover:bg-[#FFFDF8]">
+                    <td className="px-4 py-3 font-mono text-xs text-[#6F6658]">{v.sku}</td>
                     <td className="px-4 py-3 font-bold text-[#C9A84C]">{v.price_syp.toLocaleString('ar-SY')}</td>
                     <td className="px-4 py-3">{v.stock_quantity}</td>
                     <td className="px-4 py-3">
