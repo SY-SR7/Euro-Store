@@ -9,7 +9,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
       <div className="w-full max-w-md rounded-3xl border border-[#E5E0D8] bg-white shadow-2xl max-h-[90vh] flex flex-col" onClick={e=>e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] px-6 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">Ã—</button>
+          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">×</button>
         </div>
         <div className="overflow-y-auto p-6">{children}</div>
       </div>
@@ -103,7 +103,7 @@ export default function AdminBrandsPage() {
                 {visible.map(b=>(
                   <tr key={b.id} className="group hover:bg-[#FFFBF0] cursor-pointer transition-colors" onClick={()=>open(b)}>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B] transition-colors">{b.name}</td>
-                    <td className="px-5 py-3 text-xs text-[#A8A29E] hidden sm:table-cell font-mono">{b.slug??'â€”'}</td>
+                    <td className="px-5 py-3 text-xs text-[#A8A29E] hidden sm:table-cell font-mono">{b.slug??'—'}</td>
                     <td className="px-5 py-3">
                       <span className={`rounded-full border px-3 py-1 text-xs font-bold ${b.is_active?'bg-green-50 text-green-700 border-green-200':'bg-red-50 text-red-700 border-red-200'}`}>
                         {b.is_active?'???':'??? ???'}
@@ -139,7 +139,7 @@ export default function AdminBrandsPage() {
           ):(
             <div className="space-y-3 text-sm">
               {([['?????',selected.name],['Slug',selected.slug],['??????',selected.logo_url]] as [string,string|null|undefined][]).map(([l,v])=>(
-                <div key={l} className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917] truncate max-w-[60%]">{v??'â€”'}</span></div>
+                <div key={l} className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917] truncate max-w-[60%]">{v??'—'}</span></div>
               ))}
               <div className="flex justify-between border-b border-[#F0ECE6] pb-2">
                 <span className="text-[#A8A29E]">??????</span>

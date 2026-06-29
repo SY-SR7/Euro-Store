@@ -17,7 +17,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
       <div className="w-full max-w-lg rounded-3xl border border-[#E5E0D8] bg-white shadow-2xl max-h-[90vh] flex flex-col" onClick={e=>e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] px-6 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">Ã—</button>
+          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">×</button>
         </div>
         <div className="overflow-y-auto p-6">{children}</div>
       </div>
@@ -62,7 +62,7 @@ export default function AdminAuditLogsPage() {
                 {logs.map(l=>(
                   <tr key={l.id} className="group hover:bg-[#FFFBF0] cursor-pointer transition-colors" onClick={()=>setSelected(l)}>
                     <td className="px-5 py-3 font-mono text-xs font-semibold text-[#1C1917] group-hover:text-[#B8860B] transition-colors">{l.action}</td>
-                    <td className="px-5 py-3 text-xs text-[#57534E] hidden sm:table-cell">{l.target_table??'â€”'}</td>
+                    <td className="px-5 py-3 text-xs text-[#57534E] hidden sm:table-cell">{l.target_table??'—'}</td>
                     <td className="px-5 py-3 hidden md:table-cell"><span className="badge-blue">{l.actor_role??'????'}</span></td>
                     <td className="px-5 py-3 text-xs text-[#A8A29E]">{new Date(l.created_at).toLocaleString('ar-SY')}</td>
                   </tr>
@@ -84,7 +84,7 @@ export default function AdminAuditLogsPage() {
         <Modal title={selected.action} onClose={()=>setSelected(null)}>
           <div className="space-y-3 text-sm">
             {([['???????',selected.action],['??????',selected.target_table],['???????',selected.target_id],['?????',selected.actor_role],['???????',new Date(selected.created_at).toLocaleString('ar-SY')]] as [string,string|null|undefined][]).map(([l,v])=>(
-              <div key={l} className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917] font-mono text-xs">{v??'â€”'}</span></div>
+              <div key={l} className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917] font-mono text-xs">{v??'—'}</span></div>
             ))}
             {selected.metadata&&(
               <div className="pt-2">
