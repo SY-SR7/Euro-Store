@@ -1,3 +1,71 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+
+/* ── Brand Tokens ── */
+:root {
+  --gold:          #C9A84C;
+  --gold-dark:     #A67C2E;
+  --gold-light:    #E8D28A;
+  --bg-base:       #0F0F0F;
+  --bg-surface:    #151515;
+  --bg-elevated:   #1A1A1A;
+  --bg-card:       #1E2020;
+  --border:        #2E2E2E;
+  --text-primary:  #E2E2E2;
+  --text-secondary:#9CA3AF;
+  --text-muted:    #6B7280;
+  --red-accent:    #FF4444;
+  --green-accent:  #22C55E;
+}
+
+/* ── Base ── */
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Manrope', 'Noto Naskh Arabic', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Arabic RTL direction ── */
+[dir="rtl"] body {
+  font-family: 'Noto Naskh Arabic', 'Manrope', system-ui, sans-serif;
+}
+
+/* ── Headlines ── */
+.font-headline {
+  font-family: 'Playfair Display', 'Noto Naskh Arabic', Georgia, serif;
+}
+
+/* ── Shimmer animation for badges ── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.shimmer {
+  background: linear-gradient(90deg, var(--gold) 25%, var(--gold-light) 50%, var(--gold) 75%);
+  background-size: 200% auto;
+  animation: shimmer 2s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-surface); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-dark); }
+
+/* ── Focus ring ── */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* ── Selection ── */
+::selection { background: rgba(201, 168, 76, 0.25); color: var(--text-primary); }

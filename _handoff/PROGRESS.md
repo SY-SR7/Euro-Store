@@ -1,4 +1,4 @@
-# EuroStore — Progress Tracker
+﻿# EuroStore — Progress Tracker
 
 > Updated by every AI agent at the end of each work session.
 > Read this before starting any new session to know exactly where things stand.
@@ -589,3 +589,45 @@
 - All 6 demo products now have a placeholder image in `product_images` (`is_primary=true`), uploaded to the `product-images` Storage bucket and verified byte-for-byte after upload (downloaded the uploaded file and compared size to the local source).
 - Images are generic placeholder stock photos from Lorem Picsum (`picsum.photos`, seeded per product slug for stable/reproducible results) — **not real product photography.** Replace with actual product photos via `/admin/products/[id]/images` before any real launch.
 - **PowerShell gotcha worth recording:** uploading binary image bytes to the Supabase Storage REST endpoint from PowerShell is not safe with `Invoke-RestMethod -Body $byteArray` (silently corrupts/loses binary data — the call may even report success) nor with `System.Net.Http.HttpClient` + `ByteArrayContent` on Windows PowerShell 5.1 (throws "Cannot find an overload for ByteArrayContent and the argument count: N" because 5.1's type-conversion treats the `byte[]` as N separate constructor arguments instead of one array argument). The reliable, version-agnostic fix is `System.Net.WebClient.UploadData($uri, "POST", [byte[]]$bytes)` — works identically on PowerShell 5.1 and 7+. Always verify a binary upload by re-downloading the uploaded object and comparing byte length, not by trusting an HTTP success status alone.
+---
+
+### Session 017 — 2026-06-29
+**Agent:** Claude (PowerShell script — web + admin only)
+**Duration:** ~20 min
+**Work Done:**
+
+**i18n (Phases 2–11 dependency):**
+- packages/shared/src/messages/ar.json — rebuilt from scratch with ALL keys used across web + admin: common, nav, home, auth, totp, catalog, cart, checkout, orders, loyalty, exchange, footer, admin, adminCatalog
+- packages/shared/src/messages/en.json — same, full English equivalents
+- apps/web/src/i18n/messages.ts — regenerated (inline ar + en objects)
+- apps/admin/src/i18n/messages.ts — regenerated (inline ar + en objects)
+
+**Web — Missing Pages:**
+- apps/web/src/app/categories/page.tsx — /categories index (grid of all categories)
+- apps/web/src/app/orders/page.tsx — /orders customer orders list (auth-protected)
+- apps/web/src/app/faq/page.tsx — /faq static accordion
+- apps/web/src/app/contact/page.tsx — /contact page with WhatsApp + email links + form
+- apps/web/src/app/exchange/page.tsx — /exchange index (list user requests + policy note)
+- apps/web/src/app/account/page.tsx — /account profile page with quick links
+- apps/web/src/app/api/auth/logout/route.ts — POST /api/auth/logout
+
+**Web — Components:**
+- apps/web/src/components/layout/Header.tsx — added nav.home, nav.products, nav.categories keys; added mobile menu drawer; added /account, /products search link
+- apps/web/src/app/globals.css — added brand tokens (CSS vars), Google Fonts (Playfair Display, Manrope, Noto Naskh Arabic), shimmer animation, scrollbar, focus ring, selection highlight
+
+**Admin — Missing Pages:**
+- apps/admin/src/app/(dashboard)/customers/page.tsx — /customers list with search
+- apps/admin/src/app/api/customers/route.ts — GET /api/customers
+- apps/admin/src/app/(dashboard)/settings/page.tsx — /settings system_settings editor
+- apps/admin/src/app/api/settings/route.ts — GET + PATCH /api/settings
+- apps/admin/src/app/(dashboard)/audit-logs/page.tsx — /audit-logs paginated table
+- apps/admin/src/app/api/audit-logs/route.ts — GET /api/audit-logs (paginated)
+
+**Admin — Updated:**
+- apps/admin/src/app/components/Sidebar.tsx — added Customers, Settings, Audit Logs nav items (with icons)
+- apps/admin/src/app/globals.css — added brand tokens, Google Fonts, CSS utility class
+
+**Phase Updates:**
+- Phase 0: 🟡 → i18n, CSS, fonts now implemented
+- Phase 9 (Admin): 🟡 → added customers + settings + audit-logs pages; sidebar now complete
+- Phase 5 (Web UX): 🟡 → /categories, /orders, /account, /faq, /contact, /exchange index added

@@ -1,21 +1,25 @@
-'use client';
+﻿'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   LayoutDashboard, Package, Tag, Bookmark,
-  ShoppingCart, Home, LogOut, Percent, RefreshCw
+  ShoppingCart, Home, LogOut, Percent, RefreshCw,
+  Users, Settings, FileText
 } from 'lucide-react';
 
 const navItems = [
-  { href: '/',                icon: LayoutDashboard, labelKey: 'admin.dashboard'       },
-  { href: '/products',        icon: Package,         labelKey: 'adminCatalog.products'  },
-  { href: '/categories',      icon: Tag,             labelKey: 'adminCatalog.categories'},
-  { href: '/brands',          icon: Bookmark,        labelKey: 'adminCatalog.brands'    },
-  { href: '/orders',          icon: ShoppingCart,    labelKey: 'admin.orders'           },
-  { href: '/homepage',   icon: Home,      labelKey: 'adminCatalog.homepageSections' },
-  { href: '/discounts',  icon: Percent,   labelKey: 'admin.discounts'              },
-  { href: '/exchanges',  icon: RefreshCw, labelKey: 'admin.exchanges'              },
+  { href: '/',             icon: LayoutDashboard, labelKey: 'admin.dashboard'            },
+  { href: '/products',     icon: Package,         labelKey: 'adminCatalog.products'      },
+  { href: '/categories',   icon: Tag,             labelKey: 'adminCatalog.categories'    },
+  { href: '/brands',       icon: Bookmark,        labelKey: 'adminCatalog.brands'        },
+  { href: '/orders',       icon: ShoppingCart,    labelKey: 'admin.orders'               },
+  { href: '/discounts',    icon: Percent,         labelKey: 'admin.discounts'            },
+  { href: '/exchanges',    icon: RefreshCw,       labelKey: 'admin.exchanges'            },
+  { href: '/customers',    icon: Users,           labelKey: 'admin.customers'            },
+  { href: '/homepage',     icon: Home,            labelKey: 'adminCatalog.homepageSections' },
+  { href: '/settings',     icon: Settings,        labelKey: 'admin.settings'             },
+  { href: '/audit-logs',   icon: FileText,        labelKey: 'admin.auditLogs'            },
 ];
 
 export function Sidebar() {
@@ -60,4 +64,3 @@ export function Sidebar() {
     </aside>
   );
 }
-

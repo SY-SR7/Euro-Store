@@ -1,4 +1,4 @@
-export * from "./constants/governorates";
+﻿export * from "./constants/governorates";
 export * from "./constants/roles";
 export * from "./auth";
 export * from "./env";
@@ -14,3 +14,6 @@ export function formatSYP(value: number | null | undefined): string {
   const safeValue = typeof value === 'number' && Number.isFinite(value) ? value : 0;
   return `${new Intl.NumberFormat('ar-SY').format(safeValue)} ل.س`;
 }
+
+export * as arMessages from './messages/ar.json';
+export * as enMessages from './messages/en.json';
