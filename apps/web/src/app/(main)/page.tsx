@@ -147,7 +147,7 @@ export default async function HomePage() {
           1. THE CINEMATIC HERO — DJI-style canvas sequence
           ═══════════════════════════════════════════════════ */}
       <CinematicShowcaseSection
-        frameSrc={shoesFrameSrc}
+        frameSrcPattern="/frames/shoes/frame_{index:04d}.jpg"
         frameCount={FRAME_COUNT}
         scrollHeight="380vh"
         storyBeats={SHOES_STORY_BEATS}
