@@ -14,12 +14,14 @@
     "extract-frames": "node scripts/extract-frames.mjs"
   },
   "devDependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
     "eslint": "^8.57.0",
+    "fluent-ffmpeg": "^2.1.3",
     "turbo": "latest",
     "typescript": "^5.0.0"
   }
