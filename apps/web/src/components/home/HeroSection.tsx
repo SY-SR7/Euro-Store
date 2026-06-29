@@ -82,7 +82,7 @@ export function HeroSection() {
           initial="hidden"
           animate="visible"
           custom={0.1}
-          className="text-[#C9A84C] text-xs font-bold tracking-[0.4em] uppercase mb-5 opacity-90"
+          className="text-white text-xs font-bold tracking-[0.4em] uppercase mb-5 opacity-80"
         >
           مجموعة ٢٠٢٥
         </motion.p>
@@ -140,7 +140,7 @@ export function HeroSection() {
           >
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 bg-[#C9A84C] text-[#0C0C0C] px-8 py-4 text-sm font-black uppercase tracking-widest hover:bg-[#E8D28A] transition-colors duration-300 rounded-lg shadow-lg"
+              className="inline-flex items-center gap-2 bg-white text-black px-8 py-4 text-sm font-black uppercase tracking-widest hover:bg-gray-200 transition-colors duration-300 rounded-lg shadow-lg"
             >
               تسوق الآن
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rotate-180">
@@ -178,15 +178,7 @@ export function HeroSection() {
             { num: '٤', label: 'أقسام متنوعة' },
           ].map(({ num, label }) => (
             <div key={label} className="flex flex-col items-center gap-1">
-              <span
-                className="text-2xl md:text-3xl font-black"
-                style={{
-                  background: 'linear-gradient(135deg, #E8D28A, #C9A84C)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
+              <span className="text-2xl md:text-3xl font-black text-white">
                 {num}
               </span>
               <span className="text-white/50 text-xs uppercase tracking-widest">{label}</span>
@@ -206,13 +198,9 @@ export function HeroSection() {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
-          className="w-px h-10 bg-gradient-to-b from-[#C9A84C]/60 to-transparent"
+          className="w-px h-10 bg-gradient-to-b from-white/60 to-transparent"
         />
       </motion.div>
-
-      {/* ── Ambient gold glows ── */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-[#C9A84C]/5 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-1/3 right-1/4 w-[300px] h-[300px] rounded-full bg-[#C9A84C]/8 blur-[80px] pointer-events-none" />
     </section>
   );
 }
