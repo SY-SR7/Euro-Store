@@ -26,7 +26,7 @@ function clamp(value: number, min = 0, max = 1) {
   return Math.min(max, Math.max(min, value));
 }
 
-function productImage(product?: CatalogProduct | null) {
+function getProductImage(product?: CatalogProduct | null) {
   return (
     product?.image_url ||
     product?.thumbnail_url ||
@@ -45,8 +45,8 @@ function StaticProductIntro({
   imageUrl?: string | null;
 }) {
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-[#F3EEE3] shadow-2xl">
-      <div className="relative aspect-[4/5] w-[68%] overflow-hidden rounded-[1.5rem] border border-[#E8DCC3] bg-[#FFFDF8] shadow-2xl">
+    <div className="relative flex h-full min-h-[360px] w-full items-center justify-center overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-[#F3EEE3] shadow-2xl">
+      <div className="relative aspect-[4/5] w-[68%] max-w-[360px] overflow-hidden rounded-[1.5rem] border border-[#E8DCC3] bg-[#FFFDF8] shadow-2xl">
         {imageUrl ? (
           <img src={imageUrl} alt={title} className="h-full w-full object-cover" />
         ) : (
@@ -56,9 +56,9 @@ function StaticProductIntro({
         )}
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#FFFDF8] via-[#FFFDF8]/80 to-transparent p-6 text-[#1F1B16]">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#FFFDF8] via-[#FFFDF8]/85 to-transparent p-6 text-[#1F1B16]">
         <p className="text-sm font-bold text-[#C9A84C]">مقدمة القسم</p>
-        <h3 className="mt-2 text-3xl font-black">{title}</h3>
+        <h3 className="mt-2 text-2xl font-black md:text-3xl">{title}</h3>
       </div>
     </div>
   );
@@ -79,99 +79,105 @@ function ScrollLockedVideo({
   const progressRef = useRef(0);
   const durationRef = useRef(0);
   const touchYRef = useRef<number | null>(null);
-  const rafRef = useRef(0);
+  const rafRef = useRef<number | null>(null);
+  const metadataReadyRef = useRef(false);
 
   const [progress, setProgress] = useState(0);
   const [failed, setFailed] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [lockedHint, setLockedHint] = useState(false);
 
-  function applyProgress(nextProgress: number) {
-    const safe = clamp(nextProgress);
-    progressRef.current = safe;
-    setProgress(safe);
-
-    const video = videoRef.current;
-    const duration = durationRef.current;
-
-    if (!video || !duration || failed) return;
-
-    window.cancelAnimationFrame(rafRef.current);
-
-    rafRef.current = window.requestAnimationFrame(() => {
-      const targetTime = safe * duration;
-
-      try {
-        if (Math.abs(video.currentTime - targetTime) > 0.035) {
-          if ('fastSeek' in video && typeof video.fastSeek === 'function') {
-            video.fastSeek(targetTime);
-          } else {
-            video.currentTime = targetTime;
-          }
-        }
-      } catch {
-        try {
-          video.currentTime = targetTime;
-        } catch {
-          // ignore
-        }
-      }
-    });
-  }
-
-  function sectionAtLockLine() {
+  function isSectionAtControlLine() {
     const section = sectionRef.current;
     if (!section) return false;
 
     const rect = section.getBoundingClientRect();
     const vh = window.innerHeight || 1;
-    const lockLine = vh * 0.5;
+    const controlLine = vh * 0.5;
 
-    return rect.top <= lockLine && rect.bottom >= lockLine;
+    return rect.top <= controlLine && rect.bottom >= controlLine;
+  }
+
+  function seekVideo(nextProgress: number) {
+    const safeProgress = clamp(nextProgress);
+    progressRef.current = safeProgress;
+    setProgress(safeProgress);
+
+    const video = videoRef.current;
+    const duration = durationRef.current;
+
+    if (!video || !duration || !metadataReadyRef.current || failed) return;
+
+    if (rafRef.current !== null) {
+      window.cancelAnimationFrame(rafRef.current);
+    }
+
+    rafRef.current = window.requestAnimationFrame(() => {
+      const targetTime = Math.min(duration - 0.001, Math.max(0.001, safeProgress * duration));
+
+      try {
+        video.pause();
+
+        if (Math.abs(video.currentTime - targetTime) > 0.025) {
+          video.currentTime = targetTime;
+        }
+      } catch {
+        // بعض ترميزات الفيديو قد ترفض seek مؤقتًا
+      }
+    });
+  }
+
+  function shouldCaptureScroll(deltaY: number) {
+    if (!ready || failed) return false;
+    if (!isSectionAtControlLine()) return false;
+
+    const currentProgress = progressRef.current;
+
+    if (deltaY > 0 && currentProgress >= 0.999) return false;
+    if (deltaY < 0 && currentProgress <= 0.001) return false;
+
+    return true;
   }
 
   useEffect(() => {
-    function updateLockState() {
-      const active = sectionAtLockLine();
-      const p = progressRef.current;
+    const video = videoRef.current;
+    if (!video) return;
 
-      /*
-        القفل يعمل عندما يكون الفيديو عند منتصف الشاشة
-        ولم ننتهِ بالكامل، أو عندما نرجع للأعلى والفيديو ليس في البداية.
-      */
-      setIsLocked(active && p > 0.001 && p < 0.999);
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = 'auto';
+
+    try {
+      video.load();
+    } catch {
+      // ignore
     }
-
-    updateLockState();
-    window.addEventListener('scroll', updateLockState, { passive: true });
-    window.addEventListener('resize', updateLockState);
 
     return () => {
-      window.removeEventListener('scroll', updateLockState);
-      window.removeEventListener('resize', updateLockState);
+      if (rafRef.current !== null) {
+        window.cancelAnimationFrame(rafRef.current);
+      }
     };
-  }, [sectionRef]);
+  }, []);
 
   useEffect(() => {
-    function shouldCapture(deltaY: number) {
-      if (!sectionAtLockLine()) return false;
-
-      const p = progressRef.current;
-
-      if (deltaY > 0 && p >= 0.999) return false;
-      if (deltaY < 0 && p <= 0.001) return false;
-
-      return true;
-    }
-
     function onWheel(event: WheelEvent) {
-      if (!shouldCapture(event.deltaY)) return;
+      if (!shouldCaptureScroll(event.deltaY)) {
+        setLockedHint(false);
+        return;
+      }
 
       event.preventDefault();
+      event.stopPropagation();
 
-      const speed = 1 / 2600;
-      const next = progressRef.current + event.deltaY * speed;
-      applyProgress(next);
-      setIsLocked(progressRef.current > 0.001 && progressRef.current < 0.999);
+      setLockedHint(true);
+
+      /*
+        كلما زاد الرقم 3200 صار الفيديو أبطأ مع السكرول.
+        كلما نقص صار أسرع.
+      */
+      const sensitivity = 1 / 3200;
+      seekVideo(progressRef.current + event.deltaY * sensitivity);
     }
 
     function onTouchStart(event: TouchEvent) {
@@ -186,41 +192,44 @@ function ScrollLockedVideo({
 
       const deltaY = lastY - currentY;
 
-      if (!shouldCapture(deltaY)) {
+      if (!shouldCaptureScroll(deltaY)) {
         touchYRef.current = currentY;
+        setLockedHint(false);
         return;
       }
 
       event.preventDefault();
+      event.stopPropagation();
 
-      const speed = 1 / 1600;
-      const next = progressRef.current + deltaY * speed;
-      applyProgress(next);
+      setLockedHint(true);
+
+      const sensitivity = 1 / 2100;
+      seekVideo(progressRef.current + deltaY * sensitivity);
       touchYRef.current = currentY;
-      setIsLocked(progressRef.current > 0.001 && progressRef.current < 0.999);
     }
 
     function onKeyDown(event: KeyboardEvent) {
-      const keys = ['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Home', 'End'];
+      const keyMap: Record<string, number> = {
+        ArrowDown: 140,
+        PageDown: 650,
+        ' ': 650,
+        ArrowUp: -140,
+        PageUp: -650,
+      };
 
-      if (!keys.includes(event.key)) return;
+      const deltaY = keyMap[event.key];
 
-      let deltaY = 0;
-
-      if (event.key === 'ArrowDown') deltaY = 120;
-      if (event.key === 'PageDown' || event.key === ' ') deltaY = 520;
-      if (event.key === 'ArrowUp') deltaY = -120;
-      if (event.key === 'PageUp') deltaY = -520;
-      if (event.key === 'Home') deltaY = -9999;
-      if (event.key === 'End') deltaY = 9999;
-
-      if (!shouldCapture(deltaY)) return;
+      if (!deltaY) return;
+      if (!shouldCaptureScroll(deltaY)) {
+        setLockedHint(false);
+        return;
+      }
 
       event.preventDefault();
+      setLockedHint(true);
 
-      const speed = 1 / 2600;
-      applyProgress(progressRef.current + deltaY * speed);
-      setIsLocked(progressRef.current > 0.001 && progressRef.current < 0.999);
+      const sensitivity = 1 / 3200;
+      seekVideo(progressRef.current + deltaY * sensitivity);
     }
 
     window.addEventListener('wheel', onWheel, { passive: false });
@@ -229,27 +238,26 @@ function ScrollLockedVideo({
     window.addEventListener('keydown', onKeyDown);
 
     return () => {
-      window.cancelAnimationFrame(rafRef.current);
       window.removeEventListener('wheel', onWheel);
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [sectionRef, failed]);
+  }, [ready, failed]);
 
   if (failed) {
     return <StaticProductIntro title={title} imageUrl={fallbackImage} />;
   }
 
   const completed = progress >= 0.999;
-  const scale = completed ? 0.58 : 1;
-  const translateY = completed ? -18 : 0;
+  const frameScale = completed ? 0.62 : 1;
+  const frameTranslate = completed ? '-4%' : '0%';
 
   return (
     <div
-      className="relative h-full w-full origin-top overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-[#F3EEE3] shadow-2xl transition-transform duration-300"
+      className="relative h-full min-h-[360px] w-full origin-top overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-[#F3EEE3] shadow-2xl transition-transform duration-300"
       style={{
-        transform: `translateY(${translateY}px) scale(${scale})`,
+        transform: `translateY(${frameTranslate}) scale(${frameScale})`,
       }}
     >
       <video
@@ -262,25 +270,43 @@ function ScrollLockedVideo({
         onLoadedMetadata={(event) => {
           const video = event.currentTarget;
           durationRef.current = video.duration || 0;
-          video.pause();
-          video.currentTime = 0;
+          metadataReadyRef.current = true;
+          setReady(true);
+
+          try {
+            video.pause();
+            video.currentTime = 0.001;
+          } catch {
+            // ignore
+          }
         }}
+        onCanPlay={() => setReady(true)}
         onError={() => setFailed(true)}
       />
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1F1B16]/70 to-transparent p-6 text-white">
-        <div className="mb-3 h-1 overflow-hidden rounded-full bg-white/25">
+      {!ready ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-[#F3EEE3] text-center text-sm font-bold text-[#C9A84C]">
+          جار تجهيز الفيديو...
+        </div>
+      ) : null}
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1F1B16]/75 to-transparent p-5 text-white md:p-6">
+        <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-white/25">
           <div
-            className="h-full rounded-full bg-[#C9A84C]"
+            className="h-full rounded-full bg-[#C9A84C] transition-[width] duration-75"
             style={{ width: `${Math.round(progress * 100)}%` }}
           />
         </div>
 
-        <p className="text-sm font-bold text-[#E8DCC3]">
-          {completed ? 'اكتملت مقدمة الفيديو — تابع القسم' : isLocked ? 'السكرول يتحكم بالفيديو الآن' : 'تابع السكرول حتى منتصف الشاشة'}
+        <p className="text-xs font-bold text-[#E8DCC3] md:text-sm">
+          {completed
+            ? 'اكتمل الفيديو — تابع قسم الأحذية'
+            : lockedHint
+              ? 'السكرول يتحكم بالفيديو الآن'
+              : 'عند منتصف الشاشة سيتحول السكرول إلى تحكم بالفيديو'}
         </p>
 
-        <h3 className="mt-2 text-3xl font-black">{title}</h3>
+        <h3 className="mt-2 text-2xl font-black md:text-3xl">{title}</h3>
       </div>
     </div>
   );
@@ -295,38 +321,40 @@ function CategorySection({
   variants: CatalogVariant[];
   brandLookup: Map<string, CatalogBrand>;
 }) {
-  const ref = useRef<HTMLElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   const introTitle = section.introProduct?.name_ar || section.category.name_ar;
-  const introImage = productImage(section.introProduct);
-  const isShoesVideo = Boolean(section.introVideoSrc);
+  const introImage = getProductImage(section.introProduct);
+  const hasVideo = Boolean(section.introVideoSrc);
 
   return (
     <section
-      ref={ref}
+      ref={sectionRef}
       id={`section-${section.category.slug}`}
-      className="relative min-h-[260vh] border-t border-[#E8DCC3] py-16"
+      className="relative min-h-[240vh] border-t border-[#E8DCC3] py-10 md:py-16"
     >
-      <div className="sticky top-24 z-10 grid min-h-[calc(100vh-7rem)] items-start gap-10 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="h-[62vh] min-h-[430px]">
+      <div className="sticky top-20 z-10 grid min-h-[calc(100vh-5rem)] items-start gap-6 lg:top-24 lg:grid-cols-[0.92fr_1.08fr] lg:gap-10">
+        <div className="h-[52vh] min-h-[360px] lg:h-[62vh] lg:min-h-[430px]">
           {section.introVideoSrc ? (
             <ScrollLockedVideo
               src={section.introVideoSrc}
               title={introTitle}
               fallbackImage={introImage}
-              sectionRef={ref}
+              sectionRef={sectionRef}
             />
           ) : (
             <StaticProductIntro title={introTitle} imageUrl={introImage} />
           )}
         </div>
 
-        <div className="rounded-[2rem] border border-[#E8DCC3] bg-[#FFFDF8]/90 p-6 shadow-xl backdrop-blur">
+        <div className="rounded-[2rem] border border-[#E8DCC3] bg-[#FFFDF8]/95 p-4 shadow-xl backdrop-blur md:p-6">
           <div className="mb-6 text-right">
             <p className="text-sm font-bold text-[#C9A84C]">
-              {isShoesVideo ? 'القسم الأول — تجربة فيديو تفاعلية' : 'قسم'}
+              {hasVideo ? 'القسم الأول — فيديو تفاعلي' : 'قسم'}
             </p>
-            <h2 className="mt-2 text-5xl font-black text-[#1F1B16]">{section.category.name_ar}</h2>
+            <h2 className="mt-2 text-4xl font-black text-[#1F1B16] md:text-5xl">
+              {section.category.name_ar}
+            </h2>
             {section.category.name_en ? (
               <p className="mt-2 text-[#6F6658]">{section.category.name_en}</p>
             ) : null}
