@@ -1,3 +1,37 @@
+
+---
+
+### Session 020 — 2026-06-29
+**Agent:** Claude (PowerShell script — web + admin only)
+**Duration:** ~20 min
+**Work Done:**
+
+**Admin App:**
+- Added apps/admin/src/app/(dashboard)/products/[id]/page.tsx — Product Hub: shows product info, stats (variant count, total stock, min price), image previews, variant table, quick-action buttons (Edit / Variants / Images)
+- Added apps/admin/src/app/(dashboard)/exchanges/[id]/page.tsx — Exchange Detail: full info card, reason display, attached images, admin notes (inline editable), status action buttons (approve/reject/complete)
+- Updated apps/admin/src/app/(dashboard)/exchanges/page.tsx — table rows now include "تفاصيل" link to /exchanges/[id]
+- Updated apps/admin/src/app/(dashboard)/products/page.tsx — product list rows now link to the hub /products/[id] instead of directly to /edit
+
+**Web App:**
+- Updated apps/web/src/components/layout/Header.tsx — desktop nav now includes Loyalty + Exchange links; mobile drawer refined with icons and clean separation
+- Fixed apps/web/src/app/(shop)/products/page.tsx — now a clean redirect to /products (canonical route) instead of orphan duplicate
+
+**Phase Updates:**
+- Phase 9 (Admin): Product Hub page + Exchange Detail page added; admin product + exchange flows now fully navigable
+- Phase 0: Web Header desktop nav complete
+
+**Known Remaining Issues:**
+- Phase 12: Mobile App (Expo) — apps/mobile/App.tsx is still a placeholder
+- Phase 13: RESEND_API_KEY + EMAIL_FROM still unset — order emails non-functional
+- Phase 14: Testing — zero test files exist
+- Phase 15: Security hardening not started
+- Sub-admins API table name: verify user_profiles matches your actual Supabase schema
+
+**Next Agent Must Start With:**
+- Phase 12: Mobile App (Expo) — customer feature parity (browse, cart, orders, loyalty)
+- Set RESEND_API_KEY in .env.local to unblock order confirmation emails
+- Phase 14: Playwright E2E + unit tests
+
 # EuroStore — Progress Tracker
 
 > Updated by every AI agent at the end of each work session.
