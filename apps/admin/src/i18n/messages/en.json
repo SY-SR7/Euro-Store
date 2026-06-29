@@ -218,5 +218,18 @@
     "status": "Status",
     "total": "Total",
     "date": "Date"
+  },
+  "totp": {
+    "setupTitle": "Setup Two-Factor Auth (TOTP)",
+    "accountLabel": "Account",
+    "manualKey": "Manual Entry Key",
+    "setupLink": "Setup Link",
+    "codeInput": "6-Digit Code",
+    "activateBtn": "Activate",
+    "verifyTitle": "Two-Factor Auth",
+    "verifyBtn": "Verify",
+    "errors": {
+      "wrongCode": "Invalid code, please try again."
+    }
   }
 }

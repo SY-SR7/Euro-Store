@@ -218,5 +218,18 @@
     "status": "الحالة",
     "total": "الإجمالي",
     "date": "التاريخ"
+  },
+  "totp": {
+    "setupTitle": "إعداد المصادقة الثنائية (TOTP)",
+    "accountLabel": "الحساب",
+    "manualKey": "مفتاح الإدخال اليدوي",
+    "setupLink": "رابط الإعداد",
+    "codeInput": "الرمز المكون من 6 أرقام",
+    "activateBtn": "تفعيل",
+    "verifyTitle": "المصادقة الثنائية",
+    "verifyBtn": "تحقق",
+    "errors": {
+      "wrongCode": "الرمز غير صحيح، يرجى المحاولة مرة أخرى."
+    }
   }
 }
