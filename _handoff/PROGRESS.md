@@ -1,5 +1,26 @@
 ---
 
+### Session 042 — Scroll-Controlled Homepage Category Showcase
+**Scope:** apps/web + _handoff only
+
+**Feature:**
+- Rebuilt the web homepage as stacked category sections.
+- Shoes section appears first.
+- Added scroll-controlled video intro for the shoes section using `/videos/shoes-intro.mp4`.
+- Video stays on first frame until the section reaches the middle of the viewport.
+- Scrolling down advances the video; scrolling up reverses it.
+- When the section progresses near the end, the media frame shrinks while staying sticky at the top until the section ends.
+- Other categories use animated static product intros until dedicated videos are added.
+
+**Video Path:**
+- `apps/web/public/videos/shoes-intro.mp4`
+
+**Smoke Test:**
+- Run `pnpm --filter web dev`.
+- Open `/`.
+- Scroll to shoes section and verify video scrubbing.
+---
+
 ### Session 041 — Force Web Product Images Rendering
 **Scope:** apps/web + _handoff only
 

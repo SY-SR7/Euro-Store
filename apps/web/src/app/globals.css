@@ -317,3 +317,19 @@ a[href*="/products/"] img {
   visibility: visible !important;
 }
 /* EURO STORE PRODUCT IMAGE FIX END */
+
+/* EURO STORE SCROLL SHOWCASE START */
+html {
+  scroll-behavior: smooth;
+}
+
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+/* EURO STORE SCROLL SHOWCASE END */

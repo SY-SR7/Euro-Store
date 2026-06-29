@@ -1,100 +1,111 @@
 // @ts-nocheck
 import Link from 'next/link';
 import { createAdminSupabaseClient } from '@/supabase-server';
-import { ProductCard } from '../catalog-components';
-import { createCatalogLookup } from '../catalog-types';
+import { ScrollCategoryShowcase } from '@/components/home/ScrollCategoryShowcase';
 
 export const dynamic = 'force-dynamic';
+
+const CATEGORY_ORDER = ['shoes', 'bags', 'dresses', 'abayas', 'accessories', 'perfumes'];
 
 export default async function HomePage() {
   const supabase = createAdminSupabaseClient();
 
-  const [productsRes, categoriesRes, brandsRes, variantsRes] = await Promise.all([
+  const [categoriesRes, productsRes, variantsRes, brandsRes] = await Promise.all([
+    supabase
+      .from('categories')
+      .select('id,name_ar,name_en,slug,sort_order,is_active')
+      .eq('is_active', true)
+      .order('sort_order'),
+
     supabase
       .from('products')
       .select('id,name_ar,name_en,slug,description_ar,description_en,category_id,brand_id,is_featured,is_active,image_url')
       .eq('is_active', true)
       .order('is_featured', { ascending: false })
-      .order('created_at', { ascending: false })
-      .limit(4),
-    supabase.from('categories').select('id,name_ar,name_en,slug,sort_order,is_active').eq('is_active', true).order('sort_order'),
-    supabase.from('brands').select('id,name,slug,is_active').eq('is_active', true).order('name'),
-    supabase.from('product_variants').select('id,product_id,sku,price_syp,compare_price_syp,stock_quantity,is_active').eq('is_active', true),
+      .order('created_at', { ascending: false }),
+
+    supabase
+      .from('product_variants')
+      .select('id,product_id,sku,price_syp,compare_price_syp,stock_quantity,is_active')
+      .eq('is_active', true),
+
+    supabase
+      .from('brands')
+      .select('id,name,slug,is_active')
+      .eq('is_active', true)
+      .order('name'),
   ]);
 
-  const products = productsRes.data ?? [];
   const categories = categoriesRes.data ?? [];
-  const brands = brandsRes.data ?? [];
+  const products = productsRes.data ?? [];
   const variants = variantsRes.data ?? [];
+  const brands = brandsRes.data ?? [];
 
-  const categoryLookup = createCatalogLookup(categories);
-  const brandLookup = createCatalogLookup(brands);
+  const orderedCategories = [...categories].sort((a, b) => {
+    const aIndex = CATEGORY_ORDER.indexOf(a.slug);
+    const bIndex = CATEGORY_ORDER.indexOf(b.slug);
+
+    const safeA = aIndex === -1 ? 999 : aIndex;
+    const safeB = bIndex === -1 ? 999 : bIndex;
+
+    if (safeA !== safeB) return safeA - safeB;
+    return Number(a.sort_order ?? 999) - Number(b.sort_order ?? 999);
+  });
+
+  const sections = orderedCategories.map((category) => {
+    const categoryProducts = products.filter((product) => product.category_id === category.id);
+    const introProduct = categoryProducts[0] ?? null;
+
+    return {
+      category,
+      products: categoryProducts,
+      introProduct,
+      introVideoSrc: category.slug === 'shoes' ? '/videos/shoes-intro.mp4' : null,
+    };
+  });
 
   return (
-    <main className="min-h-screen bg-[#FAF7EF] px-6 py-14 text-[#1F1B16]" dir="rtl">
-      <div className="mx-auto max-w-7xl space-y-16">
-        <section className="grid min-h-[300px] items-center gap-8 lg:grid-cols-2">
+    <main className="min-h-screen bg-[#FAF7EF] text-[#1F1B16]" dir="rtl">
+      <section className="mx-auto flex min-h-[82vh] max-w-7xl flex-col justify-center px-6 py-16">
+        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
           <div className="text-right">
-            <p className="text-sm font-bold text-[#C9A84C]">أزياء أوروبية تصل إلى بابك</p>
-            <h1 className="mt-4 text-5xl font-black leading-tight lg:text-7xl">
-              أناقة يومية بلمسة أوروبية
+            <p className="text-sm font-bold text-[#C9A84C]">تجربة تسوق تفاعلية</p>
+            <h1 className="mt-4 max-w-4xl text-5xl font-black leading-tight lg:text-7xl">
+              كل قسم يبدأ بمشهد بصري يتحرك مع السكرول
             </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-[#6F6658]">
+              ابدأ بقسم الأحذية، وعند وصول الفيديو إلى منتصف الشاشة يتحول السكرول إلى تحكم مباشر بالفيديو.
+            </p>
           </div>
 
-          <div className="text-right lg:text-left">
-            <p className="text-[#6F6658]">Everyday Elegance, European Touch</p>
-            <Link
-              href="/products"
-              className="mt-6 inline-flex rounded-xl bg-[#C9A84C] px-8 py-4 font-black text-[#1F1B16] transition hover:bg-[#D8B95F]"
-            >
-              تسوق الآن
-            </Link>
-          </div>
-        </section>
-
-        <section>
-          <div className="mb-8 flex items-end justify-between gap-4">
-            <Link href="/products" className="text-sm font-bold text-[#C9A84C] hover:underline">
-              عرض الكل
-            </Link>
-            <div className="text-right">
-              <p className="text-sm font-bold text-[#C9A84C]">مختاراتنا</p>
-              <h2 className="mt-2 text-3xl font-black">اختيارات مميزة</h2>
-            </div>
-          </div>
-
-          {products.length === 0 ? (
-            <div className="rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-12 text-center text-[#6F6658]">
-              لا توجد منتجات حالياً
-            </div>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  variants={variants}
-                  category={product.category_id ? categoryLookup.get(product.category_id) : undefined}
-                  brand={product.brand_id ? brandLookup.get(product.brand_id) : undefined}
-                />
+          <div className="rounded-[2rem] border border-[#E8DCC3] bg-[#FFFDF8] p-6 shadow-xl">
+            <p className="text-sm font-bold text-[#C9A84C]">الأقسام</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {sections.map((section) => (
+                <a
+                  key={section.category.id}
+                  href={`#section-${section.category.slug}`}
+                  className="rounded-xl border border-[#E8DCC3] px-4 py-2 text-sm font-bold text-[#6F6658] transition hover:border-[#C9A84C] hover:text-[#C9A84C]"
+                >
+                  {section.category.name_ar}
+                </a>
               ))}
             </div>
-          )}
-        </section>
-
-        <section className="border-t border-[#E8DCC3] pt-10">
-          <div className="flex flex-wrap justify-center gap-3">
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/categories/${category.slug}`}
-                className="rounded-xl border border-[#E8DCC3] bg-[#FFFDF8] px-5 py-3 text-sm font-bold text-[#C9A84C] transition hover:border-[#C9A84C]"
-              >
-                {category.name_ar}
-              </Link>
-            ))}
           </div>
-        </section>
+        </div>
+
+        <div className="mt-12">
+          <Link
+            href="#section-shoes"
+            className="inline-flex rounded-xl bg-[#C9A84C] px-8 py-4 font-black text-[#1F1B16] transition hover:bg-[#D8B95F]"
+          >
+            ابدأ من قسم الأحذية
+          </Link>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-7xl px-6">
+        <ScrollCategoryShowcase sections={sections} variants={variants} brands={brands} />
       </div>
     </main>
   );
