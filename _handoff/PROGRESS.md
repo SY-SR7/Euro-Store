@@ -896,3 +896,19 @@
 **Next:**
 - Run pnpm --filter admin dev.
 - Test sidebar collapse/expand and sections: shipping-rates, loyalty-settings, sub-admins, settings.
+
+---
+
+### Session 027 — 2026-06-29
+**Scope:** apps/admin only.
+
+**Fix:**
+- Added admin visual polish CSS layer.
+- Forced old white/web-style cards, tables, forms, and text colors to the admin black/gold theme.
+- Fixed unreadable white cards in product detail and other legacy admin sections.
+- Preserved gold button contrast and status badge colors.
+- Cleared admin .next cache.
+
+**Next:**
+- Run pnpm --filter admin dev.
+- Smoke-test product details, shipping rates, settings, loyalty settings, and sub-admins.

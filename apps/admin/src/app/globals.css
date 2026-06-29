@@ -60,3 +60,224 @@ body {
   }
 }
 /* admin-sidebar-layout:end */
+
+/* admin-visual-polish:start */
+:root {
+  --admin-bg: #070707;
+  --admin-surface: #101010;
+  --admin-surface-2: #151515;
+  --admin-surface-3: #1A1A1A;
+  --admin-border: rgba(255, 255, 255, 0.10);
+  --admin-border-strong: rgba(201, 168, 76, 0.45);
+  --admin-text: #F7F3EA;
+  --admin-muted: #B8B1A4;
+  --admin-soft: #8E867A;
+  --admin-gold: #C9A84C;
+  --admin-gold-hover: #D8B95F;
+}
+
+body {
+  background: var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+
+.admin-main {
+  max-width: 100vw;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(201, 168, 76, 0.08), transparent 28rem),
+    radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.05), transparent 24rem),
+    var(--admin-bg) !important;
+  color: var(--admin-text) !important;
+}
+
+@media (min-width: 768px) {
+  .admin-main {
+    padding-right: var(--admin-sidebar-space, 18rem) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-main {
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+  }
+}
+
+/* اجبار الكروت البيضاء القديمة على ثيم الأدمن */
+.admin-main :is(
+  [class~="bg-white"],
+  [class~="bg-[#fff]"],
+  [class~="bg-[#FFF]"],
+  [class~="bg-[#ffffff]"],
+  [class~="bg-[#FFFFFF]"],
+  [class~="bg-[#F8F5EF]"],
+  [class~="bg-[#F7F3EA]"],
+  [class~="bg-[#FAF7EF]"],
+  [class~="bg-gray-50"],
+  [class~="bg-gray-100"],
+  [class~="bg-slate-50"],
+  [class~="bg-slate-100"],
+  [class~="bg-zinc-50"],
+  [class~="bg-zinc-100"],
+  [class~="bg-neutral-50"],
+  [class~="bg-neutral-100"]
+) {
+  background-color: var(--admin-surface) !important;
+  color: var(--admin-text) !important;
+  border-color: var(--admin-border) !important;
+}
+
+/* النصوص الداكنة القديمة */
+.admin-main :is(
+  [class~="text-[#171411]"],
+  [class~="text-[#3C352C]"],
+  [class~="text-[#2E261D]"],
+  [class~="text-gray-950"],
+  [class~="text-gray-900"],
+  [class~="text-gray-800"],
+  [class~="text-slate-950"],
+  [class~="text-slate-900"],
+  [class~="text-zinc-950"],
+  [class~="text-zinc-900"],
+  [class~="text-neutral-950"],
+  [class~="text-neutral-900"]
+) {
+  color: var(--admin-text) !important;
+}
+
+/* النصوص الثانوية */
+.admin-main :is(
+  [class~="text-[#6F6558]"],
+  [class~="text-[#7E766B]"],
+  [class~="text-gray-700"],
+  [class~="text-gray-600"],
+  [class~="text-gray-500"],
+  [class~="text-slate-700"],
+  [class~="text-slate-600"],
+  [class~="text-zinc-700"],
+  [class~="text-zinc-600"],
+  [class~="text-neutral-700"],
+  [class~="text-neutral-600"]
+) {
+  color: var(--admin-muted) !important;
+}
+
+/* حدود وفواصل قديمة */
+.admin-main :is(
+  [class~="border-gray-100"],
+  [class~="border-gray-200"],
+  [class~="border-gray-300"],
+  [class~="border-slate-100"],
+  [class~="border-slate-200"],
+  [class~="border-zinc-100"],
+  [class~="border-zinc-200"],
+  [class~="border-neutral-100"],
+  [class~="border-neutral-200"],
+  [class~="border-[#E7DED1]"],
+  [class~="border-[#DED6CA]"]
+) {
+  border-color: var(--admin-border) !important;
+}
+
+/* الجداول */
+.admin-main table {
+  border-color: var(--admin-border) !important;
+}
+
+.admin-main thead,
+.admin-main [class~="bg-[#161616]"] {
+  background-color: var(--admin-surface-3) !important;
+}
+
+.admin-main th {
+  color: var(--admin-gold) !important;
+  border-color: var(--admin-border) !important;
+}
+
+.admin-main td {
+  color: var(--admin-text) !important;
+  border-color: var(--admin-border) !important;
+}
+
+.admin-main tr {
+  border-color: var(--admin-border) !important;
+}
+
+/* الحقول */
+.admin-main input,
+.admin-main select,
+.admin-main textarea {
+  background-color: var(--admin-surface-2) !important;
+  color: var(--admin-text) !important;
+  border-color: var(--admin-border) !important;
+  caret-color: var(--admin-gold) !important;
+}
+
+.admin-main input:focus,
+.admin-main select:focus,
+.admin-main textarea:focus {
+  border-color: var(--admin-gold) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.35) !important;
+}
+
+.admin-main option {
+  background-color: var(--admin-surface) !important;
+  color: var(--admin-text) !important;
+}
+
+.admin-main ::placeholder {
+  color: var(--admin-soft) !important;
+}
+
+/* أزرار الذهب تبقى مقروءة */
+.admin-main :is(
+  button[class*="bg-[#C9A84C]"],
+  a[class*="bg-[#C9A84C]"],
+  button[class*="bg-[#D8B95F]"],
+  a[class*="bg-[#D8B95F]"]
+) {
+  background-color: var(--admin-gold) !important;
+  color: #111111 !important;
+  border-color: var(--admin-gold) !important;
+}
+
+.admin-main :is(
+  button[class*="bg-[#C9A84C]"],
+  a[class*="bg-[#C9A84C]"]
+):hover {
+  background-color: var(--admin-gold-hover) !important;
+}
+
+/* الكروت */
+.admin-main :is(section, article, aside, div)[class*="rounded"] {
+  border-color: var(--admin-border);
+}
+
+/* صور المنتجات الفارغة أو الحاويات البيضاء */
+.admin-main img {
+  background-color: transparent !important;
+}
+
+.admin-main [class*="shadow"] {
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* شارات الحالات */
+.admin-main :is([class*="text-green"], [class*="bg-green"]) {
+  color: #86EFAC !important;
+}
+
+.admin-main :is([class*="text-red"], [class*="bg-red"]) {
+  color: #FCA5A5 !important;
+}
+
+.admin-main :is([class*="text-yellow"], [class*="bg-yellow"]) {
+  color: #FDE68A !important;
+}
+
+.admin-main :is([class*="text-blue"], [class*="bg-blue"]) {
+  color: #93C5FD !important;
+}
+/* admin-visual-polish:end */
