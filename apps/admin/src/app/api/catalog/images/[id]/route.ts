@@ -9,16 +9,16 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     const admin = createAdminSupabaseClient();
     const body = await request.json().catch(() => null) as Record<string, unknown> | null;
     if (!body) return NextResponse.json({ error: 'Invalid body' }, { status: 400 });
+    // If setting as primary, unset others first
+    if (body.is_primary && body.product_id) {
+      await admin.from('product_images').update({ is_primary: false } as never).eq('product_id', body.product_id);
+    }
     const update: Record<string, unknown> = {};
-    if (typeof body.sku === 'string') update.sku = body.sku.trim();
-    if (typeof body.price_syp === 'number') update.price_syp = body.price_syp;
-    if ('compare_price_syp' in body) update.compare_price_syp = body.compare_price_syp ?? null;
-    if (typeof body.stock_quantity === 'number') update.stock_quantity = Math.max(0, Math.floor(body.stock_quantity));
-    if (typeof body.is_active === 'boolean') update.is_active = body.is_active;
-    if ('color' in body) update.color = body.color ?? null;
-    if ('size'  in body) update.size  = body.size  ?? null;
-    if (Object.keys(update).length === 0) return NextResponse.json({ error: 'No fields' }, { status: 400 });
-    const { data, error } = await admin.from('product_variants').update(update as never).eq('id', params.id).select().single();
+    if (typeof body.is_primary === 'boolean') update.is_primary = body.is_primary;
+    if (typeof body.alt_ar === 'string') update.alt_ar = body.alt_ar;
+    if (typeof body.sort_order === 'number') update.sort_order = body.sort_order;
+    if (Object.keys(update).length === 0) return NextResponse.json({ ok: true });
+    const { data, error } = await admin.from('product_images').update(update as never).eq('id', params.id).select().single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data);
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
@@ -27,7 +27,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 export async function DELETE(_: Request, { params }: RouteParams) {
   try {
     const admin = createAdminSupabaseClient();
-    const { error } = await admin.from('product_variants').delete().eq('id', params.id);
+    const { error } = await admin.from('product_images').delete().eq('id', params.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ ok: true });
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
