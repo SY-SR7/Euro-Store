@@ -1,5 +1,24 @@
 ---
 
+### Session 032 — Web Storefront Light Luxury Theme Polish
+**Scope:** apps/web + _handoff only
+
+**Fix:**
+- Unified storefront colors to a light luxury theme.
+- Replaced inconsistent dark product cards, dark search inputs, and heavy black panels with:
+  - warm ivory background
+  - white/cream cards
+  - soft beige borders
+  - dark readable text
+  - gold brand accents
+- Added CSS compatibility overrides in the web global stylesheet.
+- Patched common hardcoded dark Tailwind classes inside `apps/web/src`.
+
+**Smoke Test:**
+- Run `pnpm --filter web dev`
+- Open `/products`, `/categories`, `/`, and a product detail page.
+---
+
 ### Session 031 — Admin Root Supabase Runtime Fix
 **Scope:** apps/admin + _handoff only
 

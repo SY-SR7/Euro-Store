@@ -12,13 +12,13 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
+      <main className="min-h-screen bg-[#FAF7EF] px-6 py-10 text-[#1F1B16]">
         <div className="mx-auto max-w-3xl">
-          <nav className="flex items-center justify-between border-b border-[#2E2E2E] pb-5 mb-10">
+          <nav className="flex items-center justify-between border-b border-[#E8DCC3] pb-5 mb-10">
             <Link href="/" className="text-xl font-semibold text-[#C9A84C]">{t('common.appName')}</Link>
           </nav>
-          <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-12 text-center">
-            <p className="text-2xl text-[#9CA3AF] mb-6">{t('cart.empty')}</p>
+          <div className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-12 text-center">
+            <p className="text-2xl text-[#6F6658] mb-6">{t('cart.empty')}</p>
             <Link href="/products"
               className="rounded-sm bg-[#C9A84C] px-6 py-3 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors">
               {t('cart.continueShopping')}
@@ -30,9 +30,9 @@ export default function CartPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
+    <main className="min-h-screen bg-[#FAF7EF] px-6 py-10 text-[#1F1B16]">
       <div className="mx-auto max-w-4xl">
-        <nav className="flex items-center justify-between border-b border-[#2E2E2E] pb-5 mb-10">
+        <nav className="flex items-center justify-between border-b border-[#E8DCC3] pb-5 mb-10">
           <Link href="/" className="text-xl font-semibold text-[#C9A84C]">{t('common.appName')}</Link>
           <Link href="/products" className="text-sm text-[#D6D3C7]">{t('nav.products')}</Link>
         </nav>
@@ -44,26 +44,26 @@ export default function CartPage() {
           <div className="flex flex-col gap-3">
             {items.map((item: any) => (
               <div key={item.variantId}
-                className="flex items-center gap-4 rounded-md border border-[#2E2E2E] bg-[#151515] p-4">
-                <div className="flex h-20 w-16 shrink-0 items-center justify-center rounded border border-[#2E2E2E] bg-[#202020] overflow-hidden">
+                className="flex items-center gap-4 rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-4">
+                <div className="flex h-20 w-16 shrink-0 items-center justify-center rounded border border-[#E8DCC3] bg-[#F3EEE3] overflow-hidden">
                   {item.imageUrl
                     ? <img src={item.imageUrl} alt={item.nameAr} className="h-full w-full object-cover" />
                     : <span className="text-xs text-[#C9A84C] text-center px-1 leading-tight">{item.nameAr}</span>
                   }
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-[#E2E2E2] truncate">{item.nameAr}</p>
-                  <p className="text-xs text-[#6B7280] font-mono mt-0.5">{item.sku}</p>
+                  <p className="font-semibold text-[#1F1B16] truncate">{item.nameAr}</p>
+                  <p className="text-xs text-[#8B8172] font-mono mt-0.5">{item.sku}</p>
                   <p className="text-[#C9A84C] font-semibold mt-1">{formatSYP(item.priceSyp)}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <button onClick={() => updateQty(item.variantId, item.quantity - 1)}
-                    className="flex h-8 w-8 items-center justify-center rounded border border-[#2E2E2E] text-[#9CA3AF] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors">
+                    className="flex h-8 w-8 items-center justify-center rounded border border-[#E8DCC3] text-[#6F6658] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors">
                     ˆ’
                   </button>
                   <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
                   <button onClick={() => updateQty(item.variantId, item.quantity + 1)}
-                    className="flex h-8 w-8 items-center justify-center rounded border border-[#2E2E2E] text-[#9CA3AF] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors">
+                    className="flex h-8 w-8 items-center justify-center rounded border border-[#E8DCC3] text-[#6F6658] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors">
                     +
                   </button>
                   <button onClick={() => removeItem(item.variantId)}
@@ -76,13 +76,13 @@ export default function CartPage() {
           </div>
 
           {/* Summary */}
-          <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-6 h-fit">
+          <div className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-6 h-fit">
             <h2 className="text-lg font-semibold mb-4">{t('cart.orderSummary')}</h2>
-            <div className="flex items-center justify-between text-sm text-[#9CA3AF] mb-2">
+            <div className="flex items-center justify-between text-sm text-[#6F6658] mb-2">
               <span>{t('cart.itemCount')}</span>
               <span>{items.reduce((s, i) => s + i.quantity, 0)}</span>
             </div>
-            <div className="flex items-center justify-between font-semibold text-lg border-t border-[#2E2E2E] pt-4 mt-4">
+            <div className="flex items-center justify-between font-semibold text-lg border-t border-[#E8DCC3] pt-4 mt-4">
               <span>{t('cart.total')}</span>
               <span className="text-[#C9A84C]">{formatSYP(totalSyp())}</span>
             </div>
@@ -91,7 +91,7 @@ export default function CartPage() {
               {t('cart.checkout')}
             </Link>
             <Link href="/products"
-              className="mt-3 block w-full rounded-sm border border-[#2E2E2E] py-3 text-center text-sm text-[#9CA3AF] hover:border-[#C9A84C] hover:text-[#E2E2E2] transition-colors">
+              className="mt-3 block w-full rounded-sm border border-[#E8DCC3] py-3 text-center text-sm text-[#6F6658] hover:border-[#C9A84C] hover:text-[#1F1B16] transition-colors">
               {t('cart.continueShopping')}
             </Link>
           </div>

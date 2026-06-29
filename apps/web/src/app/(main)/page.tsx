@@ -77,7 +77,7 @@ export default async function Home(): Promise<JSX.Element> {
           </h1>
         </div>
         <div className="flex flex-col gap-4">
-          <p className="text-sm leading-7 text-[#9CA3AF]">
+          <p className="text-sm leading-7 text-[#6F6658]">
             {heroSection?.title_en ?? t('home.heroSubtitle')}
           </p>
           <Link
@@ -131,7 +131,7 @@ export default async function Home(): Promise<JSX.Element> {
 
       {/* ”€”€ Category Grid ”€”€ */}
       {(categories ?? []).length > 0 && (
-        <section className="border-t border-[#2E2E2E] pt-12">
+        <section className="border-t border-[#E8DCC3] pt-12">
           <div className="mb-6">
             <p className="text-xs text-[#C9A84C] uppercase">
               {t('home.categoriesTag')}
@@ -145,13 +145,13 @@ export default async function Home(): Promise<JSX.Element> {
               <Link
                 key={category.id}
                 href={`/categories/${category.slug}`}
-                className="group flex items-center justify-between rounded-md border border-[#2E2E2E] bg-[#151515] p-5 transition hover:border-[#C9A84C] hover:bg-[#1C1C1C]"
+                className="group flex items-center justify-between rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-5 transition hover:border-[#C9A84C] hover:bg-[#1C1C1C]"
               >
                 <div>
-                  <span className="text-base font-medium text-[#E2E2E2] group-hover:text-[#C9A84C] transition-colors">
+                  <span className="text-base font-medium text-[#1F1B16] group-hover:text-[#C9A84C] transition-colors">
                     {category.name_ar}
                   </span>
-                  <span className="mt-1 block text-sm text-[#9CA3AF]">
+                  <span className="mt-1 block text-sm text-[#6F6658]">
                     {category.name_en}
                   </span>
                 </div>
@@ -173,7 +173,7 @@ export default async function Home(): Promise<JSX.Element> {
           <h3 className="font-headline text-2xl font-semibold text-[#C9A84C]">
             {t('loyalty.title')}
           </h3>
-          <p className="mt-2 text-sm text-[#9CA3AF] max-w-md">
+          <p className="mt-2 text-sm text-[#6F6658] max-w-md">
             {t('loyalty.earnDesc')}
           </p>
         </div>
