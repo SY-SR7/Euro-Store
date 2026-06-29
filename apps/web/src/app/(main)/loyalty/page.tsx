@@ -32,8 +32,7 @@ export default async function LoyaltyPage() {
 
   const admin = createAdminSupabaseClient();
 
-  const [profileResult, txResult] = await Promise.all([
-    admin.from('customer_profiles').select('loyalty_points, referral_code').eq('user_id', user.id).maybeSingle(),
+
     admin.from('loyalty_points_transactions')
       .select('id, points, type, description, created_at')
       .eq('customer_id', user.id)
@@ -59,6 +58,28 @@ export default async function LoyaltyPage() {
             <p className="mt-1 text-xs text-[#6B7280]">{t('loyalty.pointsUnit')}</p>
           </div>
           <div className="text-4xl opacity-20">★</div>
+        </div>
+
+        {/* Earn Formula */}
+        <div className="mt-4 rounded-md border border-[#2E2E2E] bg-[#151515] p-5">
+          <p className="text-sm font-semibold text-[#C9A84C] mb-3">كيف تكسب النقاط؟</p>
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="rounded bg-[#0F0F0F] p-3 text-center">
+              <p className="text-[#9CA3AF] text-xs mb-1">كل</p>
+              <p className="text-[#E2E2E2] font-bold">{earnAmount.toLocaleString('ar-SA')} ل.س</p>
+              <p className="text-[#9CA3AF] text-xs mt-1">تحصل على</p>
+              <p className="text-[#C9A84C] font-bold text-lg">{earnPoints} نقطة</p>
+            </div>
+            <div className="rounded bg-[#0F0F0F] p-3 text-center">
+              <p className="text-[#9CA3AF] text-xs mb-1">كل</p>
+              <p className="text-[#E2E2E2] font-bold">{redeemRate} نقطة</p>
+              <p className="text-[#9CA3AF] text-xs mt-1">تساوي</p>
+              <p className="text-[#C9A84C] font-bold text-lg">1 ل.س خصم</p>
+            </div>
+          </div>
+          <p className="mt-3 text-xs text-[#6B7280] text-center">
+            يمكن استخدام النقاط بحد أقصى {maxRedeemPct}% من قيمة الطلب
+          </p>
         </div>
 
         {/* Referral */}

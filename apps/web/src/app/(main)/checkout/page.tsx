@@ -80,9 +80,33 @@ export default function CheckoutPage() {
 
   const discountSyp = discount?.discount_amount ?? 0;
 
-  // loyalty: max 30% of subtotal, point value = 10 SYP each
-  const POINT_VALUE_SYP = 10;
-  const MAX_LOYALTY_PCT = 0.30;
+  // ── Loyalty settings loaded from DB (via /api/loyalty/settings) ──
+  const [loyaltySettings, setLoyaltySettings] = useState({
+    redeem_points_per_syp: 100,   // كم نقطة = 1 ل.س
+    max_redeem_percent:    30,    // أقصى % يمكن خصمها
+    earn_amount_syp:       1000,  // كل X ل.س = earn_points نقطة
+    earn_points:           10,
+  });
+
+  useEffect(() => {
+    fetch('/api/loyalty/settings')
+      .then(r => r.ok ? r.json() : null)
+      .then((d: { redeem_points_per_syp?: number; max_redeem_percent?: number; earn_amount_syp?: number; earn_points?: number } | null) => {
+        if (d) setLoyaltySettings({
+          redeem_points_per_syp: d.redeem_points_per_syp ?? 100,
+          max_redeem_percent:    d.max_redeem_percent    ?? 30,
+          earn_amount_syp:       d.earn_amount_syp       ?? 1000,
+          earn_points:           d.earn_points           ?? 10,
+        });
+      })
+      .catch(() => {});
+  }, []);
+
+  // قيمة النقطة الواحدة بالليرة السورية
+  const POINT_VALUE_SYP = loyaltySettings.redeem_points_per_syp > 0
+    ? 1 / loyaltySettings.redeem_points_per_syp
+    : 0.01;
+  const MAX_LOYALTY_PCT = loyaltySettings.max_redeem_percent / 100;
   const loyaltyDiscountSyp: number = (() => {
     if (!usePoints || loyaltyPoints === 0) return 0;
     const maxByPct = Math.floor(subtotal * MAX_LOYALTY_PCT);

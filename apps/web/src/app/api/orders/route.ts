@@ -170,12 +170,14 @@ export async function POST(request: Request) {
 
     // ¢‚¬¢‚¬ Increment discount code usage ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
     if (discount_id) {
-      await supabase.rpc('increment_discount_usage' as never, { p_discount_id: discount_id });
-      // Fallback: plain update if RPC doesn't exist yet
-      await supabase
-        .from('discount_codes')
-        .update({ used_count: supabase.rpc('raw_used_count_plus_1' as never) } as never)
-        .eq('id', discount_id);
+      // استخدام RPC إن وُجدت، أو UPDATE مباشر — ليس كليهما
+      const rpcResult = await supabase.rpc('increment_discount_usage' as never, { p_discount_id: discount_id });
+      if (rpcResult.error) {
+        // fallback: قراءة القيمة الحالية ثم رفعها بمقدار 1
+        const { data: cur } = await supabase.from('discount_codes').select('used_count').eq('id', discount_id).single() as any;
+        const newCount = ((cur as any)?.used_count ?? 0) + 1;
+        await supabase.from('discount_codes').update({ used_count: newCount } as never).eq('id', discount_id);
+      }
     }
 
     // ¢‚¬¢‚¬ Award loyalty points (10 pts per 1000 SYP) ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬

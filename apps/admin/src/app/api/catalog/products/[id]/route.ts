@@ -1,5 +1,5 @@
-﻿import { NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/supabase-server';
+import { NextResponse } from 'next/server';
+import { createAdminSupabaseClient, requireAdminClient } from '@/supabase-server';
 import { z } from 'zod';
 
 const updateSchema = z.object({
@@ -17,10 +17,10 @@ const updateSchema = z.object({
 interface RouteParams { params: { id: string } }
 
 export async function GET(_req: Request, { params }: RouteParams) {
-  const supabase = createServerSupabaseClient();
-  const { data, error } = await supabase
+  const admin = createAdminSupabaseClient();
+  const { data, error } = await admin
     .from('products')
-    .select('id, name_ar, name_en, slug, description_ar, description_en, category_id, brand_id, is_featured, is_active')
+    .select('id,name_ar,name_en,slug,description_ar,description_en,category_id,brand_id,is_featured,is_active')
     .eq('id', params.id)
     .single();
   if (error) return NextResponse.json({ error: error.message }, { status: 404 });
@@ -28,33 +28,21 @@ export async function GET(_req: Request, { params }: RouteParams) {
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
-  try {
-    const body: unknown = await request.json();
-    const parsed = updateSchema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json({ error: 'invalid_input', details: parsed.error.flatten() }, { status: 400 });
-    }
-    const supabase = createServerSupabaseClient();
-    const { data, error } = await supabase
-      .from('products')
-      .update(parsed.data)
-      .eq('id', params.id)
-      .select('id, slug')
-      .single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json(data);
-  } catch {
-    return NextResponse.json({ error: 'server_error' }, { status: 500 });
-  }
+  const admin = await requireAdminClient();
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const body: unknown = await request.json();
+  const parsed = updateSchema.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await admin.from('products').update(parsed.data as any).eq('id', params.id).select().single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
 }
 
 export async function DELETE(_req: Request, { params }: RouteParams) {
-  try {
-    const supabase = createServerSupabaseClient();
-    const { error } = await supabase.from('products').delete().eq('id', params.id);
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json({ deleted: true });
-  } catch {
-    return NextResponse.json({ error: 'server_error' }, { status: 500 });
-  }
+  const admin = await requireAdminClient();
+  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { error } = await admin.from('products').delete().eq('id', params.id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ deleted: true });
 }

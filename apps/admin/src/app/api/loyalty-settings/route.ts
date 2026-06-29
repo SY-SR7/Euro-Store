@@ -1,5 +1,5 @@
-﻿import { NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/supabase-server';
+import { NextResponse } from 'next/server';
+import { requireAdminClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,46 +13,36 @@ const LOYALTY_KEYS = [
 
 export async function GET() {
   try {
-    const supabase = createAdminSupabaseClient();
-    const { data, error } = await supabase
+    const admin = await requireAdminClient();
+    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const { data, error } = await admin
       .from('system_settings')
       .select('key, value, description')
       .in('key', LOYALTY_KEYS)
       .order('key');
-
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data ?? []);
-  } catch {
-    return NextResponse.json({ error: 'server_error' }, { status: 500 });
-  }
+  } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }
 
 export async function PATCH(request: Request) {
   try {
-    const body = await request.json() as { key: string; value: string }[];
-    if (!Array.isArray(body) || body.length === 0) {
-      return NextResponse.json({ error: 'expected array of {key, value}' }, { status: 400 });
-    }
+    const admin = await requireAdminClient();
+    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const supabase = createAdminSupabaseClient();
+    const body = await request.json() as { key: string; value: string }[];
+    if (!Array.isArray(body) || body.length === 0)
+      return NextResponse.json({ error: 'expected array of {key, value}' }, { status: 400 });
+
     const results = await Promise.all(
       body
         .filter(item => LOYALTY_KEYS.includes(item.key))
-        .map(item =>
-          supabase
-            .from('system_settings')
-            .update({ value: item.value } as never)
-            .eq('key', item.key)
-        )
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .map(item => admin.from('system_settings').update({ value: item.value } as any).eq('key', item.key))
     );
-
     const errors = results.filter(r => r.error).map(r => r.error!.message);
-    if (errors.length > 0) {
-      return NextResponse.json({ error: errors.join('; ') }, { status: 500 });
-    }
-
+    if (errors.length > 0) return NextResponse.json({ error: errors.join('; ') }, { status: 500 });
     return NextResponse.json({ ok: true });
-  } catch {
-    return NextResponse.json({ error: 'server_error' }, { status: 500 });
-  }
+  } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }

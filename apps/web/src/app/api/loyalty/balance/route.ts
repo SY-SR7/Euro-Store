@@ -1,22 +1,18 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import { NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/supabase-server';
+import { getSessionClient, createAdminSupabaseClient } from '@/supabase-server';
 
 export async function GET() {
-  const supabase = createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { user } = await getSessionClient();
+  if (!user) return NextResponse.json({ points: 0 });
 
-  if (!user) {
-    return NextResponse.json({ points: 0 });
-  }
-
-  const { data } = await supabase
+  const admin = createAdminSupabaseClient();
+  const { data } = await admin
     .from('customer_profiles')
     .select('loyalty_points')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
-  const points = (data as { loyalty_points: number } | null)?.loyalty_points ?? 0;
-  return NextResponse.json({ points });
+  return NextResponse.json({ points: (data as any)?.loyalty_points ?? 0 });
 }
