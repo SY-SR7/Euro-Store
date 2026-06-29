@@ -7,16 +7,16 @@ import { CartBadge } from '@/components/cart/CartBadge';
 import { useState } from 'react';
 
 const DESKTOP_LINKS = [
-  { href: '/',           key: 'nav.home'       },
-  { href: '/products',   key: 'nav.products'   },
-  { href: '/categories', key: 'nav.categories' },
-  { href: '/loyalty',    key: 'nav.loyalty'    },
-  { href: '/exchange',   key: 'nav.exchange'   },
+  { href: '/',           key: 'home'       },
+  { href: '/products',   key: 'products'   },
+  { href: '/categories', key: 'categories' },
+  { href: '/loyalty',    key: 'loyalty'    },
+  { href: '/exchange',   key: 'exchange'   },
 ];
 
 const MOBILE_EXTRAS = [
   { href: '/orders',  key: 'orders.title' },
-  { href: '/account', key: 'nav.account'  },
+  { href: '/account', key: 'account'  },
 ];
 
 export function Header() {
@@ -46,13 +46,13 @@ export function Header() {
           <button aria-label={commonT('search')} className="p-2 text-gray-500 hover:text-primary">
             <Search size={20} />
           </button>
-          <Link href="/account" aria-label={t('nav.account')} className="p-2 text-gray-500 hover:text-primary">
+          <Link href="/account" aria-label={t('account')} className="p-2 text-gray-500 hover:text-primary">
             <User size={20} />
           </Link>
-          <Link href="/loyalty" aria-label={t('nav.loyalty')} className="p-2 text-gray-500 hover:text-primary">
+          <Link href="/loyalty" aria-label={t('loyalty')} className="p-2 text-gray-500 hover:text-primary">
             <Star size={20} />
           </Link>
-          <Link href="/exchange" aria-label={t('nav.exchange')} className="p-2 text-gray-500 hover:text-primary">
+          <Link href="/exchange" aria-label={t('exchange')} className="p-2 text-gray-500 hover:text-primary">
             <RefreshCw size={20} />
           </Link>
           <CartBadge />
