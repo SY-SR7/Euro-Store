@@ -30,7 +30,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: ()=>void;
       <div className="w-full max-w-lg rounded-3xl border border-[#E5E0D8] bg-white shadow-2xl max-h-[90vh] flex flex-col" onClick={e=>e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] px-6 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] hover:text-[#1C1917] text-lg">Ã—</button>
+          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] hover:text-[#1C1917] text-lg">×</button>
         </div>
         <div className="overflow-y-auto p-6">{children}</div>
       </div>
@@ -107,7 +107,7 @@ export default function AdminOrdersPage() {
                   <tr key={o.id} className="group hover:bg-[#FFFBF0] cursor-pointer transition-colors"
                     onClick={()=>{ setSelected(o); setMsg(''); }}>
                     <td className="px-5 py-3 font-mono text-xs font-bold text-[#1C1917] group-hover:text-[#B8860B] transition-colors">{o.order_number}</td>
-                    <td className="px-5 py-3 text-[#57534E]">{o.address_snapshot?.full_name??'â€”'}</td>
+                    <td className="px-5 py-3 text-[#57534E]">{o.address_snapshot?.full_name??'—'}</td>
                     <td className="px-5 py-3">
                       <span className={`rounded-full border px-3 py-1 text-xs font-bold ${STATUS_COLOR[o.status]??'bg-gray-100 text-gray-500 border-gray-200'}`}>{STATUS_AR[o.status]??o.status}</span>
                     </td>
@@ -133,7 +133,7 @@ export default function AdminOrdersPage() {
           {msg&&<div className={`mb-4 rounded-xl px-4 py-2 text-sm ${msg.startsWith('?')?'bg-green-50 text-green-700 border border-green-200':'bg-red-50 text-red-700 border border-red-200'}`}>{msg}</div>}
           <div className="space-y-3 text-sm">
             {([['??????',selected.address_snapshot?.full_name],['??????',selected.address_snapshot?.phone],['????????',selected.address_snapshot?.governorate],['????????',`${Number(selected.total_syp).toLocaleString('ar-SY')} ?.?`],['???????',new Date(selected.created_at).toLocaleDateString('ar-SY')]] as [string,string|undefined][]).map(([l,v])=>(
-              <div key={l} className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917]">{v??'â€”'}</span></div>
+              <div key={l} className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917]">{v??'—'}</span></div>
             ))}
             <div className="flex items-center justify-between border-b border-[#F0ECE6] pb-2">
               <span className="text-[#A8A29E]">?????? ???????</span>

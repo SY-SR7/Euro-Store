@@ -12,7 +12,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
       <div className="w-full max-w-md rounded-3xl border border-[#E5E0D8] bg-white shadow-2xl max-h-[90vh] flex flex-col" onClick={e=>e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] px-6 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">Ã—</button>
+          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">×</button>
         </div>
         <div className="overflow-y-auto p-6">{children}</div>
       </div>
@@ -75,7 +75,7 @@ export default function AdminShippingRatesPage() {
                   <tr key={r.id} className="group hover:bg-[#FFFBF0] cursor-pointer transition-colors" onClick={()=>open(r)}>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B] transition-colors">{r.governorate}</td>
                     <td className="px-5 py-3 font-bold text-[#B8860B]">{Number(r.base_rate_syp).toLocaleString('ar-SY')} ?.?</td>
-                    <td className="px-5 py-3 text-xs text-[#A8A29E] hidden md:table-cell">{r.free_shipping_threshold_syp?`${Number(r.free_shipping_threshold_syp).toLocaleString('ar-SY')} ?.?`:'â€”'}</td>
+                    <td className="px-5 py-3 text-xs text-[#A8A29E] hidden md:table-cell">{r.free_shipping_threshold_syp?`${Number(r.free_shipping_threshold_syp).toLocaleString('ar-SY')} ?.?`:'—'}</td>
                     <td className="px-5 py-3 hidden md:table-cell"><span className={`rounded-full border px-3 py-1 text-xs font-bold ${r.is_active?'bg-green-50 text-green-700 border-green-200':'bg-red-50 text-red-700 border-red-200'}`}>{r.is_active?'???':'?????'}</span></td>
                   </tr>
                 ))}
@@ -90,7 +90,7 @@ export default function AdminShippingRatesPage() {
           {msg&&<div className={`mb-4 rounded-xl px-4 py-2 text-sm ${msg.startsWith('?')?'bg-green-50 text-green-700 border border-green-200':'bg-red-50 text-red-700 border border-red-200'}`}>{msg}</div>}
           <div className="space-y-4">
             <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">??? ????? (?.?)</label><input type="number" value={draft.base_rate_syp} onChange={e=>setDraft(d=>({...d,base_rate_syp:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/></div>
-            <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">????? ??????? ?? (?.?) â€” ????? ?????? ???????</label><input type="number" value={draft.free_shipping_threshold_syp} onChange={e=>setDraft(d=>({...d,free_shipping_threshold_syp:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/></div>
+            <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">????? ??????? ?? (?.?) — ????? ?????? ???????</label><input type="number" value={draft.free_shipping_threshold_syp} onChange={e=>setDraft(d=>({...d,free_shipping_threshold_syp:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/></div>
             <div className="flex items-center gap-3">
               <label className="text-sm font-semibold text-[#57534E]">???</label>
               <button onClick={()=>setDraft(d=>({...d,is_active:!d.is_active}))} className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${draft.is_active?'bg-[#B8860B]':'bg-gray-300'}`}>

@@ -11,7 +11,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
       <div className="w-full max-w-lg rounded-3xl border border-[#E5E0D8] bg-white shadow-2xl max-h-[90vh] flex flex-col" onClick={e=>e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] px-6 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">×</button>
+          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">Ã—</button>
         </div>
         <div className="overflow-y-auto p-6">{children}</div>
       </div>
@@ -106,9 +106,9 @@ export default function AdminCustomersPage() {
               <tbody className="divide-y divide-[#F0ECE6]">
                 {customers.map(c=>(
                   <tr key={c.id} className="group hover:bg-[#FFFBF0] cursor-pointer transition-colors" onClick={()=>open(c)}>
-                    <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B] transition-colors">{c.full_name??'—'}</td>
-                    <td className="px-5 py-3 text-[#57534E]">{c.phone??'—'}</td>
-                    <td className="px-5 py-3 text-xs text-[#A8A29E] hidden md:table-cell">{c.email??'—'}</td>
+                    <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B] transition-colors">{c.full_name??'â€”'}</td>
+                    <td className="px-5 py-3 text-[#57534E]">{c.phone??'â€”'}</td>
+                    <td className="px-5 py-3 text-xs text-[#A8A29E] hidden md:table-cell">{c.email??'â€”'}</td>
                     <td className="px-5 py-3 font-bold text-[#B8860B] hidden md:table-cell">{c.loyalty_points??0}</td>
                     <td className="px-5 py-3 text-xs text-[#A8A29E] hidden md:table-cell">{new Date(c.created_at).toLocaleDateString('ar-SY')}</td>
                   </tr>
@@ -137,7 +137,7 @@ export default function AdminCustomersPage() {
               <>
                 {([['?????',selected.full_name],['??????',selected.phone],['??????',selected.email],['??? ???????',selected.referral_code],['????? ???????',new Date(selected.created_at).toLocaleDateString('ar-SY')]] as [string,string|null|undefined][]).map(([l,v])=>(
                   <div key={l} className="flex justify-between border-b border-[#F0ECE6] pb-2">
-                    <span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917]">{v??'—'}</span>
+                    <span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917]">{v??'â€”'}</span>
                   </div>
                 ))}
                 <div className="flex justify-between border-b border-[#F0ECE6] pb-2">

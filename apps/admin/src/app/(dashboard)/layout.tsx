@@ -1,4 +1,4 @@
-import { Sidebar } from '../components/Sidebar';
+import { Sidebar } from '../components/Sidebar';
 import { Navbar } from '../components/Navbar';
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,7 +7,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex flex-col md:pr-[var(--admin-sidebar-space,17rem)] transition-[padding-right] duration-300">
 <main className="min-h-screen w-full px-4 py-6 md:px-6">
           <div className="mx-auto max-w-5xl">
-            <Navbar />
+<Navbar />
         {children}
           </div>
         </main>

@@ -16,7 +16,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
       <div className="w-full max-w-lg rounded-3xl border border-[#E5E0D8] bg-white shadow-2xl max-h-[90vh] flex flex-col" onClick={e=>e.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] px-6 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">Ã—</button>
+          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">×</button>
         </div>
         <div className="overflow-y-auto p-6">{children}</div>
       </div>
