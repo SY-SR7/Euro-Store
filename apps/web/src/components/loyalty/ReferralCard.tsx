@@ -19,7 +19,7 @@ export function ReferralCard({ referralCode }: ReferralCardProps) {
       <p className="text-sm text-[#9CA3AF] mb-4">{t('referralDescription')}</p>
       <div className="flex items-center gap-2">
         <span className="font-mono text-[#E2E2E2] bg-[#1C1C1C] px-3 py-2 rounded text-sm flex-1">{referralCode}</span>
-        <button onClick={copy} title={t('copyCode')} className="p-2 text-[#C9A84C] hover:text-[#D8B95F] transition-colors">📋</button>
+        <button onClick={copy} title={t('copyCode')} className="p-2 text-[#C9A84C] hover:text-[#D8B95F] transition-colors"></button>
       </div>
       <button onClick={share} className="mt-4 flex items-center gap-2 text-sm text-[#C9A84C] hover:text-[#D8B95F] transition-colors">
         <span>{t('share')}</span>

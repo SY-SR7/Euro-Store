@@ -28,7 +28,7 @@ export default function ContactPage() {
             rel="noopener noreferrer"
             className="flex items-center gap-3 rounded-md border border-[#2E2E2E] bg-[#151515] p-4 hover:border-green-700/50 transition-colors"
           >
-            <span className="text-2xl">💬</span>
+            <span className="text-2xl"></span>
             <div>
               <p className="text-sm font-medium text-[#E2E2E2]">واتساب</p>
               <p className="text-xs text-[#9CA3AF]">تواصل مباشر</p>
@@ -38,7 +38,7 @@ export default function ContactPage() {
             href="mailto:support@eurostore.com"
             className="flex items-center gap-3 rounded-md border border-[#2E2E2E] bg-[#151515] p-4 hover:border-[#C9A84C]/50 transition-colors"
           >
-            <span className="text-2xl">📧</span>
+            <span className="text-2xl"></span>
             <div>
               <p className="text-sm font-medium text-[#E2E2E2]">البريد الإلكتروني</p>
               <p className="text-xs text-[#9CA3AF]">support@eurostore.com</p>
