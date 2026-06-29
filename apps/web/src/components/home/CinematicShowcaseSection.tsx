@@ -66,20 +66,37 @@ function ScrollBeat({
       className="absolute inset-0 flex flex-col justify-end pointer-events-none will-change-transform"
       dir="rtl"
     >
-      {/* Text anchored to bottom-right (RTL), DJI style */}
-      <div className="relative z-10 px-10 pb-14 md:px-16 md:pb-18 text-right max-w-3xl mr-auto">
+      {/* Frosted glass text card — anchored bottom-right */}
+      <div
+        className="relative z-10 mx-8 mb-12 md:mx-14 md:mb-16 text-right max-w-xs md:max-w-sm mr-auto rounded-2xl px-6 py-5"
+        style={{
+          background: 'rgba(10, 10, 10, 0.55)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: '1px solid rgba(201, 168, 76, 0.25)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+        }}
+      >
+        {/* Gold label */}
+        <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#C9A84C] mb-2 opacity-80">
+          EUROSTORE
+        </p>
+
+        {/* Title — gold gradient */}
         <motion.h2
-          className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight"
-          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
+          className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight"
+          style={{
+            background: 'linear-gradient(135deg, #E8D28A 0%, #C9A84C 50%, #A67C2E 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
         >
           {beat.title}
         </motion.h2>
 
         {beat.subtitle && (
-          <p
-            className="mt-3 text-sm md:text-base text-white/90 max-w-md leading-relaxed font-medium"
-            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.9)' }}
-          >
+          <p className="mt-2 text-xs md:text-sm text-white/75 leading-relaxed">
             {beat.subtitle}
           </p>
         )}
@@ -87,7 +104,7 @@ function ScrollBeat({
         {beat.ctaLabel && beat.ctaHref && (
           <motion.a
             href={beat.ctaHref}
-            className="pointer-events-auto mt-6 inline-flex items-center gap-2 border border-[#C9A84C] text-[#C9A84C] px-6 py-3 text-xs font-bold tracking-widest uppercase hover:bg-[#C9A84C] hover:text-black transition-colors duration-300"
+            className="pointer-events-auto mt-4 inline-flex items-center gap-2 bg-[#C9A84C] text-black px-5 py-2.5 text-xs font-bold tracking-widest uppercase hover:bg-[#E8D28A] transition-colors duration-300 rounded-lg"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
