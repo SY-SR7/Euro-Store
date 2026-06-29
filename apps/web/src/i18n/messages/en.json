@@ -199,7 +199,9 @@
                  "remove":  "Remove",
                  "quantity":  "Quantity",
                  "addToCart":  "Add to cart",
-                 "empty":  "Your cart is empty"
+                 "empty":  "Your cart is empty",
+                 "orderSummary": "Order summary",
+                 "confirmNote": "You will be contacted by phone to confirm the order"
              },
     "appName":  "Euro Store",
     "allProducts":  "All products",
@@ -224,7 +226,17 @@
                      "success":  "Order created successfully",
                      "placeOrder":  "Place order",
                      "shippingInfo":  "Shipping information",
-                     "customerInfo":  "Customer information"
+                     "customerInfo":  "Customer information",
+                     "fullName": "Full name",
+                     "phone": "Phone number",
+                     "governorate": "Governorate",
+                     "address": "Detailed address",
+                     "notes": "Additional notes",
+                     "notesHint": "Optional",
+                     "discountCode": "Discount code",
+                     "applyCode": "Apply",
+                     "confirmOrder": "Complete order",
+                     "freeShipping": "Free shipping"
                  },
     "inStock":  "In stock",
     "rightsReserved":  "All rights reserved",

@@ -199,7 +199,9 @@
                  "remove":  "إزالة",
                  "quantity":  "الكمية",
                  "addToCart":  "أضف إلى السلة",
-                 "empty":  "السلة فارغة"
+                 "empty":  "السلة فارغة",
+                 "orderSummary": "ملخص الطلب",
+                 "confirmNote": "سيتم التواصل معك هاتفياً لتأكيد الطلب"
              },
     "appName":  "Euro Store",
     "allProducts":  "كل المنتجات",
@@ -224,7 +226,17 @@
                      "success":  "تم إنشاء الطلب بنجاح",
                      "placeOrder":  "تأكيد الطلب",
                      "shippingInfo":  "معلومات الشحن",
-                     "customerInfo":  "معلومات العميل"
+                     "customerInfo":  "معلومات العميل",
+                     "fullName": "الاسم الكامل",
+                     "phone": "رقم الهاتف",
+                     "governorate": "المحافظة",
+                     "address": "العنوان التفصيلي",
+                     "notes": "ملاحظات إضافية",
+                     "notesHint": "اختياري",
+                     "discountCode": "كود الخصم",
+                     "applyCode": "تطبيق",
+                     "confirmOrder": "إتمام الطلب",
+                     "freeShipping": "شحن مجاني"
                  },
     "inStock":  "متوفر",
     "rightsReserved":  "جميع الحقوق محفوظة",
