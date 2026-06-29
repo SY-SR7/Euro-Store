@@ -1,137 +1,162 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
-interface Category { id: string; name_ar: string }
+interface Category { id: string; name_ar: string; name_en: string }
 interface Brand    { id: string; name: string }
-interface Product {
+interface Product  {
   id: string; name_ar: string; name_en: string; slug: string;
-  description_ar: string | null; description_en: string | null;
-  category_id: string | null; brand_id: string | null;
+  description_ar: string; description_en: string;
   is_featured: boolean; is_active: boolean;
+  category_id: string | null; brand_id: string | null;
 }
-interface Props { product: Product; categories: Category[]; brands: Brand[] }
 
-export function EditProductForm({ product, categories, brands }: Props) {
-  const t      = useTranslations('adminCatalog');
-  const tC     = useTranslations('common');
+export function EditProductForm({ product, categories, brands }: { product: Product; categories: Category[]; brands: Brand[] }) {
   const router = useRouter();
-  const [saving,   setSaving]   = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [error,    setError]    = useState('');
-  const [success,  setSuccess]  = useState('');
+  const [saving,  setSaving]  = useState(false);
+  const [deleting,setDeleting]= useState(false);
+  const [error,   setError]   = useState('');
+  const [msg,     setMsg]     = useState('');
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSaving(true); setError(''); setSuccess('');
-    const formEl = e.currentTarget as HTMLFormElement; const fd = new FormData(formEl);
-    const d = Object.fromEntries(fd);
+    setSaving(true); setError(''); setMsg('');
+    const fd = new FormData(e.currentTarget);
+    const body: Record<string, unknown> = {
+      name_ar:        fd.get('name_ar'),
+      name_en:        fd.get('name_en'),
+      slug:           fd.get('slug'),
+      description_ar: fd.get('description_ar'),
+      description_en: fd.get('description_en'),
+      is_featured:    fd.get('is_featured') === 'on',
+      is_active:      fd.get('is_active')   === 'on',
+      category_id:    fd.get('category_id') || null,
+      brand_id:       fd.get('brand_id')    || null,
+    };
     const res = await fetch(`/api/catalog/products/${product.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name_ar:        d.name_ar,
-        name_en:        d.name_en,
-        slug:           d.slug,
-        description_ar: (d.description_ar as string) || undefined,
-        description_en: (d.description_en as string) || undefined,
-        category_id:    (d.category_id as string)    || null,
-        brand_id:       (d.brand_id    as string)    || null,
-        is_featured:    d.is_featured === 'on',
-        is_active:      d.is_active   === 'on',
-      }),
+      body: JSON.stringify(body),
     });
-    if (res.ok) { setSuccess(t('saveSuccess')); router.refresh(); }
-    else        { setError(t('saveFailed')); }
+    if (res.ok) { setMsg('تم الحفظ بنجاح ✓'); router.refresh(); }
+    else        { setError('فشل الحفظ'); }
     setSaving(false);
   }
 
   async function handleDelete() {
-    if (!window.confirm(t('confirmDelete'))) return;
+    if (!confirm('هل تريد حذف هذا المنتج نهائياً؟')) return;
     setDeleting(true);
     const res = await fetch(`/api/catalog/products/${product.id}`, { method: 'DELETE' });
     if (res.ok) router.push('/products');
-    else { setError(t('saveFailed')); setDeleting(false); }
+    else { setError('فشل الحذف'); setDeleting(false); }
   }
 
-  const inputCls = "rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2.5 text-[#E2E2E2] outline-none focus:border-[#C9A84C] w-full";
-  const labelCls = "flex flex-col gap-1.5 text-sm";
-  const spanCls  = "text-[#9CA3AF]";
+  const inputCls = 'w-full rounded-xl border border-white/10 bg-[#151515] px-4 py-3 text-sm text-[#EDE7DD] outline-none focus:border-[#C9A84C] transition-colors';
+  const labelCls = 'flex flex-col gap-2 text-sm';
+  const spanCls  = 'text-[#9CA3AF] font-medium';
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      {error   && <p className="rounded border border-red-800   bg-red-900/20   p-4 text-sm text-red-400">{error}</p>}
-      {success && <p className="rounded border border-green-800 bg-green-900/20 p-4 text-sm text-green-400">{success}</p>}
-
-      <label className={labelCls}>
-        <span className={spanCls}>{t('productNameAr')} *</span>
-        <input name="name_ar" required defaultValue={product.name_ar} className={inputCls} />
-      </label>
-
-      <label className={labelCls}>
-        <span className={spanCls}>{t('productNameEn')} *</span>
-        <input name="name_en" required defaultValue={product.name_en} className={inputCls} />
-      </label>
-
-      <label className={labelCls}>
-        <span className={spanCls}>{t('productSlug')} *</span>
-        <input name="slug" required pattern="[a-z0-9-]+" defaultValue={product.slug} className={`${inputCls} font-mono`} />
-      </label>
-
-      <label className={labelCls}>
-        <span className={spanCls}>{t('productDescription')}</span>
-        <textarea name="description_ar" rows={3} defaultValue={product.description_ar ?? ''} className={`${inputCls} resize-y`} />
-      </label>
-
-      <label className={labelCls}>
-        <span className={spanCls}>{t('productDescriptionEn')}</span>
-        <textarea name="description_en" rows={3} defaultValue={product.description_en ?? ''} className={`${inputCls} resize-y`} />
-      </label>
-
-      <label className={labelCls}>
-        <span className={spanCls}>{t('category')}</span>
-        <select name="category_id" defaultValue={product.category_id ?? ''} className={inputCls}>
-          <option value="">— {t('category')} —</option>
-          {categories.map(c => <option key={c.id} value={c.id}>{c.name_ar}</option>)}
-        </select>
-      </label>
-
-      <label className={labelCls}>
-        <span className={spanCls}>{t('brand')}</span>
-        <select name="brand_id" defaultValue={product.brand_id ?? ''} className={inputCls}>
-          <option value="">— {t('brand')} —</option>
-          {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-        </select>
-      </label>
-
-      <div className="flex gap-6">
-        <label className="flex items-center gap-2 text-sm text-[#9CA3AF] cursor-pointer">
-          <input type="checkbox" name="is_featured" defaultChecked={product.is_featured} className="accent-[#C9A84C]" />
-          {t('featured')}
-        </label>
-        <label className="flex items-center gap-2 text-sm text-[#9CA3AF] cursor-pointer">
-          <input type="checkbox" name="is_active" defaultChecked={product.is_active} className="accent-[#C9A84C]" />
-          {t('active')}
-        </label>
-      </div>
-
-      <div className="flex items-center justify-between pt-2">
-        <div className="flex gap-3">
-          <button type="submit" disabled={saving}
-            className="rounded-sm bg-[#C9A84C] px-6 py-2.5 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors disabled:opacity-50">
-            {saving ? tC('loading') : tC('save')}
-          </button>
-          <button type="button" onClick={() => router.back()}
-            className="rounded-sm border border-[#2E2E2E] px-6 py-2.5 text-sm text-[#9CA3AF] hover:border-[#C9A84C] hover:text-[#E2E2E2] transition-colors">
-            {tC('cancel')}
-          </button>
+    <div className="space-y-6" dir="rtl">
+      {/* Header */}
+      <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-[#101010] p-6">
+        <div>
+          <Link href={`/products/${product.id}`} className="text-xs text-[#9CA3AF] hover:text-[#C9A84C] transition-colors">
+            ← {product.name_ar}
+          </Link>
+          <h1 className="mt-1 text-2xl font-black text-white">تعديل المنتج</h1>
         </div>
-        <button type="button" onClick={handleDelete} disabled={deleting}
-          className="rounded-sm border border-red-800 px-4 py-2.5 text-sm text-red-400 hover:bg-red-900/20 transition-colors disabled:opacity-50">
-          {deleting ? tC('loading') : tC('delete')}
-        </button>
+        <div className="flex gap-2">
+          <Link href={`/products/${product.id}/variants`} className="rounded-2xl border border-white/10 px-4 py-2 text-xs font-bold text-[#EDE7DD] hover:border-[#C9A84C] transition-colors">المتغيرات</Link>
+          <Link href={`/products/${product.id}/images`}   className="rounded-2xl border border-[#C9A84C]/30 px-4 py-2 text-xs font-bold text-[#C9A84C] hover:bg-[#C9A84C]/10 transition-colors">الصور</Link>
+        </div>
       </div>
-    </form>
+
+      <form onSubmit={handleSave}>
+        <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+
+          {/* Main */}
+          <div className="space-y-4 rounded-3xl border border-white/10 bg-[#101010] p-6">
+            <h2 className="text-base font-black text-[#C9A84C]">المعلومات الأساسية</h2>
+
+            {error && <p className="rounded-xl border border-red-800 bg-red-900/20 p-3 text-sm text-red-400">{error}</p>}
+            {msg   && <p className="rounded-xl border border-green-800 bg-green-900/20 p-3 text-sm text-green-400">{msg}</p>}
+
+            <label className={labelCls}>
+              <span className={spanCls}>اسم المنتج بالعربية *</span>
+              <input name="name_ar" required defaultValue={product.name_ar} className={inputCls} />
+            </label>
+
+            <label className={labelCls}>
+              <span className={spanCls}>اسم المنتج بالإنجليزية *</span>
+              <input name="name_en" required defaultValue={product.name_en} className={inputCls} />
+            </label>
+
+            <label className={labelCls}>
+              <span className={spanCls}>الرابط (Slug) *</span>
+              <input name="slug" required pattern="[a-z0-9-]+" defaultValue={product.slug} className={`${inputCls} font-mono`} />
+            </label>
+
+            <label className={labelCls}>
+              <span className={spanCls}>الوصف بالعربية</span>
+              <textarea name="description_ar" rows={4} defaultValue={product.description_ar} className={inputCls} />
+            </label>
+
+            <label className={labelCls}>
+              <span className={spanCls}>الوصف بالإنجليزية</span>
+              <textarea name="description_en" rows={4} defaultValue={product.description_en} className={inputCls} />
+            </label>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-4">
+
+            <div className="space-y-4 rounded-3xl border border-white/10 bg-[#101010] p-6">
+              <h2 className="text-base font-black text-[#C9A84C]">التصنيف والعلامة</h2>
+
+              <label className={labelCls}>
+                <span className={spanCls}>التصنيف</span>
+                <select name="category_id" defaultValue={product.category_id ?? ''} className={inputCls}>
+                  <option value="">-- اختر التصنيف --</option>
+                  {categories.map(c => <option key={c.id} value={c.id}>{c.name_ar}</option>)}
+                </select>
+              </label>
+
+              <label className={labelCls}>
+                <span className={spanCls}>العلامة التجارية</span>
+                <select name="brand_id" defaultValue={product.brand_id ?? ''} className={inputCls}>
+                  <option value="">-- اختر العلامة --</option>
+                  {brands.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+                </select>
+              </label>
+            </div>
+
+            <div className="space-y-3 rounded-3xl border border-white/10 bg-[#101010] p-6">
+              <h2 className="text-base font-black text-[#C9A84C]">الخيارات</h2>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" name="is_active" defaultChecked={product.is_active} className="accent-[#C9A84C] w-4 h-4" />
+                <span className="text-sm text-[#EDE7DD]">منتج مفعّل</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" name="is_featured" defaultChecked={product.is_featured} className="accent-[#C9A84C] w-4 h-4" />
+                <span className="text-sm text-[#EDE7DD]">منتج مميز</span>
+              </label>
+            </div>
+
+            <div className="flex gap-3">
+              <button type="submit" disabled={saving}
+                className="flex-1 rounded-2xl bg-[#C9A84C] px-6 py-3 text-sm font-black text-[#111] hover:bg-[#D8B95F] transition-colors disabled:opacity-50">
+                {saving ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+              </button>
+            </div>
+
+            <button type="button" onClick={handleDelete} disabled={deleting}
+              className="w-full rounded-2xl border border-red-900 bg-red-900/10 px-4 py-2.5 text-sm text-red-400 hover:bg-red-900/20 transition-colors disabled:opacity-50">
+              {deleting ? 'جاري الحذف...' : 'حذف المنتج'}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 }

@@ -1,20 +1,16 @@
-// @ts-nocheck
+﻿// @ts-nocheck
 /* eslint-disable */
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { formatSYP } from '@eurostore/shared';
 import { createServerSupabaseClient } from '@/supabase-server';
-import {
-  summarizeProductVariants } from '@/app/catalog-components';
-import { type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '@/app/catalog-types';
 import { AddToCartButton } from '@/components/cart/AddToCartButton';
 
 export const dynamic = 'force-dynamic';
+interface Props { params: { slug: string } }
 
-interface ProductPageProps { params: { slug: string } }
-
-export default async function ProductPage({ params }: ProductPageProps): Promise<JSX.Element> {
+export default async function ProductPage({ params }: Props) {
   const t = await getTranslations();
   const supabase = createServerSupabaseClient();
 
@@ -26,145 +22,157 @@ export default async function ProductPage({ params }: ProductPageProps): Promise
     .maybeSingle();
 
   if (!productData) notFound();
-  const product = productData as CatalogProduct;
 
-  const [variantsResult, categoryResult, brandResult, primaryImageResult] = await Promise.all([
-    supabase
-      .from('product_variants')
+  const [variantsRes, categoryRes, brandRes, imagesRes] = await Promise.all([
+    supabase.from('product_variants')
       .select('id, product_id, sku, price_syp, compare_price_syp, stock_quantity')
-      .eq('product_id', product.id)
-      .eq('is_active', true)
+      .eq('product_id', productData.id).eq('is_active', true)
       .order('price_syp', { ascending: true }),
-    product.category_id
-      ? supabase.from('categories').select('id, name_ar, name_en, slug').eq('id', product.category_id).eq('is_active', true).maybeSingle()
+    productData.category_id
+      ? supabase.from('categories').select('id, name_ar, slug').eq('id', productData.category_id).maybeSingle()
       : Promise.resolve({ data: null }),
-    product.brand_id
-      ? supabase.from('brands').select('id, name, slug').eq('id', product.brand_id).eq('is_active', true).maybeSingle()
+    productData.brand_id
+      ? supabase.from('brands').select('id, name, slug').eq('id', productData.brand_id).maybeSingle()
       : Promise.resolve({ data: null }),
-    supabase
-      .from('product_images')
-      .select('url')
-      .eq('product_id', product.id)
-      .eq('is_primary', true)
-      .maybeSingle(),
+    supabase.from('product_images')
+      .select('id, url, alt_ar, is_primary')
+      .eq('product_id', productData.id)
+      .order('sort_order'),
   ]);
 
-  const variants      = (variantsResult.data ?? []) as CatalogVariant[];
-  const category      = categoryResult.data as CatalogCategory | null;
-  const brand         = brandResult.data    as CatalogBrand    | null;
-  const primaryImage  = primaryImageResult.data?.url ?? null;
-  const summary       = summarizeProductVariants(variants);
-  const cheapestVariant = variants[0] ?? null;
-
-  const priceLabel = summary.priceLabel === '—' ? t('catalog.priceSoon') : summary.priceLabel;
-  const stockLabel = summary.priceLabel === '—'
-    ? t('catalog.stockUpdate')
-    : summary.totalStock > 0
-    ? t('catalog.inStock', { count: summary.totalStock })
-    : t('catalog.outOfStock');
+  const variants     = variantsRes.data ?? [];
+  const category     = categoryRes.data ?? null;
+  const brand        = brandRes.data    ?? null;
+  const images       = imagesRes.data   ?? [];
+  const primaryImage = images.find((i: any) => i.is_primary)?.url ?? images[0]?.url ?? null;
+  const cheapest     = variants[0] ?? null;
+  const totalStock   = variants.reduce((s: number, v: any) => s + (v.stock_quantity ?? 0), 0);
+  const minPrice     = cheapest?.price_syp ?? 0;
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
-      <section className="mx-auto flex w-full max-w-6xl flex-col gap-10">
-        <nav className="flex items-center justify-between border-b border-[#2E2E2E] pb-5">
-          <Link href="/" className="text-xl font-semibold text-[#C9A84C]">{t('common.appName')}</Link>
-          <div className="flex items-center gap-4">
-            <Link href="/products" className="text-sm text-[#D6D3C7]">{t('catalog.allCategoriesLink')}</Link>
-            <Link href="/cart" className="text-sm text-[#D6D3C7] hover:text-[#C9A84C] transition-colors">{t('cart.title')}</Link>
-          </div>
-        </nav>
+    <div className="mx-auto max-w-6xl px-4 py-10" dir="rtl">
+      {/* Breadcrumb */}
+      <nav className="mb-6 flex items-center gap-2 text-xs text-[#9CA3AF]">
+        <Link href="/" className="hover:text-[#C9A84C] transition-colors">الرئيسية</Link>
+        <span>/</span>
+        <Link href="/products" className="hover:text-[#C9A84C] transition-colors">المنتجات</Link>
+        {category && (
+          <>
+            <span>/</span>
+            <Link href={`/categories/${category.slug}`} className="hover:text-[#C9A84C] transition-colors">{category.name_ar}</Link>
+          </>
+        )}
+        <span>/</span>
+        <span className="text-[#EDE7DD]">{productData.name_ar}</span>
+      </nav>
 
-        <section className="grid gap-8 py-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-          {/* Image */}
-          <div className="flex min-h-[420px] items-center justify-center rounded-md border border-[#2E2E2E] bg-[#1B1B1B] p-8 text-center overflow-hidden">
+      <div className="grid gap-10 lg:grid-cols-2">
+        {/* Image column */}
+        <div className="space-y-3">
+          {/* Main image */}
+          <div className="aspect-square overflow-hidden rounded-3xl border border-black/5 bg-[#F3EDE3]">
             {primaryImage ? (
-              <img src={primaryImage} alt={product.name_ar} className="h-full w-full object-cover rounded-md" />
+              <img src={primaryImage} alt={productData.name_ar} className="h-full w-full object-cover" />
             ) : (
-              <div>
-                <p className="text-sm text-[#9CA3AF]">{brand?.name ?? t('common.appName')}</p>
-                <h1 className="mt-4 text-4xl font-semibold leading-tight text-[#C9A84C] md:text-6xl">{product.name_ar}</h1>
-                <p className="mt-4 text-lg text-[#D6D3C7]">{product.name_en}</p>
-              </div>
+              <div className="flex h-full items-center justify-center text-[#C9A84C]/30 text-6xl">◈</div>
             )}
           </div>
-
-          {/* Details */}
-          <div className="flex flex-col gap-6">
-            <div>
-              <div className="flex flex-wrap items-center gap-2 text-sm text-[#9CA3AF]">
-                {category ? (
-                  <Link href={`/categories/${category.slug}`} className="text-[#C9A84C] hover:underline">
-                    {category.name_ar}
-                  </Link>
-                ) : null}
-                {brand ? <span>{brand.name}</span> : null}
-                {product.is_featured ? (
-                  <span className="rounded-sm border border-[#C9A84C] px-2 py-1 text-xs text-[#C9A84C]">
-                    {t('catalog.featured')}
-                  </span>
-                ) : null}
-              </div>
-              <h2 className="mt-4 text-3xl font-semibold">{product.name_ar}</h2>
-              <p className="mt-4 leading-8 text-[#B8B8B8]">{product.description_ar}</p>
-            </div>
-
-            {/* Price box */}
-            <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-5">
-              <p className="text-sm text-[#9CA3AF]">{t('catalog.priceFrom')}</p>
-              <div className="mt-2 flex items-end gap-3">
-                <strong className="text-3xl text-[#C9A84C]">{priceLabel}</strong>
-                {summary.comparePriceLabel ? (
-                  <span className="pb-1 text-sm text-[#6B7280] line-through">{summary.comparePriceLabel}</span>
-                ) : null}
-              </div>
-              <p className="mt-3 text-sm text-[#9CA3AF]">{stockLabel}</p>
-            </div>
-
-            {/* Add to cart */}
-            {cheapestVariant && (
-              <AddToCartButton
-                variantId={cheapestVariant.id}
-                productId={product.id}
-                productSlug={product.slug}
-                nameAr={product.name_ar}
-                nameEn={product.name_en}
-                sku={cheapestVariant.sku}
-                priceSyp={cheapestVariant.price_syp}
-                comparePriceSyp={cheapestVariant.compare_price_syp}
-                imageUrl={primaryImage}
-                outOfStock={summary.totalStock === 0}
-              />
-            )}
-
-            {/* Variants table */}
-            {variants.length > 0 && (
-              <section className="rounded-md border border-[#2E2E2E] bg-[#151515] p-5">
-                <h3 className="text-lg font-semibold">{t('catalog.availableOptions')}</h3>
-                <div className="mt-4 overflow-hidden rounded-md border border-[#2E2E2E]">
-                  <table className="w-full text-sm">
-                    <thead className="bg-[#202020] text-[#9CA3AF]">
-                      <tr>
-                        <th className="px-4 py-3 text-start font-medium">SKU</th>
-                        <th className="px-4 py-3 text-start font-medium">{t('catalog.price')}</th>
-                        <th className="px-4 py-3 text-start font-medium">{t('catalog.stock')}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#2E2E2E]">
-                      {variants.map((variant: any) => (
-                        <tr key={variant.id}>
-                          <td className="px-4 py-3 text-[#D6D3C7] font-mono text-xs">{variant.sku}</td>
-                          <td className="px-4 py-3 text-[#C9A84C]">{formatSYP(variant.price_syp)}</td>
-                          <td className="px-4 py-3 text-[#D6D3C7]">{variant.stock_quantity}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+          {/* Thumbnail strip */}
+          {images.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {images.map((img: any) => (
+                <div key={img.id}
+                  className={['h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-colors',
+                    img.is_primary ? 'border-[#C9A84C]' : 'border-transparent hover:border-[#C9A84C]/50'
+                  ].join(' ')}>
+                  <img src={img.url} alt={img.alt_ar ?? ''} className="h-full w-full object-cover" />
                 </div>
-              </section>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Info column */}
+        <div className="space-y-6">
+          {brand && (
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#C9A84C]">{brand.name}</p>
+          )}
+          <h1 className="text-3xl font-black text-[#171411] leading-tight">{productData.name_ar}</h1>
+          {productData.name_en && (
+            <p className="text-sm text-[#9CA3AF]" dir="ltr">{productData.name_en}</p>
+          )}
+
+          {/* Price */}
+          {minPrice > 0 ? (
+            <div className="flex items-baseline gap-3">
+              <span className="text-3xl font-black text-[#171411]">{formatSYP(minPrice)}</span>
+              {variants.length > 1 && <span className="text-sm text-[#9CA3AF]">يبدأ من</span>}
+            </div>
+          ) : (
+            <p className="text-lg text-[#9CA3AF]">السعر قريباً</p>
+          )}
+
+          {/* Stock badge */}
+          <div>
+            {totalStock > 10 ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-green-50 border border-green-200 px-3 py-1 text-xs font-semibold text-green-700">
+                ✓ متوفر في المخزون
+              </span>
+            ) : totalStock > 0 ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-xs font-semibold text-amber-700">
+                ⚠ كميات محدودة ({totalStock} قطعة)
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 border border-red-200 px-3 py-1 text-xs font-semibold text-red-600">
+                نفذ المخزون
+              </span>
             )}
           </div>
-        </section>
-      </section>
-    </main>
+
+          {/* Description */}
+          {productData.description_ar && (
+            <div className="rounded-2xl bg-[#F8F5EF] p-5">
+              <p className="text-sm leading-relaxed text-[#3C352C]">{productData.description_ar}</p>
+            </div>
+          )}
+
+          {/* Variants selector */}
+          {variants.length > 1 && (
+            <div>
+              <p className="mb-2 text-sm font-semibold text-[#3C352C]">اختر المتغير</p>
+              <div className="flex flex-wrap gap-2">
+                {variants.map((v: any) => (
+                  <button key={v.id}
+                    className="rounded-xl border border-[#C9A84C]/30 px-4 py-2 text-xs font-bold text-[#3C352C] hover:bg-[#C9A84C] hover:text-[#111] hover:border-[#C9A84C] transition-all">
+                    {v.sku} — {formatSYP(v.price_syp)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Add to cart */}
+          {cheapest && totalStock > 0 && (
+            <AddToCartButton
+              variantId={cheapest.id}
+              productId={productData.id}
+              productNameAr={productData.name_ar}
+              priceSyp={cheapest.price_syp}
+              imageUrl={primaryImage ?? undefined}
+            />
+          )}
+
+          {/* Category link */}
+          {category && (
+            <p className="text-xs text-[#9CA3AF]">
+              التصنيف:{' '}
+              <Link href={`/categories/${category.slug}`} className="text-[#C9A84C] hover:underline">
+                {category.name_ar}
+              </Link>
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

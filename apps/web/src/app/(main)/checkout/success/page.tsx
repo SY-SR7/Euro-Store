@@ -1,69 +1,66 @@
-'use client';
-/* eslint-disable */
-// @ts-nocheck
+﻿'use client';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { CheckCircle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function CheckoutSuccessPage() {
-  const t = useTranslations();
-  const searchParams = useSearchParams();
-  const orderNumber = searchParams.get('order');
-  const [countdown, setCountdown] = useState(10);
+  const params      = useSearchParams();
+  const orderNumber = params.get('order') ?? '';
+  const [counter, setCounter] = useState(8);
 
   useEffect(() => {
-    if (countdown <= 0) return;
-    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [countdown]);
+    if (counter <= 0) return;
+    const t = setTimeout(() => setCounter(c => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [counter]);
+
+  useEffect(() => {
+    if (counter === 0) {
+      window.location.href = '/orders';
+    }
+  }, [counter]);
 
   return (
-    <div className="mx-auto max-w-lg px-6 py-20 text-center">
-      <div className="flex justify-center mb-6">
-        <CheckCircle className="w-20 h-20 text-green-400" strokeWidth={1.5} />
-      </div>
+    <div className="flex min-h-[70vh] items-center justify-center px-4" dir="rtl">
+      <div className="max-w-md w-full rounded-3xl border border-black/5 bg-white p-10 text-center shadow-xl">
+        {/* Success icon */}
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+          <svg className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
 
-      <h1 className="font-headline text-3xl font-bold text-[#E2E2E2] mb-3">
-        {t('checkout.successTitle')}
-      </h1>
+        <h1 className="text-2xl font-black text-[#171411]">تم إرسال طلبك!</h1>
+        <p className="mt-2 text-[#9CA3AF] text-sm">شكراً لك على طلبك من Euro Store</p>
 
-      {orderNumber && (
-        <p className="text-sm text-[#9CA3AF] mb-6">
-          {t('checkout.orderNumber')}{' '}
-          <span className="font-mono text-[#C9A84C] font-semibold">
-            #{orderNumber}
-          </span>
-        </p>
-      )}
-
-      <p className="text-[#9CA3AF] mb-10 leading-7">
-        {t('checkout.successDesc')}
-      </p>
-
-      <div className="flex flex-col sm:flex-row gap-3 justify-center">
         {orderNumber && (
-          <Link
-            href="/orders"
-            className="rounded-sm bg-[#C9A84C] px-6 py-3 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors"
-          >
-            {t('checkout.viewOrder')}
-          </Link>
+          <div className="mt-6 rounded-2xl bg-[#F8F5EF] p-4">
+            <p className="text-xs text-[#9CA3AF]">رقم الطلب</p>
+            <p className="mt-1 font-mono text-xl font-black text-[#C9A84C]">{orderNumber}</p>
+          </div>
         )}
-        <Link
-          href="/products"
-          className="rounded-sm border border-[#2E2E2E] px-6 py-3 text-sm font-semibold text-[#9CA3AF] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors"
-        >
-          {t('home.shopNow')}
-        </Link>
-      </div>
 
-      {countdown > 0 && (
-        <p className="mt-8 text-xs text-[#6B7280]">
-          {t('checkout.redirecting', { seconds: countdown })}
+        <p className="mt-6 text-sm text-[#9CA3AF]">
+          سيتم التواصل معك قريباً لتأكيد الطلب وترتيب التسليم.
         </p>
-      )}
+
+        <div className="mt-8 flex flex-col gap-3">
+          <Link href="/orders"
+            className="rounded-2xl bg-[#C9A84C] py-3 text-sm font-black text-[#111] hover:bg-[#D8B95F] transition-colors block">
+            عرض طلباتي
+          </Link>
+          <Link href="/products"
+            className="rounded-2xl border border-black/10 py-3 text-sm font-semibold text-[#3C352C] hover:border-[#C9A84C] transition-colors block">
+            متابعة التسوق
+          </Link>
+        </div>
+
+        {counter > 0 && (
+          <p className="mt-4 text-xs text-[#9CA3AF]">
+            سيتم توجيهك لصفحة الطلبات بعد {counter} ثواني...
+          </p>
+        )}
+      </div>
     </div>
   );
 }
