@@ -17,11 +17,29 @@ export async function loginAdminAction(formData: FormData): Promise<void> {
   }
 
   const supabase = createServerSupabaseClient();
-  const { error } = await supabase.auth.signInWithPassword(parsed.data);
+  const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
 
-  if (error) {
+  if (error || !data.session) {
     redirect('/login?status=failed');
   }
+
+  const cookieStore = await import('next/headers').then(m => m.cookies());
+  
+  cookieStore.set('sb-access-token', data.session.access_token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: data.session.expires_in,
+  });
+
+  cookieStore.set('sb-refresh-token', data.session.refresh_token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 7,
+  });
 
   const access = await getAdminAccess(supabase);
 

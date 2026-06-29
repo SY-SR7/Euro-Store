@@ -1,4 +1,4 @@
-﻿import type { EurostoreSupabaseClient } from '@eurostore/database';
+import type { EurostoreSupabaseClient } from '@eurostore/database';
 import { USER_ROLES, type AdminPortalRole } from '@eurostore/shared';
 
 export interface AdminAccess {
@@ -11,6 +11,14 @@ export interface AdminAccess {
 }
 
 export async function getAdminAccess(supabase: EurostoreSupabaseClient): Promise<AdminAccess | null> {
+  const cookieStore = await import('next/headers').then(m => m.cookies());
+  const accessToken = cookieStore.get('sb-access-token')?.value;
+  const refreshToken = cookieStore.get('sb-refresh-token')?.value;
+
+  if (accessToken && refreshToken) {
+    await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).catch(() => {});
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
