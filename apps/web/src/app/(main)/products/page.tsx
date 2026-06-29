@@ -1,9 +1,8 @@
 /* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { ProductCard } from '../../catalog-components';
 import {
   createCatalogLookup,
@@ -35,8 +34,7 @@ export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps): Promise<JSX.Element> {
   const t = await getTranslations();
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const search = getSearchTerm(searchParams);
   const categoryFilter = getCategoryFilter(searchParams);
 

@@ -1,12 +1,10 @@
 /* eslint-disable */
 // @ts-nocheck
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
-import { cookies } from 'next/headers';
+import { createServerSupabaseClient } from '@/supabase-server';
 
 export async function GET() {
-  const cookieStore = cookies();
-  const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {

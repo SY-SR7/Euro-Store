@@ -2,10 +2,9 @@
 // @ts-nocheck
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { formatSYP } from '@eurostore/shared';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import {
   summarizeProductVariants } from '../../catalog-components';
 import { type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '../../catalog-types';
@@ -17,8 +16,7 @@ interface ProductPageProps { params: { slug: string } }
 
 export default async function ProductPage({ params }: ProductPageProps): Promise<JSX.Element> {
   const t           = await getTranslations();
-  const cookieStore = cookies();
-  const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const { data: productData } = await supabase
     .from('products')

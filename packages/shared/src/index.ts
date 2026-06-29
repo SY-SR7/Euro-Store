@@ -1,4 +1,4 @@
-﻿export * from "./constants/governorates";
+export * from "./constants/governorates";
 export * from "./constants/roles";
 export * from "./auth";
 export * from "./env";
@@ -15,5 +15,6 @@ export function formatSYP(value: number | null | undefined): string {
   return `${new Intl.NumberFormat('ar-SY').format(safeValue)} ل.س`;
 }
 
-export * as arMessages from './messages/ar.json';
-export * as enMessages from './messages/en.json';
+import arMessages from './messages/ar.json';
+import enMessages from './messages/en.json';
+export { arMessages, enMessages };

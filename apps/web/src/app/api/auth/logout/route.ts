@@ -1,10 +1,8 @@
 ﻿import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 
 export async function POST() {
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   await supabase.auth.signOut();
   return NextResponse.redirect(new URL('/', process.env['NEXT_PUBLIC_APP_URL'] ?? 'http://localhost:3000'));
 }

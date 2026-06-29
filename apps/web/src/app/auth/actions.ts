@@ -5,8 +5,7 @@
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 import { getFormString, loginSchema, registerCustomerSchema } from '@eurostore/shared';
 import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 
 function collectLoginForm(formData: FormData) {
   return {
@@ -32,8 +31,7 @@ export async function loginCustomerAction(formData: FormData): Promise<void> {
     redirect('/auth/login?status=invalid');
   }
 
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error) {
@@ -69,8 +67,7 @@ export async function registerCustomerAction(formData: FormData): Promise<void> 
     redirect('/auth/register?status=invalid');
   }
 
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,

@@ -1,8 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { z } from 'zod';
 import { GOVERNORATES } from '@eurostore/shared';
 
@@ -49,8 +48,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const cookieStore = cookies();
-    const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+    const supabase = createServerSupabaseClient();
 
     // Optional logged-in customer
     const { data: { user } } = await supabase.auth.getUser();

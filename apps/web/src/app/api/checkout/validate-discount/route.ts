@@ -1,8 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
-import { cookies } from 'next/headers';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -11,8 +10,7 @@ const schema = z.object({
 });
 
 export async function POST(request: Request) {
-  const cookieStore = cookies();
-  const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const body: unknown = await request.json();
   const parsed = schema.safeParse(body);

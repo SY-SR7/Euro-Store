@@ -1,8 +1,8 @@
 /* eslint-disable */
 // @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv, createSupabaseAdminClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
+import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,8 +10,7 @@ export async function POST(req: NextRequest) {
     if (!body.order_number?.trim() || !body.reason?.trim())
       return NextResponse.json({ error: 'رقم الطلب والسبب مطلوبان' }, { status: 400 });
 
-    const cookieStore = cookies();
-    const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+    const supabase = createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'يجب تسجيل الدخول' }, { status: 401 });
 

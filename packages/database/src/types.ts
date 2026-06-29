@@ -468,6 +468,189 @@ export interface Database {
         Update: Partial<Database['public']['Tables']['homepage_sections']['Insert']>;
         Relationships: [];
       };
+
+      customer_addresses: {
+        Row: {
+          id: string;
+          customer_id: string | null;
+          label: string;
+          full_name: string;
+          phone: string;
+          governorate: string;
+          city: string;
+          street: string;
+          is_default: boolean;
+          created_at: string;
+        };
+        Insert: InsertWithoutGenerated<
+          Database['public']['Tables']['customer_addresses']['Row'],
+          'id' | 'is_default' | 'created_at'
+        >;
+        Update: Partial<Database['public']['Tables']['customer_addresses']['Insert']>;
+        Relationships: [];
+      };
+      discount_codes: {
+        Row: {
+          id: string;
+          code: string;
+          type: 'percentage' | 'fixed';
+          value: number;
+          min_order_syp: number;
+          max_uses: number | null;
+          used_count: number;
+          valid_from: string;
+          valid_until: string;
+          is_active: boolean;
+          created_at: string;
+        };
+        Insert: InsertWithoutGenerated<
+          Database['public']['Tables']['discount_codes']['Row'],
+          'id' | 'used_count' | 'is_active' | 'created_at'
+        >;
+        Update: Partial<Database['public']['Tables']['discount_codes']['Insert']>;
+        Relationships: [];
+      };
+      exchange_items: {
+        Row: {
+          id: string;
+          exchange_request_id: string | null;
+          original_order_item_id: string | null;
+          original_variant_id: string | null;
+          exchange_variant_id: string | null;
+          quantity: number;
+          created_at: string;
+        };
+        Insert: InsertWithoutGenerated<
+          Database['public']['Tables']['exchange_items']['Row'],
+          'id' | 'created_at'
+        >;
+        Update: Partial<Database['public']['Tables']['exchange_items']['Insert']>;
+        Relationships: [];
+      };
+      exchange_qr_tokens: {
+        Row: {
+          id: string;
+          exchange_request_id: string;
+          customer_id: string;
+          token_hash: string;
+          expires_at: string;
+          redeemed_at: string | null;
+          created_at: string;
+        };
+        Insert: InsertWithoutGenerated<
+          Database['public']['Tables']['exchange_qr_tokens']['Row'],
+          'id' | 'redeemed_at'
+        >;
+        Update: Partial<Database['public']['Tables']['exchange_qr_tokens']['Insert']>;
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          recipient_id: string;
+          recipient_role: UserRole;
+          type: NotificationType;
+          title_ar: string;
+          title_en: string;
+          body_ar: string;
+          body_en: string;
+          data: Json | null;
+          is_read: boolean;
+          created_at: string;
+        };
+        Insert: InsertWithoutGenerated<
+          Database['public']['Tables']['notifications']['Row'],
+          'id' | 'is_read' | 'created_at'
+        >;
+        Update: Partial<Database['public']['Tables']['notifications']['Insert']>;
+        Relationships: [];
+      };
+      order_items: {
+        Row: {
+          id: string;
+          order_id: string | null;
+          variant_id: string | null;
+          product_snapshot: Json;
+          quantity: number;
+          unit_price_syp: number;
+          total_price_syp: number;
+          created_at: string;
+        };
+        Insert: InsertWithoutGenerated<
+          Database['public']['Tables']['order_items']['Row'],
+          'id' | 'created_at'
+        >;
+        Update: Partial<Database['public']['Tables']['order_items']['Insert']>;
+        Relationships: [];
+      };
+      order_status_history: {
+        Row: {
+          id: string;
+          order_id: string | null;
+          from_status: OrderStatus | null;
+          to_status: OrderStatus;
+          changed_by_id: string;
+          changed_by_role: UserRole;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: InsertWithoutGenerated<
+          Database['public']['Tables']['order_status_history']['Row'],
+          'id' | 'created_at'
+        >;
+        Update: Partial<Database['public']['Tables']['order_status_history']['Insert']>;
+        Relationships: [];
+      };
+      referral_tracking: {
+        Row: {
+          id: string;
+          referrer_id: string | null;
+          referred_id: string | null;
+          referral_code: string;
+          bonus_awarded: boolean;
+          created_at: string;
+        };
+        Insert: InsertWithoutGenerated<
+          Database['public']['Tables']['referral_tracking']['Row'],
+          'id' | 'bonus_awarded' | 'created_at'
+        >;
+        Update: Partial<Database['public']['Tables']['referral_tracking']['Insert']>;
+        Relationships: [];
+      };
+      sub_admin_permissions: {
+        Row: {
+          id: string;
+          sub_admin_id: string | null;
+          module: string;
+          permission_level: PermissionLevel;
+          granted_by: string | null;
+          created_at: string;
+        };
+        Insert: InsertWithoutGenerated<
+          Database['public']['Tables']['sub_admin_permissions']['Row'],
+          'id' | 'created_at'
+        >;
+        Update: Partial<Database['public']['Tables']['sub_admin_permissions']['Insert']>;
+        Relationships: [];
+      };
+      system_settings: {
+        Row: {
+          key: string;
+          value: string | null;
+          description: string | null;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          key: string;
+          value?: string | null;
+          description?: string | null;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: Partial<Database['public']['Tables']['system_settings']['Insert']>;
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

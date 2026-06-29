@@ -1,8 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 import { NextResponse } from 'next/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
-import { cookies } from 'next/headers';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { GOVERNORATES } from '@eurostore/shared';
 
 export async function GET(request: Request) {
@@ -15,8 +14,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ base_rate_syp: 0, free_shipping_threshold_syp: null });
   }
 
-  const cookieStore = cookies();
-  const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const { data } = await supabase
     .from('shipping_rates')
