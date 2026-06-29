@@ -45,7 +45,7 @@ export default function HomePage() {
         frameCount={120}
         scrollHeight="150vh"
         storyBeats={SHOES_STORY_BEATS}
-        bgColor="#0A0A0A"
+        bgColor="#dfdcd3"
       />
 
       {/* 2. MEN */}
