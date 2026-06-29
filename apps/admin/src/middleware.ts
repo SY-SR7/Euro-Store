@@ -1,4 +1,4 @@
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+﻿import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 import { ADMIN_TOTP_COOKIE_NAME, readRequiredEnv, verifyTotpSessionToken } from '@eurostore/shared';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getAdminAccess } from './auth';
@@ -81,3 +81,4 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico|api).*)'],
 };
+

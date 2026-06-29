@@ -1,4 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
+﻿import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, I18nManager } from 'react-native';
 import { createSupabasePublicClientFromEnv } from '@eurostore/database';
@@ -31,10 +31,10 @@ export default function App(): JSX.Element {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>تطبيق يورو ستور — بوابة العملاء</Text>
-      <Text style={styles.subtitle}>EuroStore Mobile App — Customer Portal</Text>
+      <Text style={styles.title}>ØªØ·Ø¨ÙŠÙ‚ ÙŠÙˆØ±Ùˆ Ø³ØªÙˆØ± â€” Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡</Text>
+      <Text style={styles.subtitle}>EuroStore Mobile App â€” Customer Portal</Text>
       <Text style={styles.meta}>
-        {shippingRateCount === null ? 'جار الربط مع قاعدة البيانات...' : `محافظات الشحن المتاحة: ${shippingRateCount}`}
+        {shippingRateCount === null ? 'Ø¬Ø§Ø± Ø§Ù„Ø±Ø¨Ø· Ù…Ø¹ Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª...' : `Ù…Ø­Ø§ÙØ¸Ø§Øª Ø§Ù„Ø´Ø­Ù† Ø§Ù„Ù…ØªØ§Ø­Ø©: ${shippingRateCount}`}
       </Text>
       <StatusBar style="auto" />
     </View>
@@ -68,3 +68,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+

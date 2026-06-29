@@ -34,3 +34,4 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: {
   );
 }
 
+

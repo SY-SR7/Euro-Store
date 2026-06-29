@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -77,12 +77,12 @@ export default function AdminExchangesPage() {
             <tbody className="divide-y divide-[#2E2E2E]">
               {exchanges.map((ex) => (
                 <tr key={ex.id}>
-                  <td className="px-4 py-3 font-mono text-xs text-[#9CA3AF]">{ex.id.slice(0, 8)}…</td>
+                  <td className="px-4 py-3 font-mono text-xs text-[#9CA3AF]">{ex.id.slice(0, 8)}â€¦</td>
                   <td className="px-4 py-3 text-[#D6D3C7] max-w-xs truncate">{ex.reason}</td>
                   <td className={`px-4 py-3 font-semibold ${STATUS_COLORS[ex.status] ?? 'text-[#E2E2E2]'}`}>{ex.status}</td>
                   <td className="px-4 py-3 text-[#9CA3AF] text-xs">{new Date(ex.created_at).toLocaleDateString('ar-SY')}</td>
                   <td className="px-4 py-3 flex gap-3 items-center">
-                    <Link href={`/exchanges/${ex.id}`} className="text-xs text-[#C9A84C] hover:underline">تفاصيل</Link>
+                    <Link href={`/exchanges/${ex.id}`} className="text-xs text-[#C9A84C] hover:underline">ØªÙØ§ØµÙŠÙ„</Link>
                     {ex.status === 'pending' && (
                       <>
                         <button onClick={() => handleStatus(ex.id, 'approved')} className="text-xs text-green-400 hover:underline">{t('admin.approve')}</button>

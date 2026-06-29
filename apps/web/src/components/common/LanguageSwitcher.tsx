@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 'use client';
 
@@ -21,9 +21,10 @@ export function LanguageSwitcher() {
           onClick={() => setLocale(l)}
           className="px-2 py-1 rounded text-[#9CA3AF] hover:text-[#C9A84C] transition-colors uppercase tracking-wider font-medium"
         >
-          {l === 'ar' ? 'ع' : 'EN'}
+          {l === 'ar' ? 'Ø¹' : 'EN'}
         </button>
       ))}
     </div>
   );
 }
+

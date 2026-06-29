@@ -1,4 +1,4 @@
-import type { EurostoreSupabaseClient } from '@eurostore/database';
+﻿import type { EurostoreSupabaseClient } from '@eurostore/database';
 
 export interface PartnerAccess {
   userId: string;
@@ -36,3 +36,4 @@ export async function getPartnerAccess(supabase: EurostoreSupabaseClient): Promi
     governorate: result.data.governorate,
   };
 }
+

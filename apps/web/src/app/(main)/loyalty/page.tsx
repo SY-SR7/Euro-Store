@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
@@ -31,7 +31,7 @@ export default async function LoyaltyPage() {
   return (
     <main className="min-h-screen bg-[#0F0F0F] px-6 py-12 text-[#E2E2E2]">
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-[#C9A84C] text-sm hover:underline">← {t('common.appName')}</Link>
+        <Link href="/" className="text-[#C9A84C] text-sm hover:underline">â† {t('common.appName')}</Link>
 
         <h1 className="mt-6 text-2xl font-semibold">{t('loyalty.title')}</h1>
 
@@ -54,7 +54,7 @@ export default async function LoyaltyPage() {
                 {profile.referral_code}
               </code>
               <button
-                onClick={() => navigator.clipboard.writeText(String(profile.referral_code))}
+                onClick={() => (navigator as any).clipboard.writeText(String(profile.referral_code))}
                 className="rounded-md bg-[#C9A84C]/10 border border-[#C9A84C]/30 px-4 py-2 text-sm text-[#C9A84C] hover:bg-[#C9A84C]/20 transition-colors"
               >
                 {t('loyalty.copyCode')}
@@ -95,3 +95,4 @@ export default async function LoyaltyPage() {
     </main>
   );
 }
+

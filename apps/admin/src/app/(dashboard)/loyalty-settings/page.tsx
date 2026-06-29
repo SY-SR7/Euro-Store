@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
@@ -45,27 +45,27 @@ export default function AdminLoyaltySettingsPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ updates }),
     });
-    setMsg(res.ok ? 'تم حفظ الإعدادات بنجاح ✓' : 'حدث خطأ أثناء الحفظ');
+    setMsg(res.ok ? 'ØªÙ… Ø­ÙØ¸ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø¨Ù†Ø¬Ø§Ø­ âœ“' : 'Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ø­ÙØ¸');
     setSaving(false);
   }
 
   const LABELS: Record<string, string> = {
-    loyalty_earn_amount_syp:        'المبلغ (ل.س) للحصول على نقطة',
-    loyalty_earn_points:            'عدد النقاط الممنوحة لكل مبلغ',
-    loyalty_redeem_points_per_syp:  'عدد النقاط لكل ليرة عند الاستبدال',
-    loyalty_max_redeem_percent:     'أقصى نسبة خصم من الطلب (%)',
-    loyalty_referral_bonus_points:  'نقاط مكافأة الإحالة',
+    loyalty_earn_amount_syp:        'Ø§Ù„Ù…Ø¨Ù„Øº (Ù„.Ø³) Ù„Ù„Ø­ØµÙˆÙ„ Ø¹Ù„Ù‰ Ù†Ù‚Ø·Ø©',
+    loyalty_earn_points:            'Ø¹Ø¯Ø¯ Ø§Ù„Ù†Ù‚Ø§Ø· Ø§Ù„Ù…Ù…Ù†ÙˆØ­Ø© Ù„ÙƒÙ„ Ù…Ø¨Ù„Øº',
+    loyalty_redeem_points_per_syp:  'Ø¹Ø¯Ø¯ Ø§Ù„Ù†Ù‚Ø§Ø· Ù„ÙƒÙ„ Ù„ÙŠØ±Ø© Ø¹Ù†Ø¯ Ø§Ù„Ø§Ø³ØªØ¨Ø¯Ø§Ù„',
+    loyalty_max_redeem_percent:     'Ø£Ù‚ØµÙ‰ Ù†Ø³Ø¨Ø© Ø®ØµÙ… Ù…Ù† Ø§Ù„Ø·Ù„Ø¨ (%)',
+    loyalty_referral_bonus_points:  'Ù†Ù‚Ø§Ø· Ù…ÙƒØ§ÙØ£Ø© Ø§Ù„Ø¥Ø­Ø§Ù„Ø©',
   };
 
   return (
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[#E2E2E2]">إعدادات برنامج الولاء</h1>
+        <h1 className="text-2xl font-bold text-[#E2E2E2]">Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø¨Ø±Ù†Ø§Ù…Ø¬ Ø§Ù„ÙˆÙ„Ø§Ø¡</h1>
         {msg && <p className="text-sm text-green-400">{msg}</p>}
       </div>
 
       <p className="text-sm text-[#9CA3AF]">
-        تحكم بقواعد كسب واستبدال نقاط الولاء. يتم تطبيق التغييرات فوراً على الطلبات الجديدة.
+        ØªØ­ÙƒÙ… Ø¨Ù‚ÙˆØ§Ø¹Ø¯ ÙƒØ³Ø¨ ÙˆØ§Ø³ØªØ¨Ø¯Ø§Ù„ Ù†Ù‚Ø§Ø· Ø§Ù„ÙˆÙ„Ø§Ø¡. ÙŠØªÙ… ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„ØªØºÙŠÙŠØ±Ø§Øª ÙÙˆØ±Ø§Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø¬Ø¯ÙŠØ¯Ø©.
       </p>
 
       {loading ? (
@@ -83,7 +83,7 @@ export default function AdminLoyaltySettingsPage() {
               <input
                 type="number"
                 value={values[s.key] ?? ''}
-                onChange={e => setValues(v => ({ ...v, [s.key]: e.target.value }))}
+                onChange={e => setValues(v => ({ ...v, [s.key]: (e.target as HTMLInputElement).value }))}
                 className="input-admin w-48"
               />
             </div>
@@ -94,7 +94,7 @@ export default function AdminLoyaltySettingsPage() {
             disabled={saving}
             className="rounded-sm bg-[#C9A84C] px-6 py-2.5 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] disabled:opacity-50 transition-colors"
           >
-            {saving ? 'جاري الحفظ...' : t('common.save')}
+            {saving ? 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø­ÙØ¸...' : t('common.save')}
           </button>
         </div>
       )}

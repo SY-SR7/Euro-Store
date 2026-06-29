@@ -1,6 +1,6 @@
 ﻿import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '../../../supabase-server';
 
 export async function GET() {
   const cookieStore = cookies();
@@ -18,3 +18,5 @@ export async function GET() {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data);
 }
+
+

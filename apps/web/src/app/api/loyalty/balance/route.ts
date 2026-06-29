@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';

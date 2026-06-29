@@ -8,3 +8,4 @@ export default getRequestConfig(async () => {
   const messages = (await import(`@eurostore/shared/src/messages/${locale}.json`)).default;
   return { locale, messages };
 });
+

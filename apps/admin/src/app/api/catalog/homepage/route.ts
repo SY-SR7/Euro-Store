@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 import { z } from 'zod';
 
@@ -43,3 +43,4 @@ export async function POST(request: Request) {
   } as any);
   return NextResponse.json(data, { status: 201 });
 }
+

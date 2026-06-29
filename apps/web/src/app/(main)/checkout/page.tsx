@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 'use client';
 import { useState, useEffect, useCallback } from 'react';
@@ -9,7 +9,7 @@ import { useCartStore } from '../../lib/cart/cartStore';
 import { cartItemsToOrderPayload, getCartSubtotal } from '../../lib/cart/cartUtils';
 import { formatSYP, GOVERNORATES } from '@eurostore/shared';
 
-/* ── Types ─────────────────────────────────────────────── */
+/* â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 interface DiscountResult {
   discount_id:     string;
   discount_amount: number;
@@ -22,7 +22,7 @@ interface ShippingResult {
   free_shipping_threshold_syp: number | null;
 }
 
-/* ── Component ─────────────────────────────────────────── */
+/* â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export default function CheckoutPage() {
   const t      = useTranslations();
   const router = useRouter();
@@ -50,7 +50,7 @@ export default function CheckoutPage() {
 
   const subtotal = getCartSubtotal(items);
 
-  /* ── Fetch shipping when governorate changes ─────────── */
+  /* â”€â”€ Fetch shipping when governorate changes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   useEffect(() => {
     if (!governorate) { setShippingRate(null); return; }
     setLoadingShip(true);
@@ -60,7 +60,7 @@ export default function CheckoutPage() {
       .catch(() => setLoadingShip(false));
   }, [governorate]);
 
-  /* ── Fetch loyalty points for logged-in user ─────────── */
+  /* â”€â”€ Fetch loyalty points for logged-in user â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   useEffect(() => {
     setLoadingPoints(true);
     fetch('/api/loyalty/balance')
@@ -70,7 +70,7 @@ export default function CheckoutPage() {
       .finally(() => setLoadingPoints(false));
   }, []);
 
-  /* ── Computed values ─────────────────────────────────── */
+  /* â”€â”€ Computed values â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   const shippingSyp: number = (() => {
     if (!shippingRate) return 0;
     if (shippingRate.free_shipping_threshold_syp &&
@@ -95,7 +95,7 @@ export default function CheckoutPage() {
 
   const totalSyp = Math.max(0, subtotal - discountSyp - loyaltyDiscountSyp + shippingSyp);
 
-  /* ── Apply discount code ─────────────────────────────── */
+  /* â”€â”€ Apply discount code â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   const applyCode = useCallback(async () => {
     if (!codeInput.trim()) return;
     setApplyingCode(true);
@@ -133,7 +133,7 @@ export default function CheckoutPage() {
     }
   }, [codeInput, subtotal, t]);
 
-  /* ── Submit order ────────────────────────────────────── */
+  /* â”€â”€ Submit order â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitting(true);
@@ -172,7 +172,7 @@ export default function CheckoutPage() {
     }
   }
 
-  /* ── Empty cart ──────────────────────────────────────── */
+  /* â”€â”€ Empty cart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   if (items.length === 0) {
     return (
       <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
@@ -201,7 +201,7 @@ export default function CheckoutPage() {
 
         <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
 
-          {/* ── Left: Form ────────────────────────────────── */}
+          {/* â”€â”€ Left: Form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {formError && (
               <p className="rounded border border-red-800 bg-red-900/20 p-4 text-sm text-red-400">
@@ -227,7 +227,7 @@ export default function CheckoutPage() {
                 required
                 className={inp}
                 value={governorate}
-                onChange={e => setGovernorate(e.target.value)}
+                onChange={(e) => setGovernorate((e.target as HTMLInputElement).value)}
               >
                 <option value="">{t('checkout.selectGov')}</option>
                 {GOVERNORATES.map(g => (
@@ -250,13 +250,13 @@ export default function CheckoutPage() {
               <textarea name="notes" rows={2} className={`${inp} resize-y`} />
             </label>
 
-            {/* ── Discount Code ────────────────────────── */}
+            {/* â”€â”€ Discount Code â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
             <div className="flex flex-col gap-2">
               <span className="text-sm text-[#9CA3AF]">{t('checkout.discountCode')}</span>
               {discount ? (
                 <div className="flex items-center justify-between rounded border border-green-800 bg-green-900/10 px-4 py-2.5">
                   <span className="text-sm text-green-400">
-                    {t('checkout.codeApplied')} — {discount.type === 'percentage' ? `${discount.value}%` : formatSYP(discount.discount_amount)}
+                    {t('checkout.codeApplied')} â€” {discount.type === 'percentage' ? `${discount.value}%` : formatSYP(discount.discount_amount)}
                   </span>
                   <button
                     type="button"
@@ -271,7 +271,7 @@ export default function CheckoutPage() {
                   <input
                     type="text"
                     value={codeInput}
-                    onChange={e => setCodeInput(e.target.value.toUpperCase())}
+                    onChange={e => setCodeInput((e.target as HTMLInputElement).value.toUpperCase())}
                     placeholder="EURO2026"
                     className={`${inp} flex-1`}
                     dir="ltr"
@@ -291,27 +291,27 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            {/* ── Loyalty Points ───────────────────────── */}
+            {/* â”€â”€ Loyalty Points â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
             {!loadingPoints && loyaltyPoints > 0 && (
               <div className="rounded border border-[#2E2E2E] bg-[#151515] p-4">
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={usePoints}
-                    onChange={e => setUsePoints(e.target.checked)}
+                    onChange={e => setUsePoints((e.target as HTMLInputElement).checked)}
                     className="mt-0.5 accent-[#C9A84C]"
                   />
                   <div className="flex flex-col gap-0.5 text-sm">
                     <span className="text-[#E2E2E2]">{t('checkout.usePoints')}</span>
                     <span className="text-[#9CA3AF]">
                       {t('checkout.yourPoints')} {loyaltyPoints.toLocaleString()}
-                      {' · '}
+                      {' Â· '}
                       {t('checkout.pointsWorth')}{' '}
                       {formatSYP(loyaltyPoints * POINT_VALUE_SYP)}
                     </span>
                     {usePoints && loyaltyDiscountSyp > 0 && (
                       <span className="text-green-400 text-xs">
-                        − {formatSYP(loyaltyDiscountSyp)} ({loyaltyPointsUsed} {'\u0646\u0642\u0637\u0629'})
+                        âˆ’ {formatSYP(loyaltyDiscountSyp)} ({loyaltyPointsUsed} {'\u0646\u0642\u0637\u0629'})
                       </span>
                     )}
                   </div>
@@ -328,7 +328,7 @@ export default function CheckoutPage() {
             </button>
           </form>
 
-          {/* ── Right: Order Summary ───────────────────── */}
+          {/* â”€â”€ Right: Order Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-6 h-fit sticky top-6">
             <h2 className="text-lg font-semibold mb-4">{t('cart.orderSummary')}</h2>
 
@@ -336,7 +336,7 @@ export default function CheckoutPage() {
             <div className="flex flex-col gap-2 text-sm mb-4">
               {items.map(i => (
                 <div key={i.variantId} className="flex justify-between text-[#9CA3AF]">
-                  <span className="truncate me-2">{i.nameAr} × {i.quantity}</span>
+                  <span className="truncate me-2">{i.nameAr} Ã— {i.quantity}</span>
                   <span className="shrink-0">{formatSYP(i.priceSyp * i.quantity)}</span>
                 </div>
               ))}
@@ -354,7 +354,7 @@ export default function CheckoutPage() {
                 <span>{t('checkout.shipping')}</span>
                 <span>
                   {!governorate
-                    ? '—'
+                    ? 'â€”'
                     : loadingShip
                     ? '...'
                     : shippingSyp === 0
@@ -368,7 +368,7 @@ export default function CheckoutPage() {
               {discountSyp > 0 && (
                 <div className="flex justify-between text-green-400">
                   <span>{t('checkout.discount')}</span>
-                  <span>− {formatSYP(discountSyp)}</span>
+                  <span>âˆ’ {formatSYP(discountSyp)}</span>
                 </div>
               )}
 
@@ -376,7 +376,7 @@ export default function CheckoutPage() {
               {loyaltyDiscountSyp > 0 && (
                 <div className="flex justify-between text-[#C9A84C]">
                   <span>{t('checkout.loyaltyDiscount')}</span>
-                  <span>− {formatSYP(loyaltyDiscountSyp)}</span>
+                  <span>âˆ’ {formatSYP(loyaltyDiscountSyp)}</span>
                 </div>
               )}
             </div>

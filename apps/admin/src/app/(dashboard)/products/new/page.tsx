@@ -16,7 +16,7 @@ export default function NewProductPage() {
     setSaving(true);
     setError('');
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form));
+    const data = Object.fromEntries((new FormData(form as HTMLFormElement as HTMLFormElement) as any));
 
     const res = await fetch('/api/catalog/products', {
       method: 'POST',
@@ -102,3 +102,5 @@ export default function NewProductPage() {
     </div>
   );
 }
+
+

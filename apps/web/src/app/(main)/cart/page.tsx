@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 'use client';
 import Link from 'next/link';
@@ -59,7 +59,7 @@ export default function CartPage() {
                 <div className="flex items-center gap-2 shrink-0">
                   <button onClick={() => updateQty(item.variantId, item.quantity - 1)}
                     className="flex h-8 w-8 items-center justify-center rounded border border-[#2E2E2E] text-[#9CA3AF] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors">
-                    −
+                    âˆ’
                   </button>
                   <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
                   <button onClick={() => updateQty(item.variantId, item.quantity + 1)}

@@ -14,13 +14,13 @@ export function NewBrandForm() {
     e.preventDefault();
     setSaving(true);
     setMsg('');
-    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const data = Object.fromEntries((new FormData(e.currentTarget as HTMLFormElement as HTMLFormElement) as any));
     const res = await fetch('/api/catalog/brands', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: data.name, slug: data.slug, is_active: data.is_active === 'on' }),
     });
-    if (res.ok) { setMsg(t('saveSuccess')); router.refresh(); (e.target as HTMLFormElement).reset(); }
+    if (res.ok) { setMsg(t('saveSuccess')); router.refresh(); (e.target as HTMLFormElement & { reset(): void }).reset(); }
     else setMsg(t('saveFailed'));
     setSaving(false);
   }
@@ -46,3 +46,5 @@ export function NewBrandForm() {
     </form>
   );
 }
+
+

@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 "use client";
 
@@ -45,7 +45,7 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-[#9CA3AF]">
-            لا توجد صورة
+            Ù„Ø§ ØªÙˆØ¬Ø¯ ØµÙˆØ±Ø©
           </div>
         )}
         
@@ -53,12 +53,12 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         <div className="absolute top-3 start-3 flex flex-col gap-2">
           {isNew && (
             <span className="bg-[#C9A84C] text-black text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wide shimmer">
-              جديد
+              Ø¬Ø¯ÙŠØ¯
             </span>
           )}
           {isOnSale && (
             <span className="bg-[#FF4444] text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wide">
-              خصم
+              Ø®ØµÙ…
             </span>
           )}
         </div>
@@ -84,7 +84,8 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
           {new Intl.NumberFormat('ar-SY', { style: 'currency', currency: 'SYP', maximumFractionDigits: 0 }).format(displayPrice)}
         </p>
       </div>
-      <Link href={`/products/${product.slug}`} className="absolute inset-0 z-0" aria-label={`عرض ${product.name_ar}`} />
+      <Link href={`/products/${product.slug}`} className="absolute inset-0 z-0" aria-label={`Ø¹Ø±Ø¶ ${product.name_ar}`} />
     </motion.div>
   );
 }
+

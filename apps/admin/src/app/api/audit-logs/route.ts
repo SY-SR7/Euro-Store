@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 
@@ -31,3 +31,4 @@ export async function GET(request: Request) {
 
   return NextResponse.json({ data: mapped, total: count ?? 0 });
 }
+

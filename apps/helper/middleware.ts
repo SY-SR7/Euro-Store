@@ -1,4 +1,4 @@
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+﻿import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getHelperAccess } from './src/auth';
 
@@ -52,3 +52,4 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
+

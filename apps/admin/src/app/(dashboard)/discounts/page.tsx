@@ -68,7 +68,7 @@ export default function AdminDiscountsPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm(t('common.confirmDelete'))) return;
+    if (!window.confirm(t('common.confirmDelete'))) return;
     await fetch(`/api/discounts/${id}`, { method: 'DELETE' });
     void fetchDiscounts();
   }
@@ -84,30 +84,30 @@ export default function AdminDiscountsPage() {
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.discountCode')}</label>
-            <input className="input-admin" value={code} onChange={e => setCode(e.target.value)} placeholder="SUMMER20" />
+            <input className="input-admin" value={code} onChange={(e) => setCode((e.target as HTMLInputElement).value)} placeholder="SUMMER20" />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.discountType')}</label>
-            <select className="input-admin" value={type} onChange={e => setType(e.target.value as 'percentage' | 'fixed')}>
+            <select className="input-admin" value={type} onChange={(e) => setType((e.target as HTMLSelectElement).value as 'percentage' | 'fixed')}>
               <option value="percentage">{t('admin.discountPercentage')}</option>
               <option value="fixed">{t('admin.discountFixed')}</option>
             </select>
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.discountValue')}</label>
-            <input className="input-admin" type="number" value={value} onChange={e => setValue(e.target.value)} placeholder="20" />
+            <input className="input-admin" type="number" value={value} onChange={(e) => setValue((e.target as HTMLInputElement).value)} placeholder="20" />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.minOrderSyp')}</label>
-            <input className="input-admin" type="number" value={minOrder} onChange={e => setMinOrder(e.target.value)} placeholder="0" />
+            <input className="input-admin" type="number" value={minOrder} onChange={(e) => setMinOrder((e.target as HTMLInputElement).value)} placeholder="0" />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.validUntil')}</label>
-            <input className="input-admin" type="date" value={validUntil} onChange={e => setValidUntil(e.target.value)} />
+            <input className="input-admin" type="date" value={validUntil} onChange={(e) => setValidUntil((e.target as HTMLInputElement).value)} />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.maxUses')}</label>
-            <input className="input-admin" type="number" value={maxUses} onChange={e => setMaxUses(e.target.value)} placeholder="∞" />
+            <input className="input-admin" type="number" value={maxUses} onChange={(e) => setMaxUses((e.target as HTMLInputElement).value)} placeholder="∞" />
           </div>
         </div>
         <button
@@ -158,3 +158,4 @@ export default function AdminDiscountsPage() {
     </div>
   );
 }
+

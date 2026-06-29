@@ -28,3 +28,4 @@ export default async function TotpVerifyPage({ searchParams }: { searchParams: {
     </main>
   );
 }
+

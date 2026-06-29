@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const govId = searchParams.get('gov') ?? '';
 
-  // Convert English gov ID → Arabic name used in DB
+  // Convert English gov ID â†’ Arabic name used in DB
   const govAr = GOVERNORATES.find(g => g.id === govId)?.ar ?? '';
   if (!govAr) {
     return NextResponse.json({ base_rate_syp: 0, free_shipping_threshold_syp: null });

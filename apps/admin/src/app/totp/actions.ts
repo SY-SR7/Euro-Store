@@ -1,4 +1,4 @@
-'use server';
+﻿'use server';
 
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 import {
@@ -112,3 +112,4 @@ export async function verifyTotpAction(formData: FormData): Promise<void> {
 
   redirect('/');
 }
+

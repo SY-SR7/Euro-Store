@@ -38,7 +38,7 @@ export default function HelperExchangePage() {
       });
       const data = await res.json() as { token?: string; error?: string };
       if (data.token) setTokens(prev => ({ ...prev, [id]: data.token as string }));
-      else alert(data.error ?? 'خطأ');
+      else window.alert(data.error ?? 'خطأ');
     } finally {
       setGenning(prev => ({ ...prev, [id]: false }));
     }
@@ -80,7 +80,7 @@ export default function HelperExchangePage() {
                     value={tokens[ex.id]}
                   />
                   <button
-                    onClick={() => navigator.clipboard.writeText(tokens[ex.id] ?? '')}
+                    onClick={() => (navigator as any).clipboard.writeText(tokens[ex.id] ?? '')}
                     className="mt-2 text-xs text-[#9CA3AF] hover:text-[#C9A84C] underline"
                   >
                     {t('loyalty.copyCode')}
@@ -94,3 +94,5 @@ export default function HelperExchangePage() {
     </main>
   );
 }
+
+

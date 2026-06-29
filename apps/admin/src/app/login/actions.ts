@@ -1,4 +1,4 @@
-'use server';
+﻿'use server';
 
 import { getFormString, loginSchema } from '@eurostore/shared';
 import { redirect } from 'next/navigation';
@@ -35,3 +35,4 @@ export async function loginAdminAction(formData: FormData): Promise<void> {
 
   redirect('/totp/verify');
 }
+

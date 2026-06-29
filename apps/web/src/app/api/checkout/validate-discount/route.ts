@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 
   const { code, subtotal_syp } = parsed.data;
 
-  // أعمدة discount_codes الصحيحة: used_count / valid_until (من migration 00001)
+  // Ø£Ø¹Ù…Ø¯Ø© discount_codes Ø§Ù„ØµØ­ÙŠØ­Ø©: used_count / valid_until (Ù…Ù† migration 00001)
   const { data: row } = await supabase
     .from('discount_codes')
     .select('id, type, value, min_order_syp, max_uses, used_count, valid_until, is_active')

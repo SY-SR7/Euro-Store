@@ -88,7 +88,7 @@ export default function AdminShippingRatesPage() {
                       <input
                         type="number"
                         value={editValues.base_rate_syp ?? ''}
-                        onChange={e => setEditValues(v => ({ ...v, base_rate_syp: Number(e.target.value) }))}
+                        onChange={e => setEditValues(v => ({ ...v, base_rate_syp: Number((e.target as HTMLInputElement).value) }))}
                         className="w-32 rounded border border-[#C9A84C] bg-[#0F0F0F] px-2 py-1 text-sm text-[#E2E2E2] outline-none"
                       />
                     ) : (
@@ -102,7 +102,7 @@ export default function AdminShippingRatesPage() {
                       <input
                         type="number"
                         value={editValues.free_shipping_threshold_syp ?? ''}
-                        onChange={e => setEditValues(v => ({ ...v, free_shipping_threshold_syp: e.target.value ? Number(e.target.value) : null }))}
+                        onChange={e => setEditValues(v => ({ ...v, free_shipping_threshold_syp: (e.target as HTMLInputElement).value ? Number((e.target as HTMLInputElement).value) : null }))}
                         className="w-36 rounded border border-[#C9A84C] bg-[#0F0F0F] px-2 py-1 text-sm text-[#E2E2E2] outline-none"
                         placeholder="0 = Ù…Ø¹Ø·Ù„"
                       />
@@ -116,7 +116,7 @@ export default function AdminShippingRatesPage() {
                     {editId === rate.id ? (
                       <select
                         value={editValues.is_active ? '1' : '0'}
-                        onChange={e => setEditValues(v => ({ ...v, is_active: e.target.value === '1' }))}
+                        onChange={e => setEditValues(v => ({ ...v, is_active: (e.target as HTMLInputElement).value === '1' }))}
                         className="rounded border border-[#C9A84C] bg-[#0F0F0F] px-2 py-1 text-sm text-[#E2E2E2]"
                       >
                         <option value="1">Ù†Ø´Ø·</option>
@@ -165,3 +165,4 @@ export default function AdminShippingRatesPage() {
     </div>
   );
 }
+

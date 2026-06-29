@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
@@ -66,7 +66,7 @@ export default async function Home(): Promise<JSX.Element> {
   return (
     <div className="flex flex-col gap-16 px-6 py-12 mx-auto w-full max-w-6xl">
 
-      {/* ── Hero ── */}
+      {/* â”€â”€ Hero â”€â”€ */}
       <section className="grid gap-8 md:grid-cols-[1.3fr_0.7fr] md:items-end pt-4">
         <div>
           <p className="text-sm text-[#C9A84C] tracking-widest uppercase">
@@ -85,12 +85,12 @@ export default async function Home(): Promise<JSX.Element> {
             className="inline-flex w-fit items-center gap-2 rounded-sm bg-[#C9A84C] px-6 py-3 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors"
           >
             {t('home.shopNow')}
-            <span aria-hidden>←</span>
+            <span aria-hidden>â†</span>
           </Link>
         </div>
       </section>
 
-      {/* ── Featured Products ── */}
+      {/* â”€â”€ Featured Products â”€â”€ */}
       {featuredProducts.length > 0 && (
         <section>
           <div className="mb-6 flex items-center justify-between">
@@ -129,7 +129,7 @@ export default async function Home(): Promise<JSX.Element> {
         </section>
       )}
 
-      {/* ── Category Grid ── */}
+      {/* â”€â”€ Category Grid â”€â”€ */}
       {(categories ?? []).length > 0 && (
         <section className="border-t border-[#2E2E2E] pt-12">
           <div className="mb-6">
@@ -159,7 +159,7 @@ export default async function Home(): Promise<JSX.Element> {
                   className="text-[#C9A84C] opacity-0 group-hover:opacity-100 transition-opacity"
                   aria-hidden
                 >
-                  ←
+                  â†
                 </span>
               </Link>
             ))}
@@ -167,7 +167,7 @@ export default async function Home(): Promise<JSX.Element> {
         </section>
       )}
 
-      {/* ── Loyalty CTA Banner ── */}
+      {/* â”€â”€ Loyalty CTA Banner â”€â”€ */}
       <section className="rounded-lg border border-[#C9A84C]/30 bg-gradient-to-r from-[#C9A84C]/10 to-transparent p-8 flex items-center justify-between gap-6">
         <div>
           <h3 className="font-headline text-2xl font-semibold text-[#C9A84C]">

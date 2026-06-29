@@ -47,7 +47,7 @@ export default function HelperLoyaltyPage() {
             <label className="text-sm text-[#9CA3AF]">{t('helper.customerId')}</label>
             <input
               className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm focus:border-[#C9A84C] focus:outline-none"
-              value={customerId} onChange={e => setCustomerId(e.target.value)} placeholder="UUID"
+              value={customerId} onChange={(e) => setCustomerId((e.target as HTMLInputElement).value)} placeholder="UUID"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -55,14 +55,14 @@ export default function HelperLoyaltyPage() {
             <input
               type="number" min="1"
               className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm focus:border-[#C9A84C] focus:outline-none"
-              value={points} onChange={e => setPoints(e.target.value)} placeholder="100"
+              value={points} onChange={(e) => setPoints((e.target as HTMLInputElement).value)} placeholder="100"
             />
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="text-sm text-[#9CA3AF]">{t('helper.grantDescription')} ({t('common.optional')})</label>
             <input
               className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm focus:border-[#C9A84C] focus:outline-none"
-              value={description} onChange={e => setDescription(e.target.value)} placeholder={t('helper.grantDescPlaceholder')}
+              value={description} onChange={(e) => setDescription((e.target as HTMLInputElement).value)} placeholder={t('helper.grantDescPlaceholder')}
             />
           </div>
           <button

@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 import type { Database } from '@eurostore/database';
 import { formatSYP } from '@eurostore/shared';
@@ -51,9 +51,9 @@ export function summarizeProductVariants(variants: readonly CatalogVariant[]): P
 
   if (prices.length === 0) {
     return {
-      priceLabel: '—',
+      priceLabel: 'â€”',
       comparePriceLabel: null,
-      stockLabel: '—',
+      stockLabel: 'â€”',
       totalStock,
     };
   }

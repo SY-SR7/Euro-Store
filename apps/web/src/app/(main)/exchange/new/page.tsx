@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 'use client';
 import { useState } from 'react';
@@ -24,17 +24,17 @@ export default function NewExchangePage() {
         body: JSON.stringify({ order_number: orderNumber, reason }),
       });
       const data = await res.json() as { error?: string; exchange_request_id?: string };
-      if (!res.ok) { setError(data.error ?? 'خطأ غير متوقع'); return; }
-      setSuccess(`تم إنشاء طلب الاستبدال بنجاح. رقم الطلب: ${data.exchange_request_id ?? ''}`);
+      if (!res.ok) { setError(data.error ?? 'Ø®Ø·Ø£ ØºÙŠØ± Ù…ØªÙˆÙ‚Ø¹'); return; }
+      setSuccess(`ØªÙ… Ø¥Ù†Ø´Ø§Ø¡ Ø·Ù„Ø¨ Ø§Ù„Ø§Ø³ØªØ¨Ø¯Ø§Ù„ Ø¨Ù†Ø¬Ø§Ø­. Ø±Ù‚Ù… Ø§Ù„Ø·Ù„Ø¨: ${data.exchange_request_id ?? ''}`);
       setOrderNumber(''); setReason('');
-    } catch { setError('تعذّر الاتصال بالخادم'); }
+    } catch { setError('ØªØ¹Ø°Ù‘Ø± Ø§Ù„Ø§ØªØµØ§Ù„ Ø¨Ø§Ù„Ø®Ø§Ø¯Ù…'); }
     finally   { setSubmitting(false); }
   }
 
   return (
     <main className="min-h-screen bg-[#0F0F0F] px-6 py-12 text-[#E2E2E2]">
       <div className="mx-auto max-w-lg">
-        <Link href="/" className="text-[#C9A84C] text-sm hover:underline">← {t('common.appName')}</Link>
+        <Link href="/" className="text-[#C9A84C] text-sm hover:underline">â† {t('common.appName')}</Link>
         <h1 className="mt-6 text-2xl font-semibold">{t('exchange.newRequest')}</h1>
         <p className="mt-2 text-sm text-[#9CA3AF]">{t('exchange.newRequestDesc')}</p>
 
@@ -46,7 +46,7 @@ export default function NewExchangePage() {
             <label className="text-sm text-[#9CA3AF]">{t('exchange.orderNumber')}</label>
             <input
               className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm text-[#E2E2E2] placeholder:text-[#6B7280] focus:border-[#C9A84C] focus:outline-none"
-              value={orderNumber} onChange={e => setOrderNumber(e.target.value)}
+              value={orderNumber} onChange={(e) => setOrderNumber((e.target as HTMLInputElement).value)}
               placeholder="ES-2026-XXXX" required
             />
           </div>
@@ -54,7 +54,7 @@ export default function NewExchangePage() {
             <label className="text-sm text-[#9CA3AF]">{t('exchange.reason')}</label>
             <textarea
               className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm text-[#E2E2E2] placeholder:text-[#6B7280] focus:border-[#C9A84C] focus:outline-none h-28 resize-none"
-              value={reason} onChange={e => setReason(e.target.value)}
+              value={reason} onChange={(e) => setReason((e.target as HTMLInputElement).value)}
               placeholder={t('exchange.reasonPlaceholder')} required
             />
           </div>

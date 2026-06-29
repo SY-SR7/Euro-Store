@@ -1,4 +1,4 @@
-import type { EurostoreSupabaseClient } from '@eurostore/database';
+﻿import type { EurostoreSupabaseClient } from '@eurostore/database';
 import { USER_ROLES, type AdminPortalRole } from '@eurostore/shared';
 
 export interface AdminAccess {
@@ -57,3 +57,4 @@ export async function getAdminAccess(supabase: EurostoreSupabaseClient): Promise
     totpSecret: subAdminResult.data.totp_secret,
   };
 }
+

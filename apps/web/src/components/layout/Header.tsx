@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import Link from 'next/link';
 import { Search, Menu, X, User, Star, RefreshCw } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -86,3 +86,4 @@ export function Header() {
     </header>
   );
 }
+

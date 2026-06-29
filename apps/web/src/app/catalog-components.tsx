@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -11,7 +11,7 @@ import {
   variantsForProduct,
 } from './catalog-types';
 
-// Re-exported for backward compatibility with existing imports across the app —
+// Re-exported for backward compatibility with existing imports across the app â€”
 // the actual definitions now live in catalog-types.ts (no 'use client'), since
 // they are plain types/functions that Server Components also need to call
 // directly. Importing a non-component value from a 'use client' module into a
@@ -42,12 +42,12 @@ export function ProductCard({ product, variants, category, brand }: ProductCardP
   const summary = summarizeProductVariants(variantsForProduct(product.id, variants));
 
   // Build translated labels
-  const priceLabel = summary.totalStock === 0 && summary.priceLabel === '—'
+  const priceLabel = summary.totalStock === 0 && summary.priceLabel === 'â€”'
     ? t('priceSoon')
     : summary.priceLabel;
 
   const stockLabel = (() => {
-    if (summary.priceLabel === '—') return t('stockUpdate');
+    if (summary.priceLabel === 'â€”') return t('stockUpdate');
     if (summary.totalStock > 0) return t('inStock', { count: summary.totalStock });
     return t('outOfStock');
   })();
@@ -82,3 +82,4 @@ export function ProductCard({ product, variants, category, brand }: ProductCardP
     </Link>
   );
 }
+

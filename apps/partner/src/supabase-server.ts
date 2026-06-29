@@ -1,26 +1,23 @@
+﻿import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import type { Database } from '@repo/database';
 
-export function createServerSupabaseClient() {
-  const cookieStore = cookies();
-
-  return createSupabaseServerClientFromEnv({
-    get(name) {
-      return cookieStore.get(name)?.value;
-    },
-    set(name, value, options) {
-      try {
-        cookieStore.set({ name, value, ...options });
-      } catch (_error) {
-        // Server Components cannot write cookies; Server Actions and middleware can.
-      }
-    },
-    remove(name, options) {
-      try {
-        cookieStore.set({ name, value: '', ...options, maxAge: 0 });
-      } catch (_error) {
-        // Server Components cannot write cookies; Server Actions and middleware can.
-      }
-    },
-  });
+export async function createServerSupabaseClient() {
+  const cookieStore = await cookies();
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll(); },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {}
+        },
+      },
+    }
+  );
 }
