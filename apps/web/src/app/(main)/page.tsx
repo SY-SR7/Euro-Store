@@ -59,7 +59,7 @@ const SHOES_STORY_BEATS: StoryBeat[] = [
  *
  * غيّر FRAMES_READY إلى true بعد استخراج الصور.
  */
-const FRAMES_READY = false;
+const FRAMES_READY = true;
 const FRAME_COUNT  = 120;
 
 function shoesFrameSrc(index: number): string {
