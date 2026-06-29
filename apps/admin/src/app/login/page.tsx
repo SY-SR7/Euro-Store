@@ -1,47 +1,164 @@
-﻿// @ts-nocheck
-/* eslint-disable */
-import { redirect } from 'next/navigation';
-import { loginAction } from './actions';
+'use client';
 
-export default function AdminLoginPage({ searchParams }: { searchParams: { error?: string } }) {
+import { FormEvent, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { createBrowserSupabaseClient } from '@/supabase-browser';
+
+export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let alive = true;
+
+    async function checkSession() {
+      try {
+        const supabase = createBrowserSupabaseClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!alive) return;
+
+        if (user) {
+          const next = searchParams.get('next') || '/';
+          router.replace(next);
+          router.refresh();
+          return;
+        }
+      } catch {
+        // keep login form visible
+      } finally {
+        if (alive) setCheckingSession(false);
+      }
+    }
+
+    void checkSession();
+
+    return () => {
+      alive = false;
+    };
+  }, [router, searchParams]);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (loading) return;
+
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail || !password) {
+      setError('أدخل البريد الإلكتروني وكلمة المرور');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const supabase = createBrowserSupabaseClient();
+
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password,
+      });
+
+      if (signInError) {
+        setError(signInError.message || 'فشل تسجيل الدخول');
+        setLoading(false);
+        return;
+      }
+
+      const next = searchParams.get('next') || '/';
+      router.replace(next);
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'تعذر تسجيل الدخول');
+      setLoading(false);
+    }
+  }
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#F8F6F2] px-4" dir="rtl">
-      <div className="w-full max-w-sm">
-        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-8 shadow-sm">
-          <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#B8860B] text-white font-black text-lg">
-              ES
-            </div>
-            <h1 className="text-xl font-black text-[#1C1917]">لوحة إدارة EuroStore</h1>
-            <p className="mt-1 text-sm text-[#A8A29E]">للمسؤولين فقط</p>
-          </div>
-
-          {searchParams.error && (
-            <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {searchParams.error === 'invalid_credentials' ? 'بيانات الدخول غير صحيحة' : searchParams.error}
-            </div>
-          )}
-
-          <form action={loginAction} className="space-y-4">
-            <div>
-              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">البريد الإلكتروني</label>
-              <input name="email" type="email" required autoComplete="email"
-                className="w-full rounded-xl border border-[#E5E0D8] bg-[#F8F6F2] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B] placeholder:text-[#A8A29E]"
-                placeholder="admin@eurostore.com" dir="ltr" />
-            </div>
-            <div>
-              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">كلمة المرور</label>
-              <input name="password" type="password" required autoComplete="current-password"
-                className="w-full rounded-xl border border-[#E5E0D8] bg-[#F8F6F2] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]"
-                placeholder="••••••••" dir="ltr" />
-            </div>
-            <button type="submit"
-              className="w-full rounded-xl bg-[#B8860B] py-3 text-sm font-black text-white hover:bg-[#9A7209] transition-colors">
-              دخول
-            </button>
-          </form>
+    <main className="flex min-h-screen items-center justify-center bg-[#FAF7EF] px-4 py-10" dir="rtl">
+      <section className="w-full max-w-md rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-8 shadow-2xl">
+        <div className="mb-8 text-center">
+          <p className="text-sm font-black tracking-[0.35em] text-[#C9A84C]">EURO STORE</p>
+          <h1 className="mt-4 text-3xl font-black text-[#1F1B16]">تسجيل دخول الأدمن</h1>
+          <p className="mt-2 text-sm leading-7 text-[#6F6658]">
+            أدخل بيانات حساب الإدارة للوصول إلى لوحة التحكم.
+          </p>
         </div>
-      </div>
+
+        {checkingSession ? (
+          <div className="rounded-2xl border border-[#E8DCC3] bg-[#F3EEE3] p-5 text-center text-sm font-bold text-[#6F6658]">
+            جار التحقق من الجلسة...
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} method="post" className="space-y-5">
+            {error && (
+              <div className="rounded-2xl border border-red-300 bg-red-50 p-4 text-sm font-bold text-red-700">
+                {error}
+              </div>
+            )}
+
+            <label className="block space-y-2">
+              <span className="text-sm font-black text-[#1F1B16]">البريد الإلكتروني</span>
+              <input
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                className="w-full rounded-2xl border border-[#E8DCC3] bg-white px-4 py-3 text-left text-[#1F1B16] outline-none transition focus:border-[#C9A84C]"
+                placeholder="admin@example.com"
+                dir="ltr"
+                required
+              />
+            </label>
+
+            <label className="block space-y-2">
+              <span className="text-sm font-black text-[#1F1B16]">كلمة المرور</span>
+              <div className="flex overflow-hidden rounded-2xl border border-[#E8DCC3] bg-white focus-within:border-[#C9A84C]">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  className="min-w-0 flex-1 bg-transparent px-4 py-3 text-left text-[#1F1B16] outline-none"
+                  placeholder="••••••••"
+                  dir="ltr"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((current) => !current)}
+                  className="border-r border-[#E8DCC3] px-4 text-xs font-black text-[#6F6658] transition hover:text-[#C9A84C]"
+                >
+                  {showPassword ? 'إخفاء' : 'إظهار'}
+                </button>
+              </div>
+            </label>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-2xl bg-[#C9A84C] px-5 py-3 text-sm font-black text-[#1F1B16] transition hover:bg-[#D8B95F] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {loading ? 'جار تسجيل الدخول...' : 'دخول'}
+            </button>
+
+            <p className="text-center text-xs leading-6 text-[#8B8172]">
+              لن يتم إرسال كلمة المرور في رابط الصفحة. يتم تسجيل الدخول عبر Supabase Auth بشكل مباشر.
+            </p>
+          </form>
+        )}
+      </section>
     </main>
   );
 }

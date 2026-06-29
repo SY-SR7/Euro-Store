@@ -1,5 +1,19 @@
 ---
 
+### Session 034 — Admin Login Form Security Fix
+**Scope:** apps/admin + _handoff only
+
+**Fixes:**
+- Rebuilt `apps/admin/src/app/login/page.tsx` as a client-side login form.
+- Prevented browser GET submission that leaked `email` and `password` into the URL query string.
+- Login now uses `supabase.auth.signInWithPassword`.
+- Added `apps/admin/src/supabase-browser.ts` using `createBrowserClient`.
+- Added optional redirect support via `?next=...`.
+
+**Security Note:**
+- Any password that appeared in terminal/browser URL history should be rotated.
+---
+
 ### Session 033 — Admin Categories RLS + PowerShell Compatibility
 **Scope:** apps/admin + apps/web + _handoff only
 
