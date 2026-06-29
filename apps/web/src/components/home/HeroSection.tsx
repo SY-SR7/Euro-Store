@@ -46,157 +46,145 @@ export function HeroSection() {
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
-        src="/videos/boutique-hero.mp4"
+        src="/videos/silk-hero-4k.mp4"
         autoPlay
         muted
         loop
         playsInline
         preload="auto"
-        poster="/videos/boutique-hero-poster.jpg"
+        poster="/videos/silk-hero-4k-poster.jpg"
         aria-hidden="true"
       />
 
-      {/* ── Dark cinematic overlay ── */}
+      {/* ── Dark cinematic overlay with radial shading behind text ── */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(135deg, rgba(0,0,0,0.72) 0%, rgba(10,8,5,0.5) 50%, rgba(0,0,0,0.75) 100%)',
-        }}
-      />
-
-      {/* ── Bottom gradient for smooth section merge ── */}
-      <div
-        className="absolute bottom-0 inset-x-0 pointer-events-none"
-        style={{
-          height: '30%',
-          background: 'linear-gradient(to top, #0C0C0C 0%, transparent 100%)',
+          background: 'radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%)',
         }}
       />
 
       {/* ── Content ── */}
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto w-full">
+      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto w-full pt-10">
         
-        {/* Shaded Box / Frosted Glass container */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: smooth }}
-          className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 shadow-[0_8px_32px_rgba(0,0,0,0.5)] w-full flex flex-col items-center"
+        {/* Pre-title label */}
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={0.1}
+          className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-5 opacity-90"
+          style={{ color: '#C9A84C' }}
         >
-          {/* Pre-title label */}
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={0.1}
-            className="text-[#C9A84C] text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-5 opacity-90"
-          >
-            مجموعة ٢٠٢٥
-          </motion.p>
+          مجموعة ٢٠٢٥
+        </motion.p>
 
-          {/* Main headline — word by word reveal */}
-          <motion.h1
-            className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight mb-6"
-            style={{ 
-              background: 'linear-gradient(135deg, #FFF 0%, #E8D28A 50%, #C9A84C 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0px 4px 12px rgba(0,0,0,0.4))'
-            }}
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: {},
-              visible: { transition: { staggerChildren: prefersReduced ? 0 : 0.1, delayChildren: 0.3 } },
-            }}
-          >
-            {['يُرتدى', 'بأناقة،', 'يُعاش', 'بثقة'].map((word, i) => (
-              <motion.span
-                key={i}
-                variants={{
-                  hidden:  { opacity: 0, y: '0.6em' },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: smooth } },
-                }}
-                className="inline-block me-3"
-              >
-                {word}
-              </motion.span>
-            ))}
-          </motion.h1>
+        {/* Main headline — word by word reveal */}
+        <motion.h1
+          className="text-5xl md:text-7xl lg:text-8xl font-black leading-tight mb-6"
+          style={{ 
+            background: 'linear-gradient(135deg, #FFF 0%, #E8D28A 50%, #C9A84C 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.8))'
+          }}
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: prefersReduced ? 0 : 0.1, delayChildren: 0.3 } },
+          }}
+        >
+          {['يُرتدى', 'بأناقة،', 'يُعاش', 'بثقة'].map((word, i) => (
+            <motion.span
+              key={i}
+              variants={{
+                hidden:  { opacity: 0, y: '0.6em' },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: smooth } },
+              }}
+              className="inline-block me-3"
+            >
+              {word}
+            </motion.span>
+          ))}
+        </motion.h1>
 
-          {/* Sub-headline */}
-          <motion.p
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={0.7}
-            className="text-[#E2E2E2] text-base md:text-lg max-w-xl leading-relaxed mb-10 font-light"
-          >
-            أزياء أوروبية راقية — من المصانع الأوروبية مباشرةً إلى يديك
-          </motion.p>
+        {/* Sub-headline */}
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={0.7}
+          className="text-base md:text-xl max-w-xl leading-relaxed mb-10 font-light"
+          style={{ color: '#E2E2E2', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}
+        >
+          أزياء أوروبية راقية — من المصانع الأوروبية مباشرةً إلى يديك
+        </motion.p>
 
-          {/* CTA buttons */}
+        {/* CTA buttons */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={1.0}
+          className="flex flex-wrap gap-4 justify-center"
+        >
+          {/* Primary CTA */}
           <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            custom={1.0}
-            className="flex flex-wrap gap-4 justify-center"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
           >
-            {/* Primary CTA */}
-            <motion.div
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 px-10 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-full shadow-2xl"
+              style={{ background: 'linear-gradient(to right, #C9A84C, #A67C2E)', color: '#000' }}
             >
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#C9A84C] to-[#A67C2E] text-black px-8 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-xl shadow-lg"
-              >
-                تسوق الآن
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rotate-180">
-                  <path d="M8 3L3 8L8 13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-            </motion.div>
-
-            {/* Secondary CTA */}
-            <motion.div
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-            >
-              <Link
-                href="/categories"
-                className="inline-flex items-center gap-2 border border-white/20 text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-white/10 hover:border-white/40 transition-all duration-300 rounded-xl"
-              >
-                استكشف الأقسام
-              </Link>
-            </motion.div>
+              تسوق الآن
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rotate-180">
+                <path d="M8 3L3 8L8 13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </Link>
           </motion.div>
 
-          {/* Stats row */}
+          {/* Secondary CTA */}
           <motion.div
-            variants={scaleIn}
-            initial="hidden"
-            animate="visible"
-            custom={1.3}
-            className="mt-12 flex flex-wrap justify-center gap-8 md:gap-14 border-t border-white/10 pt-8 w-full"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
           >
-            {[
-              { num: '+500', label: 'منتج حصري' },
-              { num: '+10k', label: 'زبون راضٍ' },
-              { num: '٤', label: 'أقسام متنوعة' },
-            ].map(({ num, label }) => (
-              <div key={label} className="flex flex-col items-center gap-1">
-                <span className="text-2xl md:text-3xl font-black text-[#C9A84C]">
-                  {num}
-                </span>
-                <span className="text-white/60 text-xs md:text-sm font-medium tracking-wider">{label}</span>
-              </div>
-            ))}
+            <Link
+              href="/categories"
+              className="inline-flex items-center gap-2 border px-10 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-300 rounded-full"
+              style={{ borderColor: 'rgba(255,255,255,0.4)', color: '#FFFFFF', backgroundColor: 'rgba(255,255,255,0.05)' }}
+            >
+              استكشف الأقسام
+            </Link>
           </motion.div>
+        </motion.div>
+
+        {/* Stats row */}
+        <motion.div
+          variants={scaleIn}
+          initial="hidden"
+          animate="visible"
+          custom={1.3}
+          className="mt-16 flex flex-wrap justify-center gap-10 md:gap-20 pt-10 w-full relative"
+        >
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent opacity-50" />
+          {[
+            { num: '+500', label: 'منتج حصري' },
+            { num: '+10k', label: 'زبون راضٍ' },
+            { num: '٤', label: 'أقسام متنوعة' },
+          ].map(({ num, label }) => (
+            <div key={label} className="flex flex-col items-center gap-1">
+              <span className="text-3xl md:text-4xl font-black" style={{ color: '#C9A84C', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.5))' }}>
+                {num}
+              </span>
+              <span className="text-xs md:text-sm font-medium tracking-wider" style={{ color: 'rgba(255,255,255,0.7)' }}>{label}</span>
+            </div>
+          ))}
         </motion.div>
       </div>
 
@@ -207,11 +195,12 @@ export function HeroSection() {
         transition={{ delay: 2, duration: 0.8 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
       >
-        <span className="text-white/30 text-[10px] uppercase tracking-[0.25em]">مرر للأسفل</span>
+        <span className="text-[10px] uppercase tracking-[0.25em]" style={{ color: 'rgba(255,255,255,0.4)' }}>مرر للأسفل</span>
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
-          className="w-px h-10 bg-gradient-to-b from-white/60 to-transparent"
+          className="w-px h-10"
+          style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.6), transparent)' }}
         />
       </motion.div>
     </section>
