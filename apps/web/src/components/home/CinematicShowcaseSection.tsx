@@ -68,14 +68,7 @@ function ScrollBeat({
     >
       {/* Frosted glass text card — anchored bottom-right */}
       <div
-        className="relative z-10 mx-8 mb-12 md:mx-14 md:mb-16 text-right max-w-xs md:max-w-sm mr-auto rounded-2xl px-6 py-5"
-        style={{
-          background: 'rgba(10, 10, 10, 0.55)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          border: '1px solid rgba(201, 168, 76, 0.25)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-        }}
+        className="relative z-10 mx-8 mb-12 md:mx-14 md:mb-16 text-right max-w-xs md:max-w-sm mr-auto px-6 py-5 drop-shadow-xl"
       >
         {/* Gold label */}
         <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#C9A84C] mb-2 opacity-80">
@@ -96,7 +89,7 @@ function ScrollBeat({
         </motion.h2>
 
         {beat.subtitle && (
-          <p className="mt-2 text-xs md:text-sm leading-relaxed font-light tracking-wide" style={{ color: '#D4D4D4' }}>
+          <p className="mt-2 text-xs md:text-sm leading-relaxed font-semibold tracking-wide text-[#1A1A1A] drop-shadow-sm">
             {beat.subtitle}
           </p>
         )}
@@ -226,14 +219,7 @@ export function CinematicShowcaseSection({
           />
         </div>
 
-        {/* Bottom fade gradient for text readability and bottom edge blending */}
-        <div
-          className="absolute inset-x-0 bottom-0 pointer-events-none"
-          style={{
-            height: '40%',
-            background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, transparent 100%)',
-          }}
-        />
+        {/* No gradients - pure cinematic video background */}
 
         {/* Story text beats */}
         {storyBeats.map((beat, i) => (
