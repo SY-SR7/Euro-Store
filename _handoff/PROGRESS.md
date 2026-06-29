@@ -32,6 +32,48 @@
 - Set RESEND_API_KEY in .env.local to unblock order confirmation emails
 - Phase 14: Playwright E2E + unit tests
 
+
+---
+
+### Session 028 — 2026-06-29
+**Agent:** Claude (PowerShell script — web + admin wiring fixes)
+**Duration:** ~25 min
+**Scope:** apps/admin + apps/web only
+
+**Work Done — Admin App:**
+- Fixed Discounts page: UI now sends valid_from (today by default) so POST to /api/discounts no longer returns 400
+- Fixed Discounts API: valid_from now optional (defaults to today), valid_until can be null/open-ended
+- Fixed Homepage Sections: UI was using type/position fields — now correctly uses section_key/sort_order matching the DB schema; added DELETE support
+- Fixed Product Hub (/products/[id]): replaced white bg-white cards with dark #101010 theme; added proper action buttons
+- Fixed Categories page: now fully editable inline (name_ar, name_en); added toggle active/inactive; added delete with confirm
+- Added /api/catalog/categories/[id] PATCH + DELETE routes
+- Fixed Brands page: same treatment as categories — inline edit, toggle, delete
+- Added /api/catalog/brands/[id] PATCH + DELETE routes; ensured GET /api/catalog/brands exists
+- Fixed Customers page: improved dark theme, error states, better empty state
+- Fixed Admin Orders API (/api/orders): now uses admin client (service role) instead of anon client, so RLS doesn't block listing all orders
+
+**Work Done — Web App:**
+- Fixed /exchange page: was selecting non-existent column "reason" → corrected to "reason_ar"
+- Fixed /loyalty page: removed onClick from Server Component → extracted CopyReferralButton as 'use client' component
+- Fixed /loyalty page: properly imports createAdminSupabaseClient for loyalty_points_transactions query
+
+**Phase Updates:**
+- Phase 9 (Admin): categories, brands, homepage sections, discounts, product hub — all now properly wired to DB
+- Phase 7 (Exchange): web exchange page column fix
+- Phase 8 (Loyalty): web loyalty page React server/client boundary fix
+
+**Known Remaining Issues:**
+- Phase 12: Mobile App — still a placeholder
+- Phase 13: RESEND_API_KEY + EMAIL_FROM still unset — emails non-functional
+- Phase 14: Tests — zero test files
+- Phase 15: Security hardening not started
+- products/new page doesn't have category_id / brand_id selectors (can be added as improvement)
+
+**Next Agent Must Start With:**
+- Smoke-test all fixed pages: /admin/discounts, /admin/homepage, /admin/products/[id], /admin/categories, /admin/brands
+- Smoke-test web: /exchange, /loyalty
+- Phase 12: Mobile app (apps/mobile/App.tsx)
+- Set RESEND_API_KEY + EMAIL_FROM to unblock order confirmation emails
 # EuroStore — Progress Tracker
 
 > Updated by every AI agent at the end of each work session.

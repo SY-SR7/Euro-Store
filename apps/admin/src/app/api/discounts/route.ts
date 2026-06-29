@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 
@@ -23,11 +23,13 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json() as {
     code?: string; type?: string; value?: number;
-    min_order_syp?: number; valid_from?: string; valid_until?: string; max_uses?: number;
+    min_order_syp?: number; valid_from?: string; valid_until?: string | null; max_uses?: number | null;
   };
 
-  if (!body.code?.trim() || !body.type || !body.value || !body.valid_from || !body.valid_until)
-    return NextResponse.json({ error: 'code, type, value, valid_from, valid_until required' }, { status: 400 });
+  if (!body.code?.trim() || !body.type || body.value === undefined)
+    return NextResponse.json({ error: 'code, type, value required' }, { status: 400 });
+
+  const today = new Date().toISOString().split('T')[0]!;
 
   const admin = createSupabaseAdminClientFromEnv();
   const { data, error } = await admin
@@ -37,14 +39,13 @@ export async function POST(req: NextRequest) {
       type         : body.type as 'percentage' | 'fixed',
       value        : body.value,
       min_order_syp: body.min_order_syp ?? 0,
-      valid_from   : body.valid_from,
-      valid_until  : body.valid_until,
-      max_uses     : body.max_uses ?? null,
-    })
+      valid_from   : body.valid_from ?? today,
+      valid_until  : body.valid_until ?? null,
+      max_uses     : body.max_uses    ?? null,
+    } as never)
     .select()
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
   return NextResponse.json(data, { status: 201 });
 }
-

@@ -4,9 +4,25 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
-import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
+import { createAdminSupabaseClient } from '@/supabase-server';
+import { CopyReferralButton } from '@/components/loyalty/CopyReferralButton';
 
 export const dynamic = 'force-dynamic';
+
+const TX_TYPE_LABEL: Record<string, string> = {
+  earn:     'مكسوب',
+  redeem:   'مستخدم',
+  referral: 'إحالة',
+  grant:    'منحة',
+  expire:   'منتهي الصلاحية',
+};
+const TX_TYPE_COLOR: Record<string, string> = {
+  earn:     'text-green-400',
+  redeem:   'text-red-400',
+  referral: 'text-blue-400',
+  grant:    'text-[#C9A84C]',
+  expire:   'text-[#9CA3AF]',
+};
 
 export default async function LoyaltyPage() {
   const t = await getTranslations();
@@ -14,7 +30,7 @@ export default async function LoyaltyPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/auth/login');
 
-  const admin = createSupabaseAdminClientFromEnv();
+  const admin = createAdminSupabaseClient();
 
   const [profileResult, txResult] = await Promise.all([
     admin.from('customer_profiles').select('loyalty_points, referral_code').eq('user_id', user.id).maybeSingle(),
@@ -31,7 +47,7 @@ export default async function LoyaltyPage() {
   return (
     <main className="min-h-screen bg-[#0F0F0F] px-6 py-12 text-[#E2E2E2]">
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-[#C9A84C] text-sm hover:underline"> {t('common.appName')}</Link>
+        <Link href="/" className="text-[#C9A84C] text-sm hover:underline"> {t('common.appName')}</Link>
 
         <h1 className="mt-6 text-2xl font-semibold">{t('loyalty.title')}</h1>
 
@@ -42,6 +58,7 @@ export default async function LoyaltyPage() {
             <p className="mt-1 text-4xl font-bold text-[#C9A84C]">{profile?.loyalty_points ?? 0}</p>
             <p className="mt-1 text-xs text-[#6B7280]">{t('loyalty.pointsUnit')}</p>
           </div>
+          <div className="text-4xl opacity-20">★</div>
         </div>
 
         {/* Referral */}
@@ -53,46 +70,52 @@ export default async function LoyaltyPage() {
               <code className="flex-1 rounded-md border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-2 text-[#C9A84C] font-mono text-lg">
                 {profile.referral_code}
               </code>
-              <button
-                onClick={() => (navigator as any).clipboard.writeText(String(profile.referral_code))}
-                className="rounded-md bg-[#C9A84C]/10 border border-[#C9A84C]/30 px-4 py-2 text-sm text-[#C9A84C] hover:bg-[#C9A84C]/20 transition-colors"
-              >
-                {t('loyalty.copyCode')}
-              </button>
+              <CopyReferralButton code={profile.referral_code} />
             </div>
           </div>
         )}
 
         {/* Transactions */}
-        <h2 className="mt-8 text-lg font-semibold">{t('loyalty.history')}</h2>
-        {txs.length === 0 ? (
-          <p className="mt-4 text-sm text-[#9CA3AF]">{t('common.noData')}</p>
-        ) : (
-          <div className="mt-4 overflow-hidden rounded-md border border-[#2E2E2E]">
-            <table className="w-full text-sm">
-              <thead className="bg-[#1A1A1A] text-[#9CA3AF]">
-                <tr>
-                  <th className="px-4 py-3 text-start">{t('loyalty.txDescription')}</th>
-                  <th className="px-4 py-3 text-start">{t('common.date')}</th>
-                  <th className="px-4 py-3 text-end">{t('loyalty.txPoints')}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#2E2E2E]">
-                {txs.map((tx) => (
-                  <tr key={tx.id}>
-                    <td className="px-4 py-3 text-[#D6D3C7]">{String(tx.description)}</td>
-                    <td className="px-4 py-3 text-[#9CA3AF] text-xs">{new Date(tx.created_at as string).toLocaleDateString('ar-SY')}</td>
-                    <td className={`px-4 py-3 text-end font-semibold ${Number(tx.points) > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {Number(tx.points) > 0 ? '+' : ''}{String(tx.points)}
-                    </td>
+        <div className="mt-6">
+          <h2 className="mb-3 text-sm font-semibold text-[#9CA3AF]">سجل النقاط</h2>
+          {txs.length === 0 ? (
+            <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-6 text-center text-sm text-[#9CA3AF]">
+              لا توجد معاملات بعد
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-md border border-[#2E2E2E]">
+              <table className="w-full text-sm">
+                <thead className="bg-[#1A1A1A] text-[#9CA3AF]">
+                  <tr>
+                    <th className="px-4 py-3 text-start">النوع</th>
+                    <th className="px-4 py-3 text-start">النقاط</th>
+                    <th className="px-4 py-3 text-start">التفاصيل</th>
+                    <th className="px-4 py-3 text-start">التاريخ</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody className="divide-y divide-[#2E2E2E]">
+                  {txs.map(tx => (
+                    <tr key={tx.id} className="hover:bg-[#1A1A1A]">
+                      <td className={`px-4 py-3 text-xs font-semibold ${TX_TYPE_COLOR[tx.type] ?? 'text-[#9CA3AF]'}`}>
+                        {TX_TYPE_LABEL[tx.type] ?? tx.type}
+                      </td>
+                      <td className={`px-4 py-3 font-bold ${tx.points > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {tx.points > 0 ? '+' : ''}{tx.points}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-[#9CA3AF] max-w-[200px] truncate">{tx.description ?? '—'}</td>
+                      <td className="px-4 py-3 text-xs text-[#9CA3AF]">{new Date(tx.created_at).toLocaleDateString('ar-SY')}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6 text-center">
+          <Link href="/products" className="text-sm text-[#C9A84C] hover:underline">تسوّق وأكسب المزيد من النقاط →</Link>
+        </div>
       </div>
     </main>
   );
 }
-

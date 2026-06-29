@@ -1,6 +1,6 @@
 'use client';
+
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
 
 interface Customer {
   id: string;
@@ -13,15 +13,21 @@ interface Customer {
 }
 
 export default function AdminCustomersPage() {
-  const t = useTranslations();
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
+  const [loading, setLoading]     = useState(true);
+  const [search, setSearch]       = useState('');
+  const [error, setError]         = useState('');
 
   useEffect(() => {
-    void fetch('/api/customers')
+    setLoading(true);
+    fetch('/api/customers')
       .then(r => r.json())
-      .then((d: Customer[]) => { setCustomers(Array.isArray(d) ? d : []); setLoading(false); });
+      .then((d: Customer[] | { error?: string }) => {
+        if (Array.isArray(d)) setCustomers(d);
+        else setError((d as { error?: string }).error ?? 'تعذر تحميل العملاء');
+        setLoading(false);
+      })
+      .catch(() => { setError('تعذر الاتصال'); setLoading(false); });
   }, []);
 
   const filtered = customers.filter(c =>
@@ -29,48 +35,60 @@ export default function AdminCustomersPage() {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[#E2E2E2]">{t('admin.customers')} ({customers.length})</h1>
+    <div className="space-y-6" dir="rtl">
+      <div className="flex flex-col justify-between gap-4 rounded-3xl border border-white/10 bg-[#101010] p-6 sm:flex-row sm:items-end">
+        <div>
+          <h1 className="text-3xl font-black text-white">العملاء ({customers.length})</h1>
+          <p className="mt-2 text-sm text-[#9CA3AF]">قائمة العملاء المسجّلين في المتجر.</p>
+        </div>
         <input
           value={search}
-          onChange={(e) => setSearch((e.target as unknown as HTMLInputElement).value)}
+          onChange={e => setSearch(e.target.value)}
           placeholder="ابحث بالاسم أو الهاتف..."
-          className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 text-sm text-[#E2E2E2] outline-none focus:border-[#C9A84C] w-64"
+          className="rounded-2xl border border-white/10 bg-[#151515] px-4 py-3 text-sm text-white outline-none focus:border-[#C9A84C] w-64"
         />
       </div>
 
-      {loading ? (
-        <p className="text-[#9CA3AF]">{t('common.loading')}</p>
-      ) : (
-        <div className="overflow-x-auto rounded-lg border border-[#2E2E2E]">
-          <table className="w-full text-sm text-[#E2E2E2]">
-            <thead className="bg-[#1A1A1A] text-[#9CA3AF]">
-              <tr>
-                {['الاسم', 'الهاتف', 'نقاط الولاء', 'كود الإحالة', t('common.date')].map(h => (
-                  <th key={h} className="px-4 py-3 text-start font-medium">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#2E2E2E]">
-              {filtered.map(c => (
-                <tr key={c.id} className="hover:bg-[#1A1A1A] transition-colors">
-                  <td className="px-4 py-3 font-medium">{c.full_name || '—'}</td>
-                  <td className="px-4 py-3 text-[#9CA3AF] font-mono text-xs">{c.phone || '—'}</td>
-                  <td className="px-4 py-3 text-[#C9A84C] font-semibold">{c.loyalty_points}</td>
-                  <td className="px-4 py-3 font-mono text-xs text-[#6B7280]">{c.referral_code || '—'}</td>
-                  <td className="px-4 py-3 text-[#9CA3AF] text-xs">
-                    {new Date(c.created_at).toLocaleDateString('ar-SY')}
-                  </td>
+      {error && <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-100">{error}</div>}
+
+      <section className="overflow-hidden rounded-3xl border border-white/10 bg-[#101010] shadow-2xl">
+        {loading ? (
+          <div className="p-10 text-center text-[#9CA3AF]">جار التحميل...</div>
+        ) : filtered.length === 0 ? (
+          <div className="p-10 text-center text-[#9CA3AF]">{search ? 'لا توجد نتائج للبحث.' : 'لا يوجد عملاء بعد.'}</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="bg-white/5 text-[#C9A84C]">
+                <tr>
+                  <th className="px-4 py-4 text-right font-black">الاسم</th>
+                  <th className="px-4 py-4 text-right font-black">الهاتف</th>
+                  <th className="px-4 py-4 text-right font-black">نقاط الولاء</th>
+                  <th className="px-4 py-4 text-right font-black">كود الإحالة</th>
+                  <th className="px-4 py-4 text-right font-black">تاريخ التسجيل</th>
                 </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr><td colSpan={5} className="px-4 py-8 text-center text-[#9CA3AF]">{t('common.noData')}</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                {filtered.map(c => (
+                  <tr key={c.id} className="text-[#EDE7DD] hover:bg-white/[0.03]">
+                    <td className="px-4 py-4 font-bold text-white">{c.full_name || '—'}</td>
+                    <td className="px-4 py-4 font-mono text-xs text-[#9CA3AF]">{c.phone || '—'}</td>
+                    <td className="px-4 py-4">
+                      <span className="rounded-full border border-[#C9A84C]/20 bg-[#C9A84C]/10 px-3 py-1 text-xs font-black text-[#C9A84C]">
+                        ★ {c.loyalty_points}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 font-mono text-xs text-[#6B7280]">{c.referral_code || '—'}</td>
+                    <td className="px-4 py-4 text-xs text-[#9CA3AF]">
+                      {new Date(c.created_at).toLocaleDateString('ar-SY')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
