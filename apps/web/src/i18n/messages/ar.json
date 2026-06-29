@@ -236,7 +236,8 @@
                      "discountCode": "كود الخصم",
                      "applyCode": "تطبيق",
                      "confirmOrder": "إتمام الطلب",
-                     "freeShipping": "شحن مجاني"
+                     "freeShipping": "شحن مجاني",
+                     "selectGov": "اختر المحافظة"
                  },
     "inStock":  "متوفر",
     "rightsReserved":  "جميع الحقوق محفوظة",
