@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // Auto-generated from packages/shared/src/messages/*.json
 
 const ar = {
@@ -190,6 +190,9 @@ const ar = {
     "statusCancelled": "ملغى"
   },
   "loyalty": {
+    "learnMore": "اكتشف برنامج الولاء",
+    "earnDesc": "اكسب نقاط مع كل عملية شراء واستبدلها بخصومات حصرية.",
+
     "title": "نقاط الولاء",
     "balance": "رصيد النقاط",
     "pointsUnit": "نقطة",
@@ -516,6 +519,9 @@ const en = {
     "statusCancelled": "Cancelled"
   },
   "loyalty": {
+    "learnMore": "اكتشف برنامج الولاء",
+    "earnDesc": "اكسب نقاط مع كل عملية شراء واستبدلها بخصومات حصرية.",
+
     "title": "Loyalty Points",
     "balance": "Points Balance",
     "pointsUnit": "points",

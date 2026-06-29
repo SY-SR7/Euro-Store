@@ -1,10 +1,11 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { User, ShoppingBag, Star, RefreshCw, LogOut } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,103 +18,67 @@ export default async function AccountPage(): Promise<JSX.Element> {
 
   const { data: profile } = await supabase
     .from('customer_profiles')
-    .select('full_name, phone, preferred_language, loyalty_points, referral_code')
+    .select('loyalty_points, referral_code')
     .eq('user_id', user.id)
     .maybeSingle();
 
+  const { count: orderCount } = await supabase
+    .from('orders')
+    .select('id', { count: 'exact', head: true })
+    .eq('customer_id', user.id);
+
+  const quickLinks = [
+    { href: '/orders',   icon: ShoppingBag, label: t('orders.title'),   badge: String(orderCount ?? 0) },
+    { href: '/loyalty',  icon: Star,        label: t('loyalty.title'),   badge: String(profile?.loyalty_points ?? 0) + ' ' + t('loyalty.pointsUnit') },
+    { href: '/exchange', icon: RefreshCw,   label: t('exchange.title'),  badge: null },
+  ];
+
   return (
-    <main className="min-h-screen bg-[#0F0F0F] text-[#E2E2E2] px-6 py-12">
-      <div className="mx-auto max-w-lg">
-        <nav className="mb-8">
-          <Link href="/" className="text-[#C9A84C] text-sm hover:underline">
-            ← {t('common.appName')}
-          </Link>
-        </nav>
-
-        <h1 className="text-2xl font-semibold mb-8">{t('nav.account')}</h1>
-
-        {/* Profile info */}
-        <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-6 mb-4">
-          <h2 className="text-sm font-semibold text-[#9CA3AF] uppercase tracking-wider mb-4">المعلومات الشخصية</h2>
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-[#9CA3AF]">{t('auth.fullName')}</span>
-              <span className="text-[#E2E2E2]">{profile?.full_name ?? '—'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#9CA3AF]">{t('auth.email')}</span>
-              <span className="text-[#E2E2E2] font-mono text-xs">{user.email}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#9CA3AF]">{t('auth.phone')}</span>
-              <span className="text-[#E2E2E2]">{profile?.phone ?? '—'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#9CA3AF]">{t('auth.preferredLanguage')}</span>
-              <span className="text-[#E2E2E2]">{profile?.preferred_language === 'ar' ? t('auth.langAr') : t('auth.langEn')}</span>
-            </div>
-          </div>
+    <div className="mx-auto max-w-2xl px-6 py-12">
+      {/* Profile card */}
+      <div className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-6 flex items-center gap-5 mb-8">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#C9A84C]/10 text-[#C9A84C] flex-shrink-0">
+          <User className="w-8 h-8" />
         </div>
-
-        {/* Loyalty points quick view */}
-        <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-6 mb-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-[#9CA3AF]">{t('loyalty.balance')}</p>
-              <p className="text-3xl font-bold text-[#C9A84C] mt-1">{profile?.loyalty_points ?? 0}</p>
-              <p className="text-xs text-[#6B7280]">{t('loyalty.pointsUnit')}</p>
-            </div>
-            <Link
-              href="/loyalty"
-              className="rounded-md border border-[#2E2E2E] px-4 py-2 text-sm text-[#9CA3AF] hover:border-[#C9A84C] hover:text-[#C9A84C] transition-colors"
-            >
-              {t('common.viewAll')}
-            </Link>
-          </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-[#E2E2E2] truncate">{user.email}</p>
+          {profile?.referral_code && (
+            <p className="mt-1 text-xs text-[#6B7280] font-mono">
+              {t('loyalty.referralCode')}: {profile.referral_code}
+            </p>
+          )}
         </div>
-
-        {/* Quick links */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <Link
-            href="/orders"
-            className="flex items-center gap-3 rounded-md border border-[#2E2E2E] bg-[#151515] p-4 hover:border-[#C9A84C]/30 transition-colors"
-          >
-            <span className="text-xl">📦</span>
-            <span className="text-sm text-[#E2E2E2]">{t('orders.title')}</span>
-          </Link>
-          <Link
-            href="/loyalty"
-            className="flex items-center gap-3 rounded-md border border-[#2E2E2E] bg-[#151515] p-4 hover:border-[#C9A84C]/30 transition-colors"
-          >
-            <span className="text-xl">⭐</span>
-            <span className="text-sm text-[#E2E2E2]">{t('loyalty.title')}</span>
-          </Link>
-          <Link
-            href="/exchange"
-            className="flex items-center gap-3 rounded-md border border-[#2E2E2E] bg-[#151515] p-4 hover:border-[#C9A84C]/30 transition-colors"
-          >
-            <span className="text-xl">🔄</span>
-            <span className="text-sm text-[#E2E2E2]">{t('exchange.title')}</span>
-          </Link>
-          <Link
-            href="/faq"
-            className="flex items-center gap-3 rounded-md border border-[#2E2E2E] bg-[#151515] p-4 hover:border-[#C9A84C]/30 transition-colors"
-          >
-            <span className="text-xl">❓</span>
-            <span className="text-sm text-[#E2E2E2]">{t('footer.faq')}</span>
-          </Link>
-        </div>
-
-        {/* Logout */}
-        <form action="/api/auth/logout" method="POST">
-          <button
-            type="submit"
-            className="w-full rounded-sm border border-[#2E2E2E] py-2.5 text-sm text-red-400 hover:border-red-800 hover:bg-red-950/20 transition-colors"
-          >
-            {t('nav.logout')}
-          </button>
-        </form>
       </div>
-    </main>
+
+      {/* Quick links */}
+      <div className="grid gap-3 sm:grid-cols-3 mb-8">
+        {quickLinks.map(({ href, icon: Icon, label, badge }) => (
+          <Link
+            key={href}
+            href={href}
+            className="group flex flex-col gap-3 rounded-lg border border-[#2E2E2E] bg-[#151515] p-5 hover:border-[#C9A84C] transition-colors"
+          >
+            <Icon className="w-5 h-5 text-[#C9A84C]" />
+            <div>
+              <p className="text-sm font-medium text-[#E2E2E2] group-hover:text-[#C9A84C] transition-colors">{label}</p>
+              {badge && (
+                <p className="mt-1 text-xs text-[#9CA3AF]">{badge}</p>
+              )}
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Logout */}
+      <form action="/api/auth/logout" method="POST">
+        <button
+          type="submit"
+          className="flex items-center gap-2 text-sm text-[#9CA3AF] hover:text-red-400 transition-colors"
+        >
+          <LogOut className="w-4 h-4" />
+          {t('auth.logout')}
+        </button>
+      </form>
+    </div>
   );
 }
