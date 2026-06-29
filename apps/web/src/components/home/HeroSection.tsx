@@ -74,116 +74,129 @@ export function HeroSection() {
       />
 
       {/* ── Content ── */}
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto">
-
-        {/* Pre-title label */}
-        <motion.p
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={0.1}
-          className="text-white text-xs font-bold tracking-[0.4em] uppercase mb-5 opacity-80"
+      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto w-full">
+        
+        {/* Shaded Box / Frosted Glass container */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: smooth }}
+          className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 shadow-[0_8px_32px_rgba(0,0,0,0.5)] w-full flex flex-col items-center"
         >
-          مجموعة ٢٠٢٥
-        </motion.p>
-
-        {/* Main headline — word by word reveal */}
-        <motion.h1
-          className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-6"
-          style={{ textShadow: '0 4px 24px rgba(0,0,0,0.6)' }}
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: prefersReduced ? 0 : 0.1, delayChildren: 0.3 } },
-          }}
-        >
-          {['يُرتدى', 'بأناقة،', 'يُعاش', 'بثقة'].map((word, i) => (
-            <motion.span
-              key={i}
-              variants={{
-                hidden:  { opacity: 0, y: '0.6em' },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: smooth } },
-              }}
-              className="inline-block me-3"
-            >
-              {word}
-            </motion.span>
-          ))}
-        </motion.h1>
-
-        {/* Sub-headline */}
-        <motion.p
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={0.7}
-          className="text-[#D4D4D4] text-base md:text-lg max-w-xl leading-relaxed mb-10 font-light"
-          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
-        >
-          أزياء أوروبية راقية — من المصانع الأوروبية مباشرةً إلى يديك
-        </motion.p>
-
-        {/* CTA buttons */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={1.0}
-          className="flex flex-wrap gap-4 justify-center"
-        >
-          {/* Primary CTA */}
-          <motion.div
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+          {/* Pre-title label */}
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0.1}
+            className="text-[#C9A84C] text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-5 opacity-90"
           >
-            <Link
-              href="/products"
-              className="inline-flex items-center gap-2 bg-white text-black px-8 py-4 text-sm font-black uppercase tracking-widest hover:bg-gray-200 transition-colors duration-300 rounded-lg shadow-lg"
+            مجموعة ٢٠٢٥
+          </motion.p>
+
+          {/* Main headline — word by word reveal */}
+          <motion.h1
+            className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight mb-6"
+            style={{ 
+              background: 'linear-gradient(135deg, #FFF 0%, #E8D28A 50%, #C9A84C 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0px 4px 12px rgba(0,0,0,0.4))'
+            }}
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: prefersReduced ? 0 : 0.1, delayChildren: 0.3 } },
+            }}
+          >
+            {['يُرتدى', 'بأناقة،', 'يُعاش', 'بثقة'].map((word, i) => (
+              <motion.span
+                key={i}
+                variants={{
+                  hidden:  { opacity: 0, y: '0.6em' },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: smooth } },
+                }}
+                className="inline-block me-3"
+              >
+                {word}
+              </motion.span>
+            ))}
+          </motion.h1>
+
+          {/* Sub-headline */}
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0.7}
+            className="text-[#E2E2E2] text-base md:text-lg max-w-xl leading-relaxed mb-10 font-light"
+          >
+            أزياء أوروبية راقية — من المصانع الأوروبية مباشرةً إلى يديك
+          </motion.p>
+
+          {/* CTA buttons */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1.0}
+            className="flex flex-wrap gap-4 justify-center"
+          >
+            {/* Primary CTA */}
+            <motion.div
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
             >
-              تسوق الآن
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rotate-180">
-                <path d="M8 3L3 8L8 13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </Link>
+              <Link
+                href="/products"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-[#C9A84C] to-[#A67C2E] text-black px-8 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-xl shadow-lg"
+              >
+                تسوق الآن
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rotate-180">
+                  <path d="M8 3L3 8L8 13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </motion.div>
+
+            {/* Secondary CTA */}
+            <motion.div
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            >
+              <Link
+                href="/categories"
+                className="inline-flex items-center gap-2 border border-white/20 text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-white/10 hover:border-white/40 transition-all duration-300 rounded-xl"
+              >
+                استكشف الأقسام
+              </Link>
+            </motion.div>
           </motion.div>
 
-          {/* Secondary CTA */}
+          {/* Stats row */}
           <motion.div
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            variants={scaleIn}
+            initial="hidden"
+            animate="visible"
+            custom={1.3}
+            className="mt-12 flex flex-wrap justify-center gap-8 md:gap-14 border-t border-white/10 pt-8 w-full"
           >
-            <Link
-              href="/categories"
-              className="inline-flex items-center gap-2 border border-white/30 text-white px-8 py-4 text-sm font-bold uppercase tracking-widest hover:bg-white/10 hover:border-white/60 transition-all duration-300 rounded-lg backdrop-blur-sm"
-            >
-              استكشف الأقسام
-            </Link>
+            {[
+              { num: '+500', label: 'منتج حصري' },
+              { num: '+10k', label: 'زبون راضٍ' },
+              { num: '٤', label: 'أقسام متنوعة' },
+            ].map(({ num, label }) => (
+              <div key={label} className="flex flex-col items-center gap-1">
+                <span className="text-2xl md:text-3xl font-black text-[#C9A84C]">
+                  {num}
+                </span>
+                <span className="text-white/60 text-xs md:text-sm font-medium tracking-wider">{label}</span>
+              </div>
+            ))}
           </motion.div>
-        </motion.div>
-
-        {/* Stats row */}
-        <motion.div
-          variants={scaleIn}
-          initial="hidden"
-          animate="visible"
-          custom={1.3}
-          className="mt-14 flex gap-8 md:gap-14 border-t border-white/10 pt-8"
-        >
-          {[
-            { num: '+500', label: 'منتج حصري' },
-            { num: '+10k', label: 'زبون راضٍ' },
-            { num: '٤', label: 'أقسام متنوعة' },
-          ].map(({ num, label }) => (
-            <div key={label} className="flex flex-col items-center gap-1">
-              <span className="text-2xl md:text-3xl font-black text-white">
-                {num}
-              </span>
-              <span className="text-white/50 text-xs uppercase tracking-widest">{label}</span>
-            </div>
-          ))}
         </motion.div>
       </div>
 
