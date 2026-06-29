@@ -39,6 +39,7 @@ interface Props {
 function ScrollBeat({
   beat,
   scrollProgress,
+  isLightBg,
 }: {
   beat: StoryBeat;
   scrollProgress: ReturnType<typeof useSpring>;
