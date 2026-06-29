@@ -1,39 +1,84 @@
-﻿import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
-import { z } from 'zod';
+import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 
-const schema = z.object({
-  name_ar:    z.string().min(1),
-  name_en:    z.string().min(1),
-  slug:       z.string().regex(/^[a-z0-9-]+$/),
-  sort_order: z.number().int().default(0),
-  is_active:  z.boolean().default(true),
-});
+async function requireAdminUser() {
+  const supabase = createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-export async function POST(request: Request) {
-  try {
-    const body: unknown = await request.json();
-    const parsed = schema.safeParse(body);
-    if (!parsed.success) {
-      return NextResponse.json({ error: 'invalid_input', details: parsed.error.flatten() }, { status: 400 });
-    }
-    const supabase = createServerSupabaseClient();
-    const { data, error } = await supabase// eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .from('categories').insert(parsed.data as any).select('id, slug').single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json(data, { status: 201 });
-  } catch {
-    return NextResponse.json({ error: 'server_error' }, { status: 500 });
-  }
+  return user;
+}
+
+function normalizeSlug(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 export async function GET() {
-  const supabase = createServerSupabaseClient();
-  const { data, error } = await supabase
+  const user = await requireAdminUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const admin = createSupabaseAdminClientFromEnv();
+
+  const { data, error } = await admin
     .from('categories')
-    .select('id, name_ar, name_en, slug, sort_order, is_active')
-    .order('sort_order');
+    .select('id, name_ar, name_en, slug, sort_order, is_active, created_at')
+    .order('sort_order', { ascending: true })
+    .order('created_at', { ascending: false });
+
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data);
+
+  return NextResponse.json(data ?? []);
 }
 
+export async function POST(req: NextRequest) {
+  const user = await requireAdminUser();
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const body = (await req.json().catch(() => null)) as {
+    name_ar?: string;
+    name_en?: string;
+    slug?: string;
+    sort_order?: number | string;
+    is_active?: boolean;
+  } | null;
+
+  const nameAr = body?.name_ar?.trim() ?? '';
+  const nameEn = body?.name_en?.trim() || nameAr;
+  const slug = normalizeSlug(body?.slug ?? '');
+
+  if (!nameAr) {
+    return NextResponse.json({ error: 'الاسم العربي مطلوب' }, { status: 400 });
+  }
+
+  if (!slug) {
+    return NextResponse.json({ error: 'الرابط slug مطلوب ويجب أن يكون أحرفاً إنجليزية وأرقاماً وشرطات فقط' }, { status: 400 });
+  }
+
+  const sortOrder = Number(body?.sort_order ?? 0);
+
+  const admin = createSupabaseAdminClientFromEnv();
+
+  const { data, error } = await admin
+    .from('categories')
+    .insert({
+      name_ar: nameAr,
+      name_en: nameEn,
+      slug,
+      sort_order: Number.isFinite(sortOrder) ? sortOrder : 0,
+      is_active: body?.is_active ?? true,
+    } as never)
+    .select('id, name_ar, name_en, slug, sort_order, is_active, created_at')
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+
+  return NextResponse.json(data, { status: 201 });
+}

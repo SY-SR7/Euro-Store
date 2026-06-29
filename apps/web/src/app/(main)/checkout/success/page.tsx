@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -31,16 +31,16 @@ export default function CheckoutSuccessPage() {
         </div>
 
         <h1 className="text-2xl font-black text-[#171411]">تم إرسال طلبك!</h1>
-        <p className="mt-2 text-[#9CA3AF] text-sm">شكراً لك على طلبك من Euro Store</p>
+        <p className="mt-2 text-[#6F6658] text-sm">شكراً لك على طلبك من Euro Store</p>
 
         {orderNumber && (
           <div className="mt-6 rounded-2xl bg-[#F8F5EF] p-4">
-            <p className="text-xs text-[#9CA3AF]">رقم الطلب</p>
+            <p className="text-xs text-[#6F6658]">رقم الطلب</p>
             <p className="mt-1 font-mono text-xl font-black text-[#C9A84C]">{orderNumber}</p>
           </div>
         )}
 
-        <p className="mt-6 text-sm text-[#9CA3AF]">
+        <p className="mt-6 text-sm text-[#6F6658]">
           سيتم التواصل معك قريباً لتأكيد الطلب وترتيب التسليم.
         </p>
 
@@ -56,7 +56,7 @@ export default function CheckoutSuccessPage() {
         </div>
 
         {counter > 0 && (
-          <p className="mt-4 text-xs text-[#9CA3AF]">
+          <p className="mt-4 text-xs text-[#6F6658]">
             سيتم توجيهك لصفحة الطلبات بعد {counter} ثواني...
           </p>
         )}

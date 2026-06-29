@@ -30,7 +30,7 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
       initial="rest"
       whileHover="hover"
       style={{ transformStyle: "preserve-3d" }}
-      className="group relative bg-[#1E2020] rounded-md overflow-hidden border border-[#2E2E2E] hover:border-[#C9A84C]/30 transition-all duration-300 flex flex-col h-full"
+      className="group relative bg-[#1E2020] rounded-md overflow-hidden border border-[#E8DCC3] hover:border-[#C9A84C]/30 transition-all duration-300 flex flex-col h-full"
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-[#1A1C1C]">
         {product.primary_image_url ? (
@@ -42,7 +42,7 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-[#9CA3AF]">
+          <div className="absolute inset-0 flex items-center justify-center text-[#6F6658]">
             Ù„Ø§ ØªÙˆØ¬Ø¯ ØµÙˆØ±Ø©
           </div>
         )}
@@ -69,11 +69,11 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
       
       <div className="p-4 text-center flex flex-col flex-grow justify-between">
         <div>
-          <p className="text-[#9CA3AF] text-[10px] uppercase mb-1">
+          <p className="text-[#6F6658] text-[10px] uppercase mb-1">
             {product.brand?.name_en || product.brand?.name_ar || 'EuroStore'}
           </p>
           <Link href={`/products/${product.slug}`} className="block">
-            <h3 className="text-[#E2E2E2] text-sm font-medium line-clamp-1 hover:text-[#C9A84C] transition-colors">
+            <h3 className="text-[#1F1B16] text-sm font-medium line-clamp-1 hover:text-[#C9A84C] transition-colors">
               {product.name_ar}
             </h3>
           </Link>

@@ -1,5 +1,19 @@
 ---
 
+### Session 033 — Admin Categories RLS + PowerShell Compatibility
+**Scope:** apps/admin + apps/web + _handoff only
+
+**Fixes:**
+- Fixed `/api/catalog/categories` GET/POST to use service role admin client after verifying admin auth.
+- Fixed `/api/catalog/categories/[id]` PATCH/DELETE to use service role admin client.
+- This resolves Supabase RLS error: `new row violates row-level security policy for table "categories"`.
+- Continued storefront light luxury theme patch using .NET file IO instead of unsupported PowerShell `Get-Content -Raw`.
+
+**Smoke Test:**
+- Run `pnpm --filter admin dev` and add a category from `/categories`.
+- Run `pnpm --filter web dev` and inspect `/products`, `/categories`, and `/`.
+---
+
 ### Session 032 — Web Storefront Light Luxury Theme Polish
 **Scope:** apps/web + _handoff only
 

@@ -199,9 +199,9 @@ export default function CheckoutPage() {
   /* ”€”€ Empty cart ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */
   if (items.length === 0) {
     return (
-      <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
+      <main className="min-h-screen bg-[#FAF7EF] px-6 py-10 text-[#1F1B16]">
         <div className="mx-auto max-w-3xl text-center py-20">
-          <p className="text-[#9CA3AF] mb-4">{t('cart.empty')}</p>
+          <p className="text-[#6F6658] mb-4">{t('cart.empty')}</p>
           <Link href="/products" className="text-[#C9A84C] hover:underline">
             {t('cart.continueShopping')}
           </Link>
@@ -210,13 +210,13 @@ export default function CheckoutPage() {
     );
   }
 
-  const inp = "rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2.5 text-[#E2E2E2] outline-none focus:border-[#C9A84C] w-full text-sm";
+  const inp = "rounded border border-[#E8DCC3] bg-[#FFFDF8] px-3 py-2.5 text-[#1F1B16] outline-none focus:border-[#C9A84C] w-full text-sm";
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
+    <main className="min-h-screen bg-[#FAF7EF] px-6 py-10 text-[#1F1B16]">
       <div className="mx-auto max-w-4xl">
         {/* Nav */}
-        <nav className="flex items-center justify-between border-b border-[#2E2E2E] pb-5 mb-10">
+        <nav className="flex items-center justify-between border-b border-[#E8DCC3] pb-5 mb-10">
           <Link href="/" className="text-xl font-semibold text-[#C9A84C]">{t('common.appName')}</Link>
           <Link href="/cart" className="text-sm text-[#D6D3C7]">{t('cart.title')}</Link>
         </nav>
@@ -234,18 +234,18 @@ export default function CheckoutPage() {
             )}
 
             <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#9CA3AF]">{t('checkout.fullName')} *</span>
+              <span className="text-[#6F6658]">{t('checkout.fullName')} *</span>
               <input name="full_name" required minLength={2} className={inp} />
             </label>
 
             <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#9CA3AF]">{t('checkout.phone')} *</span>
+              <span className="text-[#6F6658]">{t('checkout.phone')} *</span>
               <input name="phone" required type="tel" minLength={7}
                 className={inp} placeholder="09xxxxxxxx" dir="ltr" />
             </label>
 
             <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#9CA3AF]">{t('checkout.governorate')} *</span>
+              <span className="text-[#6F6658]">{t('checkout.governorate')} *</span>
               <select
                 name="governorate"
                 required
@@ -261,22 +261,22 @@ export default function CheckoutPage() {
             </label>
 
             <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#9CA3AF]">{t('checkout.address')} *</span>
+              <span className="text-[#6F6658]">{t('checkout.address')} *</span>
               <textarea name="address" required minLength={5} rows={3}
                 className={`${inp} resize-y`} />
             </label>
 
             <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#9CA3AF]">
+              <span className="text-[#6F6658]">
                 {t('checkout.notes')}{' '}
-                <span className="text-[#6B7280]">({t('checkout.notesHint')})</span>
+                <span className="text-[#8B8172]">({t('checkout.notesHint')})</span>
               </span>
               <textarea name="notes" rows={2} className={`${inp} resize-y`} />
             </label>
 
             {/* ”€”€ Discount Code ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */}
             <div className="flex flex-col gap-2">
-              <span className="text-sm text-[#9CA3AF]">{t('checkout.discountCode')}</span>
+              <span className="text-sm text-[#6F6658]">{t('checkout.discountCode')}</span>
               {discount ? (
                 <div className="flex items-center justify-between rounded border border-green-800 bg-green-900/10 px-4 py-2.5">
                   <span className="text-sm text-green-400">
@@ -317,7 +317,7 @@ export default function CheckoutPage() {
 
             {/* ”€”€ Loyalty Points ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */}
             {!loadingPoints && loyaltyPoints > 0 && (
-              <div className="rounded border border-[#2E2E2E] bg-[#151515] p-4">
+              <div className="rounded border border-[#E8DCC3] bg-[#FFFDF8] p-4">
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     type="checkbox"
@@ -326,8 +326,8 @@ export default function CheckoutPage() {
                     className="mt-0.5 accent-[#C9A84C]"
                   />
                   <div className="flex flex-col gap-0.5 text-sm">
-                    <span className="text-[#E2E2E2]">{t('checkout.usePoints')}</span>
-                    <span className="text-[#9CA3AF]">
+                    <span className="text-[#1F1B16]">{t('checkout.usePoints')}</span>
+                    <span className="text-[#6F6658]">
                       {t('checkout.yourPoints')} {loyaltyPoints.toLocaleString()}
                       {' · '}
                       {t('checkout.pointsWorth')}{' '}
@@ -353,13 +353,13 @@ export default function CheckoutPage() {
           </form>
 
           {/* ”€”€ Right: Order Summary ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */}
-          <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-6 h-fit sticky top-6">
+          <div className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-6 h-fit sticky top-6">
             <h2 className="text-lg font-semibold mb-4">{t('cart.orderSummary')}</h2>
 
             {/* Items */}
             <div className="flex flex-col gap-2 text-sm mb-4">
               {items.map(i => (
-                <div key={i.variantId} className="flex justify-between text-[#9CA3AF]">
+                <div key={i.variantId} className="flex justify-between text-[#6F6658]">
                   <span className="truncate me-2">{i.nameAr} — {i.quantity}</span>
                   <span className="shrink-0">{formatSYP(i.priceSyp * i.quantity)}</span>
                 </div>
@@ -367,14 +367,14 @@ export default function CheckoutPage() {
             </div>
 
             {/* Price breakdown */}
-            <div className="flex flex-col gap-2 text-sm border-t border-[#2E2E2E] pt-4">
-              <div className="flex justify-between text-[#9CA3AF]">
+            <div className="flex flex-col gap-2 text-sm border-t border-[#E8DCC3] pt-4">
+              <div className="flex justify-between text-[#6F6658]">
                 <span>{t('checkout.subtotal')}</span>
                 <span>{formatSYP(subtotal)}</span>
               </div>
 
               {/* Shipping */}
-              <div className="flex justify-between text-[#9CA3AF]">
+              <div className="flex justify-between text-[#6F6658]">
                 <span>{t('checkout.shipping')}</span>
                 <span>
                   {!governorate
@@ -406,12 +406,12 @@ export default function CheckoutPage() {
             </div>
 
             {/* Total */}
-            <div className="flex items-center justify-between font-semibold text-lg border-t border-[#2E2E2E] pt-4 mt-4">
+            <div className="flex items-center justify-between font-semibold text-lg border-t border-[#E8DCC3] pt-4 mt-4">
               <span>{t('cart.total')}</span>
               <span className="text-[#C9A84C]">{formatSYP(totalSyp)}</span>
             </div>
 
-            <p className="mt-4 text-xs text-[#6B7280]">{t('cart.confirmNote')}</p>
+            <p className="mt-4 text-xs text-[#8B8172]">{t('cart.confirmNote')}</p>
           </div>
         </div>
       </div>

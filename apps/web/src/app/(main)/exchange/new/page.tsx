@@ -32,28 +32,28 @@ export default function NewExchangePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-12 text-[#E2E2E2]">
+    <main className="min-h-screen bg-[#FAF7EF] px-6 py-12 text-[#1F1B16]">
       <div className="mx-auto max-w-lg">
         <Link href="/" className="text-[#C9A84C] text-sm hover:underline"> {t('common.appName')}</Link>
         <h1 className="mt-6 text-2xl font-semibold">{t('exchange.newRequest')}</h1>
-        <p className="mt-2 text-sm text-[#9CA3AF]">{t('exchange.newRequestDesc')}</p>
+        <p className="mt-2 text-sm text-[#6F6658]">{t('exchange.newRequestDesc')}</p>
 
         {error   && <p className="mt-4 rounded-md bg-red-900/30 border border-red-700 px-4 py-3 text-sm text-red-300">{error}</p>}
         {success && <p className="mt-4 rounded-md bg-green-900/30 border border-green-700 px-4 py-3 text-sm text-green-300">{success}</p>}
 
         <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm text-[#9CA3AF]">{t('exchange.orderNumber')}</label>
+            <label className="text-sm text-[#6F6658]">{t('exchange.orderNumber')}</label>
             <input
-              className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm text-[#E2E2E2] placeholder:text-[#6B7280] focus:border-[#C9A84C] focus:outline-none"
+              className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-2.5 text-sm text-[#1F1B16] placeholder:text-[#8B8172] focus:border-[#C9A84C] focus:outline-none"
               value={orderNumber} onChange={(e) => setOrderNumber((e.target as unknown as HTMLInputElement).value)}
               placeholder="ES-2026-XXXX" required
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm text-[#9CA3AF]">{t('exchange.reason')}</label>
+            <label className="text-sm text-[#6F6658]">{t('exchange.reason')}</label>
             <textarea
-              className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm text-[#E2E2E2] placeholder:text-[#6B7280] focus:border-[#C9A84C] focus:outline-none h-28 resize-none"
+              className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-2.5 text-sm text-[#1F1B16] placeholder:text-[#8B8172] focus:border-[#C9A84C] focus:outline-none h-28 resize-none"
               value={reason} onChange={(e) => setReason((e.target as unknown as HTMLInputElement).value)}
               placeholder={t('exchange.reasonPlaceholder')} required
             />

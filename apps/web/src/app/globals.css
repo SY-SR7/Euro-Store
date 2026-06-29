@@ -44,62 +44,45 @@ body {
 /* EURO STORE LIGHT LUXURY WEB THEME PATCH START */
 :root {
   --store-bg: #FAF7EF;
-  --store-bg-soft: #F3EEE3;
   --store-card: #FFFDF8;
-  --store-card-2: #F8F1E4;
+  --store-soft: #F3EEE3;
   --store-border: #E8DCC3;
   --store-border-strong: #D7BE79;
   --store-text: #1F1B16;
   --store-muted: #6F6658;
   --store-gold: #C9A84C;
-  --store-gold-soft: #EFE3BD;
 }
 
 html,
-body {
+body,
+main {
   background: var(--store-bg) !important;
   color: var(--store-text) !important;
 }
 
-/* Dark backgrounds used in storefront components */
 .bg-\[\#0F0F0F\],
-.bg-\[\#0f0f0f\],
-.bg-\[\#090909\],
-.bg-\[\#0B0B0B\],
-.bg-\[\#0b0b0b\],
 .bg-\[\#101010\],
 .bg-\[\#111111\],
-.bg-\[\#121212\],
 .bg-\[\#151515\],
 .bg-\[\#181818\],
 .bg-\[\#1A1A1A\],
-.bg-\[\#1a1a1a\],
 .bg-\[\#202020\],
 .bg-\[\#222222\],
-.bg-\[\#242424\],
 .bg-black,
 .bg-black\/20,
 .bg-black\/30,
-.bg-black\/40,
 .bg-white\/\[0\.03\],
-.bg-white\/\[0\.04\],
 .bg-white\/\[0\.05\] {
   background-color: var(--store-card) !important;
 }
 
-/* Product image placeholders / panels */
 .bg-\[\#1F1F1F\],
-.bg-\[\#1f1f1f\],
 .bg-\[\#252525\],
-.bg-\[\#2A2A2A\],
-.bg-\[\#2a2a2a\] {
-  background-color: var(--store-bg-soft) !important;
+.bg-\[\#2A2A2A\] {
+  background-color: var(--store-soft) !important;
 }
 
-/* Borders */
 .border-\[\#2E2E2E\],
-.border-\[\#2e2e2e\],
-.border-\[\#333333\],
 .border-white\/5,
 .border-white\/10,
 .border-white\/20,
@@ -107,41 +90,29 @@ body {
   border-color: var(--store-border) !important;
 }
 
-/* Main text colors */
 .text-white,
 .text-\[\#E2E2E2\],
-.text-\[\#e2e2e2\],
 .text-\[\#EDE7DD\],
-.text-\[\#ede7dd\],
-.text-\[\#F5F5F5\],
-.text-\[\#f5f5f5\] {
+.text-\[\#F5F5F5\] {
   color: var(--store-text) !important;
 }
 
-/* Secondary text colors */
 .text-\[\#9CA3AF\],
-.text-\[\#9ca3af\],
 .text-\[\#B8B1A4\],
-.text-\[\#b8b1a4\],
 .text-\[\#6B7280\],
-.text-\[\#6b7280\],
 .text-gray-400,
 .text-gray-500 {
   color: var(--store-muted) !important;
 }
 
-/* Keep gold as brand accent */
-.text-\[\#C9A84C\],
-.text-\[\#c9a84c\] {
+.text-\[\#C9A84C\] {
   color: var(--store-gold) !important;
 }
 
-.bg-\[\#C9A84C\],
-.bg-\[\#c9a84c\] {
+.bg-\[\#C9A84C\] {
   background-color: var(--store-gold) !important;
 }
 
-/* Inputs and search boxes */
 input,
 select,
 textarea {
@@ -155,7 +126,6 @@ textarea::placeholder {
   color: #8B8172 !important;
 }
 
-/* Cards and product blocks */
 .rounded-md.border,
 .rounded-xl.border,
 .rounded-2xl.border,
@@ -163,42 +133,9 @@ textarea::placeholder {
   box-shadow: 0 14px 35px rgba(31, 27, 22, 0.06) !important;
 }
 
-/* Hover states */
 .hover\:bg-\[\#1A1A1A\]:hover,
-.hover\:bg-\[\#1a1a1a\]:hover,
 .hover\:bg-white\/\[0\.03\]:hover,
-.hover\:bg-white\/\[0\.05\]:hover,
-.hover\:bg-black\/20:hover {
-  background-color: var(--store-card-2) !important;
+.hover\:bg-white\/\[0\.05\]:hover {
+  background-color: var(--store-soft) !important;
 }
-
-.hover\:text-white:hover {
-  color: var(--store-text) !important;
-}
-
-.hover\:border-\[\#C9A84C\]:hover,
-.hover\:border-\[\#c9a84c\]:hover {
-  border-color: var(--store-gold) !important;
-}
-
-/* Product page spacing visual polish */
-main {
-  background-color: var(--store-bg) !important;
-}
-
-table,
-thead,
-tbody,
-tr,
-td,
-th {
-  border-color: var(--store-border) !important;
-}
-
-/* Avoid heavy black panels inside product cards */
-[class*="Product"],
-[class*="product"] {
-  border-color: var(--store-border);
-}
-
 /* EURO STORE LIGHT LUXURY WEB THEME PATCH END */

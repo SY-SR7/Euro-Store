@@ -101,7 +101,7 @@ export default async function ProductsPage({
             name="q"
             defaultValue={search}
             placeholder={t('catalog.searchPlaceholder')}
-            className="min-w-0 flex-1 rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-sm text-[#F4F1E8] outline-none transition placeholder:text-[#6B7280] focus:border-[#C9A84C]"
+            className="min-w-0 flex-1 rounded-md border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-3 text-sm text-[#F4F1E8] outline-none transition placeholder:text-[#8B8172] focus:border-[#C9A84C]"
           />
           <button
             type="submit"
@@ -119,7 +119,7 @@ export default async function ProductsPage({
           className={`rounded-sm border px-3 py-2 text-sm transition ${
             !categoryFilter
               ? 'border-[#C9A84C] text-[#C9A84C]'
-              : 'border-[#2E2E2E] text-[#D6D3C7] hover:border-[#C9A84C] hover:text-[#C9A84C]'
+              : 'border-[#E8DCC3] text-[#D6D3C7] hover:border-[#C9A84C] hover:text-[#C9A84C]'
           }`}
         >
           {t('common.all')}
@@ -131,7 +131,7 @@ export default async function ProductsPage({
             className={`rounded-sm border px-3 py-2 text-sm transition ${
               categoryFilter === category.id
                 ? 'border-[#C9A84C] text-[#C9A84C]'
-                : 'border-[#2E2E2E] text-[#D6D3C7] hover:border-[#C9A84C] hover:text-[#C9A84C]'
+                : 'border-[#E8DCC3] text-[#D6D3C7] hover:border-[#C9A84C] hover:text-[#C9A84C]'
             }`}
           >
             {category.name_ar}
@@ -147,7 +147,7 @@ export default async function ProductsPage({
               ? t('catalog.searchResults', { query: search })
               : t('catalog.allProducts')}
           </h2>
-          <span className="text-sm text-[#9CA3AF]">
+          <span className="text-sm text-[#6F6658]">
             {t('catalog.productCount', { count: products.length })}
           </span>
         </div>
@@ -171,7 +171,7 @@ export default async function ProductsPage({
             ))}
           </div>
         ) : (
-          <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-8 text-center text-[#9CA3AF]">
+          <div className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-8 text-center text-[#6F6658]">
             {t('catalog.noProducts')}
           </div>
         )}
