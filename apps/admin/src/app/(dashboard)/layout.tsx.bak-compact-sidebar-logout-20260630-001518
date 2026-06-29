@@ -41,53 +41,7 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-async function tryLogoutRequest(path: string) {
-  try {
-    await fetch(path, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-    });
-  } catch {
-    // تجاهل الخطأ لأن بعض المشاريع لا تملك كل مسارات تسجيل الخروج
-  }
-}
-
-function clearClientAuthData() {
-  try {
-    const localKeys = Object.keys(localStorage);
-    for (const key of localKeys) {
-      if (/auth|token|session|admin|user|supabase|jwt|email/i.test(key)) {
-        localStorage.removeItem(key);
-      }
-    }
-
-    const sessionKeys = Object.keys(sessionStorage);
-    for (const key of sessionKeys) {
-      if (/auth|token|session|admin|user|supabase|jwt|email/i.test(key)) {
-        sessionStorage.removeItem(key);
-      }
-    }
-  } catch {
-    // storage may be blocked
-  }
-
-  try {
-    document.cookie.split(';').forEach((cookie) => {
-      const name = cookie.split('=')[0]?.trim();
-      if (!name) return;
-
-      if (/auth|token|session|admin|user|supabase|jwt|email/i.test(name)) {
-        document.cookie = `${name}=; Max-Age=0; path=/`;
-        document.cookie = `${name}=; Max-Age=0; path=/; SameSite=Lax`;
-      }
-    });
-  } catch {
-    // cookies may be unavailable
-  }
-}
-
-function NavLink({
+function SidebarLink({
   item,
   pathname,
   onNavigate,
@@ -103,48 +57,27 @@ function NavLink({
       href={item.href}
       onClick={onNavigate}
       className={[
-        'relative flex h-8 items-center gap-2 rounded-lg px-2 text-[13px] font-bold transition',
+        'group flex h-[38px] items-center gap-2 rounded-xl border px-2.5 text-sm font-black transition-all',
         active
-          ? 'bg-[#B8860B] text-white shadow-sm'
-          : 'text-[#57534E] hover:bg-[#F4EFE6] hover:text-[#1C1917]',
+          ? 'border-[#B8860B] bg-[#B8860B] text-white shadow-sm'
+          : 'border-transparent text-[#57534E] hover:border-[#E5E0D8] hover:bg-white hover:text-[#1C1917]',
       ].join(' ')}
     >
-      <span className="grid w-5 shrink-0 place-items-center text-[13px] leading-none">{item.icon}</span>
+      <span
+        className={[
+          'grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[13px] transition',
+          active
+            ? 'bg-white/18 text-white'
+            : 'bg-[#F8F6F2] text-[#A8A29E] group-hover:bg-[#FFF7DF] group-hover:text-[#B8860B]',
+        ].join(' ')}
+      >
+        {item.icon}
+      </span>
+
       <span className="min-w-0 flex-1 truncate">{item.label}</span>
+
       {active && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white" />}
     </Link>
-  );
-}
-
-function LogoutButton({ compact = false }: { compact?: boolean }) {
-  const [loading, setLoading] = useState(false);
-
-  const handleLogout = async () => {
-    setLoading(true);
-
-    await Promise.all([
-      tryLogoutRequest('/api/auth/logout'),
-      tryLogoutRequest('/api/logout'),
-      tryLogoutRequest('/api/admin/logout'),
-    ]);
-
-    clearClientAuthData();
-    window.location.href = '/login';
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={() => void handleLogout()}
-      disabled={loading}
-      className={[
-        'flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 font-black text-red-700 transition hover:bg-red-100 disabled:opacity-60',
-        compact ? 'h-10 px-3 text-xs' : 'h-9 w-full px-3 text-[12px]',
-      ].join(' ')}
-    >
-      <span>⎋</span>
-      <span>{loading ? 'جارٍ الخروج...' : 'تسجيل الخروج'}</span>
-    </button>
   );
 }
 
@@ -165,19 +98,20 @@ function SidebarContent({
   }, []);
 
   return (
-    <div className="flex h-full flex-col overflow-hidden bg-[#FBF8F1]">
-      <div className="flex h-[64px] shrink-0 items-center justify-between border-b border-[#E7DDCC] px-4">
+    <div className="flex h-full flex-col overflow-hidden bg-[#FDFBF7]">
+      <div className="flex h-[72px] shrink-0 items-center justify-between border-b border-[#E5E0D8] px-4">
         <Link
           href="/dashboard"
           onClick={onNavigate}
-          className="flex min-w-0 items-center gap-2 rounded-xl px-1 py-1 transition hover:bg-[#F4EFE6]"
+          className="flex min-w-0 items-center gap-3 rounded-2xl px-2 py-2 transition hover:bg-[#F8F6F2]"
         >
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[#B8860B] bg-white text-sm font-black text-[#B8860B]">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border-2 border-[#B8860B] bg-white text-base font-black text-[#B8860B] shadow-sm">
             E
           </span>
+
           <span className="min-w-0">
-            <span className="block truncate text-[15px] font-black tracking-tight text-[#1C1917]">EUROSTORE</span>
-            <span className="block truncate text-[10px] font-bold text-[#A8A29E]">لوحة الإدارة</span>
+            <span className="block truncate text-base font-black tracking-tight text-[#1C1917]">EUROSTORE</span>
+            <span className="block truncate text-[11px] font-bold text-[#A8A29E]">لوحة الإدارة</span>
           </span>
         </Link>
 
@@ -185,7 +119,7 @@ function SidebarContent({
           <button
             type="button"
             onClick={onNavigate}
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F4EFE6] text-xl text-[#57534E]"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#F8F6F2] text-xl text-[#57534E]"
             aria-label="إغلاق القائمة"
           >
             ×
@@ -193,17 +127,17 @@ function SidebarContent({
         )}
       </div>
 
-      <nav className="flex-1 px-3 py-2">
-        <div className="space-y-2">
+      <nav className="flex-1 px-3 py-3">
+        <div className="space-y-3">
           {groupedItems.map((entry) => (
-            <section key={entry.group}>
-              <div className="mb-1 px-2 text-[9px] font-black tracking-wide text-[#A8A29E]">
+            <div key={entry.group}>
+              <div className="mb-1.5 px-2 text-[10px] font-black uppercase tracking-wider text-[#A8A29E]">
                 {entry.group}
               </div>
 
-              <div className="space-y-0.5">
+              <div className="space-y-1">
                 {entry.items.map((item) => (
-                  <NavLink
+                  <SidebarLink
                     key={item.href}
                     item={item}
                     pathname={pathname}
@@ -211,13 +145,19 @@ function SidebarContent({
                   />
                 ))}
               </div>
-            </section>
+            </div>
           ))}
         </div>
       </nav>
 
-      <div className="shrink-0 border-t border-[#E7DDCC] p-3">
-        <LogoutButton />
+      <div className="shrink-0 border-t border-[#E5E0D8] p-3">
+        <div className="flex h-10 items-center gap-2 rounded-2xl border border-[#E5E0D8] bg-white px-3 shadow-sm">
+          <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-green-500" />
+          <span className="min-w-0">
+            <span className="block truncate text-[11px] font-black text-[#1C1917]">حالة لوحة الإدارة</span>
+            <span className="block truncate text-[10px] font-bold text-green-700">متصلة وجاهزة</span>
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -233,21 +173,21 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
 
   return (
     <div className="min-h-screen bg-[#F8F6F2] text-[#1C1917]" dir="rtl">
-      <header className="fixed inset-x-0 top-0 z-[100] h-[64px] border-b border-[#E7DDCC] bg-[#FBF8F1]/95 shadow-sm backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-[100] h-[72px] border-b border-[#E5E0D8] bg-[#FDFBF7]/95 shadow-sm backdrop-blur-xl">
         <div className="flex h-full items-center justify-between gap-3 px-4 sm:px-5 lg:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="grid h-10 w-10 place-items-center rounded-xl border border-[#E7DDCC] bg-white text-xl text-[#57534E] shadow-sm transition hover:border-[#B8860B] hover:text-[#B8860B] lg:hidden"
+              className="grid h-11 w-11 place-items-center rounded-2xl border border-[#E5E0D8] bg-white text-xl text-[#57534E] shadow-sm transition hover:border-[#B8860B] hover:text-[#B8860B] lg:hidden"
               aria-label="فتح السايدبار"
             >
               ☰
             </button>
 
             <div className="min-w-0">
-              <h1 className="truncate text-base font-black text-[#1C1917]">{title}</h1>
-              <p className="mt-0.5 hidden text-[11px] font-medium text-[#A8A29E] sm:block">
+              <h1 className="truncate text-base font-black text-[#1C1917] sm:text-lg">{title}</h1>
+              <p className="mt-0.5 hidden text-xs font-medium text-[#A8A29E] sm:block">
                 نافبار ثابت بالأعلى
               </p>
             </div>
@@ -257,29 +197,32 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
             <Link
               href="/notifications"
               className={[
-                'relative grid h-10 w-10 place-items-center rounded-xl border bg-white text-base shadow-sm transition',
+                'relative grid h-11 w-11 place-items-center rounded-2xl border bg-white text-lg shadow-sm transition',
                 isActivePath(pathname, '/notifications')
                   ? 'border-[#B8860B] text-[#B8860B]'
-                  : 'border-[#E7DDCC] text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]',
+                  : 'border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]',
               ].join(' ')}
               aria-label="الإشعارات"
             >
               🔔
-              <span className="absolute -left-1 -top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-500" />
+              <span className="absolute -left-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-red-500" />
             </Link>
 
-            <div className="hidden sm:block">
-              <LogoutButton compact />
-            </div>
+            <Link
+              href="/settings"
+              className="hidden rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3 text-xs font-black text-[#57534E] shadow-sm transition hover:border-[#B8860B] hover:text-[#B8860B] sm:inline-flex"
+            >
+              الإعدادات
+            </Link>
           </div>
         </div>
       </header>
 
-      <aside className="fixed right-0 top-[64px] z-[90] hidden h-[calc(100vh-64px)] w-[250px] border-l border-[#E7DDCC] shadow-sm lg:block">
+      <aside className="fixed right-0 top-[72px] z-[90] hidden h-[calc(100vh-72px)] w-[282px] border-l border-[#E5E0D8] shadow-sm lg:block">
         <SidebarContent pathname={pathname} />
       </aside>
 
-      <main className="min-h-screen pt-[82px] lg:pr-[250px]">
+      <main className="min-h-screen pt-[92px] lg:pr-[282px]">
         <div className="mx-auto w-full max-w-[1920px] px-4 pb-8 sm:px-5 lg:px-6">
           <AdminActivityProvider>{children}</AdminActivityProvider>
         </div>
@@ -289,7 +232,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
         <div className="fixed inset-0 z-[130] lg:hidden">
           <div className="absolute inset-0 bg-black/45 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
 
-          <aside className="absolute right-0 top-0 h-full w-[min(86vw,20rem)] overflow-hidden border-l border-[#E7DDCC] bg-[#FBF8F1] shadow-2xl">
+          <aside className="absolute right-0 top-0 h-full w-[min(90vw,23rem)] overflow-hidden border-l border-[#E5E0D8] bg-[#FDFBF7] shadow-2xl">
             <SidebarContent
               pathname={pathname}
               mobile
