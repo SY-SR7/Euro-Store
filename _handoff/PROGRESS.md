@@ -1,5 +1,19 @@
 ---
 
+### Session 041 — Force Web Product Images Rendering
+**Scope:** apps/web + _handoff only
+
+**Fix:**
+- Rebuilt web product card to render real `<img src={product.image_url}>`.
+- Rebuilt homepage, products page, and category page to select `products.image_url`.
+- Removed dependency on `product_images` relation for storefront rendering.
+- Kept plain `<img>` to avoid Next image remote-domain configuration issues.
+
+**Smoke Test:**
+- Run `pnpm --filter web dev`.
+- Open `/`, `/products`, `/categories/bags`, `/categories/shoes`.
+---
+
 ### Session 040 — Restore Web Products After Image Relation Patch
 **Scope:** apps/web + _handoff only
 

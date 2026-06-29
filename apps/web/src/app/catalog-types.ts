@@ -44,18 +44,11 @@ export interface CatalogBrand {
   is_active?: boolean | null;
 }
 
-export interface ProductPriceSummary {
-  priceLabel: string;
-  comparePriceLabel: string | null;
-  stockLabel: string;
-  totalStock: number;
-}
-
 export function variantsForProduct(productId: string, variants: CatalogVariant[]): CatalogVariant[] {
   return variants.filter((v) => v.product_id === productId);
 }
 
-export function summarizeProductVariants(variants: CatalogVariant[]): ProductPriceSummary {
+export function summarizeProductVariants(variants: CatalogVariant[]) {
   const activeVariants = variants.filter((v) => v.is_active !== false);
 
   const prices = activeVariants
@@ -72,7 +65,6 @@ export function summarizeProductVariants(variants: CatalogVariant[]): ProductPri
     return {
       priceLabel: '—',
       comparePriceLabel: null,
-      stockLabel: '—',
       totalStock,
     };
   }
@@ -83,7 +75,6 @@ export function summarizeProductVariants(variants: CatalogVariant[]): ProductPri
   return {
     priceLabel: formatSYP(minPrice),
     comparePriceLabel: maxCompare !== null && maxCompare > minPrice ? formatSYP(maxCompare) : null,
-    stockLabel: String(totalStock),
     totalStock,
   };
 }

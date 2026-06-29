@@ -1,190 +1,101 @@
-/* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
-import { createServerSupabaseClient } from '@/supabase-server';
-import { ProductCard } from '@/app/catalog-components';
-import {
-  createCatalogLookup,
-  type CatalogBrand,
-  type CatalogCategory,
-  type CatalogProduct,
-  type CatalogVariant,
-} from '@/app/catalog-types';
+import { createAdminSupabaseClient } from '@/supabase-server';
+import { ProductCard } from '../catalog-components';
+import { createCatalogLookup } from '../catalog-types';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Home(): Promise<JSX.Element> {
-  const t = await getTranslations();
-  const supabase = createServerSupabaseClient();
+export default async function HomePage() {
+  const supabase = createAdminSupabaseClient();
 
-  const [
-    { data: heroSection },
-    { data: categories },
-    { data: featuredProductsData },
-    { data: brandsData },
-  ] = await Promise.all([
-    supabase
-      .from('homepage_sections')
-      .select('section_key, title_ar, title_en, content')
-      .eq('section_key', 'hero')
-      .eq('is_active', true)
-      .maybeSingle(),
-    supabase
-      .from('categories')
-      .select('id, name_ar, name_en, slug')
-      .eq('is_active', true)
-      .order('sort_order', { ascending: true })
-      .limit(6),
+  const [productsRes, categoriesRes, brandsRes, variantsRes] = await Promise.all([
     supabase
       .from('products')
-      .select('id, name_ar, name_en, slug, description_ar, category_id, brand_id, is_featured, image_url')
-      .eq('is_featured', true)
+      .select('id,name_ar,name_en,slug,description_ar,description_en,category_id,brand_id,is_featured,is_active,image_url')
       .eq('is_active', true)
+      .order('is_featured', { ascending: false })
       .order('created_at', { ascending: false })
       .limit(4),
-    supabase.from('brands').select('id, name, slug').eq('is_active', true),
+    supabase.from('categories').select('id,name_ar,name_en,slug,sort_order,is_active').eq('is_active', true).order('sort_order'),
+    supabase.from('brands').select('id,name,slug,is_active').eq('is_active', true).order('name'),
+    supabase.from('product_variants').select('id,product_id,sku,price_syp,compare_price_syp,stock_quantity,is_active').eq('is_active', true),
   ]);
 
-  const featuredProducts = (featuredProductsData ?? []) as CatalogProduct[];
-  const brands = (brandsData ?? []) as CatalogBrand[];
-  const featuredIds = featuredProducts.map((p) => p.id);
+  const products = productsRes.data ?? [];
+  const categories = categoriesRes.data ?? [];
+  const brands = brandsRes.data ?? [];
+  const variants = variantsRes.data ?? [];
 
-  const { data: variantsData } =
-    featuredIds.length > 0
-      ? await supabase
-          .from('product_variants')
-          .select('id, product_id, sku, price_syp, compare_price_syp, stock_quantity')
-          .eq('is_active', true)
-          .in('product_id', featuredIds)
-      : { data: [] };
-
-  const variants = (variantsData ?? []) as CatalogVariant[];
-  const categoryById = createCatalogLookup((categories ?? []) as CatalogCategory[]);
-  const brandById = createCatalogLookup(brands);
+  const categoryLookup = createCatalogLookup(categories);
+  const brandLookup = createCatalogLookup(brands);
 
   return (
-    <div className="flex flex-col gap-16 px-6 py-12 mx-auto w-full max-w-6xl">
+    <main className="min-h-screen bg-[#FAF7EF] px-6 py-14 text-[#1F1B16]" dir="rtl">
+      <div className="mx-auto max-w-7xl space-y-16">
+        <section className="grid min-h-[300px] items-center gap-8 lg:grid-cols-2">
+          <div className="text-right">
+            <p className="text-sm font-bold text-[#C9A84C]">أزياء أوروبية تصل إلى بابك</p>
+            <h1 className="mt-4 text-5xl font-black leading-tight lg:text-7xl">
+              أناقة يومية بلمسة أوروبية
+            </h1>
+          </div>
 
-      {/* ”€”€ Hero ”€”€ */}
-      <section className="grid gap-8 md:grid-cols-[1.3fr_0.7fr] md:items-end pt-4">
-        <div>
-          <p className="text-sm text-[#C9A84C] uppercase">
-            {t('home.tagline')}
-          </p>
-          <h1 className="mt-4 font-headline text-5xl font-bold leading-tight md:text-7xl">
-            {heroSection?.title_ar ?? t('home.heroTitle')}
-          </h1>
-        </div>
-        <div className="flex flex-col gap-4">
-          <p className="text-sm leading-7 text-[#6F6658]">
-            {heroSection?.title_en ?? t('home.heroSubtitle')}
-          </p>
-          <Link
-            href="/products"
-            className="inline-flex w-fit items-center gap-2 rounded-sm bg-[#C9A84C] px-6 py-3 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors"
-          >
-            {t('home.shopNow')}
-            <span aria-hidden></span>
-          </Link>
-        </div>
-      </section>
-
-      {/* ”€”€ Featured Products ”€”€ */}
-      {featuredProducts.length > 0 && (
-        <section>
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <p className="text-xs text-[#C9A84C] uppercase">
-                {t('home.featuredTag')}
-              </p>
-              <h2 className="mt-2 font-headline text-3xl font-semibold">
-                {t('home.featuredTitle')}
-              </h2>
-            </div>
+          <div className="text-right lg:text-left">
+            <p className="text-[#6F6658]">Everyday Elegance, European Touch</p>
             <Link
               href="/products"
-              className="text-sm text-[#C9A84C] hover:underline underline-offset-4"
+              className="mt-6 inline-flex rounded-xl bg-[#C9A84C] px-8 py-4 font-black text-[#1F1B16] transition hover:bg-[#D8B95F]"
             >
-              {t('common.viewAll')}
+              تسوق الآن
             </Link>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                variants={variants}
-                category={
-                  product.category_id
-                    ? categoryById.get(product.category_id)
-                    : undefined
-                }
-                brand={
-                  product.brand_id ? brandById.get(product.brand_id) : undefined
-                }
-              />
-            ))}
-          </div>
         </section>
-      )}
 
-      {/* ”€”€ Category Grid ”€”€ */}
-      {(categories ?? []).length > 0 && (
-        <section className="border-t border-[#E8DCC3] pt-12">
-          <div className="mb-6">
-            <p className="text-xs text-[#C9A84C] uppercase">
-              {t('home.categoriesTag')}
-            </p>
-            <h2 className="mt-2 font-headline text-3xl font-semibold">
-              {t('home.categoriesTitle')}
-            </h2>
+        <section>
+          <div className="mb-8 flex items-end justify-between gap-4">
+            <Link href="/products" className="text-sm font-bold text-[#C9A84C] hover:underline">
+              عرض الكل
+            </Link>
+            <div className="text-right">
+              <p className="text-sm font-bold text-[#C9A84C]">مختاراتنا</p>
+              <h2 className="mt-2 text-3xl font-black">اختيارات مميزة</h2>
+            </div>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {(categories ?? []).map((category: any) => (
+
+          {products.length === 0 ? (
+            <div className="rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-12 text-center text-[#6F6658]">
+              لا توجد منتجات حالياً
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  variants={variants}
+                  category={product.category_id ? categoryLookup.get(product.category_id) : undefined}
+                  brand={product.brand_id ? brandLookup.get(product.brand_id) : undefined}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="border-t border-[#E8DCC3] pt-10">
+          <div className="flex flex-wrap justify-center gap-3">
+            {categories.map((category) => (
               <Link
                 key={category.id}
                 href={`/categories/${category.slug}`}
-                className="group flex items-center justify-between rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-5 transition hover:border-[#C9A84C] hover:bg-[#1C1C1C]"
+                className="rounded-xl border border-[#E8DCC3] bg-[#FFFDF8] px-5 py-3 text-sm font-bold text-[#C9A84C] transition hover:border-[#C9A84C]"
               >
-                <div>
-                  <span className="text-base font-medium text-[#1F1B16] group-hover:text-[#C9A84C] transition-colors">
-                    {category.name_ar}
-                  </span>
-                  <span className="mt-1 block text-sm text-[#6F6658]">
-                    {category.name_en}
-                  </span>
-                </div>
-                <span
-                  className="text-[#C9A84C] opacity-0 group-hover:opacity-100 transition-opacity"
-                  aria-hidden
-                >
-                  
-                </span>
+                {category.name_ar}
               </Link>
             ))}
           </div>
         </section>
-      )}
-
-      {/* ”€”€ Loyalty CTA Banner ”€”€ */}
-      <section className="rounded-lg border border-[#C9A84C]/30 bg-gradient-to-r from-[#C9A84C]/10 to-transparent p-8 flex items-center justify-between gap-6">
-        <div>
-          <h3 className="font-headline text-2xl font-semibold text-[#C9A84C]">
-            {t('loyalty.title')}
-          </h3>
-          <p className="mt-2 text-sm text-[#6F6658] max-w-md">
-            {t('loyalty.earnDesc')}
-          </p>
-        </div>
-        <Link
-          href="/loyalty"
-          className="flex-shrink-0 rounded-sm border border-[#C9A84C] px-5 py-2.5 text-sm font-semibold text-[#C9A84C] hover:bg-[#C9A84C] hover:text-[#111] transition-colors"
-        >
-          {t('loyalty.learnMore')}
-        </Link>
-      </section>
-
-    </div>
+      </div>
+    </main>
   );
 }

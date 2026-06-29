@@ -1,14 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
 
 import {
   type CatalogBrand,
   type CatalogCategory,
   type CatalogProduct,
   type CatalogVariant,
-  type ProductPriceSummary,
   createCatalogLookup,
   productImageUrl,
   summarizeProductVariants,
@@ -20,7 +18,6 @@ export {
   type CatalogCategory,
   type CatalogProduct,
   type CatalogVariant,
-  type ProductPriceSummary,
   createCatalogLookup,
   summarizeProductVariants,
   variantsForProduct,
@@ -34,20 +31,10 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, variants, category, brand }: ProductCardProps): JSX.Element {
-  const t = useTranslations('catalog');
   const summary = summarizeProductVariants(variantsForProduct(product.id, variants));
   const imageUrl = productImageUrl(product);
 
-  const priceLabel =
-    summary.totalStock === 0 && summary.priceLabel === '—'
-      ? t('priceSoon')
-      : summary.priceLabel;
-
-  const stockLabel = (() => {
-    if (summary.priceLabel === '—') return t('stockUpdate');
-    if (summary.totalStock > 0) return t('inStock', { count: summary.totalStock });
-    return t('outOfStock');
-  })();
+  const stockLabel = summary.totalStock > 0 ? 'متوفر' : 'غير متوفر';
 
   return (
     <Link
@@ -58,21 +45,30 @@ export function ProductCard({ product, variants, category, brand }: ProductCardP
         {imageUrl ? (
           <img
             src={imageUrl}
-            alt={product.name_ar}
+            alt={product.name_ar || product.name_en || 'Product image'}
             loading="lazy"
             decoding="async"
+            referrerPolicy="no-referrer"
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            onError={(event) => {
+              event.currentTarget.style.display = 'none';
+              const fallback = event.currentTarget.nextElementSibling as HTMLElement | null;
+              if (fallback) fallback.style.display = 'flex';
+            }}
           />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center px-6 text-center text-xl font-black text-[#C9A84C]">
-            {product.name_ar}
-          </div>
-        )}
+        ) : null}
+
+        <div
+          className="hidden h-full w-full items-center justify-center px-6 text-center text-xl font-black text-[#C9A84C]"
+          style={{ display: imageUrl ? 'none' : 'flex' }}
+        >
+          {product.name_ar || product.name_en}
+        </div>
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-3 text-xs text-[#6F6658]">
         <span>{brand?.name ?? 'EuroStore'}</span>
-        <span>{category?.name_ar ?? t('uncategorized')}</span>
+        <span>{category?.name_ar ?? 'غير مصنف'}</span>
       </div>
 
       <h3 className="mt-4 line-clamp-2 text-xl font-black text-[#1F1B16] transition group-hover:text-[#C9A84C]">
@@ -87,7 +83,7 @@ export function ProductCard({ product, variants, category, brand }: ProductCardP
 
       <div className="mt-4 flex items-end justify-between gap-3">
         <div>
-          <p className="text-lg font-black text-[#C9A84C]">{priceLabel}</p>
+          <p className="text-lg font-black text-[#C9A84C]">{summary.priceLabel}</p>
           {summary.comparePriceLabel ? (
             <p className="text-sm text-[#8B8172] line-through">{summary.comparePriceLabel}</p>
           ) : null}
