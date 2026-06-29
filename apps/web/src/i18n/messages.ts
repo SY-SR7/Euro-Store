@@ -6,9 +6,9 @@ export type Locale = (typeof locales)[number];
 
 export const defaultLocale: Locale = 'ar';
 
-export const messages: Record<Locale, Record<string, unknown>> = {
+export const messages = {
   ar,
   en
-};
+} as Record<Locale, any>;
 
 export default messages;
