@@ -878,3 +878,21 @@
 **Next:**
 - Run pnpm --filter admin dev.
 - Re-test /sub-admins.
+
+---
+
+### Session 026 — 2026-06-29
+**Scope:** apps/admin only.
+
+**Fix:**
+- Fixed sidebar covering admin section content on large screens.
+- Removed the layout issue where lg:px-8 could override the reserved right padding.
+- Added CSS variable --admin-sidebar-space to keep content aligned with sidebar width.
+- Added collapsible desktop sidebar with persisted localStorage state.
+- Mobile sidebar remains a top collapsible menu.
+- Updated root admin page and dashboard layout to use admin-main spacing.
+- Cleared apps/admin/.next cache.
+
+**Next:**
+- Run pnpm --filter admin dev.
+- Test sidebar collapse/expand and sections: shipping-rates, loyalty-settings, sub-admins, settings.

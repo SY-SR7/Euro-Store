@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Bookmark,
+  ChevronLeft,
+  ChevronRight,
   FileText,
   Home,
   LayoutDashboard,
@@ -21,7 +23,7 @@ import {
   Users,
   X
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const navGroups = [
   {
@@ -55,7 +57,18 @@ const navGroups = [
   }
 ] as const;
 
-function NavContent({ onNavigate }: { onNavigate?: () => void }) {
+function setSidebarSpace(collapsed: boolean) {
+  if (typeof document === 'undefined') return;
+  document.documentElement.style.setProperty('--admin-sidebar-space', collapsed ? '5.5rem' : '18rem');
+}
+
+function NavContent({
+  collapsed,
+  onNavigate
+}: {
+  collapsed: boolean;
+  onNavigate?: () => void;
+}) {
   const pathname = usePathname();
 
   return (
@@ -63,18 +76,36 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
       <Link
         href="/"
         onClick={onNavigate}
-        className="block rounded-3xl border border-[#C9A84C]/25 bg-gradient-to-br from-[#1B1B1B] to-[#0F0F0F] p-5 shadow-2xl"
+        className={[
+          'block rounded-3xl border border-[#C9A84C]/25 bg-gradient-to-br from-[#1B1B1B] to-[#0F0F0F] shadow-2xl transition-all',
+          collapsed ? 'p-3 text-center' : 'p-5'
+        ].join(' ')}
+        title="EuroStore"
       >
-        <div className="text-xl font-black tracking-[0.22em] text-[#C9A84C]">EUROSTORE</div>
-        <div className="mt-1 text-sm text-[#B8B1A4]">لوحة الإدارة</div>
+        <div
+          className={[
+            'font-black tracking-[0.22em] text-[#C9A84C]',
+            collapsed ? 'text-lg tracking-normal' : 'text-xl'
+          ].join(' ')}
+        >
+          {collapsed ? 'ES' : 'EUROSTORE'}
+        </div>
+
+        {!collapsed ? (
+          <div className="mt-1 text-sm text-[#B8B1A4]">لوحة الإدارة</div>
+        ) : null}
       </Link>
 
-      <nav className="mt-6 space-y-7">
+      <nav className={collapsed ? 'mt-6 space-y-6' : 'mt-6 space-y-7'}>
         {navGroups.map((group) => (
           <div key={group.title}>
-            <div className="mb-2 px-3 text-xs font-black uppercase tracking-[0.22em] text-[#7E766B]">
-              {group.title}
-            </div>
+            {!collapsed ? (
+              <div className="mb-2 px-3 text-xs font-black uppercase tracking-[0.22em] text-[#7E766B]">
+                {group.title}
+              </div>
+            ) : (
+              <div className="mx-auto mb-3 h-px w-8 bg-white/10" />
+            )}
 
             <div className="space-y-1">
               {group.items.map(({ href, icon: Icon, label }) => {
@@ -84,16 +115,19 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
                   <Link
                     key={href}
                     href={href}
+                    title={label}
+                    aria-label={label}
                     onClick={onNavigate}
                     className={[
-                      'flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-bold transition',
+                      'flex items-center rounded-2xl text-sm font-bold transition',
+                      collapsed ? 'justify-center px-0 py-3' : 'gap-3 px-3 py-3',
                       active
                         ? 'bg-[#C9A84C] text-[#111111] shadow-lg shadow-[#C9A84C]/10'
                         : 'text-[#D8D1C5] hover:bg-white/5 hover:text-white'
                     ].join(' ')}
                   >
-                    <Icon className="h-4 w-4 shrink-0" />
-                    <span>{label}</span>
+                    <Icon className="h-5 w-5 shrink-0" />
+                    {!collapsed ? <span>{label}</span> : null}
                   </Link>
                 );
               })}
@@ -105,10 +139,14 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
       <form action="/api/auth/logout" method="post" className="mt-8">
         <button
           type="submit"
-          className="flex w-full items-center gap-3 rounded-2xl border border-white/10 px-3 py-3 text-sm font-bold text-[#D8D1C5] transition hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-200"
+          title="تسجيل الخروج"
+          className={[
+            'flex w-full items-center rounded-2xl border border-white/10 text-sm font-bold text-[#D8D1C5] transition hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-200',
+            collapsed ? 'justify-center px-0 py-3' : 'gap-3 px-3 py-3'
+          ].join(' ')}
         >
-          <LogOut className="h-4 w-4" />
-          <span>تسجيل الخروج</span>
+          <LogOut className="h-5 w-5" />
+          {!collapsed ? <span>تسجيل الخروج</span> : null}
         </button>
       </form>
     </>
@@ -116,23 +154,48 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 export function Sidebar() {
-  const [open, setOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem('admin-sidebar-collapsed') === '1';
+    setCollapsed(saved);
+    setSidebarSpace(saved);
+  }, []);
+
+  useEffect(() => {
+    setSidebarSpace(collapsed);
+    window.localStorage.setItem('admin-sidebar-collapsed', collapsed ? '1' : '0');
+  }, [collapsed]);
 
   return (
     <>
-      <aside className="fixed inset-y-0 right-0 z-40 hidden w-72 overflow-y-auto border-l border-white/10 bg-[#0E0E0E]/95 p-5 shadow-2xl backdrop-blur md:block">
-        <NavContent />
+      <aside
+        className="fixed inset-y-0 right-0 z-40 hidden overflow-y-auto border-l border-white/10 bg-[#0E0E0E]/95 p-5 shadow-2xl backdrop-blur transition-[width] duration-300 md:block"
+        style={{ width: collapsed ? '5.5rem' : '18rem' }}
+      >
+        <button
+          type="button"
+          onClick={() => setCollapsed((value) => !value)}
+          className="mb-4 flex h-10 w-full items-center justify-center rounded-2xl border border-white/10 bg-black/20 text-[#C9A84C] transition hover:border-[#C9A84C]/50 hover:bg-[#C9A84C]/10"
+          title={collapsed ? 'توسيع القائمة' : 'طي القائمة'}
+          aria-label={collapsed ? 'توسيع القائمة' : 'طي القائمة'}
+        >
+          {collapsed ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+        </button>
+
+        <NavContent collapsed={collapsed} />
       </aside>
 
       <div className="sticky top-0 z-50 mb-5 rounded-3xl border border-white/10 bg-[#101010]/95 p-3 shadow-2xl backdrop-blur md:hidden">
         <div className="flex items-center justify-between">
           <button
             type="button"
-            onClick={() => setOpen((value) => !value)}
+            onClick={() => setMobileOpen((value) => !value)}
             className="rounded-2xl border border-white/10 p-2 text-white"
             aria-label="Admin menu"
           >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
 
           <Link href="/" className="text-sm font-black tracking-[0.2em] text-[#C9A84C]">
@@ -140,9 +203,9 @@ export function Sidebar() {
           </Link>
         </div>
 
-        {open ? (
+        {mobileOpen ? (
           <div className="mt-4 max-h-[75vh] overflow-y-auto rounded-2xl border border-white/10 bg-[#0A0A0A] p-4">
-            <NavContent onNavigate={() => setOpen(false)} />
+            <NavContent collapsed={false} onNavigate={() => setMobileOpen(false)} />
           </div>
         ) : null}
       </div>
