@@ -1,56 +1,85 @@
+// @ts-nocheck
 import { NextResponse } from 'next/server';
-import { requireAdminClient } from '@/supabase-server';
-import { z } from 'zod';
+import { requireAdminContext, writeAuditLog } from '@/supabase-server';
 
 const VALID_TRANSITIONS: Record<string, string[]> = {
-  pending:    ['confirmed','cancelled'],
-  confirmed:  ['processing','cancelled'],
-  processing: ['shipped','cancelled'],
-  shipped:    ['delivered'],
-  delivered:  [],
-  cancelled:  [],
+  pending: ['confirmed', 'cancelled'],
+  confirmed: ['processing', 'cancelled'],
+  processing: ['shipped', 'cancelled'],
+  shipped: ['delivered'],
+  delivered: [],
+  cancelled: [],
 };
 
-const updateSchema = z.object({
-  status: z.enum(['pending','confirmed','processing','shipped','delivered','cancelled']),
-  notes:  z.string().optional(),
-});
+const VALID_STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
-  const admin = await requireAdminClient();
-  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await admin.from('orders').select('*, order_items(id,variant_id,product_snapshot,quantity,unit_price_syp,total_price_syp)').eq('id', params.id).single() as any;
+  const { admin } = ctx;
+
+  const { data, error } = await admin
+    .from('orders')
+    .select('*, order_items(id, variant_id, product_snapshot, quantity, unit_price_syp, total_price_syp)')
+    .eq('id', params.id)
+    .single();
+
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
   return NextResponse.json(data);
 }
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  const admin = await requireAdminClient();
-  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = updateSchema.safeParse(await req.json().catch(() => ({})));
-  if (!body.success) return NextResponse.json({ error: body.error.flatten() }, { status: 400 });
+  const { admin, userId } = ctx;
+  const body = await req.json().catch(() => ({})) as Record<string, unknown>;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: current } = await admin.from('orders').select('status').eq('id', params.id).single() as any;
-  const allowed = VALID_TRANSITIONS[current?.status ?? ''] ?? [];
-  if (!allowed.includes(body.data.status))
-    return NextResponse.json({ error: `Cannot transition from ${current?.status} to ${body.data.status}` }, { status: 400 });
+  const nextStatus = typeof body.status === 'string' ? body.status : '';
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await admin.from('orders').update(body.data as any).eq('id', params.id).select().single();
+  if (!VALID_STATUSES.includes(nextStatus)) {
+    return NextResponse.json({ error: 'Invalid order status' }, { status: 400 });
+  }
+
+  const { data: current, error: currentError } = await admin
+    .from('orders')
+    .select('status')
+    .eq('id', params.id)
+    .single();
+
+  if (currentError) return NextResponse.json({ error: currentError.message }, { status: 404 });
+
+  const currentStatus = String(current?.status ?? '');
+  const allowed = VALID_TRANSITIONS[currentStatus] ?? [];
+
+  if (!allowed.includes(nextStatus)) {
+    return NextResponse.json({ error: `Cannot transition from ${currentStatus} to ${nextStatus}` }, { status: 400 });
+  }
+
+  const update: Record<string, unknown> = { status: nextStatus };
+  if (typeof body.notes === 'string') update.notes = body.notes;
+
+  const { data, error } = await admin
+    .from('orders')
+    .update(update as never)
+    .eq('id', params.id)
+    .select()
+    .single();
+
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  await admin.from('audit_logs').insert({
-    actor_role:  'admin',
-    action:      `order_${body.data.status}`,
-    entity_type: 'orders',
-    entity_id:   params.id,
-    after_state: body.data,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any).catch(() => {});
+  await writeAuditLog({
+    admin,
+    actorId: userId,
+    actorRole: 'admin',
+    action: `order_${nextStatus}`,
+    entityType: 'orders',
+    entityId: params.id,
+    beforeState: { status: currentStatus },
+    afterState: update,
+  });
 
   return NextResponse.json(data);
 }

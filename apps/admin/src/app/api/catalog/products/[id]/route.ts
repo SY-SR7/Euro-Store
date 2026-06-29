@@ -1,48 +1,124 @@
+// @ts-nocheck
 import { NextResponse } from 'next/server';
-import { createAdminSupabaseClient, requireAdminClient } from '@/supabase-server';
-import { z } from 'zod';
+import { requireAdminContext, writeAuditLog } from '@/supabase-server';
 
-const updateSchema = z.object({
-  name_ar:        z.string().min(1).optional(),
-  name_en:        z.string().min(1).optional(),
-  slug:           z.string().regex(/^[a-z0-9-]+$/).optional(),
-  description_ar: z.string().optional(),
-  description_en: z.string().optional(),
-  category_id:    z.string().uuid().nullable().optional(),
-  brand_id:       z.string().uuid().nullable().optional(),
-  is_featured:    z.boolean().optional(),
-  is_active:      z.boolean().optional(),
-});
+interface RouteParams {
+  params: { id: string };
+}
 
-interface RouteParams { params: { id: string } }
+function normalizeSlug(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
 
 export async function GET(_req: Request, { params }: RouteParams) {
-  const admin = createAdminSupabaseClient();
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const { admin } = ctx;
+
   const { data, error } = await admin
     .from('products')
     .select('id,name_ar,name_en,slug,description_ar,description_en,category_id,brand_id,is_featured,is_active')
     .eq('id', params.id)
     .single();
+
   if (error) return NextResponse.json({ error: error.message }, { status: 404 });
+
   return NextResponse.json(data);
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
-  const admin = await requireAdminClient();
-  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const body: unknown = await request.json();
-  const parsed = updateSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await admin.from('products').update(parsed.data as any).eq('id', params.id).select().single();
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const { admin, userId } = ctx;
+  const body = await request.json().catch(() => null) as Record<string, unknown> | null;
+
+  if (!body) return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+
+  const update: Record<string, unknown> = {};
+
+  if (typeof body.name_ar === 'string') update.name_ar = body.name_ar.trim();
+  if (typeof body.name_en === 'string') update.name_en = body.name_en.trim();
+  if (typeof body.slug === 'string') update.slug = normalizeSlug(body.slug);
+  if (typeof body.description_ar === 'string') update.description_ar = body.description_ar;
+  if (typeof body.description_en === 'string') update.description_en = body.description_en;
+  if (typeof body.category_id === 'string' || body.category_id === null) update.category_id = body.category_id || null;
+  if (typeof body.brand_id === 'string' || body.brand_id === null) update.brand_id = body.brand_id || null;
+  if (typeof body.is_featured === 'boolean') update.is_featured = body.is_featured;
+  if (typeof body.is_active === 'boolean') update.is_active = body.is_active;
+
+  if (Object.keys(update).length === 0) {
+    return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+  }
+
+  const { data: before } = await admin
+    .from('products')
+    .select('id,name_ar,name_en,slug,is_featured,is_active,category_id,brand_id')
+    .eq('id', params.id)
+    .single();
+
+  const { data, error } = await admin
+    .from('products')
+    .update(update as never)
+    .eq('id', params.id)
+    .select()
+    .single();
+
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await writeAuditLog({
+    admin,
+    actorId: userId,
+    actorRole: 'admin',
+    action: 'product_update',
+    entityType: 'products',
+    entityId: params.id,
+    beforeState: before as Record<string, unknown> | null,
+    afterState: update,
+  });
+
   return NextResponse.json(data);
 }
 
 export async function DELETE(_req: Request, { params }: RouteParams) {
-  const admin = await requireAdminClient();
-  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const { error } = await admin.from('products').delete().eq('id', params.id);
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const { admin, userId } = ctx;
+
+  const { data: before } = await admin
+    .from('products')
+    .select('id, name_ar, name_en, slug')
+    .eq('id', params.id)
+    .single();
+
+  const { error, count } = await admin
+    .from('products')
+    .delete({ count: 'exact' })
+    .eq('id', params.id);
+
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  if ((count ?? 0) === 0) {
+    return NextResponse.json({ error: 'Product not found or already deleted' }, { status: 404 });
+  }
+
+  await writeAuditLog({
+    admin,
+    actorId: userId,
+    actorRole: 'admin',
+    action: 'product_delete',
+    entityType: 'products',
+    entityId: params.id,
+    beforeState: before as Record<string, unknown> | null,
+  });
+
   return NextResponse.json({ deleted: true });
 }

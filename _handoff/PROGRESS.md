@@ -1,5 +1,26 @@
 ---
 
+### Session 036 — Missing [id] Admin API Routes Recovery
+**Scope:** apps/admin + _handoff only
+
+**Fix:**
+- Rewrote only the files that failed during the previous PowerShell execution.
+- Avoided `Set-Content -Encoding` and `Get-Content -Raw`.
+- Used .NET `WriteAllText` to correctly write literal `[id]` folders.
+- Restored missing routes:
+  - catalog/categories/[id]
+  - catalog/brands/[id]
+  - discounts/[id]
+  - catalog/products/[id]
+  - catalog/variants/[id]
+  - catalog/homepage/[id]
+  - orders/[id]
+
+**Smoke Test:**
+- Run `pnpm --filter admin dev`
+- Test edit/delete on categories, brands, discounts, products, variants, homepage sections, and order status.
+---
+
 ### Session 034 — Admin Login Form Security Fix
 **Scope:** apps/admin + _handoff only
 
