@@ -57,8 +57,8 @@ export default function AdminDiscountsPage() {
     if (res.ok) {
       const u={...selected,...body} as Discount;
       setSelected(u); setDiscounts(ds=>ds.map(d=>d.id===selected.id?u:d));
-      setMsg('? ?? ?????'); setEditing(false);
-    } else setMsg('? ???');
+      setMsg('✓ تم الحفظ'); setEditing(false);
+    } else setMsg('✗ فشل');
     setSaving(false);
   };
 
@@ -85,37 +85,37 @@ export default function AdminDiscountsPage() {
   return (
     <div className="space-y-5" dir="rtl">
       <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-        <div><h1 className="text-2xl font-black text-[#1C1917]">????????</h1><p className="mt-1 text-sm text-[#A8A29E]">{discounts.length} ??? ???</p></div>
-        <button onClick={()=>setShowCreate(v=>!v)} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209]">{showCreate?'?????':'+ ??? ????'}</button>
+        <div><h1 className="text-2xl font-black text-[#1C1917]">الخصومات</h1><p className="mt-1 text-sm text-[#A8A29E]">{discounts.length} كود خصم</p></div>
+        <button onClick={()=>setShowCreate(v=>!v)} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209]">{showCreate?'إلغاء':'+ كود جديد'}</button>
       </div>
 
       {showCreate&&(
         <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
-          <h2 className="mb-3 font-black text-[#B8860B]">??? ??? ????</h2>
+          <h2 className="mb-3 font-black text-[#B8860B]">إضافة كود خصم جديد</h2>
           <div className="grid gap-3 sm:grid-cols-2">
-            <input value={newForm.code} onChange={e=>setNewForm(f=>({...f,code:e.target.value.toUpperCase()}))} placeholder="????? *" className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B] font-mono" dir="ltr"/>
+            <input value={newForm.code} onChange={e=>setNewForm(f=>({...f,code:e.target.value.toUpperCase()}))} placeholder="الكود *" className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B] font-mono" dir="ltr"/>
             <select value={newForm.type} onChange={e=>setNewForm(f=>({...f,type:e.target.value}))} className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]">
-              <option value="percentage">???? ????? (%)</option>
-              <option value="fixed">???? ???? (?.?)</option>
+              <option value="percentage">خصم نسبة مئوية (%)</option>
+              <option value="fixed">خصم مبلغ ثابت (ل.س)</option>
             </select>
-            <input type="number" value={newForm.value} onChange={e=>setNewForm(f=>({...f,value:e.target.value}))} placeholder={`?????? * ${newForm.type==='percentage'?'(%)':'(?.?)'}`} className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
-            <input type="number" value={newForm.min_order_syp} onChange={e=>setNewForm(f=>({...f,min_order_syp:e.target.value}))} placeholder="???? ?????? ????? (?.?)" className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
+            <input type="number" value={newForm.value} onChange={e=>setNewForm(f=>({...f,value:e.target.value}))} placeholder={`القيمة * ${newForm.type==='percentage'?'(%)':'(ل.س)'}`} className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
+            <input type="number" value={newForm.min_order_syp} onChange={e=>setNewForm(f=>({...f,min_order_syp:e.target.value}))} placeholder="الحد الأدنى للطلب (ل.س)" className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
             <input type="date" value={newForm.valid_from} onChange={e=>setNewForm(f=>({...f,valid_from:e.target.value}))} className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/>
             <input type="date" value={newForm.valid_until} onChange={e=>setNewForm(f=>({...f,valid_until:e.target.value}))} className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/>
-            <input type="number" value={newForm.max_uses} onChange={e=>setNewForm(f=>({...f,max_uses:e.target.value}))} placeholder="???? ?????? ?????????" className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
-            <button onClick={createDiscount} disabled={creating||!newForm.code||!newForm.value} className="sm:col-start-2 rounded-xl bg-[#B8860B] py-2 text-sm font-bold text-white disabled:opacity-50">{creating?'...':'????? ?????'}</button>
+            <input type="number" value={newForm.max_uses} onChange={e=>setNewForm(f=>({...f,max_uses:e.target.value}))} placeholder="الحد الأقصى للاستخدامات" className="rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
+            <button onClick={createDiscount} disabled={creating||!newForm.code||!newForm.value} className="sm:col-start-2 rounded-xl bg-[#B8860B] py-2 text-sm font-bold text-white disabled:opacity-50">{creating?'...':'إنشاء الكود'}</button>
           </div>
         </div>
       )}
 
       <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
-        {loading?<p className="p-10 text-center text-sm text-[#A8A29E]">???? ???????...</p>
-        :discounts.length===0?<p className="p-10 text-center text-sm text-[#A8A29E]">?? ???? ????? ???</p>
+        {loading?<p className="p-10 text-center text-sm text-[#A8A29E]">جارٍ التحميل...</p>
+        :discounts.length===0?<p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد أكواد خصم</p>
         :(
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]"><tr>
-                {['?????','?????','??????','?????????','??????'].map((h,i)=>(
+                {['الكود','النوع','القيمة','الاستخدامات','الحالة'].map((h,i)=>(
                   <th key={i} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i>=3?'hidden md:table-cell':''}`}>{h}</th>
                 ))}
               </tr></thead>
@@ -123,12 +123,12 @@ export default function AdminDiscountsPage() {
                 {discounts.map(d=>(
                   <tr key={d.id} className="group hover:bg-[#FFFBF0] cursor-pointer transition-colors" onClick={()=>open(d)}>
                     <td className="px-5 py-3 font-mono font-bold text-[#1C1917] group-hover:text-[#B8860B] transition-colors">{d.code}</td>
-                    <td className="px-5 py-3 text-[#57534E]">{d.type==='percentage'?'????':'????'}</td>
-                    <td className="px-5 py-3 font-bold text-[#B8860B]">{d.value}{d.type==='percentage'?'%':' ?.?'}</td>
+                    <td className="px-5 py-3 text-[#57534E]">{d.type==='percentage'?'نسبة':'ثابت'}</td>
+                    <td className="px-5 py-3 font-bold text-[#B8860B]">{d.value}{d.type==='percentage'?'%':' ل.س'}</td>
                     <td className="px-5 py-3 text-xs text-[#A8A29E] hidden md:table-cell">{d.used_count??0}{d.max_uses?` / ${d.max_uses}`:''}</td>
                     <td className="px-5 py-3 hidden md:table-cell" onClick={e=>void toggleActive(d,e)}>
                       <span className={`cursor-pointer rounded-full border px-3 py-1 text-xs font-bold ${d.is_active?'bg-green-50 text-green-700 border-green-200 hover:bg-red-50 hover:text-red-700 hover:border-red-200':'bg-red-50 text-red-700 border-red-200 hover:bg-green-50 hover:text-green-700 hover:border-green-200'} transition-colors`}>
-                        {d.is_active?'???':'?????'}
+                        {d.is_active?'نشط':'معطّل'}
                       </span>
                     </td>
                   </tr>
@@ -140,36 +140,36 @@ export default function AdminDiscountsPage() {
       </div>
 
       {selected&&(
-        <Modal title={`???: ${selected.code}`} onClose={()=>setSelected(null)}>
-          {msg&&<div className={`mb-4 rounded-xl px-4 py-2 text-sm ${msg.startsWith('?')?'bg-green-50 text-green-700 border border-green-200':'bg-red-50 text-red-700 border border-red-200'}`}>{msg}</div>}
+        <Modal title={`كود: ${selected.code}`} onClose={()=>setSelected(null)}>
+          {msg&&<div className={`mb-4 rounded-xl px-4 py-2 text-sm ${msg.startsWith('✓')?'bg-green-50 text-green-700 border border-green-200':'bg-red-50 text-red-700 border border-red-200'}`}>{msg}</div>}
           {editing?(
             <div className="space-y-3">
-              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">?????</label><input value={String(draft.code??selected.code)} onChange={e=>setDraft(d=>({...d,code:e.target.value.toUpperCase()}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm font-mono outline-none focus:border-[#B8860B]" dir="ltr"/></div>
-              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">?????</label><select value={String(draft.type??selected.type)} onChange={e=>setDraft(d=>({...d,type:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"><option value="percentage">???? %</option><option value="fixed">???? ????</option></select></div>
-              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">??????</label><input type="number" value={String(draft.value??selected.value)} onChange={e=>setDraft(d=>({...d,value:Number(e.target.value)}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/></div>
-              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">???? ??</label><input type="date" value={String(draft.valid_from_date??selected.valid_from?.substring(0,10)??'')} onChange={e=>setDraft(d=>({...d,valid_from_date:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/></div>
-              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">???? ???</label><input type="date" value={String(draft.valid_until_date??selected.valid_until?.substring(0,10)??'')} onChange={e=>setDraft(d=>({...d,valid_until_date:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/></div>
+              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">الكود</label><input value={String(draft.code??selected.code)} onChange={e=>setDraft(d=>({...d,code:e.target.value.toUpperCase()}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm font-mono outline-none focus:border-[#B8860B]" dir="ltr"/></div>
+              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">النوع</label><select value={String(draft.type??selected.type)} onChange={e=>setDraft(d=>({...d,type:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"><option value="percentage">نسبة %</option><option value="fixed">مبلغ ثابت</option></select></div>
+              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">القيمة</label><input type="number" value={String(draft.value??selected.value)} onChange={e=>setDraft(d=>({...d,value:Number(e.target.value)}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/></div>
+              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">صالح من</label><input type="date" value={String(draft.valid_from_date??selected.valid_from?.substring(0,10)??'')} onChange={e=>setDraft(d=>({...d,valid_from_date:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/></div>
+              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">صالح حتى</label><input type="date" value={String(draft.valid_until_date??selected.valid_until?.substring(0,10)??'')} onChange={e=>setDraft(d=>({...d,valid_until_date:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/></div>
               <div className="flex items-center gap-3">
-                <label className="text-sm font-semibold text-[#57534E]">???</label>
+                <label className="text-sm font-semibold text-[#57534E]">نشط</label>
                 <button onClick={()=>setDraft(d=>({...d,is_active:!(d.is_active??selected.is_active)}))} className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${(draft.is_active??selected.is_active)?'bg-[#B8860B]':'bg-gray-300'}`}>
                   <span className={`inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow transition-transform ${(draft.is_active??selected.is_active)?'translate-x-[-1.375rem]':'translate-x-[-0.125rem]'}`}/>
                 </button>
               </div>
               <div className="flex gap-2 pt-2">
-                <button onClick={saveEdit} disabled={saving} className="flex-1 rounded-xl bg-[#B8860B] py-2 text-sm font-bold text-white disabled:opacity-50">{saving?'...':'???'}</button>
-                <button onClick={()=>setEditing(false)} className="rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E]">?????</button>
+                <button onClick={saveEdit} disabled={saving} className="flex-1 rounded-xl bg-[#B8860B] py-2 text-sm font-bold text-white disabled:opacity-50">{saving?'...':'حفظ'}</button>
+                <button onClick={()=>setEditing(false)} className="rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E]">إلغاء</button>
               </div>
             </div>
           ):(
             <div className="space-y-3 text-sm">
-              {([['?????',selected.code],['?????',selected.type==='percentage'?'???? ?????':'???? ????'],['??????',`${selected.value}${selected.type==='percentage'?'%':' ?.?'}`],['???? ??????',selected.min_order_syp?`${Number(selected.min_order_syp).toLocaleString('ar-SY')} ?.?`:'—'],['???? ??',selected.valid_from?new Date(selected.valid_from).toLocaleDateString('ar-SY'):'—'],['???? ???',selected.valid_until?new Date(selected.valid_until).toLocaleDateString('ar-SY'):'—'],['?????????',`${selected.used_count??0}${selected.max_uses?` / ${selected.max_uses}`:''}`]] as [string,string][]).map(([l,v])=>(
+              {([['الكود',selected.code],['النوع',selected.type==='percentage'?'خصم نسبة':'خصم ثابت'],['القيمة',`${selected.value}${selected.type==='percentage'?'%':' ل.س'}`],['الحد الأدنى',selected.min_order_syp?`${Number(selected.min_order_syp).toLocaleString('ar-SY')} ل.س`:'' ],['صالح من',selected.valid_from?new Date(selected.valid_from).toLocaleDateString('ar-SY'):'' ],['صالح حتى',selected.valid_until?new Date(selected.valid_until).toLocaleDateString('ar-SY'):'' ],['الاستخدامات',`${selected.used_count??0}${selected.max_uses?` / ${selected.max_uses}`:''}`]] as [string,string][]).map(([l,v])=>(
                 <div key={l} className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917]">{v}</span></div>
               ))}
               <div className="flex justify-between border-b border-[#F0ECE6] pb-2">
-                <span className="text-[#A8A29E]">??????</span>
-                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${selected.is_active?'bg-green-50 text-green-700 border-green-200':'bg-red-50 text-red-700 border-red-200'}`}>{selected.is_active?'???':'?????'}</span>
+                <span className="text-[#A8A29E]">الحالة</span>
+                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${selected.is_active?'bg-green-50 text-green-700 border-green-200':'bg-red-50 text-red-700 border-red-200'}`}>{selected.is_active?'نشط':'معطّل'}</span>
               </div>
-              <button onClick={()=>{ setDraft({...selected,valid_from_date:selected.valid_from?.substring(0,10)??'',valid_until_date:selected.valid_until?.substring(0,10)??''}); setEditing(true); }} className="w-full rounded-xl border border-[#B8860B] py-2 text-sm font-bold text-[#B8860B] hover:bg-[#B8860B]/10">? ?????</button>
+              <button onClick={()=>{ setDraft({...selected,valid_from_date:selected.valid_from?.substring(0,10)??'',valid_until_date:selected.valid_until?.substring(0,10)??''}); setEditing(true); }} className="w-full rounded-xl border border-[#B8860B] py-2 text-sm font-bold text-[#B8860B] hover:bg-[#B8860B]/10">✎ تعديل</button>
             </div>
           )}
         </Modal>

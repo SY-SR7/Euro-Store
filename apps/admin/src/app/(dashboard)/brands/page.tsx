@@ -47,8 +47,8 @@ export default function AdminBrandsPage() {
     if (res.ok) {
       const u={...selected,...draft} as Brand;
       setSelected(u); setBrands(bs=>bs.map(b=>b.id===selected.id?u:b));
-      setMsg('? ?? ?????'); setEditing(false);
-    } else setMsg('? ??? ?????');
+      setMsg('✓ تم الحفظ'); setEditing(false);
+    } else setMsg('✗ فشل الحفظ');
     setSaving(false);
   };
 
@@ -71,42 +71,42 @@ export default function AdminBrandsPage() {
   return (
     <div className="space-y-5" dir="rtl">
       <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-        <div><h1 className="text-2xl font-black text-[#1C1917]">???????? ????????</h1><p className="mt-1 text-sm text-[#A8A29E]">{brands.length} ?????</p></div>
-        <button onClick={()=>setShowCreate(v=>!v)} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">{showCreate?'?????':'+ ????? ?????'}</button>
+        <div><h1 className="text-2xl font-black text-[#1C1917]">العلامات التجارية</h1><p className="mt-1 text-sm text-[#A8A29E]">{brands.length} ماركة</p></div>
+        <button onClick={()=>setShowCreate(v=>!v)} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">{showCreate?'إلغاء':'+ إضافة ماركة'}</button>
       </div>
 
       {showCreate&&(
         <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
-          <h2 className="mb-3 font-black text-[#B8860B]">????? ????? ?????? ?????</h2>
+          <h2 className="mb-3 font-black text-[#B8860B]">إضافة علامة تجارية جديدة</h2>
           <div className="flex gap-3 flex-col sm:flex-row">
-            <input value={newName} onChange={e=>setNewName(e.target.value)} placeholder="????? *" className="flex-1 rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
-            <input value={newSlug} onChange={e=>setNewSlug(e.target.value)} placeholder="??? slug (???????)" className="flex-1 rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/>
-            <button onClick={createBrand} disabled={creating||!newName} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50">{creating?'...':'?????'}</button>
+            <input value={newName} onChange={e=>setNewName(e.target.value)} placeholder="الاسم *" className="flex-1 rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
+            <input value={newSlug} onChange={e=>setNewSlug(e.target.value)} placeholder="slug اختياري" className="flex-1 rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/>
+            <button onClick={createBrand} disabled={creating||!newName} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50">{creating?'...':'إضافة'}</button>
           </div>
         </div>
       )}
 
       <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
-        <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="???..." className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
+        <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="بحث..." className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
-        {loading?<p className="p-10 text-center text-sm text-[#A8A29E]">???? ???????...</p>
-        :visible.length===0?<p className="p-10 text-center text-sm text-[#A8A29E]">?? ???? ??????</p>
+        {loading?<p className="p-10 text-center text-sm text-[#A8A29E]">جارٍ التحميل...</p>
+        :visible.length===0?<p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد نتائج</p>
         :(
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]"><tr>
-                {['?????','Slug','??????'].map((h,i)=><th key={i} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i===1?'hidden sm:table-cell':''}`}>{h}</th>)}
+                {['الاسم','Slug','الحالة'].map((h,i)=><th key={i} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i===1?'hidden sm:table-cell':''}`}>{h}</th>)}
               </tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {visible.map(b=>(
                   <tr key={b.id} className="group hover:bg-[#FFFBF0] cursor-pointer transition-colors" onClick={()=>open(b)}>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B] transition-colors">{b.name}</td>
-                    <td className="px-5 py-3 text-xs text-[#A8A29E] hidden sm:table-cell font-mono">{b.slug??'—'}</td>
+                    <td className="px-5 py-3 text-xs text-[#A8A29E] hidden sm:table-cell font-mono">{b.slug??''}</td>
                     <td className="px-5 py-3">
                       <span className={`rounded-full border px-3 py-1 text-xs font-bold ${b.is_active?'bg-green-50 text-green-700 border-green-200':'bg-red-50 text-red-700 border-red-200'}`}>
-                        {b.is_active?'???':'??? ???'}
+                        {b.is_active?'نشط':'غير نشط'}
                       </span>
                     </td>
                   </tr>
@@ -119,35 +119,35 @@ export default function AdminBrandsPage() {
 
       {selected&&(
         <Modal title={selected.name} onClose={()=>setSelected(null)}>
-          {msg&&<div className={`mb-4 rounded-xl px-4 py-2 text-sm ${msg.startsWith('?')?'bg-green-50 text-green-700 border border-green-200':'bg-red-50 text-red-700 border border-red-200'}`}>{msg}</div>}
+          {msg&&<div className={`mb-4 rounded-xl px-4 py-2 text-sm ${msg.startsWith('✓')?'bg-green-50 text-green-700 border border-green-200':'bg-red-50 text-red-700 border border-red-200'}`}>{msg}</div>}
           {editing?(
             <div className="space-y-3">
-              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">?????</label><input value={draft.name??selected.name} onChange={e=>setDraft(d=>({...d,name:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/></div>
+              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">الاسم</label><input value={draft.name??selected.name} onChange={e=>setDraft(d=>({...d,name:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/></div>
               <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">Slug</label><input value={draft.slug??selected.slug??''} onChange={e=>setDraft(d=>({...d,slug:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/></div>
-              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">???? ?????? (URL)</label><input value={draft.logo_url??selected.logo_url??''} onChange={e=>setDraft(d=>({...d,logo_url:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/></div>
+              <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">رابط الشعار (URL)</label><input value={draft.logo_url??selected.logo_url??''} onChange={e=>setDraft(d=>({...d,logo_url:e.target.value}))} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]" dir="ltr"/></div>
               <div className="flex items-center gap-3">
-                <label className="text-sm font-semibold text-[#57534E]">???</label>
+                <label className="text-sm font-semibold text-[#57534E]">نشط</label>
                 <button onClick={()=>setDraft(d=>({...d,is_active:!(d.is_active??selected.is_active)}))} className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${(draft.is_active??selected.is_active)?'bg-[#B8860B]':'bg-gray-300'}`}>
                   <span className={`inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow transition-transform ${(draft.is_active??selected.is_active)?'translate-x-[-1.375rem]':'translate-x-[-0.125rem]'}`}/>
                 </button>
               </div>
               <div className="flex gap-2 pt-2">
-                <button onClick={saveEdit} disabled={saving} className="flex-1 rounded-xl bg-[#B8860B] py-2 text-sm font-bold text-white hover:bg-[#9A7209] disabled:opacity-50">{saving?'...':'???'}</button>
-                <button onClick={()=>setEditing(false)} className="rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E]">?????</button>
+                <button onClick={saveEdit} disabled={saving} className="flex-1 rounded-xl bg-[#B8860B] py-2 text-sm font-bold text-white hover:bg-[#9A7209] disabled:opacity-50">{saving?'...':'حفظ'}</button>
+                <button onClick={()=>setEditing(false)} className="rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E]">إلغاء</button>
               </div>
             </div>
           ):(
             <div className="space-y-3 text-sm">
-              {([['?????',selected.name],['Slug',selected.slug],['??????',selected.logo_url]] as [string,string|null|undefined][]).map(([l,v])=>(
-                <div key={l} className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917] truncate max-w-[60%]">{v??'—'}</span></div>
+              {([['الاسم',selected.name],['Slug',selected.slug],['الشعار',selected.logo_url]] as [string,string|null|undefined][]).map(([l,v])=>(
+                <div key={l} className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">{l}</span><span className="font-semibold text-[#1C1917] truncate max-w-[60%]">{v??''}</span></div>
               ))}
               <div className="flex justify-between border-b border-[#F0ECE6] pb-2">
-                <span className="text-[#A8A29E]">??????</span>
-                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${selected.is_active?'bg-green-50 text-green-700 border-green-200':'bg-red-50 text-red-700 border-red-200'}`}>{selected.is_active?'???':'??? ???'}</span>
+                <span className="text-[#A8A29E]">الحالة</span>
+                <span className={`rounded-full border px-3 py-1 text-xs font-bold ${selected.is_active?'bg-green-50 text-green-700 border-green-200':'bg-red-50 text-red-700 border-red-200'}`}>{selected.is_active?'نشط':'غير نشط'}</span>
               </div>
               <div className="flex gap-2 pt-2">
-                <button onClick={()=>{ setDraft({...selected}); setEditing(true); }} className="flex-1 rounded-xl border border-[#B8860B] py-2 text-sm font-bold text-[#B8860B] hover:bg-[#B8860B]/10">? ?????</button>
-                <button onClick={()=>void toggleActive(selected)} className={`rounded-xl border px-4 py-2 text-sm font-bold transition-colors ${selected.is_active?'border-red-300 text-red-600 hover:bg-red-50':'border-green-300 text-green-600 hover:bg-green-50'}`}>{selected.is_active?'?????':'?????'}</button>
+                <button onClick={()=>{ setDraft({...selected}); setEditing(true); }} className="flex-1 rounded-xl border border-[#B8860B] py-2 text-sm font-bold text-[#B8860B] hover:bg-[#B8860B]/10">✎ تعديل</button>
+                <button onClick={()=>void toggleActive(selected)} className={`rounded-xl border px-4 py-2 text-sm font-bold transition-colors ${selected.is_active?'border-red-300 text-red-600 hover:bg-red-50':'border-green-300 text-green-600 hover:bg-green-50'}`}>{selected.is_active?'تعطيل':'تفعيل'}</button>
               </div>
             </div>
           )}
