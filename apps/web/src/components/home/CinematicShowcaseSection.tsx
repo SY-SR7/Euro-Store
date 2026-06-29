@@ -66,17 +66,8 @@ function ScrollBeat({
       className="absolute inset-0 flex flex-col justify-end pointer-events-none will-change-transform"
       dir="rtl"
     >
-      {/* Bottom gradient — dark enough for any bright image */}
-      <div
-        className="absolute inset-x-0 bottom-0 pointer-events-none"
-        style={{
-          height: '70%',
-          background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 25%, rgba(0,0,0,0.35) 55%, transparent 100%)',
-        }}
-      />
-
       {/* Text anchored to bottom-right (RTL), DJI style */}
-      <div className="relative z-10 px-10 pb-16 md:px-16 md:pb-20 text-right max-w-3xl mr-auto">
+      <div className="relative z-10 px-10 pb-14 md:px-16 md:pb-18 text-right max-w-3xl mr-auto">
         <motion.h2
           className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight"
           style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
@@ -185,10 +176,6 @@ export function CinematicShowcaseSection({
     damping: prefersReduced ? 100 : 30,
     mass: prefersReduced ? 0.01 : 0.08,
   });
-
-  // Ambient gold glow
-  const glowOpacity = useTransform(smoothProgress, [0, 0.25, 0.75, 1], [0, 0.7, 0.7, 0]);
-  const glowScale   = useTransform(smoothProgress, [0, 0.5, 1], [0.6, 1.3, 0.8]);
 
   // Progress bar
   const barScaleX = useTransform(smoothProgress, [0, 1], [0, 1]);
