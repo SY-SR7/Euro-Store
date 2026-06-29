@@ -222,21 +222,14 @@ export function CinematicShowcaseSection({
           />
         </div>
 
-        {/* Vignette */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/60 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/70 to-transparent" />
-          <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-black/25 to-transparent" />
-          <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-black/25 to-transparent" />
-        </div>
-
-        {/* Gold ambient glow */}
-        <motion.div
-          style={{ opacity: glowOpacity, scale: glowScale }}
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        >
-          <div className="w-[55vw] h-[55vh] rounded-full bg-[#C9A84C]/18 blur-[120px]" />
-        </motion.div>
+        {/* Single clean bottom gradient for text only — nothing else */}
+        <div
+          className="absolute inset-x-0 bottom-0 pointer-events-none"
+          style={{
+            height: '40%',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, transparent 100%)',
+          }}
+        />
 
         {/* Story text beats */}
         {storyBeats.map((beat, i) => (
@@ -244,12 +237,12 @@ export function CinematicShowcaseSection({
         ))}
 
         {/* Brand mark */}
-        <div className="absolute top-8 right-8 text-[#C9A84C] text-xs font-bold tracking-[0.3em] uppercase opacity-60 select-none">
+        <div className="absolute top-8 right-8 text-white text-xs font-bold tracking-[0.3em] uppercase opacity-50 select-none">
           EUROSTORE
         </div>
 
         {/* Timeline progress bar */}
-        <div className="absolute bottom-0 inset-x-0 h-px bg-white/10">
+        <div className="absolute bottom-0 inset-x-0 h-[2px] bg-white/10">
           <motion.div
             style={{ scaleX: barScaleX, transformOrigin: 'left' }}
             className="h-full bg-[#C9A84C] will-change-transform"
