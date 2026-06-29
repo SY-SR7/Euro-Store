@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { useScroll, useTransform, useSpring, motion, useReducedMotion } from 'framer-motion';
+import { useScroll, useTransform, useSpring, motion, useReducedMotion, useAnimationFrame, useMotionValue } from 'framer-motion';
 import { CanvasScrollSequence } from './CanvasScrollSequence';
 
 export interface StoryBeat {
@@ -63,14 +63,14 @@ function ScrollBeat({
       dir="rtl"
     >
       <motion.h2
-        className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-4 drop-shadow-lg"
+        className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-4"
         style={{ textShadow: '0 2px 40px rgba(0,0,0,0.6)' }}
       >
         {beat.title}
       </motion.h2>
 
       {beat.subtitle && (
-        <p className="text-base md:text-xl text-white/80 max-w-lg leading-relaxed drop-shadow-md">
+        <p className="text-base md:text-xl text-white/80 max-w-lg leading-relaxed">
           {beat.subtitle}
         </p>
       )}
@@ -86,6 +86,52 @@ function ScrollBeat({
         </motion.a>
       )}
     </motion.div>
+  );
+}
+
+/**
+ * Bridge: syncs smoothProgress motion value → canvas progress state
+ * using useAnimationFrame to avoid React re-renders on every frame.
+ */
+function CanvasBridge({
+  smoothProgress,
+  frameSrc,
+  frameCount,
+}: {
+  smoothProgress: ReturnType<typeof useSpring>;
+  frameSrc: (i: number) => string;
+  frameCount: number;
+}) {
+  // Writable motion value — will be read by CanvasScrollSequence
+  const liveProgress = useMotionValue(0);
+
+  useAnimationFrame(() => {
+    liveProgress.set(smoothProgress.get());
+  });
+
+  // CanvasScrollSequence reads `progress` prop, but we need reactivity.
+  // So we subscribe and force-render only on significant change.
+  const progressRef = useRef(0);
+  const sequenceRef = useRef<{ seek: (p: number) => void } | null>(null);
+
+  // On every frame, directly call into the canvas without React re-render
+  useAnimationFrame(() => {
+    const current = smoothProgress.get();
+    if (Math.abs(current - progressRef.current) > 0.0005) {
+      progressRef.current = current;
+      sequenceRef.current?.seek(current);
+    }
+  });
+
+  return (
+    <CanvasScrollSequence
+      ref={sequenceRef}
+      frameSrc={frameSrc}
+      frameCount={frameCount}
+      progress={0} // initial only — updates come from imperative seek()
+      quality="high"
+      className="absolute inset-0"
+    />
   );
 }
 
@@ -110,18 +156,15 @@ export function CinematicShowcaseSection({
     mass: prefersReduced ? 0.01 : 0.08,
   });
 
-  // Ambient gold glow that intensifies in the middle
-  const glowOpacity = useTransform(smoothProgress, [0, 0.3, 0.7, 1], [0, 0.6, 0.6, 0]);
-  const glowScale   = useTransform(smoothProgress, [0, 0.5, 1], [0.7, 1.2, 0.8]);
+  // Ambient gold glow
+  const glowOpacity = useTransform(smoothProgress, [0, 0.25, 0.75, 1], [0, 0.7, 0.7, 0]);
+  const glowScale   = useTransform(smoothProgress, [0, 0.5, 1], [0.6, 1.3, 0.8]);
 
-  // Progress bar at bottom
+  // Progress bar
   const barScaleX = useTransform(smoothProgress, [0, 1], [0, 1]);
 
-  // Scroll indicator fades out after 8%
-  const scrollHintOpacity = useTransform(smoothProgress, [0, 0.08], [1, 0]);
-
-  // Canvas progress (raw 0-1 → used directly)
-  const progressValue = scrollYProgress.get();
+  // Scroll hint
+  const scrollHintOpacity = useTransform(smoothProgress, [0, 0.06], [1, 0]);
 
   return (
     <div
@@ -134,43 +177,49 @@ export function CinematicShowcaseSection({
         className="sticky top-0 h-screen overflow-hidden"
         style={{ backgroundColor: bgColor }}
       >
-        {/* GPU-accelerated canvas layer */}
-        <div className="absolute inset-0 will-change-transform" style={{ transform: 'translateZ(0)' }}>
-          <FrameProgressBridge
-            smoothProgress={smoothProgress}
+        {/* Canvas — GPU accelerated */}
+        <div
+          className="absolute inset-0"
+          style={{ transform: 'translateZ(0)', willChange: 'transform' }}
+        >
+          <CanvasScrollSequence
             frameSrc={frameSrc}
             frameCount={frameCount}
+            progress={0}
+            quality="high"
+            className="absolute inset-0"
+            smoothProgress={smoothProgress}
           />
         </div>
 
-        {/* Dark vignette edges */}
+        {/* Vignette */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/50 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black/30 to-transparent" />
-          <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black/30 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/60 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/70 to-transparent" />
+          <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-black/25 to-transparent" />
+          <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-black/25 to-transparent" />
         </div>
 
-        {/* Ambient gold glow */}
+        {/* Gold ambient glow */}
         <motion.div
           style={{ opacity: glowOpacity, scale: glowScale }}
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
         >
-          <div className="w-[50vw] h-[50vh] rounded-full bg-[#C9A84C]/20 blur-[100px]" />
+          <div className="w-[55vw] h-[55vh] rounded-full bg-[#C9A84C]/18 blur-[120px]" />
         </motion.div>
 
-        {/* Story beats (text overlays) */}
+        {/* Story text beats */}
         {storyBeats.map((beat, i) => (
           <ScrollBeat key={i} beat={beat} scrollProgress={smoothProgress} />
         ))}
 
-        {/* Top-left: EUROSTORE brand mark */}
-        <div className="absolute top-8 right-8 text-[#C9A84C] text-xs font-bold tracking-[0.3em] uppercase opacity-70">
+        {/* Brand mark */}
+        <div className="absolute top-8 right-8 text-[#C9A84C] text-xs font-bold tracking-[0.3em] uppercase opacity-60 select-none">
           EUROSTORE
         </div>
 
-        {/* Progress bar at bottom */}
-        <div className="absolute bottom-0 inset-x-0 h-0.5 bg-white/10">
+        {/* Timeline progress bar */}
+        <div className="absolute bottom-0 inset-x-0 h-px bg-white/10">
           <motion.div
             style={{ scaleX: barScaleX, transformOrigin: 'left' }}
             className="h-full bg-[#C9A84C] will-change-transform"
@@ -180,47 +229,16 @@ export function CinematicShowcaseSection({
         {/* Scroll hint */}
         <motion.div
           style={{ opacity: scrollHintOpacity }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="text-white/50 text-xs uppercase tracking-widest font-medium">مرر للأسفل</span>
+          <span className="text-white/40 text-[10px] uppercase tracking-[0.25em]">مرر للأسفل</span>
           <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-            className="w-px h-8 bg-[#C9A84C]/60"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
+            className="w-px h-10 bg-gradient-to-b from-[#C9A84C]/60 to-transparent"
           />
         </motion.div>
       </div>
     </div>
-  );
-}
-
-/**
- * Bridge component: reads smoothProgress as a live value
- * and passes it to CanvasScrollSequence on every frame.
- */
-function FrameProgressBridge({
-  smoothProgress,
-  frameSrc,
-  frameCount,
-}: {
-  smoothProgress: ReturnType<typeof useSpring>;
-  frameSrc: (i: number) => string;
-  frameCount: number;
-}) {
-  const progressRef = useRef(0);
-
-  // Sync motion value → ref on every frame
-  smoothProgress.on('change', (v) => {
-    progressRef.current = v;
-  });
-
-  return (
-    <CanvasScrollSequence
-      frameSrc={frameSrc}
-      frameCount={frameCount}
-      progress={progressRef.current}
-      quality="high"
-      className="absolute inset-0"
-    />
   );
 }
