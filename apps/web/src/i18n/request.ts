@@ -8,17 +8,16 @@ function normalizeLocale(value: unknown): Locale {
     : defaultLocale;
 }
 
-export default getRequestConfig(async (params: any) => {
-  const requestLocale = params?.requestLocale;
-
-  const rawFromParams =
-    typeof params?.locale === 'string'
-      ? params.locale
-      : typeof requestLocale === 'string'
-        ? requestLocale
-        : requestLocale
-          ? await requestLocale
-          : undefined;
+export default getRequestConfig(async (params: {
+  locale?: string;
+  requestLocale?: string | Promise<string | undefined>;
+}) => {
+  const requestLocale =
+    typeof params.requestLocale === 'string'
+      ? params.requestLocale
+      : params.requestLocale
+        ? await params.requestLocale
+        : undefined;
 
   const cookieStore = cookies();
   const cookieLocale =
@@ -26,11 +25,11 @@ export default getRequestConfig(async (params: any) => {
     cookieStore.get('EUROSTORE_LOCALE')?.value;
 
   const headerLocale = headers().get('x-eurostore-locale');
-
-  const locale = normalizeLocale(rawFromParams ?? cookieLocale ?? headerLocale);
+  const locale = normalizeLocale(params.locale ?? requestLocale ?? cookieLocale ?? headerLocale);
 
   return {
     locale,
-    messages: messages[locale]
+    messages: messages[locale],
+    timeZone: 'Asia/Damascus'
   };
 });

@@ -3,12 +3,7 @@ import en from './messages/en.json';
 
 export const locales = ['ar', 'en'] as const;
 export type Locale = (typeof locales)[number];
-
 export const defaultLocale: Locale = 'ar';
 
-export const messages = {
-  ar,
-  en
-} as Record<Locale, any>;
-
+export const messages = { ar, en };
 export default messages;

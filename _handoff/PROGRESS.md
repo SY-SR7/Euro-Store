@@ -745,3 +745,28 @@
 - Phase 0: 🟡 → i18n, CSS, fonts now implemented
 - Phase 9 (Admin): 🟡 → added customers + settings + audit-logs pages; sidebar now complete
 - Phase 5 (Web UX): 🟡 → /categories, /orders, /account, /faq, /contact, /exchange index added
+---
+
+### Session 018 — 2026-06-29
+**Agent:** PowerShell web+admin i18n stabilization script
+
+**Scope:** apps/admin + apps/web only.
+
+**Work Done:**
+- Fixed the visible admin dashboard translation-key fallback issue by adding the missing keys used by older and newer dashboard versions: admin.dashboardTitle, admin.customersLabel, admin.productsLabel, admin.ordersLabel, revenue/exchange labels, recent-orders labels, and status labels.
+- Re-wired next-intl request/layout files for apps/admin and apps/web.
+- Rebuilt the admin dashboard page to use translated labels, real stats, products count, recent orders, and graceful fallbacks.
+- Rebuilt the admin sidebar with complete translated navigation.
+- Added admin logout route.
+- Rebuilt the web Header so mobile/desktop nav keys resolve correctly.
+- Removed .next caches for admin and web so stale i18n output is not reused.
+
+**Verification to run locally:**
+- pnpm --filter admin type-check
+- pnpm --filter web type-check
+- pnpm --filter admin dev
+- pnpm --filter web dev
+
+**Next Agent Must Start With:**
+- Exercise admin dashboard/orders/products end-to-end against the live Supabase project.
+- Do not touch helper, partner, or mobile unless explicitly requested.
