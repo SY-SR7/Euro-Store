@@ -862,3 +862,19 @@
 - Run pnpm --filter admin dev.
 - Smoke-test: shipping-rates, loyalty-settings, sub-admins, audit-logs, settings.
 - Continue admin/web only.
+
+---
+
+### Session 025 — 2026-06-29
+**Scope:** apps/admin only.
+
+**Fix:**
+- Fixed Next.js dynamic route conflict under apps/admin/src/app/api/sub-admins.
+- Removed duplicate [id] route folder.
+- Kept the canonical route folder as [userId].
+- Rewrote PATCH route to use params.userId.
+- Cleared apps/admin/.next cache.
+
+**Next:**
+- Run pnpm --filter admin dev.
+- Re-test /sub-admins.
