@@ -12,14 +12,7 @@ import {
   LogOut,
 } from 'lucide-react';
 
-export function Navbar() {
-  const today = new Date().toLocaleDateString('ar-SY', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-
+export default function Navbar() {
   async function logout() {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
@@ -28,22 +21,20 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#E5E0D8] bg-white/90 backdrop-blur-xl" dir="rtl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-6">
+    <header className="sticky top-0 z-50 border-b border-[#E5E0D8] bg-white/95 backdrop-blur-xl" dir="rtl">
+      <div className="flex h-16 items-center justify-between gap-4 px-6">
         <div className="flex items-center gap-3">
           <button
             type="button"
             aria-label="القائمة"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] text-[#57534E] transition-colors hover:border-[#B8860B] hover:text-[#B8860B]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]"
           >
             <Menu className="h-5 w-5" />
           </button>
 
-          <Link href="/dashboard" className="group">
+          <Link href="/dashboard">
             <p className="text-sm font-black text-[#1C1917]">EUROSTORE</p>
-            <p className="text-[11px] font-semibold text-[#A8A29E] group-hover:text-[#B8860B]">
-              لوحة الإدارة
-            </p>
+            <p className="text-[11px] font-semibold text-[#A8A29E]">لوحة الإدارة</p>
           </Link>
         </div>
 
@@ -52,21 +43,17 @@ export function Navbar() {
             <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A8A29E]" />
             <input
               placeholder="بحث في الطلبات، المنتجات، العملاء..."
-              className="h-10 w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] pr-10 pl-4 text-sm outline-none transition-colors focus:border-[#B8860B]"
+              className="h-10 w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] pr-10 pl-4 text-sm outline-none focus:border-[#B8860B]"
             />
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="hidden text-left text-xs text-[#A8A29E] md:block">
-            {today}
-          </div>
-
           <button
             type="button"
             aria-label="تحديث"
             onClick={() => window.location.reload()}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] text-[#57534E] transition-colors hover:border-[#B8860B] hover:text-[#B8860B]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]"
           >
             <RefreshCw className="h-4 w-4" />
           </button>
@@ -74,7 +61,7 @@ export function Navbar() {
           <button
             type="button"
             aria-label="اللغة"
-            className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#E5E0D8] px-3 text-xs font-black text-[#57534E] transition-colors hover:border-[#B8860B] hover:text-[#B8860B]"
+            className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-[#E5E0D8] px-3 text-xs font-black text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]"
           >
             <Globe className="h-4 w-4" />
             AR
@@ -83,7 +70,7 @@ export function Navbar() {
           <Link
             href="/settings"
             aria-label="الإعدادات"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] text-[#57534E] transition-colors hover:border-[#B8860B] hover:text-[#B8860B]"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]"
           >
             <Settings className="h-4 w-4" />
           </Link>
@@ -91,7 +78,7 @@ export function Navbar() {
           <Link
             href="/notifications"
             aria-label="الإشعارات"
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] text-[#57534E] transition-colors hover:border-[#B8860B] hover:text-[#B8860B]"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]"
           >
             <Bell className="h-4 w-4" />
             <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-white bg-red-500" />
@@ -109,7 +96,7 @@ export function Navbar() {
             type="button"
             onClick={logout}
             aria-label="تسجيل الخروج"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] text-[#57534E] transition-colors hover:border-red-300 hover:text-red-600"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] text-[#57534E] hover:border-red-300 hover:text-red-600"
           >
             <LogOut className="h-4 w-4" />
           </button>
@@ -118,5 +105,3 @@ export function Navbar() {
     </header>
   );
 }
-
-export default Navbar;
