@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '../../../../../supabase-server';
 import { z } from 'zod';
 
 const schema = z.object({
