@@ -14,7 +14,7 @@ export function NewCategoryForm() {
     e.preventDefault();
     setSaving(true);
     setMsg('');
-    const data = Object.fromEntries(new FormData(e.currentTarget as HTMLFormElement) as unknown as Iterable<readonly [PropertyKey, any]>);
+    const formEl = e.currentTarget as HTMLFormElement; const data = Object.fromEntries(new FormData(formEl));
     const res = await fetch('/api/catalog/categories', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -29,7 +29,7 @@ export function NewCategoryForm() {
     if (res.ok) {
       setMsg(t('saveSuccess'));
       router.refresh();
-      (e.target as unknown as { reset(): void }).reset();
+      (e.target as HTMLFormElement).reset();
     } else {
       setMsg(t('saveFailed'));
     }

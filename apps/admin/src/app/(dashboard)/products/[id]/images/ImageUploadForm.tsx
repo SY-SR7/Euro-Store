@@ -15,7 +15,7 @@ export function ImageUploadForm({ productId }: { productId: string }) {
   const [isError,    setIsError]    = useState(false);
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0];
+    const f = (e.target as HTMLInputElement).files?.[0];
     if (!f) return;
     const reader = new FileReader();
     reader.onload = ev => setPreview(ev.target?.result as string);
@@ -23,7 +23,7 @@ export function ImageUploadForm({ productId }: { productId: string }) {
   }
 
   async function handleUpload() {
-    const file = fileRef.current?.files?.[0];
+    const file = (fileRef.current as HTMLInputElement)?.files?.[0];
     if (!file) return;
     setUploading(true); setMsg(''); setIsError(false);
 
@@ -35,7 +35,7 @@ export function ImageUploadForm({ productId }: { productId: string }) {
     if (res.ok) {
       setMsg(t('saveSuccess'));
       setPreview(null);
-      if (fileRef.current) fileRef.current.value = '';
+      if (fileRef.current) (fileRef.current as HTMLInputElement).value = '';
       router.refresh();
     } else {
       setIsError(true);

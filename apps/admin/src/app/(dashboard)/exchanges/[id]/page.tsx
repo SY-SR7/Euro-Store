@@ -1,3 +1,4 @@
+﻿/// <reference lib="dom" />
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
@@ -21,7 +22,7 @@ const STATUS_OPTIONS = ['pending', 'approved', 'rejected', 'completed'];
 
 export default function ExchangeDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const t = useTranslations();
+  // const t = useTranslations(); // unused
   const [exchange, setExchange] = useState<ExchangeDetail | null>(null);
   const [notes,    setNotes]    = useState('');
   const [saving,   setSaving]   = useState(false);

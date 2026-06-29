@@ -25,8 +25,8 @@ export function EditProductForm({ product, categories, brands }: Props) {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSaving(true); setError(''); setSuccess('');
-    const fd = new FormData(e.currentTarget);
-    const d  = Object.fromEntries(fd);
+    const formEl = e.currentTarget as HTMLFormElement; const fd = new FormData(formEl);
+    const d = Object.fromEntries(fd);
     const res = await fetch(`/api/catalog/products/${product.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -48,7 +48,7 @@ export function EditProductForm({ product, categories, brands }: Props) {
   }
 
   async function handleDelete() {
-    if (!confirm(t('confirmDelete'))) return;
+    if (!window.confirm(t('confirmDelete'))) return;
     setDeleting(true);
     const res = await fetch(`/api/catalog/products/${product.id}`, { method: 'DELETE' });
     if (res.ok) router.push('/products');

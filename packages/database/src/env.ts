@@ -1,4 +1,5 @@
-﻿export interface SupabasePublicEnv {
+﻿/// <reference lib="dom" />
+export interface SupabasePublicEnv {
   supabaseUrl: string;
   supabaseAnonKey: string;
 }

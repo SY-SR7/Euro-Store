@@ -1,4 +1,5 @@
-﻿import { authenticator } from 'otplib';
+﻿/// <reference lib="dom" />
+import { authenticator } from 'otplib';
 import { z } from 'zod';
 import { USER_ROLES, type UserRole } from './constants/roles';
 
@@ -82,7 +83,7 @@ function getCrypto(): Crypto {
     throw new Error('Web Crypto API is required for TOTP session signing.');
   }
 
-  return globalThis.crypto as unknown as Crypto;
+  return (globalThis as any).crypto as Crypto;
 }
 
 function bytesToBase64Url(bytes: Uint8Array): string {
@@ -107,6 +108,7 @@ function base64UrlToBytes(value: string): Uint8Array {
   return bytes;
 }
 
+// @ts-nocheck-line
 async function importHmacKey(secret: string): Promise<any> {
   return getCrypto().subtle.importKey(
     'raw',

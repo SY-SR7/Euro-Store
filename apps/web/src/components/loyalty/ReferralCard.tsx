@@ -1,4 +1,5 @@
-﻿'use client';
+﻿/// <reference lib="dom" />
+'use client';
 import { useTranslations } from 'next-intl';
 
 interface ReferralCardProps { referralCode: string; }

@@ -1,4 +1,5 @@
-﻿import { createBrowserClient, createServerClient, type CookieOptions } from '@supabase/ssr';
+﻿/// <reference lib="dom" />
+import { createBrowserClient, createServerClient, type CookieOptions } from '@supabase/ssr';
 import { createClient as createSupabaseJSClient, type SupabaseClient } from '@supabase/supabase-js';
 import { getSupabasePublicEnv, getSupabaseServiceEnv } from './env';
 import type { Database } from './types';

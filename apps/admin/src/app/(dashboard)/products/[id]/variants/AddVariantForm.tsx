@@ -13,7 +13,7 @@ export function AddVariantForm({ productId }: { productId: string }) {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSaving(true); setMsg('');
-    const d = Object.fromEntries(new FormData(e.currentTarget));
+    const formEl = e.currentTarget as HTMLFormElement; const d = Object.fromEntries(new FormData(formEl));
     const res = await fetch('/api/catalog/variants', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -28,7 +28,7 @@ export function VariantRow({ variant, productId }: { variant: Variant; productId
   }
 
   async function handleDelete() {
-    if (!confirm(t('confirmDelete'))) return;
+    if (!window.confirm(t('confirmDelete'))) return;
     setDeleting(true);
     const res = await fetch(`/api/catalog/variants/${variant.id}`, { method: 'DELETE' });
     if (res.ok) router.refresh();
