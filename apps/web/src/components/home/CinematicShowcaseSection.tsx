@@ -226,12 +226,21 @@ export function CinematicShowcaseSection({
           />
         </div>
 
-        {/* Single clean bottom gradient for text only — nothing else */}
+        {/* Top fade gradient (so video edges on mobile fade into the background) */}
+        <div
+          className="absolute inset-x-0 top-0 pointer-events-none"
+          style={{
+            height: '20%',
+            background: 'linear-gradient(to bottom, #000000 0%, transparent 100%)',
+          }}
+        />
+
+        {/* Bottom fade gradient for text readability and bottom edge blending */}
         <div
           className="absolute inset-x-0 bottom-0 pointer-events-none"
           style={{
             height: '40%',
-            background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 40%, transparent 100%)',
+            background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 40%, transparent 100%)',
           }}
         />
 
