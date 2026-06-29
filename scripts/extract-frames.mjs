@@ -11,6 +11,7 @@
  */
 
 import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
+import ffprobeInstaller from '@ffprobe-installer/ffprobe';
 import ffmpeg from 'fluent-ffmpeg';
 import { mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -18,8 +19,9 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Use the bundled ffmpeg binary
+// Use bundled binaries — no system ffmpeg/ffprobe needed
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+ffmpeg.setFfprobePath(ffprobeInstaller.path);
 
 const [, , videoPath, outputDir, frameCountArg] = process.argv;
 const frameCount = parseInt(frameCountArg ?? '120', 10);
