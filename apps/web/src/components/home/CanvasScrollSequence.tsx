@@ -155,8 +155,14 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
     return (
       <canvas
         ref={canvasRef}
-        className={`block w-full h-full ${className}`}
-        style={{ imageRendering: 'auto' }}
+        style={{
+          display: 'block',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+        }}
       />
     );
   },
