@@ -66,30 +66,28 @@ function ScrollBeat({
       className="absolute inset-0 flex flex-col justify-end pointer-events-none will-change-transform"
       dir="rtl"
     >
-      {/* Bottom gradient — the ONLY overlay, like DJI */}
+      {/* Bottom gradient — dark enough for any bright image */}
       <div
         className="absolute inset-x-0 bottom-0 pointer-events-none"
         style={{
-          height: '55%',
-          background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
+          height: '70%',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 25%, rgba(0,0,0,0.35) 55%, transparent 100%)',
         }}
       />
 
-      {/* Text anchored to bottom-left, DJI style */}
+      {/* Text anchored to bottom-right (RTL), DJI style */}
       <div className="relative z-10 px-10 pb-16 md:px-16 md:pb-20 text-right max-w-3xl mr-auto">
         <motion.h2
           className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight"
-          style={{
-            textShadow: '0 1px 4px rgba(0,0,0,0.8)',
-          }}
+          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}
         >
           {beat.title}
         </motion.h2>
 
         {beat.subtitle && (
           <p
-            className="mt-3 text-sm md:text-base text-white/85 max-w-md leading-relaxed font-medium"
-            style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}
+            className="mt-3 text-sm md:text-base text-white/90 max-w-md leading-relaxed font-medium"
+            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.9)' }}
           >
             {beat.subtitle}
           </p>
