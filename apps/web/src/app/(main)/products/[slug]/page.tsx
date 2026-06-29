@@ -7,9 +7,9 @@ import { getTranslations } from 'next-intl/server';
 import { formatSYP } from '@eurostore/shared';
 import { createServerSupabaseClient } from '@/supabase-server';
 import {
-  summarizeProductVariants } from '../../catalog-components';
-import { type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '../../catalog-types';
-import { AddToCartButton } from '../../../components/cart/AddToCartButton';
+  summarizeProductVariants } from '@/app/catalog-components';
+import { type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '@/app/catalog-types';
+import { AddToCartButton } from '@/components/cart/AddToCartButton';
 
 export const dynamic = 'force-dynamic';
 

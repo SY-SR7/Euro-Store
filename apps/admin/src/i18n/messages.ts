@@ -1,4 +1,7 @@
-export type Locale = 'ar' | 'en';
+export const locales = ['ar', 'en'] as const;
+export type Locale = (typeof locales)[number];
+
+export const defaultLocale: Locale = 'ar';
 
 export const messages: Record<Locale, Record<string, unknown>> = {
   ar: {
@@ -9,7 +12,13 @@ export const messages: Record<Locale, Record<string, unknown>> = {
       cancel: 'إلغاء',
       delete: 'حذف',
       edit: 'تعديل',
-      search: 'بحث'
+      search: 'بحث',
+      back: 'رجوع',
+      next: 'التالي',
+      previous: 'السابق',
+      submit: 'إرسال',
+      success: 'تم بنجاح',
+      error: 'حدث خطأ'
     }
   },
   en: {
@@ -20,7 +29,13 @@ export const messages: Record<Locale, Record<string, unknown>> = {
       cancel: 'Cancel',
       delete: 'Delete',
       edit: 'Edit',
-      search: 'Search'
+      search: 'Search',
+      back: 'Back',
+      next: 'Next',
+      previous: 'Previous',
+      submit: 'Submit',
+      success: 'Success',
+      error: 'Something went wrong'
     }
   }
 };

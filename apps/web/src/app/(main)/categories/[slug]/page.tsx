@@ -6,8 +6,8 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 import {
-  ProductCard } from '../../catalog-components';
-import { createCatalogLookup, type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '../../catalog-types';
+  ProductCard } from '@/app/catalog-components';
+import { createCatalogLookup, type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '@/app/catalog-types';
 
 export const dynamic = 'force-dynamic';
 

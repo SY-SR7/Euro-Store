@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
-import { ProductCard } from '../../catalog-components';
+import { ProductCard } from '@/app/catalog-components';
 import {
   createCatalogLookup,
   type CatalogBrand,
   type CatalogCategory,
   type CatalogProduct,
   type CatalogVariant,
-} from '../../catalog-types';
+} from '@/app/catalog-types';
 
 export const dynamic = 'force-dynamic';
 

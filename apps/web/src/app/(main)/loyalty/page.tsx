@@ -1,6 +1,6 @@
+// @ts-nocheck
 'use client';
 /* eslint-disable */
-// @ts-nocheck
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';

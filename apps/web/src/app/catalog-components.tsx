@@ -8,7 +8,7 @@ import {
   type CatalogVariant,
   summarizeProductVariants,
   variantsForProduct,
-} from './catalog-types';
+} from '@/app/catalog-types';
 
 // Re-exported for backward compatibility with existing imports across the app â€”
 // the actual definitions now live in catalog-types.ts (no 'use client'), since
@@ -27,7 +27,7 @@ export {
   createCatalogLookup,
   summarizeProductVariants,
   variantsForProduct,
-} from './catalog-types';
+} from '@/app/catalog-types';
 
 interface ProductCardProps {
   product: CatalogProduct;
