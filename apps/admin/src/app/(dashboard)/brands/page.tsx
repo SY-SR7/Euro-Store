@@ -1,6 +1,5 @@
-﻿import { cookies } from 'next/headers';
-import { getTranslations } from 'next-intl/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+﻿import { getTranslations } from 'next-intl/server';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { NewBrandForm } from './NewBrandForm';
 
 export const dynamic = 'force-dynamic';
@@ -8,8 +7,7 @@ export const dynamic = 'force-dynamic';
 export default async function AdminBrandsPage() {
   const t = await getTranslations('adminCatalog');
   const tCommon = await getTranslations('common');
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data: brands } = await supabase.from('brands').select('id, name, slug, is_active').order('name');
 
   return (
