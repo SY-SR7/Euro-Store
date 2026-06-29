@@ -22,15 +22,15 @@ if (!existsSync(videosDir)) {
 const assets = [
   {
     category: 'men',
-    searchQuery: 'ytsearch1:"3d men fashion animation short" OR "3d suit animation"',
+    searchQuery: 'ytsearch1:3d men fashion suit animation short',
   },
   {
     category: 'women',
-    searchQuery: 'ytsearch1:"3d dress animation short" OR "3d fashion runway animation"',
+    searchQuery: 'ytsearch1:3d women dress fashion animation short',
   },
   {
     category: 'kids',
-    searchQuery: 'ytsearch1:"3d kids toy animation" OR "3d cute animation short"',
+    searchQuery: 'ytsearch1:3d kids toys fashion animation short',
   },
 ];
 

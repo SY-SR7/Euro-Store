@@ -77,11 +77,14 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
 
     // ─── Preload ──────────────────────────────────────────────────────────
     useEffect(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
       const total = frameCount;
       imagesRef.current = new Array(total).fill(null);
       loadedRef.current = new Array(total).fill(false);
 
       const loadOne = (i: number) => {
+        if (loadedRef.current[i]) return;
         const img = new Image();
         img.decoding = 'async';
         img.onload = () => {
@@ -92,17 +95,33 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
         img.src = frameSrc(i);
       };
 
-      loadOne(0); // critical first frame
+      // Load first frame immediately to have something to show
+      loadOne(0);
 
+      // Lazy load the rest only when the container is near the viewport
+      let observer: IntersectionObserver;
       const scheduleRest = () => {
         for (let i = 1; i < total; i++) loadOne(i);
       };
 
-      if (typeof requestIdleCallback !== 'undefined') {
-        requestIdleCallback(scheduleRest);
-      } else {
-        setTimeout(scheduleRest, 32);
-      }
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            if (typeof requestIdleCallback !== 'undefined') {
+              requestIdleCallback(scheduleRest);
+            } else {
+              setTimeout(scheduleRest, 32);
+            }
+            observer.disconnect();
+          }
+        },
+        { rootMargin: '100% 0px' } // Start loading when 1 screen away
+      );
+
+      // Observe the parent container for better accuracy since canvas is absolute
+      observer.observe(canvas.parentElement ?? canvas);
+
+      return () => observer.disconnect();
     }, [frameSrc, frameCount, drawFrame]);
 
     // ─── Resize observer ─────────────────────────────────────────────────
