@@ -37,11 +37,12 @@ if (!existsSync(absOutput)) {
 console.log(`🎬 Generating ${frameCount} synthetic frames from ${absImage}...`);
 
 // Use ffmpeg zoompan to zoom in slowly over `frameCount` frames
-// z='zoom+0.002' increases zoom by 0.002 each frame
-// s=1024x1024 (or whatever matches the image aspect ratio, let's just use 1920x1080)
-// We will use 1080x1920 since this is portrait/vertical scroll usually, or square 1024x1024
+// We will pad the 1024x1024 image to 1920x1080 with black background, then zoom it.
+// This ensures that when the canvas uses object-fit: cover on a 16:9 desktop monitor,
+// it perfectly fits without cropping the top/bottom (which chopped the heads off previously).
+// On mobile, the sides (black bars) will be cropped, leaving the center 1024x1024.
 const ffmpegPath = ffmpegInstaller.path;
-const cmd = `"${ffmpegPath}" -y -loop 1 -i "${absImage}" -vf "zoompan=z='min(zoom+0.002,1.5)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${frameCount}:s=1024x1024" -vframes ${frameCount} -q:v 3 "${absOutput}/frame_%04d.jpg"`;
+const cmd = `"${ffmpegPath}" -y -loop 1 -i "${absImage}" -vf "pad=1920:1080:-1:-1:color=black, zoompan=z='min(zoom+0.002,1.5)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${frameCount}:s=1920x1080" -vframes ${frameCount} -q:v 3 "${absOutput}/frame_%04d.jpg"`;
 
 try {
   execSync(cmd, { stdio: 'inherit', cwd: rootDir });

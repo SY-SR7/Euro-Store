@@ -61,11 +61,11 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
         let drawW: number, drawH: number, drawX: number, drawY: number;
 
         if (imgAspect > canvasAspect) {
-          drawW = width; drawH = width / imgAspect;
-          drawX = 0; drawY = (height - drawH) / 2;
-        } else {
           drawH = height; drawW = height * imgAspect;
           drawX = (width - drawW) / 2; drawY = 0;
+        } else {
+          drawW = width; drawH = width / imgAspect;
+          drawX = 0; drawY = (height - drawH) / 2;
         }
 
         ctx.clearRect(0, 0, width, height);
