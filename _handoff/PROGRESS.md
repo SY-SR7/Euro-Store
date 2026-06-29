@@ -800,3 +800,20 @@
 - Smoke-test every admin link from the Sidebar.
 - Verify Supabase env/service-role configuration if dashboard data fails to load.
 - Continue web/admin only unless explicitly asked otherwise.
+
+---
+
+### Session 022 — 2026-06-29
+**Scope:** apps/admin only.
+
+**Fix:**
+- Confirmed the visible empty dashboard was apps/admin/src/app/page.tsx, not the route-group dashboard.
+- Replaced apps/admin/src/app/page.tsx with a full admin dashboard shell.
+- Restored Sidebar rendering directly on the root dashboard.
+- Kept Sidebar in apps/admin/src/app/(dashboard)/layout.tsx for child admin pages.
+- Disabled duplicate apps/admin/src/app/(dashboard)/page.tsx to avoid root-route confusion.
+- Cleared apps/admin/.next cache.
+
+**Next:**
+- Run pnpm --filter admin dev and open http://localhost:3001
+- Smoke-test Sidebar links.
