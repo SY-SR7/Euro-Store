@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import Link from 'next/link';
 import { Search, Menu, X, User, Star, RefreshCw } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -20,7 +20,8 @@ const MOBILE_EXTRAS = [
 ];
 
 export function Header() {
-  const t = useTranslations();
+  const t = useTranslations('nav');
+  const commonT = useTranslations('common');
   const [open, setOpen] = useState(false);
 
   return (
@@ -42,7 +43,7 @@ export function Header() {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <button aria-label={t('search')} className="p-2 text-gray-500 hover:text-primary">
+          <button aria-label={commonT('search')} className="p-2 text-gray-500 hover:text-primary">
             <Search size={20} />
           </button>
           <Link href="/account" aria-label={t('nav.account')} className="p-2 text-gray-500 hover:text-primary">

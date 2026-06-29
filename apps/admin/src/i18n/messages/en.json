@@ -1,22 +1,26 @@
 {
+  "search": "Search",
   "appName": "Euro Store",
   "euroStore": "Euro Store",
   "englishShort": "EN",
   "arabicShort": "AR",
-  "exchange": "Exchange",
-  "loyalty": "Loyalty",
-  "products": "Products",
-  "categories": "Categories",
-  "home": {
-    "tagline": "European fashion delivered to your door",
-    "heroTitle": "European picks delivered to your door",
-    "heroSubtitle": "Curated European fashion for the Syrian market",
-    "shopNow": "Shop now",
-    "featuredTag": "Featured",
-    "featuredTitle": "Featured picks",
-    "categoriesTag": "Categories",
-    "categoriesTitle": "Shop by category"
-  },
+  "inStock": "In stock",
+  "outOfStock": "Out of stock",
+  "searchBtn": "Search",
+  "searchPlaceholder": "Search products",
+  "catalogTag": "Catalog",
+  "allProducts": "All products",
+  "productCount": "Product count",
+  "all": "All",
+  "description": "A European fashion store built for the Syrian market",
+  "helpSection": "Help",
+  "shopSection": "Shop",
+  "faq": "FAQ",
+  "exchangePolicy": "Exchange policy",
+  "contact": "Contact",
+  "newArrivals": "New arrivals",
+  "sales": "Sales",
+  "rightsReserved": "All rights reserved",
   "common": {
     "appName": "Euro Store",
     "euroStore": "Euro Store",
@@ -64,6 +68,16 @@
     "brands": "Brands",
     "discounts": "Discounts",
     "logout": "Logout"
+  },
+  "home": {
+    "tagline": "European fashion delivered to your door",
+    "heroTitle": "European picks delivered to your door",
+    "heroSubtitle": "Curated European fashion for the Syrian market",
+    "shopNow": "Shop now",
+    "featuredTag": "Featured",
+    "featuredTitle": "Featured picks",
+    "categoriesTag": "Categories",
+    "categoriesTitle": "Shop by category"
   },
   "catalog": {
     "tag": "Catalog",
@@ -130,7 +144,8 @@
     "langEn": "English",
     "errors": {
       "invalidCredentials": "Invalid credentials",
-      "loginFailed": "Login failed"
+      "loginFailed": "Login failed",
+      "registered": "Account created successfully"
     }
   },
   "cart": {
@@ -203,22 +218,5 @@
     "status": "Status",
     "total": "Total",
     "date": "Date"
-  },
-  "inStock": "In stock",
-  "outOfStock": "Out of stock",
-  "searchBtn": "Search",
-  "searchPlaceholder": "Search products",
-  "catalogTag": "Catalog",
-  "allProducts": "All products",
-  "productCount": "Product count",
-  "all": "All",
-  "description": "A European fashion store built for the Syrian market",
-  "helpSection": "Help",
-  "shopSection": "Shop",
-  "faq": "FAQ",
-  "exchangePolicy": "Exchange policy",
-  "contact": "Contact",
-  "newArrivals": "New arrivals",
-  "sales": "Sales",
-  "rightsReserved": "All rights reserved"
+  }
 }
