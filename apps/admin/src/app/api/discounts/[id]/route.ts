@@ -1,101 +1,39 @@
-// @ts-nocheck
-import { NextRequest, NextResponse } from 'next/server';
-import { requireAdminContext, writeAuditLog } from '@/supabase-server';
+﻿import { NextResponse } from 'next/server';
+import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-server';
 
-export const dynamic = 'force-dynamic';
+interface RouteParams { params: { id: string } }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  const { admin, userId } = ctx;
-  const body = await req.json().catch(() => null) as Record<string, unknown> | null;
-
-  if (!body) return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
-
-  const allowed = [
-    'code',
-    'type',
-    'value',
-    'min_order_syp',
-    'valid_from',
-    'valid_until',
-    'max_uses',
-    'used_count',
-    'is_active',
-  ];
-
-  const update = Object.fromEntries(
-    Object.entries(body)
-      .filter(([key]) => allowed.includes(key))
-      .map(([key, value]) => [key, key === 'code' && typeof value === 'string' ? value.trim().toUpperCase() : value])
-  );
-
-  if (Object.keys(update).length === 0) {
-    return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
-  }
-
-  const { data: before } = await admin
-    .from('discount_codes')
-    .select('*')
-    .eq('id', params.id)
-    .single();
-
-  const { data, error } = await admin
-    .from('discount_codes')
-    .update(update as never)
-    .eq('id', params.id)
-    .select()
-    .single();
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-  await writeAuditLog({
-    admin,
-    actorId: userId,
-    actorRole: 'admin',
-    action: 'discount_update',
-    entityType: 'discount_codes',
-    entityId: params.id,
-    beforeState: before as Record<string, unknown> | null,
-    afterState: update,
-  });
-
+export async function GET(_req: Request, { params }: RouteParams) {
+  const admin = createAdminSupabaseClient();
+  const { data, error } = await admin.from('discount_codes').select('*').eq('id', params.id).single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 404 });
   return NextResponse.json(data);
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, { params }: RouteParams) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  const { admin, userId } = ctx;
-
-  const { data: before } = await admin
-    .from('discount_codes')
-    .select('id, code, type, value')
-    .eq('id', params.id)
-    .single();
-
-  const { error, count } = await admin
-    .from('discount_codes')
-    .delete({ count: 'exact' })
-    .eq('id', params.id);
-
+  const { admin } = ctx;
+  const body = await request.json().catch(() => null) as Record<string, unknown> | null;
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  const update: Record<string, unknown> = {};
+  if (typeof body.value === 'number') update.value = body.value;
+  if (typeof body.is_active === 'boolean') update.is_active = body.is_active;
+  if (typeof body.min_order_syp === 'number' || body.min_order_syp === null) update.min_order_syp = body.min_order_syp;
+  if (typeof body.max_uses === 'number' || body.max_uses === null) update.max_uses = body.max_uses;
+  if (typeof body.valid_from === 'string') update.valid_from = body.valid_from;
+  if (typeof body.valid_until === 'string') update.valid_until = body.valid_until;
+  if (Object.keys(update).length === 0) return NextResponse.json({ error: 'No valid fields' }, { status: 400 });
+  const { data, error } = await admin.from('discount_codes').update(update as never).eq('id', params.id).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
 
-  if ((count ?? 0) === 0) {
-    return NextResponse.json({ error: 'Discount not found or already deleted' }, { status: 404 });
-  }
-
-  await writeAuditLog({
-    admin,
-    actorId: userId,
-    actorRole: 'admin',
-    action: 'discount_delete',
-    entityType: 'discount_codes',
-    entityId: params.id,
-    beforeState: before as Record<string, unknown> | null,
-  });
-
+export async function DELETE(_req: Request, { params }: RouteParams) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { admin } = ctx;
+  const { error } = await admin.from('discount_codes').delete().eq('id', params.id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ deleted: true });
 }

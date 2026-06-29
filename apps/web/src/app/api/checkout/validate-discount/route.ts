@@ -1,73 +1,36 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
-import { z } from 'zod';
-
-const schema = z.object({
-  code:         z.string().min(1),
-  subtotal_syp: z.number().positive(),
-});
 
 export async function POST(request: Request) {
-  const supabase = createServerSupabaseClient();
+  try {
+    const body = await request.json() as { code?: string; subtotal?: number };
+    const code = (body.code ?? '').trim().toUpperCase();
+    const subtotal = body.subtotal ?? 0;
+    if (!code) return NextResponse.json({ error: 'no_code' }, { status: 400 });
 
-  const body: unknown = await request.json();
-  const parsed = schema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
-  }
+    const supabase = createServerSupabaseClient();
+    const now = new Date().toISOString();
 
-  const { code, subtotal_syp } = parsed.data;
+    const { data, error } = await supabase
+      .from('discount_codes')
+      .select('id,code,type,value,min_order_syp,max_uses,used_count,valid_from,valid_until,is_active')
+      .eq('code', code)
+      .eq('is_active', true)
+      .single();
 
-  // Ø£Ø¹Ù…Ø¯Ø© discount_codes Ø§Ù„ØµØ­ÙŠØ­Ø©: used_count / valid_until (Ù…Ù migration 00001)
-  const { data: row } = await supabase
-    .from('discount_codes')
-    .select('id, type, value, min_order_syp, max_uses, used_count, valid_until, is_active')
-    .eq('code', code.toUpperCase().trim())
-    .single();
+    if (error || !data) return NextResponse.json({ error: 'invalid_code' }, { status: 404 });
 
-  if (!row) {
-    return NextResponse.json({ error: 'invalid_code' }, { status: 404 });
-  }
+    if (data.valid_from && now < data.valid_from) return NextResponse.json({ error: 'not_started' }, { status: 400 });
+    if (data.valid_until && now > data.valid_until) return NextResponse.json({ error: 'expired' }, { status: 400 });
+    if (data.max_uses && data.used_count >= data.max_uses) return NextResponse.json({ error: 'exhausted' }, { status: 400 });
+    if (data.min_order_syp && subtotal < data.min_order_syp) return NextResponse.json({ error: 'min_order', min: data.min_order_syp }, { status: 400 });
 
-  type DiscountRow = {
-    id: string;
-    type: string;
-    value: number;
-    min_order_syp: number;
-    max_uses: number | null;
-    used_count: number;
-    valid_until: string;
-    is_active: boolean;
-  };
-  const d = row as DiscountRow;
+    const discount_amount = data.type === 'percentage'
+      ? Math.round(subtotal * (data.value / 100))
+      : Number(data.value);
 
-  if (!d.is_active) {
-    return NextResponse.json({ error: 'code_inactive' }, { status: 400 });
-  }
-  if (new Date(d.valid_until) < new Date()) {
-    return NextResponse.json({ error: 'code_expired' }, { status: 400 });
-  }
-  if (d.max_uses !== null && d.used_count >= d.max_uses) {
-    return NextResponse.json({ error: 'code_maxed' }, { status: 400 });
-  }
-  if (d.min_order_syp > 0 && subtotal_syp < d.min_order_syp) {
-    return NextResponse.json(
-      { error: 'min_order_not_met', min: d.min_order_syp },
-      { status: 400 },
-    );
-  }
-
-  const discount_amount =
-    d.type === 'percentage'
-      ? Math.round(subtotal_syp * (d.value / 100))
-      : Math.min(d.value, subtotal_syp);
-
-  return NextResponse.json({
-    discount_id:     d.id,
-    discount_amount,
-    type:            d.type,
-    value:           d.value,
-  });
+    return NextResponse.json({ discount_id: data.id, discount_amount: Math.min(discount_amount, subtotal), type: data.type, value: data.value });
+  } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }

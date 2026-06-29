@@ -1,40 +1,28 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/supabase-server';
+﻿import { NextResponse } from 'next/server';
+import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
-
-const LOYALTY_KEYS = [
-  'loyalty_earn_amount_syp', 'loyalty_earn_points', 'loyalty_redeem_points_per_syp',
-  'loyalty_max_redeem_percent', 'loyalty_referral_bonus_points',
-];
+const LOYALTY_KEYS = ['loyalty_earn_amount_syp','loyalty_earn_points','loyalty_redeem_points_per_syp','loyalty_max_redeem_percent','loyalty_referral_bonus_points'];
 
 export async function GET() {
-  try {
-    const admin = createAdminSupabaseClient();
-    const { data, error } = await admin
-      .from('system_settings')
-      .select('key, value, description')
-      .in('key', LOYALTY_KEYS)
-      .order('key');
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json(data ?? []);
-  } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
+  const admin = createAdminSupabaseClient();
+  const { data, error } = await admin.from('system_settings').select('key,value').in('key', LOYALTY_KEYS);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  const obj: Record<string,string> = {};
+  for (const row of (data ?? [])) { obj[row.key] = row.value ?? ''; }
+  return NextResponse.json(obj);
 }
 
-export async function PATCH(req: NextRequest) {
-  try {
-    const admin = createAdminSupabaseClient();
-    const body = await req.json() as { key: string; value: string }[];
-    if (!Array.isArray(body) || body.length === 0)
-      return NextResponse.json({ error: 'expected array of {key, value}' }, { status: 400 });
-
-    const results = await Promise.all(
-      body
-        .filter(item => LOYALTY_KEYS.includes(item.key))
-        .map(item => admin.from('system_settings').update({ value: item.value } as never).eq('key', item.key))
-    );
-    const errors = results.filter(r => r.error).map(r => r.error!.message);
-    if (errors.length > 0) return NextResponse.json({ error: errors.join('; ') }, { status: 500 });
-    return NextResponse.json({ ok: true });
-  } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
+export async function PATCH(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { admin } = ctx;
+  const body = await request.json().catch(() => null) as Record<string,string> | null;
+  if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  for (const key of LOYALTY_KEYS) {
+    if (body[key] !== undefined) {
+      await admin.from('system_settings').upsert({ key, value: String(body[key]), updated_at: new Date().toISOString() } as never, { onConflict: 'key' });
+    }
+  }
+  return NextResponse.json({ ok: true });
 }

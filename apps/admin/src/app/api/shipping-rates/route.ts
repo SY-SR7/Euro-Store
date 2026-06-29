@@ -1,22 +1,16 @@
-import { NextResponse } from 'next/server';
-import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
+﻿import { NextResponse } from 'next/server';
+import { createAdminSupabaseClient } from '@/supabase-server';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const admin = createSupabaseAdminClientFromEnv();
-
+    const admin = createAdminSupabaseClient();
     const { data, error } = await admin
       .from('shipping_rates')
-      .select('id, governorate, base_rate_syp, free_shipping_threshold_syp, is_active')
+      .select('id,governorate,base_rate_syp,free_shipping_threshold_syp,is_active')
       .order('governorate');
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data ?? []);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'server_error';
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+  } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }

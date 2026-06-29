@@ -1,95 +1,89 @@
-﻿// @ts-nocheck
-/* eslint-disable */
-import { redirect } from 'next/navigation';
+﻿/* eslint-disable */
+// @ts-nocheck
+import { getSessionClient } from '@/supabase-server';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
-import { createServerSupabaseClient, createAdminSupabaseClient } from '@/supabase-server';
-import { CopyReferralButton } from '@/components/loyalty/CopyReferralButton';
 
 export const dynamic = 'force-dynamic';
 
-const TX_TYPE_LABEL: Record<string, string> = {
-  earn:'مكسوب', redeem:'مستخدم', referral:'إحالة', grant:'منحة', expire:'منتهي',
-};
-const TX_TYPE_COLOR: Record<string, string> = {
-  earn:'text-green-600 bg-green-50', redeem:'text-red-600 bg-red-50',
-  referral:'text-blue-600 bg-blue-50', grant:'text-amber-600 bg-amber-50',
-  expire:'text-stone-500 bg-stone-100',
-};
+async function getLoyaltyData() {
+  const { client, user } = await getSessionClient();
+  const settingsRes = await client.from('system_settings').select('key,value')
+    .in('key', ['loyalty_earn_amount_syp','loyalty_earn_points','loyalty_redeem_points_per_syp','loyalty_max_redeem_percent','loyalty_referral_bonus_points']);
+  const s: Record<string,number> = { loyalty_earn_amount_syp:1000, loyalty_earn_points:10, loyalty_redeem_points_per_syp:1, loyalty_max_redeem_percent:20, loyalty_referral_bonus_points:50 };
+  for (const row of (settingsRes.data ?? [])) { s[row.key] = Number(row.value) || s[row.key]; }
+
+  let points = 0; let referral_code = '';
+  if (user) {
+    const { data: profile } = await client.from('customer_profiles').select('loyalty_points,referral_code').eq('id', user.id).single();
+    points = (profile as any)?.loyalty_points ?? 0;
+    referral_code = (profile as any)?.referral_code ?? '';
+  }
+  return { user, points, referral_code, settings: s };
+}
 
 export default async function LoyaltyPage() {
-  const t = await getTranslations();
-  const supabase = createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect('/auth/login');
-
-  const admin = createAdminSupabaseClient();
-  const [profileResult, txResult] = await Promise.all([
-    supabase.from('customer_profiles').select('loyalty_points, referral_code').eq('user_id', user.id).maybeSingle(),
-    admin.from('loyalty_points_transactions').select('id, points, type, description, created_at')
-      .eq('customer_id', user.id).order('created_at', { ascending: false }).limit(30),
-  ]);
-
-  const profile = profileResult.data;
-  const txs     = txResult.data ?? [];
+  const { user, points, referral_code, settings } = await getLoyaltyData();
+  const pointsValueSyp = Math.floor(points / settings.loyalty_redeem_points_per_syp);
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir="rtl">
+    <main className="min-h-screen bg-[#FAF7EF] px-4 py-12" dir="rtl">
       <div className="mx-auto max-w-2xl space-y-6">
-        <div>
-          <Link href="/" className="text-sm text-[#B8860B] hover:underline">الرئيسية</Link>
-          <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('loyalty.title')}</h1>
+        <div className="text-right">
+          <p className="text-xs font-bold uppercase tracking-widest text-[#C9A84C]">برنامج المكافآت</p>
+          <h1 className="mt-2 text-3xl font-black text-[#1F1B16]">نقاط الولاء</h1>
         </div>
 
-        {/* Points Balance */}
-        <div className="rounded-2xl border border-[#E7E3DC] bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-[#A8A29E]">{t('loyalty.balance')}</p>
-              <p className="mt-1 text-4xl font-black text-[#B8860B]">{profile?.loyalty_points ?? 0}</p>
-              <p className="mt-1 text-xs text-[#A8A29E]">{t('loyalty.pointsUnit')}</p>
-            </div>
-            <div className="text-5xl text-[#E7E3DC]">★</div>
+        {user ? (
+          <div className="rounded-3xl border border-[#E8DCC3] bg-white p-6 shadow-sm text-center">
+            <p className="text-5xl font-black text-[#C9A84C]">{points.toLocaleString('ar-SY')}</p>
+            <p className="mt-1 text-sm text-[#6F6658]">نقطة لديك الآن</p>
+            <p className="mt-2 text-xs text-[#A8A29E]">تعادل حوالي {pointsValueSyp.toLocaleString('ar-SY')} ل.س خصم عند التسوق</p>
+            {referral_code && (
+              <div className="mt-4 rounded-xl bg-[#F3EDE3] px-4 py-3">
+                <p className="text-xs text-[#6F6658] mb-1">كود الإحالة الخاص بك</p>
+                <p className="font-mono font-black text-[#1F1B16] text-lg">{referral_code}</p>
+                <p className="text-xs text-[#A8A29E] mt-1">شارك هذا الكود واحصل على {settings.loyalty_referral_bonus_points} نقطة عند كل إحالة</p>
+              </div>
+            )}
           </div>
-        </div>
-
-        {/* Referral Code */}
-        {profile?.referral_code && (
-          <div className="rounded-2xl border border-[#E7E3DC] bg-white p-5 shadow-sm">
-            <p className="mb-3 font-black text-[#1C1917]">{t('loyalty.referralCode')}</p>
-            <div className="flex items-center gap-3">
-              <code className="flex-1 rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 font-mono text-sm text-[#B8860B]">
-                {profile.referral_code}
-              </code>
-              <CopyReferralButton code={profile.referral_code} />
-            </div>
+        ) : (
+          <div className="rounded-3xl border border-[#E8DCC3] bg-white p-6 shadow-sm text-center">
+            <p className="text-[#6F6658] mb-4">سجّل الدخول لعرض نقاطك</p>
+            <Link href="/auth/login" className="rounded-xl bg-[#C9A84C] px-6 py-2.5 text-sm font-bold text-white hover:bg-[#B8860B]">تسجيل الدخول</Link>
           </div>
         )}
 
-        {/* Transactions */}
-        {txs.length > 0 && (
-          <div className="rounded-2xl border border-[#E7E3DC] bg-white shadow-sm">
-            <h2 className="border-b border-[#E7E3DC] px-5 py-4 font-black text-[#1C1917]">سجل المعاملات</h2>
-            <div className="divide-y divide-[#F0ECE6]">
-              {txs.map((tx: any) => (
-                <div key={tx.id} className="flex items-center justify-between px-5 py-3">
-                  <div>
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${TX_TYPE_COLOR[tx.type] ?? 'text-stone-500 bg-stone-100'}`}>
-                      {TX_TYPE_LABEL[tx.type] ?? tx.type}
-                    </span>
-                    {tx.description && <p className="mt-1 text-xs text-[#A8A29E]">{tx.description}</p>}
-                  </div>
-                  <div className="text-left">
-                    <p className={`font-black ${tx.type==='redeem'||tx.type==='expire' ? 'text-red-600' : 'text-green-600'}`}>
-                      {tx.type==='redeem'||tx.type==='expire' ? '-' : '+'}{tx.points}
-                    </p>
-                    <p className="text-xs text-[#A8A29E]">{new Date(tx.created_at).toLocaleDateString('ar-SY')}</p>
-                  </div>
-                </div>
-              ))}
+        <div className="rounded-3xl border border-[#E8DCC3] bg-white p-6 shadow-sm space-y-4">
+          <h2 className="font-black text-[#1F1B16]">كيف يعمل البرنامج؟</h2>
+          <div className="space-y-3 text-sm text-[#57534E]">
+            <div className="flex items-start gap-3 rounded-xl bg-[#FAFAF8] p-4">
+              <span className="text-2xl">🛍️</span>
+              <div>
+                <p className="font-bold text-[#1F1B16]">اكسب نقاطاً مع كل طلب</p>
+                <p>مقابل كل {settings.loyalty_earn_amount_syp.toLocaleString('ar-SY')} ل.س تشتري بها، تحصل على {settings.loyalty_earn_points} نقطة</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-xl bg-[#FAFAF8] p-4">
+              <span className="text-2xl">💰</span>
+              <div>
+                <p className="font-bold text-[#1F1B16]">استبدل نقاطك بخصومات</p>
+                <p>كل {settings.loyalty_redeem_points_per_syp} نقطة = 1 ل.س خصم على طلباتك القادمة</p>
+                <p className="text-xs text-[#A8A29E] mt-1">الحد الأقصى: {settings.loyalty_max_redeem_percent}% من قيمة الطلب</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 rounded-xl bg-[#FAFAF8] p-4">
+              <span className="text-2xl">🎁</span>
+              <div>
+                <p className="font-bold text-[#1F1B16]">مكافأة الإحالة</p>
+                <p>ادعُ أصدقاءك وعندما يسجّلون واشتروا، تحصل على {settings.loyalty_referral_bonus_points} نقطة</p>
+              </div>
             </div>
           </div>
-        )}
+        </div>
+
+        <div className="text-center">
+          <Link href="/products" className="rounded-xl bg-[#C9A84C] px-8 py-3 text-sm font-black text-white hover:bg-[#B8860B] transition-colors">تسوق الآن واكسب نقاطاً</Link>
+        </div>
       </div>
     </main>
   );

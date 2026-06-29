@@ -8,20 +8,14 @@ export async function GET(req: NextRequest) {
     const admin = createAdminSupabaseClient();
     const { searchParams } = new URL(req.url);
     const status = searchParams.get('status');
-
     let query = admin
       .from('exchange_requests')
-      .select('id,order_id,customer_id,reason_ar,reason_en,status,created_at')
-      .order('created_at', { ascending: false })
-      .limit(50);
-
+      .select('id,order_id,customer_id,reason_ar,reason_en,status,created_at,notes')
+      .order('created_at', { ascending: false }).limit(100);
     if (status) query = query.eq('status', status as never);
-
     const { data, error } = await query;
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    const mapped = (data ?? []).map(r => ({ ...r, reason: r.reason_ar }));
+    const mapped = (data ?? []).map(r => ({ ...r, reason: r.reason_ar ?? r.reason_en ?? '' }));
     return NextResponse.json(mapped);
-  } catch {
-    return NextResponse.json({ error: 'server_error' }, { status: 500 });
-  }
+  } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }

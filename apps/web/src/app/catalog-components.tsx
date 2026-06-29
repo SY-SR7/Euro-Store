@@ -1,98 +1,43 @@
+﻿// @ts-nocheck
 'use client';
-
 import Link from 'next/link';
 
-import {
-  type CatalogBrand,
-  type CatalogCategory,
-  type CatalogProduct,
-  type CatalogVariant,
-  createCatalogLookup,
-  productImageUrl,
-  summarizeProductVariants,
-  variantsForProduct,
-} from './catalog-types';
-
-export {
-  type CatalogBrand,
-  type CatalogCategory,
-  type CatalogProduct,
-  type CatalogVariant,
-  createCatalogLookup,
-  summarizeProductVariants,
-  variantsForProduct,
-};
-
 interface ProductCardProps {
-  product: CatalogProduct;
-  variants: CatalogVariant[];
-  category?: CatalogCategory;
-  brand?: CatalogBrand;
+  product: {
+    id: string; name_ar: string; name_en?: string|null; slug: string;
+    image_url?: string|null; is_featured?: boolean; category_id?: string|null;
+  };
+  minPrice?: number;
 }
 
-export function ProductCard({ product, variants, category, brand }: ProductCardProps): JSX.Element {
-  const summary = summarizeProductVariants(variantsForProduct(product.id, variants));
-  const imageUrl = productImageUrl(product);
-
-  const stockLabel = summary.totalStock > 0 ? 'متوفر' : 'غير متوفر';
-
+export function ProductCard({ product, minPrice }: ProductCardProps) {
   return (
-    <Link
-      href={`/products/${product.slug}`}
-      className="group block overflow-hidden rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-4 shadow-xl transition duration-300 hover:-translate-y-1 hover:border-[#C9A84C] hover:shadow-2xl"
-    >
-      <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-[#E8DCC3] bg-[#F3EEE3]">
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={product.name_ar || product.name_en || 'Product image'}
-            loading="lazy"
-            decoding="async"
-            referrerPolicy="no-referrer"
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-            onError={(event) => {
-              event.currentTarget.style.display = 'none';
-              const fallback = event.currentTarget.nextElementSibling as HTMLElement | null;
-              if (fallback) fallback.style.display = 'flex';
-            }}
-          />
-        ) : null}
-
-        <div
-          className="hidden h-full w-full items-center justify-center px-6 text-center text-xl font-black text-[#C9A84C]"
-          style={{ display: imageUrl ? 'none' : 'flex' }}
-        >
-          {product.name_ar || product.name_en}
-        </div>
+    <Link href={`/products/${product.slug}`} className="group block rounded-2xl border border-[#E8DCC3] bg-white overflow-hidden hover:shadow-lg hover:border-[#C9A84C]/40 transition-all duration-200">
+      <div className="aspect-square overflow-hidden bg-[#F3EDE3] relative">
+        {product.image_url ? (
+          <img src={product.image_url} alt={product.name_ar} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300" />
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <span className="text-4xl text-[#C9A84C]/20">◈</span>
+          </div>
+        )}
+        {product.is_featured && (
+          <span className="absolute top-2 right-2 rounded-full bg-[#C9A84C] px-2 py-0.5 text-xs font-bold text-white">مميز</span>
+        )}
       </div>
-
-      <div className="mt-4 flex items-center justify-between gap-3 text-xs text-[#6F6658]">
-        <span>{brand?.name ?? 'EuroStore'}</span>
-        <span>{category?.name_ar ?? 'غير مصنف'}</span>
-      </div>
-
-      <h3 className="mt-4 line-clamp-2 text-xl font-black text-[#1F1B16] transition group-hover:text-[#C9A84C]">
-        {product.name_ar}
-      </h3>
-
-      {product.description_ar ? (
-        <p className="mt-3 line-clamp-2 min-h-[3.5rem] text-sm leading-7 text-[#6F6658]">
-          {product.description_ar}
-        </p>
-      ) : null}
-
-      <div className="mt-4 flex items-end justify-between gap-3">
-        <div>
-          <p className="text-lg font-black text-[#C9A84C]">{summary.priceLabel}</p>
-          {summary.comparePriceLabel ? (
-            <p className="text-sm text-[#8B8172] line-through">{summary.comparePriceLabel}</p>
-          ) : null}
-        </div>
-
-        <span className="rounded-lg border border-[#E8DCC3] bg-[#FFFDF8] px-3 py-1 text-xs font-bold text-[#6F6658]">
-          {stockLabel}
-        </span>
+      <div className="p-4">
+        <h3 className="font-bold text-[#1F1B16] leading-tight group-hover:text-[#C9A84C] transition-colors">{product.name_ar}</h3>
+        {product.name_en && <p className="mt-0.5 text-xs text-[#A8A29E]" dir="ltr">{product.name_en}</p>}
+        {minPrice ? (
+          <p className="mt-2 font-black text-[#C9A84C]">{minPrice.toLocaleString('ar-SY')} ل.س</p>
+        ) : (
+          <p className="mt-2 text-xs text-[#A8A29E]">السعر قريباً</p>
+        )}
       </div>
     </Link>
   );
+}
+
+export function createCatalogLookup<T extends { id: string }>(items: T[]): Map<string, T> {
+  return new Map(items.map(i => [i.id, i]));
 }
