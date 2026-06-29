@@ -66,29 +66,51 @@ function ScrollBeat({
       className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none will-change-transform"
       dir="rtl"
     >
-      <motion.h2
-        className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-4"
-        style={{ textShadow: '0 2px 40px rgba(0,0,0,0.6)' }}
-      >
-        {beat.title}
-      </motion.h2>
+      {/* Dark radial scrim — fades to transparent at edges, always readable */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 70% 55% at 50% 50%, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0) 100%)',
+        }}
+      />
 
-      {beat.subtitle && (
-        <p className="text-base md:text-xl text-white/80 max-w-lg leading-relaxed">
-          {beat.subtitle}
-        </p>
-      )}
-
-      {beat.ctaLabel && beat.ctaHref && (
-        <motion.a
-          href={beat.ctaHref}
-          className="pointer-events-auto mt-8 inline-flex items-center gap-3 border border-[#C9A84C] text-[#C9A84C] px-8 py-3.5 text-sm font-bold tracking-widest uppercase hover:bg-[#C9A84C] hover:text-black transition-colors duration-300"
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.97 }}
+      {/* Text content — above the scrim */}
+      <div className="relative z-10 flex flex-col items-center gap-3 max-w-2xl">
+        <motion.h2
+          className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight"
+          style={{
+            textShadow: '0 2px 8px rgba(0,0,0,0.9), 0 4px 32px rgba(0,0,0,0.7), 0 0 80px rgba(0,0,0,0.5)',
+          }}
         >
-          {beat.ctaLabel}
-        </motion.a>
-      )}
+          {beat.title}
+        </motion.h2>
+
+        {beat.subtitle && (
+          <p
+            className="text-base md:text-lg text-white max-w-lg leading-relaxed px-4 py-2 rounded-lg"
+            style={{
+              textShadow: '0 1px 6px rgba(0,0,0,1), 0 2px 20px rgba(0,0,0,0.9)',
+              background: 'rgba(0,0,0,0.35)',
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)',
+            }}
+          >
+            {beat.subtitle}
+          </p>
+        )}
+
+        {beat.ctaLabel && beat.ctaHref && (
+          <motion.a
+            href={beat.ctaHref}
+            className="pointer-events-auto mt-4 inline-flex items-center gap-3 border border-[#C9A84C] text-[#C9A84C] px-8 py-3.5 text-sm font-bold tracking-widest uppercase hover:bg-[#C9A84C] hover:text-black transition-colors duration-300"
+            style={{ backdropFilter: 'blur(4px)', background: 'rgba(0,0,0,0.4)' }}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            {beat.ctaLabel}
+          </motion.a>
+        )}
+      </div>
     </motion.div>
   );
 }
