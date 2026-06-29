@@ -68,39 +68,39 @@ function ScrollBeat({
       className="absolute inset-0 flex flex-col justify-end pointer-events-none will-change-transform"
       dir="rtl"
     >
-      {/* Frosted glass text card — anchored bottom-right */}
+      {/* Frosted glass text card — removed for clean look */}
       <div
-        className="relative z-10 mx-8 mb-12 md:mx-14 md:mb-16 text-right max-w-xs md:max-w-sm mr-auto px-6 py-5 drop-shadow-xl"
+        className="relative z-10 mx-8 mb-12 md:mx-14 md:mb-16 text-right max-w-xs md:max-w-sm mr-auto px-6 py-5"
       >
-        {/* Gold label */}
-        <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#C9A84C] mb-2 opacity-80">
+        {/* Pre-Title Label */}
+        <p className={`text-[10px] font-bold tracking-[0.25em] uppercase mb-2 ${isLightBg ? 'text-black opacity-60' : 'text-[#C9A84C] opacity-80'}`}>
           EUROSTORE
         </p>
 
-        {/* Title — gold gradient */}
+        {/* Title */}
         <motion.h2
-          className="text-2xl md:text-3xl lg:text-4xl font-black leading-tight"
+          className={`text-2xl md:text-3xl lg:text-4xl font-black leading-tight ${isLightBg ? 'text-black' : 'text-white'}`}
           style={{
-            background: 'linear-gradient(135deg, #E8D28A 0%, #C9A84C 50%, #A67C2E 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.15))'
+            filter: isLightBg ? 'none' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.5))'
           }}
         >
           {beat.title}
         </motion.h2>
 
-        {beat.subtitle && (
-          <p className={`mt-2 text-xs md:text-sm leading-relaxed font-semibold tracking-wide drop-shadow-sm ${isLightBg ? 'text-[#1A1A1A]' : 'text-[#D4D4D4]'}`}>
-            {beat.subtitle}
-          </p>
-        )}
+        {/* Subtitle */}
+        <p className={`mt-2 text-xs md:text-sm leading-relaxed font-semibold tracking-wide ${isLightBg ? 'text-[#333333]' : 'text-[#D4D4D4] drop-shadow-sm'}`}>
+          {beat.subtitle}
+        </p>
 
+        {/* CTA Button */}
         {beat.ctaLabel && beat.ctaHref && (
           <motion.a
             href={beat.ctaHref}
-            className="pointer-events-auto mt-4 inline-flex items-center gap-2 bg-[#C9A84C] text-black px-5 py-2.5 text-xs font-bold tracking-widest uppercase hover:bg-[#E8D28A] transition-colors duration-300 rounded-lg"
+            className={`pointer-events-auto mt-6 inline-flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors duration-300 rounded-lg ${
+              isLightBg 
+                ? 'bg-black text-white hover:bg-black/80' 
+                : 'bg-white text-black hover:bg-gray-200'
+            }`}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
