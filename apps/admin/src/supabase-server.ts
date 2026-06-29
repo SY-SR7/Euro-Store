@@ -1,4 +1,4 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+﻿import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 type ClientOptions = Parameters<typeof createClient>[2];
 
@@ -37,7 +37,6 @@ export function createAdminSupabaseClient(): SupabaseClient {
 
 /**
  * يقرأ sb-access-token / sb-refresh-token من الـ cookies ويضع الجلسة.
- * يُستخدم في API routes التي تحتاج التحقق من هوية المستخدم.
  * يُرجع { client, user } — إذا user = null فالمستخدم غير مُسجّل.
  */
 export async function getSessionClient(): Promise<{ client: SupabaseClient; user: import('@supabase/supabase-js').User | null }> {
@@ -66,6 +65,47 @@ export async function requireAdminClient(): Promise<SupabaseClient | null> {
   const { user } = await getSessionClient();
   if (!user) return null;
   return createAdminSupabaseClient();
+}
+
+/**
+ * نسخة محسّنة تُرجع { admin, userId } معاً.
+ * admin = service-role client (يتخطى RLS).
+ * userId = auth.uid() — يُستخدم كـ actor_id في audit_logs.
+ * يُرجع null إن لم يكن هناك جلسة صالحة.
+ */
+export async function requireAdminContext(): Promise<{ admin: SupabaseClient; userId: string } | null> {
+  const { user } = await getSessionClient();
+  if (!user) return null;
+  return { admin: createAdminSupabaseClient(), userId: user.id };
+}
+
+/**
+ * يكتب سجل تدقيق في جدول audit_logs.
+ * لا يُوقف التدفق عند الفشل — يطبع تحذيراً في السيرفر فقط.
+ */
+export async function writeAuditLog(params: {
+  admin: SupabaseClient;
+  actorId: string;
+  actorRole: 'admin' | 'sub_admin';
+  action: string;
+  entityType: string;
+  entityId: string;
+  beforeState?: Record<string, unknown> | null;
+  afterState?: Record<string, unknown> | null;
+}): Promise<void> {
+  const { error } = await params.admin.from('audit_logs').insert({
+    actor_id:     params.actorId,
+    actor_role:   params.actorRole,
+    action:       params.action,
+    entity_type:  params.entityType,
+    entity_id:    params.entityId,
+    before_state: params.beforeState ?? null,
+    after_state:  params.afterState  ?? null,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
+  if (error) {
+    console.warn('[audit_log] فشل تسجيل العملية:', error.message, '| action:', params.action, '| entity:', params.entityType, params.entityId);
+  }
 }
 
 // Aliases للتوافق مع الكود القديم

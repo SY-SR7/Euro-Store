@@ -1,5 +1,5 @@
 ﻿import { NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/supabase-server';
+import { createAdminSupabaseClient, requireAdminContext, writeAuditLog } from '@/supabase-server';
 import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
@@ -23,7 +23,6 @@ export async function GET() {
       .from('products')
       .select('id, name_ar, name_en, slug, is_featured, is_active, created_at, category_id, brand_id')
       .order('created_at', { ascending: false });
-
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data ?? []);
   } catch {
@@ -32,6 +31,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { admin, userId } = ctx;
+
   try {
     const body: unknown = await request.json();
     const parsed = createProductSchema.safeParse(body);
@@ -39,14 +42,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'invalid_input', details: parsed.error.flatten() }, { status: 400 });
     }
 
-    const supabase = createAdminSupabaseClient();
-    const { data, error } = await supabase
+    const { data, error } = await admin
       .from('products')
       .insert(parsed.data as never)
-      .select('id, slug')
+      .select('id, name_ar, name_en, slug')
       .single();
-
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    await writeAuditLog({
+      admin, actorId: userId, actorRole: 'admin',
+      action: 'product_create', entityType: 'products', entityId: data.id,
+      afterState: parsed.data as Record<string, unknown>,
+    });
+
     return NextResponse.json(data, { status: 201 });
   } catch {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
