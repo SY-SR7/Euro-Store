@@ -840,3 +840,25 @@
 - Run pnpm --filter admin dev.
 - Smoke-test: products, categories, brands, homepage, exchanges, discounts.
 - Continue admin/web only.
+
+---
+
+### Session 024 — 2026-06-29
+**Scope:** apps/admin only.
+
+**Fix:**
+- Replaced remaining mojibake admin pages with clean UTF-8 Arabic:
+  - shipping-rates
+  - loyalty-settings
+  - settings
+  - sub-admins
+  - audit-logs
+- Fixed loyalty-settings crash by normalizing API responses before array operations.
+- Added safe error/empty/loading states to remaining admin system pages.
+- Updated admin API routes for settings, shipping-rates, sub-admin status toggle, and audit logs to return stable shapes.
+- Cleared apps/admin/.next cache.
+
+**Next:**
+- Run pnpm --filter admin dev.
+- Smoke-test: shipping-rates, loyalty-settings, sub-admins, audit-logs, settings.
+- Continue admin/web only.

@@ -1,7 +1,6 @@
 'use client';
+
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { formatSYP } from '@eurostore/shared';
 
 interface ShippingRate {
   id: string;
@@ -11,158 +10,263 @@ interface ShippingRate {
   is_active: boolean;
 }
 
+type DraftValues = {
+  base_rate_syp: string;
+  free_shipping_threshold_syp: string;
+  is_active: boolean;
+};
+
+function pickArray<T>(payload: unknown): T[] {
+  if (Array.isArray(payload)) return payload as T[];
+
+  if (payload && typeof payload === 'object') {
+    const obj = payload as Record<string, unknown>;
+    for (const key of ['data', 'items', 'rows', 'shipping_rates']) {
+      if (Array.isArray(obj[key])) return obj[key] as T[];
+    }
+  }
+
+  return [];
+}
+
+function syp(value: number | string | null | undefined) {
+  const numeric = Number(value ?? 0);
+  return `${new Intl.NumberFormat('ar-SY').format(Number.isFinite(numeric) ? numeric : 0)} ل.س`;
+}
+
 export default function AdminShippingRatesPage() {
-  const t = useTranslations();
   const [rates, setRates] = useState<ShippingRate[]>([]);
   const [loading, setLoading] = useState(true);
   const [editId, setEditId] = useState<string | null>(null);
-  const [editValues, setEditValues] = useState<Partial<ShippingRate>>({});
+  const [draft, setDraft] = useState<DraftValues>({
+    base_rate_syp: '',
+    free_shipping_threshold_syp: '',
+    is_active: true
+  });
   const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  async function loadRates() {
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/shipping-rates', { cache: 'no-store' });
+      const payload = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        setError((payload as { error?: string } | null)?.error ?? 'تعذر تحميل أسعار الشحن');
+        setRates([]);
+      } else {
+        setRates(pickArray<ShippingRate>(payload));
+      }
+    } catch {
+      setError('تعذر الاتصال بالخادم');
+      setRates([]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    void fetch('/api/shipping-rates').then(r => r.json()).then((d: ShippingRate[]) => {
-      setRates(d);
-      setLoading(false);
-    });
+    void loadRates();
   }, []);
 
   function startEdit(rate: ShippingRate) {
     setEditId(rate.id);
-    setEditValues({ base_rate_syp: rate.base_rate_syp, free_shipping_threshold_syp: rate.free_shipping_threshold_syp ?? null, is_active: rate.is_active });
-    setMsg('');
+    setDraft({
+      base_rate_syp: String(rate.base_rate_syp ?? 0),
+      free_shipping_threshold_syp: rate.free_shipping_threshold_syp === null ? '' : String(rate.free_shipping_threshold_syp),
+      is_active: Boolean(rate.is_active)
+    });
+    setMessage('');
+    setError('');
+  }
+
+  function cancelEdit() {
+    setEditId(null);
+    setDraft({
+      base_rate_syp: '',
+      free_shipping_threshold_syp: '',
+      is_active: true
+    });
   }
 
   async function saveEdit() {
     if (!editId) return;
+
     setSaving(true);
-    const res = await fetch(`/api/shipping-rates/${editId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(editValues),
-    });
-    if (res.ok) {
-      const updated = await res.json() as ShippingRate;
-      setRates(prev => prev.map(r => r.id === editId ? updated : r));
-      setMsg('ØªÙ… Ø§Ù„Ø­ÙØ¸ Ø¨ÙØ¬Ø§Ø­ œ“');
-      setEditId(null);
-    } else {
-      setMsg('Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«ÙØ§Ø¡ Ø§Ù„Ø­ÙØ¸');
+    setMessage('');
+    setError('');
+
+    const body = {
+      base_rate_syp: Number(draft.base_rate_syp) || 0,
+      free_shipping_threshold_syp: draft.free_shipping_threshold_syp ? Number(draft.free_shipping_threshold_syp) : null,
+      is_active: draft.is_active
+    };
+
+    try {
+      const res = await fetch(`/api/shipping-rates/${editId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const payload = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        setError((payload as { error?: string } | null)?.error ?? 'فشل حفظ سعر الشحن');
+      } else {
+        const updated = payload as ShippingRate;
+        setRates((prev) => prev.map((rate) => (rate.id === editId ? updated : rate)));
+        setMessage('تم حفظ سعر الشحن بنجاح');
+        cancelEdit();
+      }
+    } catch {
+      setError('تعذر حفظ سعر الشحن');
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[#E2E2E2]">{t('admin.shippingRates')}</h1>
-        {msg && <p className="text-sm text-green-400">{msg}</p>}
-      </div>
+    <div className="space-y-6" dir="rtl">
+      <section className="rounded-3xl border border-white/10 bg-[#101010] p-6 shadow-2xl">
+        <h1 className="text-3xl font-black text-white">أسعار الشحن</h1>
+        <p className="mt-2 text-sm leading-7 text-[#9CA3AF]">
+          تعديل سعر الشحن وحد الشحن المجاني لكل محافظة.
+        </p>
+      </section>
 
-      <p className="text-sm text-[#9CA3AF]">
-        ØªØ¹Ø¯ÙŠÙ„ Ø£Ø³Ø¹Ø§Ø± Ø§Ù„Ø´Ø­Ù Ù„ÙƒÙ„ Ù…Ø­Ø§ÙØ¸Ø©. Ø§Ø¶ØºØ· ØªØ¹Ø¯ÙŠÙ„ØŒ ØºÙŠÙ‘Ø± Ø§Ù„Ù‚ÙŠÙ…Ø©ØŒ Ø«Ù… Ø§Ø­ÙØ¸.
-      </p>
-
-      {loading ? (
-        <p className="text-[#9CA3AF]">{t('common.loading')}</p>
-      ) : (
-        <div className="overflow-x-auto rounded-lg border border-[#2E2E2E]">
-          <table className="w-full text-sm text-[#E2E2E2]">
-            <thead className="bg-[#1A1A1A] text-[#9CA3AF]">
-              <tr>
-                <th className="px-4 py-3 text-start">Ø§Ù„Ù…Ø­Ø§ÙØ¸Ø©</th>
-                <th className="px-4 py-3 text-start">Ø³Ø¹Ø± Ø§Ù„Ø´Ø­Ù (Ù„.Ø³)</th>
-                <th className="px-4 py-3 text-start">Ø­Ø¯ Ø§Ù„Ø´Ø­Ù Ø§Ù„Ù…Ø¬Ø§ÙÙŠ (Ù„.Ø³)</th>
-                <th className="px-4 py-3 text-start">Ø§Ù„Ø­Ø§Ù„Ø©</th>
-                <th className="px-4 py-3 text-start"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#2E2E2E]">
-              {rates.map((rate) => (
-                <tr key={rate.id} className="hover:bg-[#161616] transition-colors">
-                  <td className="px-4 py-3 font-medium">{rate.governorate}</td>
-
-                  {/* base rate */}
-                  <td className="px-4 py-3">
-                    {editId === rate.id ? (
-                      <input
-                        type="number"
-                        value={editValues.base_rate_syp ?? ''}
-                        onChange={e => setEditValues(v => ({ ...v, base_rate_syp: Number((e.target as unknown as HTMLInputElement).value) }))}
-                        className="w-32 rounded border border-[#C9A84C] bg-[#0F0F0F] px-2 py-1 text-sm text-[#E2E2E2] outline-none"
-                      />
-                    ) : (
-                      <span>{formatSYP(rate.base_rate_syp)}</span>
-                    )}
-                  </td>
-
-                  {/* free shipping threshold */}
-                  <td className="px-4 py-3">
-                    {editId === rate.id ? (
-                      <input
-                        type="number"
-                        value={editValues.free_shipping_threshold_syp ?? ''}
-                        onChange={e => setEditValues(v => ({ ...v, free_shipping_threshold_syp: (e.target as unknown as HTMLInputElement).value ? Number((e.target as unknown as HTMLInputElement).value) : null }))}
-                        className="w-36 rounded border border-[#C9A84C] bg-[#0F0F0F] px-2 py-1 text-sm text-[#E2E2E2] outline-none"
-                        placeholder="0 = Ù…Ø¹Ø·Ù„"
-                      />
-                    ) : (
-                      <span>{rate.free_shipping_threshold_syp ? formatSYP(rate.free_shipping_threshold_syp) : '”'}</span>
-                    )}
-                  </td>
-
-                  {/* is_active */}
-                  <td className="px-4 py-3">
-                    {editId === rate.id ? (
-                      <select
-                        value={editValues.is_active ? '1' : '0'}
-                        onChange={e => setEditValues(v => ({ ...v, is_active: (e.target as unknown as HTMLInputElement).value === '1' }))}
-                        className="rounded border border-[#C9A84C] bg-[#0F0F0F] px-2 py-1 text-sm text-[#E2E2E2]"
-                      >
-                        <option value="1">ÙØ´Ø·</option>
-                        <option value="0">Ù…ØªÙˆÙ‚Ù</option>
-                      </select>
-                    ) : (
-                      <span className={`rounded-sm px-2 py-0.5 text-xs font-medium ${rate.is_active ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
-                        {rate.is_active ? t('common.active') : t('common.inactive')}
-                      </span>
-                    )}
-                  </td>
-
-                  {/* actions */}
-                  <td className="px-4 py-3">
-                    {editId === rate.id ? (
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => void saveEdit()}
-                          disabled={saving}
-                          className="rounded bg-[#C9A84C] px-3 py-1 text-xs font-semibold text-[#111] hover:bg-[#D8B95F] disabled:opacity-50"
-                        >
-                          {saving ? '...' : t('common.save')}
-                        </button>
-                        <button
-                          onClick={() => { setEditId(null); setMsg(''); }}
-                          className="rounded border border-[#2E2E2E] px-3 py-1 text-xs text-[#9CA3AF] hover:text-[#E2E2E2]"
-                        >
-                          {t('common.cancel')}
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => startEdit(rate)}
-                        className="text-xs text-[#C9A84C] hover:underline"
-                      >
-                        {t('common.edit')}
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {message ? (
+        <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4 text-sm text-green-100">
+          {message}
         </div>
-      )}
+      ) : null}
+
+      {error ? (
+        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-100">
+          {error}
+        </div>
+      ) : null}
+
+      <section className="overflow-hidden rounded-3xl border border-white/10 bg-[#101010] shadow-2xl">
+        {loading ? (
+          <div className="p-10 text-center text-[#9CA3AF]">جار التحميل...</div>
+        ) : rates.length === 0 ? (
+          <div className="p-10 text-center text-[#9CA3AF]">لا توجد أسعار شحن.</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="bg-white/5 text-[#C9A84C]">
+                <tr>
+                  <th className="px-4 py-4 text-right font-black">المحافظة</th>
+                  <th className="px-4 py-4 text-right font-black">سعر الشحن</th>
+                  <th className="px-4 py-4 text-right font-black">حد الشحن المجاني</th>
+                  <th className="px-4 py-4 text-right font-black">الحالة</th>
+                  <th className="px-4 py-4 text-left font-black">الإجراء</th>
+                </tr>
+              </thead>
+
+              <tbody className="divide-y divide-white/10">
+                {rates.map((rate) => {
+                  const editing = editId === rate.id;
+
+                  return (
+                    <tr key={rate.id} className="text-[#EDE7DD] hover:bg-white/[0.03]">
+                      <td className="px-4 py-4 font-black text-white">{rate.governorate}</td>
+
+                      <td className="px-4 py-4">
+                        {editing ? (
+                          <input
+                            type="number"
+                            value={draft.base_rate_syp}
+                            onChange={(e) => setDraft((v) => ({ ...v, base_rate_syp: e.target.value }))}
+                            className="w-36 rounded-2xl border border-[#C9A84C] bg-[#080808] px-3 py-2 text-white outline-none"
+                          />
+                        ) : (
+                          syp(rate.base_rate_syp)
+                        )}
+                      </td>
+
+                      <td className="px-4 py-4">
+                        {editing ? (
+                          <input
+                            type="number"
+                            value={draft.free_shipping_threshold_syp}
+                            onChange={(e) => setDraft((v) => ({ ...v, free_shipping_threshold_syp: e.target.value }))}
+                            placeholder="اتركه فارغاً للتعطيل"
+                            className="w-44 rounded-2xl border border-[#C9A84C] bg-[#080808] px-3 py-2 text-white outline-none"
+                          />
+                        ) : rate.free_shipping_threshold_syp ? (
+                          syp(rate.free_shipping_threshold_syp)
+                        ) : (
+                          'غير مفعّل'
+                        )}
+                      </td>
+
+                      <td className="px-4 py-4">
+                        {editing ? (
+                          <select
+                            value={draft.is_active ? '1' : '0'}
+                            onChange={(e) => setDraft((v) => ({ ...v, is_active: e.target.value === '1' }))}
+                            className="rounded-2xl border border-[#C9A84C] bg-[#080808] px-3 py-2 text-white outline-none"
+                          >
+                            <option value="1">مفعّل</option>
+                            <option value="0">غير مفعّل</option>
+                          </select>
+                        ) : (
+                          <span
+                            className={[
+                              'rounded-full border px-3 py-1 text-xs font-black',
+                              rate.is_active
+                                ? 'border-green-400/20 bg-green-400/10 text-green-200'
+                                : 'border-white/10 bg-white/5 text-[#9CA3AF]'
+                            ].join(' ')}
+                          >
+                            {rate.is_active ? 'مفعّل' : 'غير مفعّل'}
+                          </span>
+                        )}
+                      </td>
+
+                      <td className="px-4 py-4 text-left">
+                        {editing ? (
+                          <div className="flex justify-end gap-2">
+                            <button
+                              type="button"
+                              disabled={saving}
+                              onClick={saveEdit}
+                              className="rounded-xl bg-[#C9A84C] px-4 py-2 text-xs font-black text-[#111111] disabled:opacity-50"
+                            >
+                              {saving ? 'جار الحفظ...' : 'حفظ'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={cancelEdit}
+                              className="rounded-xl border border-white/10 px-4 py-2 text-xs font-black text-[#B8B1A4]"
+                            >
+                              إلغاء
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => startEdit(rate)}
+                            className="text-xs font-black text-[#C9A84C] hover:text-[#D8B95F]"
+                          >
+                            تعديل
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
-

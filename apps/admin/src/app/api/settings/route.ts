@@ -1,37 +1,71 @@
-﻿import { NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/supabase-server';
+import { NextResponse } from 'next/server';
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 
+type SettingUpdate = {
+  key?: string;
+  value?: unknown;
+};
+
+type SettingsPatchBody = {
+  key?: string;
+  value?: unknown;
+  updates?: SettingUpdate[];
+};
+
 export async function GET() {
-  const supabase = createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  try {
+    const admin = createSupabaseAdminClientFromEnv();
 
-  const admin = createSupabaseAdminClientFromEnv();
-  const { data, error } = await admin
-    .from('system_settings')
-    .select('key, value, description')
-    .order('key');
+    const { data, error } = await admin
+      .from('system_settings')
+      .select('key, value, description')
+      .order('key');
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data ?? []);
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(data ?? []);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'server_error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
 
 export async function PATCH(request: Request) {
-  const supabase = createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  try {
+    const body = (await request.json()) as SettingsPatchBody;
 
-  const { key, value } = await request.json() as { key: string; value: string };
-  if (!key || value === undefined) return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
+    const updates =
+      Array.isArray(body.updates) && body.updates.length > 0
+        ? body.updates
+        : [{ key: body.key, value: body.value }];
 
-  const admin = createSupabaseAdminClientFromEnv();
-  const { error } = await admin
-    .from('system_settings')
-    .update({ value, updated_at: new Date().toISOString() })
-    .eq('key', key);
+    const rows = updates
+      .filter((update): update is Required<SettingUpdate> => Boolean(update.key) && update.value !== undefined)
+      .map((update) => ({
+        key: update.key,
+        value: String(update.value),
+        updated_at: new Date().toISOString()
+      }));
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true });
+    if (rows.length === 0) {
+      return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
+    }
+
+    const admin = createSupabaseAdminClientFromEnv();
+
+    const { error } = await admin
+      .from('system_settings')
+      .upsert(rows as never[], { onConflict: 'key' });
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'server_error';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
-

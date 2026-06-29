@@ -1,103 +1,197 @@
 'use client';
+
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
 
 interface LoyaltySetting {
   key: string;
   value: string;
-  description: string;
+  description?: string | null;
 }
 
-const LOYALTY_KEYS = [
-  'loyalty_earn_amount_syp',
-  'loyalty_earn_points',
-  'loyalty_redeem_points_per_syp',
-  'loyalty_max_redeem_percent',
-  'loyalty_referral_bonus_points',
+const DEFAULT_SETTINGS: LoyaltySetting[] = [
+  {
+    key: 'loyalty_earn_amount_syp',
+    value: '10000',
+    description: 'المبلغ بالليرة السورية المطلوب لكسب نقاط.'
+  },
+  {
+    key: 'loyalty_earn_points',
+    value: '1',
+    description: 'عدد النقاط المكتسبة عند تحقق مبلغ الكسب.'
+  },
+  {
+    key: 'loyalty_redeem_points_per_syp',
+    value: '1',
+    description: 'كم نقطة مطلوبة مقابل كل ليرة عند الاستبدال.'
+  },
+  {
+    key: 'loyalty_max_redeem_percent',
+    value: '20',
+    description: 'أقصى نسبة خصم من الطلب يمكن دفعها بالنقاط.'
+  },
+  {
+    key: 'loyalty_referral_bonus_points',
+    value: '50',
+    description: 'نقاط مكافأة الإحالة.'
+  }
 ];
 
-export default function AdminLoyaltySettingsPage() {
-  const t = useTranslations();
-  const [settings, setSettings] = useState<LoyaltySetting[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [values, setValues]   = useState<Record<string, string>>({});
-  const [saving, setSaving]   = useState(false);
-  const [msg, setMsg]         = useState('');
+const LABELS: Record<string, string> = {
+  loyalty_earn_amount_syp: 'مبلغ الكسب',
+  loyalty_earn_points: 'نقاط الكسب',
+  loyalty_redeem_points_per_syp: 'نقاط الاستبدال لكل ليرة',
+  loyalty_max_redeem_percent: 'أقصى نسبة استبدال',
+  loyalty_referral_bonus_points: 'مكافأة الإحالة'
+};
 
-  useEffect(() => {
-    void fetch('/api/settings')
-      .then(r => r.json())
-      .then((all: LoyaltySetting[]) => {
-        const loyalty = all.filter((s: LoyaltySetting) => LOYALTY_KEYS.includes(s.key));
-        setSettings(loyalty);
-        const vals: Record<string, string> = {};
-        loyalty.forEach((s: LoyaltySetting) => { vals[s.key] = s.value; });
-        setValues(vals);
-        setLoading(false);
-      });
-  }, []);
+function pickArray<T>(payload: unknown): T[] {
+  if (Array.isArray(payload)) return payload as T[];
 
-  async function handleSave() {
-    setSaving(true); setMsg('');
-    const updates = Object.entries(values).map(([key, value]) => ({ key, value }));
-    const res = await fetch('/api/settings', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ updates }),
-    });
-    setMsg(res.ok ? 'ØªÙ… Ø­ÙØ¸ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø¨ÙØ¬Ø§Ø­ œ“' : 'Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«ÙØ§Ø¡ Ø§Ù„Ø­ÙØ¸');
-    setSaving(false);
+  if (payload && typeof payload === 'object') {
+    const obj = payload as Record<string, unknown>;
+    for (const key of ['data', 'items', 'settings', 'rows']) {
+      if (Array.isArray(obj[key])) return obj[key] as T[];
+    }
   }
 
-  const LABELS: Record<string, string> = {
-    loyalty_earn_amount_syp:        'Ø§Ù„Ù…Ø¨Ù„Øº (Ù„.Ø³) Ù„Ù„Ø­ØµÙˆÙ„ Ø¹Ù„Ù‰ ÙÙ‚Ø·Ø©',
-    loyalty_earn_points:            'Ø¹Ø¯Ø¯ Ø§Ù„ÙÙ‚Ø§Ø· Ø§Ù„Ù…Ù…ÙÙˆØ­Ø© Ù„ÙƒÙ„ Ù…Ø¨Ù„Øº',
-    loyalty_redeem_points_per_syp:  'Ø¹Ø¯Ø¯ Ø§Ù„ÙÙ‚Ø§Ø· Ù„ÙƒÙ„ Ù„ÙŠØ±Ø© Ø¹ÙØ¯ Ø§Ù„Ø§Ø³ØªØ¨Ø¯Ø§Ù„',
-    loyalty_max_redeem_percent:     'Ø£Ù‚ØµÙ‰ ÙØ³Ø¨Ø© Ø®ØµÙ… Ù…Ù Ø§Ù„Ø·Ù„Ø¨ (%)',
-    loyalty_referral_bonus_points:  'ÙÙ‚Ø§Ø· Ù…ÙƒØ§ÙØ£Ø© Ø§Ù„Ø¥Ø­Ø§Ù„Ø©',
-  };
+  return [];
+}
+
+export default function AdminLoyaltySettingsPage() {
+  const [settings, setSettings] = useState<LoyaltySetting[]>(DEFAULT_SETTINGS);
+  const [values, setValues] = useState<Record<string, string>>(
+    Object.fromEntries(DEFAULT_SETTINGS.map((s) => [s.key, s.value]))
+  );
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  async function loadSettings() {
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/settings', { cache: 'no-store' });
+      const payload = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        setError((payload as { error?: string } | null)?.error ?? 'تعذر تحميل إعدادات الولاء');
+        setSettings(DEFAULT_SETTINGS);
+        setValues(Object.fromEntries(DEFAULT_SETTINGS.map((s) => [s.key, s.value])));
+        return;
+      }
+
+      const rows = pickArray<LoyaltySetting>(payload);
+      const byKey = new Map(rows.map((row) => [row.key, row]));
+      const merged = DEFAULT_SETTINGS.map((item) => ({
+        ...item,
+        value: byKey.get(item.key)?.value ?? item.value,
+        description: byKey.get(item.key)?.description ?? item.description
+      }));
+
+      setSettings(merged);
+      setValues(Object.fromEntries(merged.map((s) => [s.key, s.value])));
+    } catch {
+      setError('تعذر الاتصال بالخادم');
+      setSettings(DEFAULT_SETTINGS);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    void loadSettings();
+  }, []);
+
+  async function saveAll() {
+    setSaving(true);
+    setMessage('');
+    setError('');
+
+    try {
+      const requests = settings.map((setting) =>
+        fetch('/api/settings', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: setting.key, value: values[setting.key] ?? '' })
+        })
+      );
+
+      const responses = await Promise.all(requests);
+      const failed = responses.find((res) => !res.ok);
+
+      if (failed) {
+        const payload = await failed.json().catch(() => null);
+        setError((payload as { error?: string } | null)?.error ?? 'فشل حفظ إعدادات الولاء');
+      } else {
+        setMessage('تم حفظ إعدادات الولاء بنجاح');
+        await loadSettings();
+      }
+    } catch {
+      setError('تعذر حفظ إعدادات الولاء');
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[#E2E2E2]">Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø¨Ø±ÙØ§Ù…Ø¬ Ø§Ù„ÙˆÙ„Ø§Ø¡</h1>
-        {msg && <p className="text-sm text-green-400">{msg}</p>}
-      </div>
+    <div className="space-y-6" dir="rtl">
+      <section className="rounded-3xl border border-white/10 bg-[#101010] p-6 shadow-2xl">
+        <h1 className="text-3xl font-black text-white">إعدادات الولاء</h1>
+        <p className="mt-2 text-sm leading-7 text-[#9CA3AF]">
+          التحكم بقواعد كسب واستبدال نقاط الولاء في المتجر.
+        </p>
+      </section>
 
-      <p className="text-sm text-[#9CA3AF]">
-        ØªØ­ÙƒÙ… Ø¨Ù‚ÙˆØ§Ø¹Ø¯ ÙƒØ³Ø¨ ÙˆØ§Ø³ØªØ¨Ø¯Ø§Ù„ ÙÙ‚Ø§Ø· Ø§Ù„ÙˆÙ„Ø§Ø¡. ÙŠØªÙ… ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„ØªØºÙŠÙŠØ±Ø§Øª ÙÙˆØ±Ø§Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø¬Ø¯ÙŠØ¯Ø©.
-      </p>
-
-      {loading ? (
-        <p className="text-[#9CA3AF]">{t('common.loading')}</p>
-      ) : (
-        <div className="space-y-4">
-          {settings.map((s) => (
-            <div key={s.key} className="rounded-lg border border-[#2E2E2E] bg-[#111] p-5">
-              <label className="block text-sm font-medium text-[#E2E2E2] mb-1">
-                {LABELS[s.key] ?? s.key}
-              </label>
-              {s.description && (
-                <p className="text-xs text-[#6B7280] mb-2">{s.description}</p>
-              )}
-              <input
-                type="number"
-                value={values[s.key] ?? ''}
-                onChange={e => setValues(v => ({ ...v, [s.key]: (e.target as unknown as HTMLInputElement).value }))}
-                className="input-admin w-48"
-              />
-            </div>
-          ))}
-
-          <button
-            onClick={() => void handleSave()}
-            disabled={saving}
-            className="rounded-sm bg-[#C9A84C] px-6 py-2.5 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] disabled:opacity-50 transition-colors"
-          >
-            {saving ? 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø­ÙØ¸...' : t('common.save')}
-          </button>
+      {message ? (
+        <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4 text-sm text-green-100">
+          {message}
         </div>
-      )}
+      ) : null}
+
+      {error ? (
+        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-100">
+          {error}
+        </div>
+      ) : null}
+
+      <section className="rounded-3xl border border-white/10 bg-[#101010] p-6 shadow-2xl">
+        {loading ? (
+          <div className="p-10 text-center text-[#9CA3AF]">جار التحميل...</div>
+        ) : (
+          <div className="space-y-4">
+            {settings.map((setting) => (
+              <div
+                key={setting.key}
+                className="grid gap-4 rounded-3xl border border-white/10 bg-black/20 p-4 lg:grid-cols-[1fr_220px]"
+              >
+                <div>
+                  <div className="font-black text-white">{LABELS[setting.key] ?? setting.key}</div>
+                  <div className="mt-1 text-sm leading-6 text-[#9CA3AF]">
+                    {setting.description ?? setting.key}
+                  </div>
+                </div>
+
+                <input
+                  value={values[setting.key] ?? ''}
+                  onChange={(e) => setValues((prev) => ({ ...prev, [setting.key]: e.target.value }))}
+                  className="rounded-2xl border border-white/10 bg-[#151515] px-4 py-3 font-mono text-white outline-none focus:border-[#C9A84C]"
+                />
+              </div>
+            ))}
+
+            <button
+              type="button"
+              disabled={saving}
+              onClick={saveAll}
+              className="rounded-2xl bg-[#C9A84C] px-6 py-3 text-sm font-black text-[#111111] hover:bg-[#D8B95F] disabled:opacity-50"
+            >
+              {saving ? 'جار الحفظ...' : 'حفظ إعدادات الولاء'}
+            </button>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
