@@ -1,6 +1,34 @@
 
 ---
 
+### Session 029 — 2026-06-29
+**Agent:** ChatGPT PowerShell patch — admin + web only
+**Scope:** apps/admin + apps/web + _handoff only
+
+**Work Done — Admin App:**
+- Rebuilt /admin/loyalty-settings with clear Arabic business labels explaining whether each value is SYP amount, points, or percentage.
+- Added live formula summary:
+  - spend amount + earned points
+  - points-to-SYP redemption conversion
+  - max redeem percentage cap
+  - referral bonus points
+- Added validation ranges and a direct example for a 50,000 SYP order so admins understand the effect before saving.
+- Rewrote /api/settings GET/PATCH to safely read and upsert only allowed loyalty setting keys in system_settings.
+
+**Work Done — Web App:**
+- Added a simple customer-facing explanation section to /loyalty when the page exists.
+
+**Why:**
+- The old loyalty admin UI showed raw numbers without explaining if they were money, percentages, or points.
+- This session keeps progress limited to Admin and Web as requested.
+
+**Next Smoke Test:**
+- Run pnpm --filter admin dev and open /loyalty-settings.
+- Save current values and confirm the success message appears.
+- Run pnpm --filter web dev and open /loyalty.
+
+---
+
 ### Session 020 — 2026-06-29
 **Agent:** Claude (PowerShell script — web + admin only)
 **Duration:** ~20 min
