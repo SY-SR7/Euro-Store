@@ -6,15 +6,19 @@
   "types": "./src/index.ts",
   "description": "Shared UI components for EuroStore",
   "dependencies": {
+    "clsx": "latest",
     "framer-motion": "latest",
     "lenis": "latest",
-    "sonner": "latest",
     "lucide-react": "latest",
-    "clsx": "latest",
+    "sonner": "latest",
     "tailwind-merge": "latest"
   },
   "peerDependencies": {
     "react": "^18.2.0 || ^19.0.0",
     "react-dom": "^18.2.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^18.3.7"
   }
 }

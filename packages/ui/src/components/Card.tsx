@@ -1,83 +1,59 @@
-import * as React from 'react';
-import { Heart } from 'lucide-react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+﻿import * as React from 'react';
+import { cn } from '../utils/cn';
 
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-export interface ProductCardProps {
-  name: string;
-  brand: string;
-  price: number | bigint;
-  imageUrl: string;
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  name?: string;
+  brand?: string;
+  price?: number | string;
+  imageUrl?: string;
   isNew?: boolean;
   onWishlistClick?: () => void;
   className?: string;
+  children?: React.ReactNode;
 }
 
-export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
-  ({ name, brand, price, imageUrl, isNew, onWishlistClick, className, ...props }, ref) => {
+export const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ name, brand, price, imageUrl, isNew, onWishlistClick, className, children, ...props }, ref) => {
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+      const card = e.currentTarget;
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = (y - centerY) / 10;
+      const rotateY = (centerX - x) / 10;
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    };
+    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+      const card = e.currentTarget;
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+    };
     return (
-      <div 
+      <div
         ref={ref}
-        className={cn(
-          "group relative bg-[#1E2020] rounded-md overflow-hidden border border-[#2E2E2E] hover:border-[#C9A84C]/30 transition-all duration-300",
-          className
-        )}
-        style={{ transformStyle: 'preserve-3d' }}
-        onMouseMove={(e) => {
-          const card = e.currentTarget;
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          const rotateX = ((y - centerY) / centerY) * -5;
-          const rotateY = ((x - centerX) / centerX) * 5;
-          
-          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        }}
-        onMouseLeave={(e) => {
-          const card = e.currentTarget;
-          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
-        }}
+        className={cn('rounded-lg overflow-hidden transition-transform', className)}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         {...props}
       >
-        <div className="relative aspect-[3/4] overflow-hidden bg-[#2E2E2E]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            src={imageUrl} 
-            alt={name}
-            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" 
-          />
-          {/* Badge */}
-          {isNew && (
-            <span className="absolute top-3 start-3 bg-[#C9A84C] text-black text-xs font-bold px-2 py-1 rounded-sm uppercase tracking-wide">
-              New
-            </span>
-          )}
-          {/* Wishlist */}
-          <button 
-            type="button"
-            className="absolute top-3 end-3 opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-black/20 rounded-full"
-            onClick={(e) => {
-              e.preventDefault();
-              onWishlistClick?.();
-            }}
-          >
-            <Heart className="text-white w-5 h-5" />
-          </button>
-        </div>
-        <div className="p-4 text-center" style={{ transform: 'translateZ(20px)' }}>
-          <p className="text-[#9CA3AF] text-xs uppercase tracking-widest mb-1">{brand}</p>
-          <h3 className="text-[#E2E2E2] font-medium line-clamp-1">{name}</h3>
-          <p className="text-[#C9A84C] font-semibold mt-1">{price.toString()} ل.س</p>
-        </div>
+        {imageUrl && <img src={imageUrl} alt={name ?? ''} className="w-full h-48 object-cover" />}
+        {children}
+        {(name || brand || price) && (
+          <div className="p-4">
+            {isNew && <span className="text-xs bg-[#C9A84C] text-white px-2 py-1 rounded mb-2 inline-block">جديد</span>}
+            {brand && <p className="text-sm text-gray-400">{brand}</p>}
+            {name && <p className="font-semibold">{name}</p>}
+            {price !== undefined && <p className="text-[#C9A84C]">{price}</p>}
+            {onWishlistClick && (
+              <button onClick={onWishlistClick} className="mt-2 text-sm text-gray-400 hover:text-[#C9A84C]">
+                ♡
+              </button>
+            )}
+          </div>
+        )}
       </div>
     );
   }
 );
-
-ProductCard.displayName = 'ProductCard';
+Card.displayName = 'Card';

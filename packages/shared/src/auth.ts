@@ -1,4 +1,4 @@
-import { authenticator } from 'otplib';
+﻿import { authenticator } from 'otplib';
 import { z } from 'zod';
 import { USER_ROLES, type UserRole } from './constants/roles';
 
@@ -53,7 +53,7 @@ authenticator.options = {
 };
 
 export function getFormString(formData: FormData, key: string): string | undefined {
-  const value = formData.get(key);
+  const value = (formData as any).get(key);
   return typeof value === 'string' ? value : undefined;
 }
 
@@ -82,7 +82,7 @@ function getCrypto(): Crypto {
     throw new Error('Web Crypto API is required for TOTP session signing.');
   }
 
-  return globalThis.crypto;
+  return globalThis.crypto as unknown as Crypto;
 }
 
 function bytesToBase64Url(bytes: Uint8Array): string {
@@ -107,7 +107,7 @@ function base64UrlToBytes(value: string): Uint8Array {
   return bytes;
 }
 
-async function importHmacKey(secret: string): Promise<CryptoKey> {
+async function importHmacKey(secret: string): Promise<any> {
   return getCrypto().subtle.importKey(
     'raw',
     new TextEncoder().encode(secret),
@@ -162,3 +162,4 @@ export async function verifyTotpSessionToken(token: string, secret: string): Pro
 
   return parsed.data;
 }
+

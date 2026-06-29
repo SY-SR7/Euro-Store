@@ -1,51 +1,31 @@
-import * as React from 'react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+﻿import * as React from 'react';
+import { cn } from '../utils/cn';
 
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  id?: string;
+  className?: string;
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, id, ...props }, ref) => {
-    const inputId = id || React.useId();
-    
     return (
-      <div className="relative w-full group">
+      <div className="flex flex-col gap-1">
+        {label && <label htmlFor={id} className="text-sm text-[#D6D3C7]">{label}</label>}
         <input
-          id={inputId}
           ref={ref}
-          placeholder=" "
+          id={id}
           className={cn(
-            "peer w-full bg-transparent border border-[#2E2E2E] text-[#E2E2E2] rounded px-4 pt-6 pb-2",
-            "focus:outline-none focus:border-[#C9A84C] transition-colors",
-            error && "border-red-500 focus:border-red-500",
+            'bg-[#1A1A1A] border border-[#2A2A2A] rounded px-3 py-2 text-[#D6D3C7] focus:outline-none focus:border-[#C9A84C]',
+            error && 'border-red-500',
             className
           )}
           {...props}
         />
-        {label && (
-          <label
-            htmlFor={inputId}
-            className={cn(
-              "absolute text-[#9CA3AF] transition-all duration-200 pointer-events-none",
-              "top-4 start-4 text-sm origin-center",
-              "peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:text-[#C9A84C]",
-              "peer-not-placeholder-shown:-translate-y-3 peer-not-placeholder-shown:scale-75"
-            )}
-          >
-            {label}
-          </label>
-        )}
-        {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+        {error && <span className="text-xs text-red-500">{error}</span>}
       </div>
     );
   }
 );
-
 Input.displayName = 'Input';

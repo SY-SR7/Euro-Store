@@ -1,9 +1,9 @@
-'use server';
+﻿'use server';
 
 import { getFormString, loginSchema } from '@eurostore/shared';
 import { redirect } from 'next/navigation';
-import { getHelperAccess } from '../../auth';
-import { createServerSupabaseClient } from '../../supabase-server';
+import { getHelperAccess } from '../../../auth';
+import { createServerSupabaseClient } from '../../../supabase-server';
 
 export async function loginHelperAction(formData: FormData): Promise<void> {
   const parsed = loginSchema.safeParse({
@@ -31,3 +31,6 @@ export async function loginHelperAction(formData: FormData): Promise<void> {
 
   redirect('/');
 }
+
+
+export { helperLogin as loginAction };
