@@ -86,7 +86,7 @@ export default async function ProductsPage({
   return (
     <section className="mx-auto w-full max-w-6xl px-6 py-10 flex flex-col gap-10">
 
-      {/* â”€â”€ Page Header + Search â”€â”€ */}
+      {/* ”€”€ Page Header + Search ”€”€ */}
       <header className="grid gap-6 py-4 md:grid-cols-[1fr_0.9fr] md:items-end">
         <div>
           <p className="text-xs text-[#C9A84C] uppercase">
@@ -112,7 +112,7 @@ export default async function ProductsPage({
         </form>
       </header>
 
-      {/* â”€â”€ Category Pills â”€â”€ */}
+      {/* ”€”€ Category Pills ”€”€ */}
       <div className="flex flex-wrap gap-2">
         <Link
           href="/products"
@@ -139,7 +139,7 @@ export default async function ProductsPage({
         ))}
       </div>
 
-      {/* â”€â”€ Product Grid â”€â”€ */}
+      {/* ”€”€ Product Grid ”€”€ */}
       <div>
         <div className="mb-5 flex items-center justify-between gap-4">
           <h2 className="text-2xl font-semibold">

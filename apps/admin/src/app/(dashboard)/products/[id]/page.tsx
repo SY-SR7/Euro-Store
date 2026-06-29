@@ -43,7 +43,7 @@ export default async function ProductHubPage({ params }: Props) {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <Link href="/products" className="text-sm text-gray-500 hover:underline">← المنتجات</Link>
+          <Link href="/products" className="text-sm text-gray-500 hover:underline"> المنتجات</Link>
           <h1 className="text-2xl font-bold mt-1">{product.name_ar}</h1>
           <p className="text-gray-500 text-sm">{product.name_en}</p>
         </div>

@@ -31,7 +31,7 @@ export default async function ProductImagesPage({ params }: Props) {
       <div className="mb-8 flex items-center gap-4">
         <Link href={`/products/${product.id}/edit`}
           className="text-sm text-[#9CA3AF] hover:text-[#C9A84C] transition-colors">
-          ← {product.name_ar}
+           {product.name_ar}
         </Link>
       </div>
       <h1 className="mb-8 text-3xl font-semibold">{t('imageUpload')}</h1>

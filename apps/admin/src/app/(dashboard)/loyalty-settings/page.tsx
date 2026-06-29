@@ -1,4 +1,3 @@
-'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
@@ -45,27 +44,27 @@ export default function AdminLoyaltySettingsPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ updates }),
     });
-    setMsg(res.ok ? 'ØªÙ… Ø­ÙØ¸ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø¨Ù†Ø¬Ø§Ø­ âœ“' : 'Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ø­ÙØ¸');
+    setMsg(res.ok ? 'ØªÙ… Ø­ÙØ¸ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø¨ÙØ¬Ø§Ø­ œ“' : 'Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«ÙØ§Ø¡ Ø§Ù„Ø­ÙØ¸');
     setSaving(false);
   }
 
   const LABELS: Record<string, string> = {
-    loyalty_earn_amount_syp:        'Ø§Ù„Ù…Ø¨Ù„Øº (Ù„.Ø³) Ù„Ù„Ø­ØµÙˆÙ„ Ø¹Ù„Ù‰ Ù†Ù‚Ø·Ø©',
-    loyalty_earn_points:            'Ø¹Ø¯Ø¯ Ø§Ù„Ù†Ù‚Ø§Ø· Ø§Ù„Ù…Ù…Ù†ÙˆØ­Ø© Ù„ÙƒÙ„ Ù…Ø¨Ù„Øº',
-    loyalty_redeem_points_per_syp:  'Ø¹Ø¯Ø¯ Ø§Ù„Ù†Ù‚Ø§Ø· Ù„ÙƒÙ„ Ù„ÙŠØ±Ø© Ø¹Ù†Ø¯ Ø§Ù„Ø§Ø³ØªØ¨Ø¯Ø§Ù„',
-    loyalty_max_redeem_percent:     'Ø£Ù‚ØµÙ‰ Ù†Ø³Ø¨Ø© Ø®ØµÙ… Ù…Ù† Ø§Ù„Ø·Ù„Ø¨ (%)',
-    loyalty_referral_bonus_points:  'Ù†Ù‚Ø§Ø· Ù…ÙƒØ§ÙØ£Ø© Ø§Ù„Ø¥Ø­Ø§Ù„Ø©',
+    loyalty_earn_amount_syp:        'Ø§Ù„Ù…Ø¨Ù„Øº (Ù„.Ø³) Ù„Ù„Ø­ØµÙˆÙ„ Ø¹Ù„Ù‰ ÙÙ‚Ø·Ø©',
+    loyalty_earn_points:            'Ø¹Ø¯Ø¯ Ø§Ù„ÙÙ‚Ø§Ø· Ø§Ù„Ù…Ù…ÙÙˆØ­Ø© Ù„ÙƒÙ„ Ù…Ø¨Ù„Øº',
+    loyalty_redeem_points_per_syp:  'Ø¹Ø¯Ø¯ Ø§Ù„ÙÙ‚Ø§Ø· Ù„ÙƒÙ„ Ù„ÙŠØ±Ø© Ø¹ÙØ¯ Ø§Ù„Ø§Ø³ØªØ¨Ø¯Ø§Ù„',
+    loyalty_max_redeem_percent:     'Ø£Ù‚ØµÙ‰ ÙØ³Ø¨Ø© Ø®ØµÙ… Ù…Ù Ø§Ù„Ø·Ù„Ø¨ (%)',
+    loyalty_referral_bonus_points:  'ÙÙ‚Ø§Ø· Ù…ÙƒØ§ÙØ£Ø© Ø§Ù„Ø¥Ø­Ø§Ù„Ø©',
   };
 
   return (
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[#E2E2E2]">Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø¨Ø±Ù†Ø§Ù…Ø¬ Ø§Ù„ÙˆÙ„Ø§Ø¡</h1>
+        <h1 className="text-2xl font-bold text-[#E2E2E2]">Ø¥Ø¹Ø¯Ø§Ø¯Ø§Øª Ø¨Ø±ÙØ§Ù…Ø¬ Ø§Ù„ÙˆÙ„Ø§Ø¡</h1>
         {msg && <p className="text-sm text-green-400">{msg}</p>}
       </div>
 
       <p className="text-sm text-[#9CA3AF]">
-        ØªØ­ÙƒÙ… Ø¨Ù‚ÙˆØ§Ø¹Ø¯ ÙƒØ³Ø¨ ÙˆØ§Ø³ØªØ¨Ø¯Ø§Ù„ Ù†Ù‚Ø§Ø· Ø§Ù„ÙˆÙ„Ø§Ø¡. ÙŠØªÙ… ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„ØªØºÙŠÙŠØ±Ø§Øª ÙÙˆØ±Ø§Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø¬Ø¯ÙŠØ¯Ø©.
+        ØªØ­ÙƒÙ… Ø¨Ù‚ÙˆØ§Ø¹Ø¯ ÙƒØ³Ø¨ ÙˆØ§Ø³ØªØ¨Ø¯Ø§Ù„ ÙÙ‚Ø§Ø· Ø§Ù„ÙˆÙ„Ø§Ø¡. ÙŠØªÙ… ØªØ·Ø¨ÙŠÙ‚ Ø§Ù„ØªØºÙŠÙŠØ±Ø§Øª ÙÙˆØ±Ø§Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ø·Ù„Ø¨Ø§Øª Ø§Ù„Ø¬Ø¯ÙŠØ¯Ø©.
       </p>
 
       {loading ? (

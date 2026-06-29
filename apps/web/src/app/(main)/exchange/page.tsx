@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
@@ -33,7 +33,7 @@ export default async function ExchangeIndexPage(): Promise<JSX.Element> {
       <div className="mx-auto max-w-2xl">
         <nav className="mb-8">
           <Link href="/" className="text-[#C9A84C] text-sm hover:underline">
-            ← {t('common.appName')}
+             {t('common.appName')}
           </Link>
         </nav>
 
@@ -50,7 +50,7 @@ export default async function ExchangeIndexPage(): Promise<JSX.Element> {
         {/* Exchange policy note */}
         <div className="mb-6 rounded-md border border-[#2E2E2E] bg-[#151515] p-4">
           <p className="text-sm text-[#9CA3AF] leading-6">
-            📦 سياسة الاستبدال: يمكنك طلب الاستبدال خلال <strong className="text-[#C9A84C]">7 أيام</strong> من استلام طلبك، بشرط أن يكون المنتج بحالته الأصلية وغير مستخدم.
+             سياسة الاستبدال: يمكنك طلب الاستبدال خلال <strong className="text-[#C9A84C]">7 أيام</strong> من استلام طلبك، بشرط أن يكون المنتج بحالته الأصلية وغير مستخدم.
           </p>
         </div>
 

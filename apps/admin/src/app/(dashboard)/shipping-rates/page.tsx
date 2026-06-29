@@ -1,4 +1,3 @@
-'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { formatSYP } from '@eurostore/shared';
@@ -44,10 +43,10 @@ export default function AdminShippingRatesPage() {
     if (res.ok) {
       const updated = await res.json() as ShippingRate;
       setRates(prev => prev.map(r => r.id === editId ? updated : r));
-      setMsg('ØªÙ… Ø§Ù„Ø­ÙØ¸ Ø¨Ù†Ø¬Ø§Ø­ âœ“');
+      setMsg('ØªÙ… Ø§Ù„Ø­ÙØ¸ Ø¨ÙØ¬Ø§Ø­ œ“');
       setEditId(null);
     } else {
-      setMsg('Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ø­ÙØ¸');
+      setMsg('Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«ÙØ§Ø¡ Ø§Ù„Ø­ÙØ¸');
     }
     setSaving(false);
   }
@@ -60,7 +59,7 @@ export default function AdminShippingRatesPage() {
       </div>
 
       <p className="text-sm text-[#9CA3AF]">
-        ØªØ¹Ø¯ÙŠÙ„ Ø£Ø³Ø¹Ø§Ø± Ø§Ù„Ø´Ø­Ù† Ù„ÙƒÙ„ Ù…Ø­Ø§ÙØ¸Ø©. Ø§Ø¶ØºØ· ØªØ¹Ø¯ÙŠÙ„ØŒ ØºÙŠÙ‘Ø± Ø§Ù„Ù‚ÙŠÙ…Ø©ØŒ Ø«Ù… Ø§Ø­ÙØ¸.
+        ØªØ¹Ø¯ÙŠÙ„ Ø£Ø³Ø¹Ø§Ø± Ø§Ù„Ø´Ø­Ù Ù„ÙƒÙ„ Ù…Ø­Ø§ÙØ¸Ø©. Ø§Ø¶ØºØ· ØªØ¹Ø¯ÙŠÙ„ØŒ ØºÙŠÙ‘Ø± Ø§Ù„Ù‚ÙŠÙ…Ø©ØŒ Ø«Ù… Ø§Ø­ÙØ¸.
       </p>
 
       {loading ? (
@@ -71,8 +70,8 @@ export default function AdminShippingRatesPage() {
             <thead className="bg-[#1A1A1A] text-[#9CA3AF]">
               <tr>
                 <th className="px-4 py-3 text-start">Ø§Ù„Ù…Ø­Ø§ÙØ¸Ø©</th>
-                <th className="px-4 py-3 text-start">Ø³Ø¹Ø± Ø§Ù„Ø´Ø­Ù† (Ù„.Ø³)</th>
-                <th className="px-4 py-3 text-start">Ø­Ø¯ Ø§Ù„Ø´Ø­Ù† Ø§Ù„Ù…Ø¬Ø§Ù†ÙŠ (Ù„.Ø³)</th>
+                <th className="px-4 py-3 text-start">Ø³Ø¹Ø± Ø§Ù„Ø´Ø­Ù (Ù„.Ø³)</th>
+                <th className="px-4 py-3 text-start">Ø­Ø¯ Ø§Ù„Ø´Ø­Ù Ø§Ù„Ù…Ø¬Ø§ÙÙŠ (Ù„.Ø³)</th>
                 <th className="px-4 py-3 text-start">Ø§Ù„Ø­Ø§Ù„Ø©</th>
                 <th className="px-4 py-3 text-start"></th>
               </tr>
@@ -119,7 +118,7 @@ export default function AdminShippingRatesPage() {
                         onChange={e => setEditValues(v => ({ ...v, is_active: (e.target as unknown as HTMLInputElement).value === '1' }))}
                         className="rounded border border-[#C9A84C] bg-[#0F0F0F] px-2 py-1 text-sm text-[#E2E2E2]"
                       >
-                        <option value="1">Ù†Ø´Ø·</option>
+                        <option value="1">ÙØ´Ø·</option>
                         <option value="0">Ù…ØªÙˆÙ‚Ù</option>
                       </select>
                     ) : (

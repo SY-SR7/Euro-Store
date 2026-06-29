@@ -1,5 +1,4 @@
 // @ts-nocheck
-'use client';
 /* eslint-disable */
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
@@ -32,7 +31,7 @@ export default async function LoyaltyPage() {
   return (
     <main className="min-h-screen bg-[#0F0F0F] px-6 py-12 text-[#E2E2E2]">
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-[#C9A84C] text-sm hover:underline">â† {t('common.appName')}</Link>
+        <Link href="/" className="text-[#C9A84C] text-sm hover:underline"> {t('common.appName')}</Link>
 
         <h1 className="mt-6 text-2xl font-semibold">{t('loyalty.title')}</h1>
 

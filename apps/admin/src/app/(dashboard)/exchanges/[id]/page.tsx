@@ -1,4 +1,3 @@
-'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -65,7 +64,7 @@ export default function ExchangeDetailPage() {
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/exchanges" className="text-sm text-gray-500 hover:underline">← الاستبدالات</Link>
+        <Link href="/exchanges" className="text-sm text-gray-500 hover:underline"> الاستبدالات</Link>
         <h1 className="text-xl font-bold">تفاصيل طلب الاستبدال</h1>
       </div>
 

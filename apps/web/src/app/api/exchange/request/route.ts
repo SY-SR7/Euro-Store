@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json() as { order_number?: string; reason?: string };
     if (!body.order_number?.trim() || !body.reason?.trim())
-      return NextResponse.json({ error: 'Ø±Ù‚Ù… Ø§Ù„Ø·Ù„Ø¨ ÙˆØ§Ù„Ø³Ø¨Ø¨ Ù…Ø·Ù„ÙˆØ¨Ø§Ù†' }, { status: 400 });
+      return NextResponse.json({ error: 'Ø±Ù‚Ù… Ø§Ù„Ø·Ù„Ø¨ ÙˆØ§Ù„Ø³Ø¨Ø¨ Ù…Ø·Ù„ÙˆØ¨Ø§Ù' }, { status: 400 });
 
     const supabase = createServerSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -24,9 +24,9 @@ export async function POST(req: NextRequest) {
       .eq('customer_id', user.id)
       .maybeSingle();
 
-    if (!order) return NextResponse.json({ error: 'Ø§Ù„Ø·Ù„Ø¨ ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯ Ø£Ùˆ Ù„Ø§ ÙŠÙ†ØªÙ…ÙŠ Ù„Ø­Ø³Ø§Ø¨Ùƒ' }, { status: 404 });
+    if (!order) return NextResponse.json({ error: 'Ø§Ù„Ø·Ù„Ø¨ ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯ Ø£Ùˆ Ù„Ø§ ÙŠÙØªÙ…ÙŠ Ù„Ø­Ø³Ø§Ø¨Ùƒ' }, { status: 404 });
     if (!['delivered', 'completed'].includes(order.status as string))
-      return NextResponse.json({ error: 'Ù„Ø§ ÙŠÙ…ÙƒÙ† Ø·Ù„Ø¨ Ø§Ù„Ø§Ø³ØªØ¨Ø¯Ø§Ù„ Ø¥Ù„Ø§ Ø¨Ø¹Ø¯ Ø§Ø³ØªÙ„Ø§Ù… Ø§Ù„Ø·Ù„Ø¨' }, { status: 400 });
+      return NextResponse.json({ error: 'Ù„Ø§ ÙŠÙ…ÙƒÙ Ø·Ù„Ø¨ Ø§Ù„Ø§Ø³ØªØ¨Ø¯Ø§Ù„ Ø¥Ù„Ø§ Ø¨Ø¹Ø¯ Ø§Ø³ØªÙ„Ø§Ù… Ø§Ù„Ø·Ù„Ø¨' }, { status: 400 });
 
     const { data: exchange, error: insertErr } = await admin
       .from('exchange_requests')

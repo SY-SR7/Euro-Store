@@ -1,4 +1,3 @@
-'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 
@@ -46,7 +45,7 @@ export default function AdminSubAdminsPage() {
     });
     const data = await res.json() as { error?: string };
     if (res.ok) {
-      setMsg('ØªÙ… Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„ Ø§Ù„ÙØ±Ø¹ÙŠ Ø¨Ù†Ø¬Ø§Ø­');
+      setMsg('ØªÙ… Ø¥ÙØ´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„ Ø§Ù„ÙØ±Ø¹ÙŠ Ø¨ÙØ¬Ø§Ø­');
       setShowForm(false);
       setForm({ email: '', password: '', display_name: '' });
       loadSubAdmins();
@@ -84,14 +83,14 @@ export default function AdminSubAdminsPage() {
       {/* Create form */}
       {showForm && (
         <form onSubmit={(e) => void handleCreate(e)} className="rounded-lg border border-[#2E2E2E] bg-[#111] p-6 space-y-4">
-          <h2 className="font-semibold text-[#E2E2E2] mb-2">Ø¥Ù†Ø´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ù…Ø³Ø¤ÙˆÙ„ ÙØ±Ø¹ÙŠ Ø¬Ø¯ÙŠØ¯</h2>
+          <h2 className="font-semibold text-[#E2E2E2] mb-2">Ø¥ÙØ´Ø§Ø¡ Ø­Ø³Ø§Ø¨ Ù…Ø³Ø¤ÙˆÙ„ ÙØ±Ø¹ÙŠ Ø¬Ø¯ÙŠØ¯</h2>
           {err && <p className="text-sm text-red-400">{err}</p>}
           <div>
             <label className="block text-xs text-[#9CA3AF] mb-1">Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø¸Ø§Ù‡Ø±</label>
             <input className={inputCls} value={form.display_name} onChange={e => setForm(f => ({ ...f, display_name: (e.target as unknown as HTMLInputElement).value }))} placeholder="Ø§Ø³Ù… Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„" required />
           </div>
           <div>
-            <label className="block text-xs text-[#9CA3AF] mb-1">Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ</label>
+            <label className="block text-xs text-[#9CA3AF] mb-1">Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙÙŠ</label>
             <input className={inputCls} type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: (e.target as unknown as HTMLInputElement).value }))} placeholder="admin@example.com" required />
           </div>
           <div>
@@ -103,7 +102,7 @@ export default function AdminSubAdminsPage() {
             disabled={creating}
             className="rounded-sm bg-[#C9A84C] px-5 py-2 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] disabled:opacity-50 transition-colors"
           >
-            {creating ? 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø¥Ù†Ø´Ø§Ø¡...' : 'Ø¥Ù†Ø´Ø§Ø¡ Ø§Ù„Ø­Ø³Ø§Ø¨'}
+            {creating ? 'Ø¬Ø§Ø±ÙŠ Ø§Ù„Ø¥ÙØ´Ø§Ø¡...' : 'Ø¥ÙØ´Ø§Ø¡ Ø§Ù„Ø­Ø³Ø§Ø¨'}
           </button>
         </form>
       )}
@@ -113,7 +112,7 @@ export default function AdminSubAdminsPage() {
         <p className="text-[#9CA3AF]">{t('common.loading')}</p>
       ) : subAdmins.length === 0 ? (
         <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-8 text-center text-[#9CA3AF]">
-          Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø³Ø¤ÙˆÙ„ÙˆÙ† ÙØ±Ø¹ÙŠÙˆÙ† Ø­ØªÙ‰ Ø§Ù„Ø¢Ù†
+          Ù„Ø§ ÙŠÙˆØ¬Ø¯ Ù…Ø³Ø¤ÙˆÙ„ÙˆÙ ÙØ±Ø¹ÙŠÙˆÙ Ø­ØªÙ‰ Ø§Ù„Ø¢Ù
         </div>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-[#2E2E2E]">
@@ -121,9 +120,9 @@ export default function AdminSubAdminsPage() {
             <thead className="bg-[#1A1A1A] text-[#9CA3AF]">
               <tr>
                 <th className="px-4 py-3 text-start">Ø§Ù„Ø§Ø³Ù…</th>
-                <th className="px-4 py-3 text-start">Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ</th>
+                <th className="px-4 py-3 text-start">Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙÙŠ</th>
                 <th className="px-4 py-3 text-start">Ø§Ù„Ø­Ø§Ù„Ø©</th>
-                <th className="px-4 py-3 text-start">ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¥Ù†Ø´Ø§Ø¡</th>
+                <th className="px-4 py-3 text-start">ØªØ§Ø±ÙŠØ® Ø§Ù„Ø¥ÙØ´Ø§Ø¡</th>
                 <th className="px-4 py-3 text-start"></th>
               </tr>
             </thead>

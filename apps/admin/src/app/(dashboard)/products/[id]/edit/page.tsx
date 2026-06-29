@@ -35,7 +35,7 @@ export default async function EditProductPage({ params }: Props) {
           href="/products"
           className="text-sm text-[#9CA3AF] hover:text-[#C9A84C] transition-colors"
         >
-          ← {t('pageTitle')}
+           {t('pageTitle')}
         </Link>
         <span className="text-[#2E2E2E]">/</span>
         <span className="text-sm text-[#6B7280]">{product.name_ar}</span>

@@ -1,4 +1,3 @@
-'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -67,7 +66,7 @@ export default function OrderDetailPage() {
           {allowed.map(s => (
             <button key={s} onClick={() => void changeStatus(s)} disabled={updating}
               className="rounded bg-[#C9A84C] px-4 py-2 text-sm font-medium text-[#111] hover:bg-[#b8943e] disabled:opacity-50">
-              → {s}
+               {s}
             </button>
           ))}
         </div>

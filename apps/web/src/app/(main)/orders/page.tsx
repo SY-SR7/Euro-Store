@@ -43,7 +43,7 @@ export default async function CustomerOrdersPage(): Promise<JSX.Element> {
       <div className="mx-auto max-w-3xl">
         <nav className="mb-8">
           <Link href="/" className="text-[#C9A84C] text-sm hover:underline">
-            ← {t('common.appName')}
+             {t('common.appName')}
           </Link>
         </nav>
 

@@ -64,7 +64,7 @@ export async function POST(request: Request) {
       notes,
     } = parsed.data;
 
-    // ¢â‚¬¢â‚¬ Fetch real shipping rate ¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬
+    // ¢‚¬¢‚¬ Fetch real shipping rate ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
     const govAr = govIdToAr(address_snapshot.governorate);
     const { data: shippingRow } = await supabase
       .from('shipping_rates')
@@ -82,7 +82,7 @@ export async function POST(request: Request) {
       shipping_syp = 0;
     }
 
-    // ¢â‚¬¢â‚¬ Validate loyalty points if used ¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬
+    // ¢‚¬¢‚¬ Validate loyalty points if used ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
     if (loyalty_points_used > 0 && user) {
       const { data: profile } = await supabase
         .from('customer_profiles')
@@ -96,19 +96,19 @@ export async function POST(request: Request) {
       }
     }
 
-    // ¢â‚¬¢â‚¬ Compute total ¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬
+    // ¢‚¬¢‚¬ Compute total ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
     const total_syp = Math.max(
       0,
       subtotal_syp - discount_syp - loyalty_discount_syp + shipping_syp,
     );
 
-    // ¢â‚¬¢â‚¬ Generate order number ¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬
+    // ¢‚¬¢‚¬ Generate order number ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
     const { data: orderNum, error: numErr } = await supabase.rpc('generate_order_number');
     if (numErr || !orderNum) {
       return NextResponse.json({ error: 'order_number_failed' }, { status: 500 });
     }
 
-    // ¢â‚¬¢â‚¬ Insert order ¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬
+    // ¢‚¬¢‚¬ Insert order ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
     const { data: order, error: orderErr } = await supabase
       .from('orders')
       .insert({
@@ -134,7 +134,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: orderErr?.message ?? 'order_failed' }, { status: 500 });
     }
 
-    // ¢â‚¬¢â‚¬ Fetch variant snapshots ¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬
+    // ¢‚¬¢‚¬ Fetch variant snapshots ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
     const variantIds = items.map((i) => i.variant_id);
     const { data: variants } = await supabase
       .from('product_variants')
@@ -168,7 +168,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: itemsErr.message }, { status: 500 });
     }
 
-    // ¢â‚¬¢â‚¬ Increment discount code usage ¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬
+    // ¢‚¬¢‚¬ Increment discount code usage ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
     if (discount_id) {
       await supabase.rpc('increment_discount_usage' as never, { p_discount_id: discount_id });
       // Fallback: plain update if RPC doesn't exist yet
@@ -178,7 +178,7 @@ export async function POST(request: Request) {
         .eq('id', discount_id);
     }
 
-    // ¢â‚¬¢â‚¬ Award loyalty points (10 pts per 1000 SYP) ¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬¢â‚¬
+    // ¢‚¬¢‚¬ Award loyalty points (10 pts per 1000 SYP) ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
     if (user && total_syp > 0) {
       const systemSettings = await supabase
         .from('system_settings')

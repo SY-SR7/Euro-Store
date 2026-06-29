@@ -61,7 +61,7 @@ export default function AdminDashboardPage() {
         <p className="text-[#9CA3AF]">{t('common.loading')}</p>
       ) : (
         <>
-          {/* â”€â”€ Stat Cards â”€â”€ */}
+          {/* ”€”€ Stat Cards ”€”€ */}
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {statCards.map((card) => (
               <Link
@@ -75,7 +75,7 @@ export default function AdminDashboardPage() {
             ))}
           </div>
 
-          {/* â”€â”€ Recent Orders â”€â”€ */}
+          {/* ”€”€ Recent Orders ”€”€ */}
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-[#E2E2E2]">Ø¢Ø®Ø± Ø§Ù„Ø·Ù„Ø¨Ø§Øª</h2>
