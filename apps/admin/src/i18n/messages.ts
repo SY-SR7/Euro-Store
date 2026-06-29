@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // Auto-generated from packages/shared/src/messages/*.json
 
 const ar = {
