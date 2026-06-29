@@ -1,4 +1,4 @@
-{
+﻿{
     "catalog":  {
                     "addToCart":  "أضف إلى السلة",
                     "categories":  "التصنيفات",
@@ -237,7 +237,23 @@
                      "applyCode": "تطبيق",
                      "confirmOrder": "إتمام الطلب",
                      "freeShipping": "شحن مجاني",
-                     "selectGov": "اختر المحافظة"
+                     "selectGov": "اختر المحافظة",                     "invalidCode": "كود الخصم غير صالح",
+                     "codeExpired": "انتهت صلاحية الكود",
+                     "codeMaxed": "تجاوز الكود الحد الأقصى للاستخدام",
+                     "codeInactive": "الكود غير نشط",
+                     "minOrderNotMet": "الطلب أقل من الحد الأدنى للكود",
+                     "orderFailed": "فشل إنشاء الطلب، يرجى المحاولة مرة أخرى",
+                     "removeCode": "إزالة",
+                     "codeApplied": "تم تطبيق الكود",
+                     "usePoints": "استخدام نقاطي للحصول على خصم",
+                     "yourPoints": "نقاطك:",
+                     "pointsWorth": "تساوي",
+                     "loyaltyDiscount": "خصم النقاط",
+                     "discount": "الخصم",
+                     "successTitle": "تم تأكيد طلبك!",
+                     "successMsg": "رقم طلبك:",
+                     "backHome": "العودة للرئيسية",
+                     "itemCount": "عدد المنتجات"
                  },
     "inStock":  "متوفر",
     "rightsReserved":  "جميع الحقوق محفوظة",

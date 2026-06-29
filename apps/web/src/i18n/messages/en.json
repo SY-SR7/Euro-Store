@@ -1,4 +1,4 @@
-{
+﻿{
     "catalog":  {
                     "addToCart":  "Add to cart",
                     "categories":  "Categories",
@@ -237,7 +237,23 @@
                      "applyCode": "Apply",
                      "confirmOrder": "Complete order",
                      "freeShipping": "Free shipping",
-                     "selectGov": "Select Governorate"
+                     "selectGov": "Select Governorate",                     "invalidCode": "Invalid discount code",
+                     "codeExpired": "Discount code has expired",
+                     "codeMaxed": "Code has reached its usage limit",
+                     "codeInactive": "Code is inactive",
+                     "minOrderNotMet": "Order does not meet minimum amount for this code",
+                     "orderFailed": "Failed to place order, please try again",
+                     "removeCode": "Remove",
+                     "codeApplied": "Code applied",
+                     "usePoints": "Use my loyalty points for a discount",
+                     "yourPoints": "Your points:",
+                     "pointsWorth": "worth",
+                     "loyaltyDiscount": "Loyalty discount",
+                     "discount": "Discount",
+                     "successTitle": "Order confirmed!",
+                     "successMsg": "Your order number:",
+                     "backHome": "Back to Home",
+                     "itemCount": "Item count"
                  },
     "inStock":  "In stock",
     "rightsReserved":  "All rights reserved",

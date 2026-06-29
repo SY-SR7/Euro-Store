@@ -1,417 +1,374 @@
-'use client';
+﻿'use client';
 /* eslint-disable */
 // @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { useCartStore } from '@/lib/cart/cartStore';
-import { cartItemsToOrderPayload, getCartSubtotal } from '@/lib/cart/cartUtils';
-import { formatSYP, GOVERNORATES } from '@eurostore/shared';
+import { createBrowserClient } from '@supabase/ssr';
 
-/* ”€”€ Types ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */
-interface DiscountResult {
-  discount_id:     string;
-  discount_amount: number;
-  type:            string;
-  value:           number;
+const GOVS = [
+  { id: 'damascus', ar: 'دمشق' }, { id: 'aleppo', ar: 'حلب' },
+  { id: 'homs', ar: 'حمص' }, { id: 'hama', ar: 'حماة' },
+  { id: 'latakia', ar: 'اللاذقية' }, { id: 'tartus', ar: 'طرطوس' },
+  { id: 'idlib', ar: 'إدلب' }, { id: 'deir_ez_zor', ar: 'دير الزور' },
+  { id: 'raqqa', ar: 'الرقة' }, { id: 'hasakah', ar: 'الحسكة' },
+  { id: 'qamishli', ar: 'القامشلي' }, { id: 'daraa', ar: 'درعا' },
+  { id: 'quneitra', ar: 'القنيطرة' }, { id: 'suwayda', ar: 'السويداء' },
+  { id: 'rural_damascus', ar: 'ريف دمشق' },
+];
+
+function fmt(n: number) {
+  return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
 }
 
-interface ShippingResult {
-  base_rate_syp:              number;
-  free_shipping_threshold_syp: number | null;
+function getSubtotal(items: any[]) {
+  return items.reduce((s: number, i: any) => s + i.priceSyp * i.quantity, 0);
 }
 
-/* ”€”€ Component ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */
+function cartToPayload(items: any[]) {
+  return items.map((i: any) => ({
+    variant_id:    i.variantId,
+    quantity:      i.quantity,
+    unit_price_syp: i.priceSyp,
+    product_snapshot: { name_ar: i.nameAr, sku: i.sku },
+  }));
+}
+
 export default function CheckoutPage() {
-  const t      = useTranslations();
   const router = useRouter();
   const { items, clearCart } = useCartStore();
 
-  /* form state */
-  const [submitting, setSubmitting]   = useState(false);
-  const [formError,  setFormError]    = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [formError,  setFormError]  = useState('');
 
-  /* shipping */
-  const [governorate,   setGovernorate]   = useState('');
-  const [shippingRate,  setShippingRate]  = useState<ShippingResult | null>(null);
-  const [loadingShip,   setLoadingShip]   = useState(false);
+  // Shipping
+  const [governorate,  setGovernorate]  = useState('');
+  const [shippingRate, setShippingRate] = useState<any>(null);
+  const [loadingShip,  setLoadingShip]  = useState(false);
 
-  /* discount code */
-  const [codeInput,     setCodeInput]     = useState('');
-  const [applyingCode,  setApplyingCode]  = useState(false);
-  const [codeError,     setCodeError]     = useState('');
-  const [discount,      setDiscount]      = useState<DiscountResult | null>(null);
+  // Discount
+  const [codeInput,    setCodeInput]    = useState('');
+  const [applyingCode, setApplyingCode] = useState(false);
+  const [codeError,    setCodeError]    = useState('');
+  const [discount,     setDiscount]     = useState<any>(null);
 
-  /* loyalty (guest users: points = 0) */
-  const [loyaltyPoints,      setLoyaltyPoints]      = useState(0);
-  const [usePoints,          setUsePoints]           = useState(false);
-  const [loadingPoints,      setLoadingPoints]       = useState(false);
+  // Loyalty
+  const [loyaltyPoints, setLoyaltyPoints] = useState(0);
+  const [usePoints,     setUsePoints]     = useState(false);
+  const [loyaltySettings, setLoyaltySettings] = useState({
+    redeem_points_per_syp: 100,
+    max_redeem_percent: 30,
+  });
 
-  const subtotal = getCartSubtotal(items);
+  const subtotal = getSubtotal(items);
 
-  /* ”€”€ Fetch shipping when governorate changes ”€”€”€”€”€”€”€”€”€”€”€ */
+  // Fetch shipping
   useEffect(() => {
     if (!governorate) { setShippingRate(null); return; }
     setLoadingShip(true);
     fetch(`/api/checkout/shipping?gov=${encodeURIComponent(governorate)}`)
       .then(r => r.ok ? r.json() : null)
-      .then((d: ShippingResult | null) => { setShippingRate(d); setLoadingShip(false); })
+      .then(d => { setShippingRate(d); setLoadingShip(false); })
       .catch(() => setLoadingShip(false));
   }, [governorate]);
 
-  /* ”€”€ Fetch loyalty points for logged-in user ”€”€”€”€”€”€”€”€”€”€”€ */
+  // Fetch loyalty
   useEffect(() => {
-    setLoadingPoints(true);
     fetch('/api/loyalty/balance')
       .then(r => r.ok ? r.json() : { points: 0 })
-      .then((d: { points: number }) => setLoyaltyPoints(d.points ?? 0))
-      .catch(() => setLoyaltyPoints(0))
-      .finally(() => setLoadingPoints(false));
-  }, []);
-
-  /* ”€”€ Computed values ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */
-  const shippingSyp: number = (() => {
-    if (!shippingRate) return 0;
-    if (shippingRate.free_shipping_threshold_syp &&
-        subtotal >= shippingRate.free_shipping_threshold_syp) return 0;
-    return shippingRate.base_rate_syp;
-  })();
-
-  const discountSyp = discount?.discount_amount ?? 0;
-
-  // ── Loyalty settings loaded from DB (via /api/loyalty/settings) ──
-  const [loyaltySettings, setLoyaltySettings] = useState({
-    redeem_points_per_syp: 100,   // كم نقطة = 1 ل.س
-    max_redeem_percent:    30,    // أقصى % يمكن خصمها
-    earn_amount_syp:       1000,  // كل X ل.س = earn_points نقطة
-    earn_points:           10,
-  });
-
-  useEffect(() => {
+      .then((d: any) => setLoyaltyPoints(d.points ?? 0))
+      .catch(() => {});
     fetch('/api/loyalty/settings')
       .then(r => r.ok ? r.json() : null)
-      .then((d: { redeem_points_per_syp?: number; max_redeem_percent?: number; earn_amount_syp?: number; earn_points?: number } | null) => {
-        if (d) setLoyaltySettings({
-          redeem_points_per_syp: d.redeem_points_per_syp ?? 100,
-          max_redeem_percent:    d.max_redeem_percent    ?? 30,
-          earn_amount_syp:       d.earn_amount_syp       ?? 1000,
-          earn_points:           d.earn_points           ?? 10,
-        });
-      })
+      .then((d: any) => { if (d) setLoyaltySettings({ redeem_points_per_syp: d.redeem_points_per_syp ?? 100, max_redeem_percent: d.max_redeem_percent ?? 30 }); })
       .catch(() => {});
   }, []);
 
-  // قيمة النقطة الواحدة بالليرة السورية
-  const POINT_VALUE_SYP = loyaltySettings.redeem_points_per_syp > 0
-    ? 1 / loyaltySettings.redeem_points_per_syp
-    : 0.01;
-  const MAX_LOYALTY_PCT = loyaltySettings.max_redeem_percent / 100;
-  const loyaltyDiscountSyp: number = (() => {
+  const shippingSyp: number = (() => {
+    if (!shippingRate) return 0;
+    if (shippingRate.free_shipping_threshold_syp && subtotal >= shippingRate.free_shipping_threshold_syp) return 0;
+    return shippingRate.base_rate_syp ?? 0;
+  })();
+
+  const discountSyp = discount?.discount_amount ?? 0;
+  const POINT_VAL   = loyaltySettings.redeem_points_per_syp > 0 ? 1 / loyaltySettings.redeem_points_per_syp : 0;
+  const MAX_PCT     = loyaltySettings.max_redeem_percent / 100;
+  const loyaltyDiscountSyp = (() => {
     if (!usePoints || loyaltyPoints === 0) return 0;
-    const maxByPct = Math.floor(subtotal * MAX_LOYALTY_PCT);
-    const maxByPts = loyaltyPoints * POINT_VALUE_SYP;
+    const maxByPct = Math.floor(subtotal * MAX_PCT);
+    const maxByPts = Math.floor(loyaltyPoints * POINT_VAL);
     return Math.min(maxByPct, maxByPts);
   })();
-  const loyaltyPointsUsed: number = usePoints
-    ? Math.ceil(loyaltyDiscountSyp / POINT_VALUE_SYP)
-    : 0;
-
+  const loyaltyPointsUsed = usePoints ? Math.ceil(loyaltyDiscountSyp / POINT_VAL) : 0;
   const totalSyp = Math.max(0, subtotal - discountSyp - loyaltyDiscountSyp + shippingSyp);
 
-  /* ”€”€ Apply discount code ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */
   const applyCode = useCallback(async () => {
     if (!codeInput.trim()) return;
-    setApplyingCode(true);
-    setCodeError('');
+    setApplyingCode(true); setCodeError('');
     try {
-      const res = await fetch('/api/checkout/validate-discount', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ code: codeInput.trim(), subtotal_syp: subtotal }),
+      const res  = await fetch('/api/checkout/validate-discount', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: codeInput.trim(), subtotal_syp: subtotal }),
       });
-      const data = await res.json() as { error?: string; discount_id?: string; discount_amount?: number; type?: string; value?: number; min?: number };
+      const data = await res.json();
       if (!res.ok) {
         const errMap: Record<string, string> = {
-          invalid_code:      t('checkout.invalidCode'),
-          code_expired:      t('checkout.codeExpired'),
-          code_maxed:        t('checkout.codeMaxed'),
-          code_inactive:     t('checkout.codeInactive'),
-          min_order_not_met: t('checkout.minOrderNotMet'),
+          invalid_code: 'كود غير صالح', code_expired: 'الكود منتهي الصلاحية',
+          code_maxed: 'الكود استُنفد', code_inactive: 'الكود غير نشط',
+          min_order_not_met: 'الطلب أقل من الحد الأدنى للكود',
         };
-        setCodeError(errMap[data.error ?? ''] ?? t('checkout.invalidCode'));
+        setCodeError(errMap[data.error] ?? 'كود غير صالح');
         setDiscount(null);
       } else {
-        setDiscount({
-          discount_id:     data.discount_id ?? '',
-          discount_amount: data.discount_amount ?? 0,
-          type:            data.type ?? '',
-          value:           data.value ?? 0,
-        });
+        setDiscount(data);
         setCodeError('');
       }
-    } catch {
-      setCodeError(t('checkout.invalidCode'));
-    } finally {
-      setApplyingCode(false);
-    }
-  }, [codeInput, subtotal, t]);
+    } catch { setCodeError('حدث خطأ، يرجى المحاولة مرة أخرى'); }
+    finally { setApplyingCode(false); }
+  }, [codeInput, subtotal]);
 
-  /* ”€”€ Submit order ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSubmitting(true);
-    setFormError('');
+    if (items.length === 0) { setFormError('السلة فارغة'); return; }
+    if (!governorate) { setFormError('الرجاء اختيار المحافظة'); return; }
+    setSubmitting(true); setFormError('');
 
     const d = Object.fromEntries(new FormData(e.currentTarget as HTMLFormElement));
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          address_snapshot: {
+            full_name: d.full_name, phone: d.phone,
+            governorate: d.governorate, address: d.address,
+            notes: (d.notes as string) || null,
+          },
+          items: cartToPayload(items),
+          subtotal_syp: subtotal,
+          discount_syp: discountSyp,
+          discount_id: discount?.discount_id ?? null,
+          loyalty_points_used: loyaltyPointsUsed,
+          loyalty_discount_syp: loyaltyDiscountSyp,
+          shipping_syp: shippingSyp,
+          total_syp: totalSyp,
+          notes: (d.notes as string) || null,
+        }),
+      });
 
-    const res = await fetch('/api/orders', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        address_snapshot: {
-          full_name:   d.full_name,
-          phone:       d.phone,
-          governorate: d.governorate,
-          address:     d.address,
-          notes:       (d.notes as string) || null,
-        },
-        items:                cartItemsToOrderPayload(items),
-        subtotal_syp:         subtotal,
-        discount_syp:         discountSyp,
-        discount_id:          discount?.discount_id ?? null,
-        loyalty_points_used:  loyaltyPointsUsed,
-        loyalty_discount_syp: loyaltyDiscountSyp,
-        notes:                (d.notes as string) || null,
-      }),
-    });
-
-    if (res.ok) {
-      const { order_number } = (await res.json()) as { order_number: string };
-      clearCart();
-      router.push(`/orders/${order_number}`);
-    } else {
-      setFormError(t('checkout.orderFailed'));
+      if (res.ok) {
+        const body = await res.json();
+        clearCart();
+        router.push(`/orders/${body.order_number}`);
+      } else {
+        const err = await res.json().catch(() => null);
+        setFormError(err?.error ?? 'فشل إنشاء الطلب، يرجى المحاولة مرة أخرى');
+        setSubmitting(false);
+      }
+    } catch {
+      setFormError('حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى');
       setSubmitting(false);
     }
   }
 
-  /* ”€”€ Empty cart ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */
   if (items.length === 0) {
     return (
-      <main className="min-h-screen bg-[#FAF7EF] px-6 py-10 text-[#1F1B16]">
-        <div className="mx-auto max-w-3xl text-center py-20">
-          <p className="text-[#6F6658] mb-4">{t('cart.empty')}</p>
-          <Link href="/products" className="text-[#C9A84C] hover:underline">
-            {t('cart.continueShopping')}
+      <main className="min-h-screen bg-[#FAFAF8] px-6 py-20" dir="rtl">
+        <div className="mx-auto max-w-xl text-center space-y-6">
+          <div className="text-5xl">🛒</div>
+          <h1 className="text-2xl font-black text-[#1C1917]">السلة فارغة</h1>
+          <p className="text-[#A8A29E]">أضف منتجات للسلة قبل المتابعة للدفع</p>
+          <Link href="/products"
+            className="inline-block rounded-2xl bg-[#B8860B] px-8 py-3 font-bold text-white hover:bg-[#9A7209] transition-colors">
+            تصفح المنتجات
           </Link>
         </div>
       </main>
     );
   }
 
-  const inp = "rounded border border-[#E8DCC3] bg-[#FFFDF8] px-3 py-2.5 text-[#1F1B16] outline-none focus:border-[#C9A84C] w-full text-sm";
+  const inp = "w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2.5 text-[#1C1917] text-sm outline-none focus:border-[#B8860B] transition-colors";
 
   return (
-    <main className="min-h-screen bg-[#FAF7EF] px-6 py-10 text-[#1F1B16]">
-      <div className="mx-auto max-w-4xl">
-        {/* Nav */}
-        <nav className="flex items-center justify-between border-b border-[#E8DCC3] pb-5 mb-10">
-          <Link href="/" className="text-xl font-semibold text-[#C9A84C]">{t('common.appName')}</Link>
-          <Link href="/cart" className="text-sm text-[#D6D3C7]">{t('cart.title')}</Link>
-        </nav>
+    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir="rtl">
+      <div className="mx-auto max-w-5xl">
+        {/* Header */}
+        <div className="mb-8 flex items-center gap-3">
+          <Link href="/cart" className="text-sm text-[#B8860B] hover:underline">← السلة</Link>
+          <span className="text-[#D1CBC1]">/</span>
+          <h1 className="text-2xl font-black text-[#1C1917]">إتمام الطلب</h1>
+        </div>
 
-        <h1 className="text-3xl font-semibold mb-8">{t('checkout.title')}</h1>
+        <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
-
-          {/* ”€”€ Left: Form ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          {/* ── Left: Form ── */}
+          <form onSubmit={handleSubmit} className="space-y-5">
             {formError && (
-              <p className="rounded border border-red-800 bg-red-900/20 p-4 text-sm text-red-400">
+              <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
                 {formError}
-              </p>
+              </div>
             )}
 
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#6F6658]">{t('checkout.fullName')} *</span>
-              <input name="full_name" required minLength={2} className={inp} />
-            </label>
+            {/* Personal info */}
+            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 space-y-4 shadow-sm">
+              <h2 className="font-black text-[#1C1917]">معلومات التواصل</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-[#57534E]">الاسم الكامل *</label>
+                  <input name="full_name" required minLength={2} className={inp} placeholder="أحمد محمد" />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-[#57534E]">رقم الهاتف *</label>
+                  <input name="phone" required type="tel" minLength={7} className={inp} placeholder="09xxxxxxxx" dir="ltr" />
+                </div>
+              </div>
+            </div>
 
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#6F6658]">{t('checkout.phone')} *</span>
-              <input name="phone" required type="tel" minLength={7}
-                className={inp} placeholder="09xxxxxxxx" dir="ltr" />
-            </label>
+            {/* Delivery */}
+            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 space-y-4 shadow-sm">
+              <h2 className="font-black text-[#1C1917]">عنوان التوصيل</h2>
+              <div>
+                <label className="mb-1.5 block text-xs font-bold text-[#57534E]">المحافظة *</label>
+                <select name="governorate" required className={inp} value={governorate}
+                  onChange={e => setGovernorate((e.target as any).value)}>
+                  <option value="">اختر المحافظة</option>
+                  {GOVS.map(g => <option key={g.id} value={g.id}>{g.ar}</option>)}
+                </select>
+                {/* Shipping cost indicator */}
+                {governorate && (
+                  <p className="mt-1.5 text-xs text-[#A8A29E]">
+                    {loadingShip ? 'جاري حساب الشحن...' :
+                     shippingSyp === 0 ? '✓ شحن مجاني لهذه المنطقة' :
+                     `رسوم الشحن: ${fmt(shippingSyp)}`}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-bold text-[#57534E]">العنوان التفصيلي *</label>
+                <textarea name="address" required minLength={5} rows={3}
+                  className={`${inp} resize-none`} placeholder="الحي، الشارع، رقم المبنى..." />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-bold text-[#57534E]">
+                  ملاحظات <span className="font-normal text-[#A8A29E]">(اختياري)</span>
+                </label>
+                <textarea name="notes" rows={2} className={`${inp} resize-none`}
+                  placeholder="أي تعليمات خاصة للتوصيل..." />
+              </div>
+            </div>
 
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#6F6658]">{t('checkout.governorate')} *</span>
-              <select
-                name="governorate"
-                required
-                className={inp}
-                value={governorate}
-                onChange={(e) => setGovernorate((e.target as unknown as HTMLInputElement).value)}
-              >
-                <option value="">{t('checkout.selectGov')}</option>
-                {GOVERNORATES.map(g => (
-                  <option key={g.id} value={g.id}>{g.ar}</option>
-                ))}
-              </select>
-            </label>
-
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#6F6658]">{t('checkout.address')} *</span>
-              <textarea name="address" required minLength={5} rows={3}
-                className={`${inp} resize-y`} />
-            </label>
-
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#6F6658]">
-                {t('checkout.notes')}{' '}
-                <span className="text-[#8B8172]">({t('checkout.notesHint')})</span>
-              </span>
-              <textarea name="notes" rows={2} className={`${inp} resize-y`} />
-            </label>
-
-            {/* ”€”€ Discount Code ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */}
-            <div className="flex flex-col gap-2">
-              <span className="text-sm text-[#6F6658]">{t('checkout.discountCode')}</span>
+            {/* Discount code */}
+            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 space-y-3 shadow-sm">
+              <h2 className="font-black text-[#1C1917]">كود الخصم</h2>
               {discount ? (
-                <div className="flex items-center justify-between rounded border border-green-800 bg-green-900/10 px-4 py-2.5">
-                  <span className="text-sm text-green-400">
-                    {t('checkout.codeApplied')} ” {discount.type === 'percentage' ? `${discount.value}%` : formatSYP(discount.discount_amount)}
+                <div className="flex items-center justify-between rounded-xl border border-green-200 bg-green-50 px-4 py-3">
+                  <span className="text-sm font-bold text-green-700">
+                    ✓ تم تطبيق الكود — خصم {discount.type === 'percentage' ? `${discount.value}%` : fmt(discount.discount_amount)}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => { setDiscount(null); setCodeInput(''); setCodeError(''); }}
-                    className="text-xs text-red-400 hover:text-red-300 ms-4"
-                  >
-                    {t('checkout.removeCode')}
+                  <button type="button" onClick={() => { setDiscount(null); setCodeInput(''); setCodeError(''); }}
+                    className="text-xs font-bold text-red-500 hover:underline mr-3">
+                    إزالة
                   </button>
                 </div>
               ) : (
                 <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={codeInput}
-                    onChange={e => setCodeInput((e.target as unknown as HTMLInputElement).value.toUpperCase())}
-                    placeholder="EURO2026"
-                    className={`${inp} flex-1`}
-                    dir="ltr"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => void applyCode()}
+                  <input type="text" value={codeInput}
+                    onChange={e => setCodeInput((e.target as any).value.toUpperCase())}
+                    placeholder="EURO2026" className={`${inp} flex-1 font-mono`} dir="ltr" />
+                  <button type="button" onClick={() => void applyCode()}
                     disabled={applyingCode || !codeInput.trim()}
-                    className="rounded border border-[#C9A84C] px-4 py-2 text-sm text-[#C9A84C] hover:bg-[#C9A84C]/10 disabled:opacity-40"
-                  >
-                    {applyingCode ? '...' : t('checkout.applyCode')}
+                    className="rounded-xl border-2 border-[#B8860B] px-5 py-2 text-sm font-bold text-[#B8860B] hover:bg-[#B8860B] hover:text-white transition-all disabled:opacity-40">
+                    {applyingCode ? '...' : 'تطبيق'}
                   </button>
                 </div>
               )}
-              {codeError && (
-                <p className="text-xs text-red-400">{codeError}</p>
-              )}
+              {codeError && <p className="text-xs text-red-600">{codeError}</p>}
             </div>
 
-            {/* ”€”€ Loyalty Points ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */}
-            {!loadingPoints && loyaltyPoints > 0 && (
-              <div className="rounded border border-[#E8DCC3] bg-[#FFFDF8] p-4">
+            {/* Loyalty points */}
+            {loyaltyPoints > 0 && (
+              <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
                 <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={usePoints}
+                  <input type="checkbox" checked={usePoints}
                     onChange={e => setUsePoints((e.target as HTMLInputElement).checked)}
-                    className="mt-0.5 accent-[#C9A84C]"
-                  />
-                  <div className="flex flex-col gap-0.5 text-sm">
-                    <span className="text-[#1F1B16]">{t('checkout.usePoints')}</span>
-                    <span className="text-[#6F6658]">
-                      {t('checkout.yourPoints')} {loyaltyPoints.toLocaleString()}
-                      {' · '}
-                      {t('checkout.pointsWorth')}{' '}
-                      {formatSYP(loyaltyPoints * POINT_VALUE_SYP)}
-                    </span>
+                    className="mt-0.5 h-4 w-4 accent-[#B8860B]" />
+                  <div className="space-y-0.5">
+                    <p className="text-sm font-bold text-[#1C1917]">استخدام نقاطي للحصول على خصم</p>
+                    <p className="text-xs text-[#A8A29E]">
+                      لديك {loyaltyPoints.toLocaleString()} نقطة · تساوي {fmt(loyaltyPoints * POINT_VAL)}
+                    </p>
                     {usePoints && loyaltyDiscountSyp > 0 && (
-                      <span className="text-green-400 text-xs">
-                        ˆ’ {formatSYP(loyaltyDiscountSyp)} ({loyaltyPointsUsed} {'\u0646\u0642\u0637\u0629'})
-                      </span>
+                      <p className="text-xs font-bold text-[#B8860B]">سيتم خصم {fmt(loyaltyDiscountSyp)}</p>
                     )}
                   </div>
                 </label>
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={submitting}
-              className="rounded-sm bg-[#C9A84C] py-3 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors disabled:opacity-50"
-            >
-              {submitting ? t('common.loading') : t('checkout.confirmOrder')}
+            <button type="submit" disabled={submitting}
+              className="w-full rounded-2xl bg-[#B8860B] py-4 text-base font-black text-white hover:bg-[#9A7209] transition-colors disabled:opacity-50 active:scale-[0.98]">
+              {submitting ? 'جاري معالجة الطلب...' : 'تأكيد الطلب'}
             </button>
           </form>
 
-          {/* ”€”€ Right: Order Summary ”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€”€ */}
-          <div className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-6 h-fit sticky top-6">
-            <h2 className="text-lg font-semibold mb-4">{t('cart.orderSummary')}</h2>
-
-            {/* Items */}
-            <div className="flex flex-col gap-2 text-sm mb-4">
-              {items.map(i => (
-                <div key={i.variantId} className="flex justify-between text-[#6F6658]">
-                  <span className="truncate me-2">{i.nameAr} — {i.quantity}</span>
-                  <span className="shrink-0">{formatSYP(i.priceSyp * i.quantity)}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Price breakdown */}
-            <div className="flex flex-col gap-2 text-sm border-t border-[#E8DCC3] pt-4">
-              <div className="flex justify-between text-[#6F6658]">
-                <span>{t('checkout.subtotal')}</span>
-                <span>{formatSYP(subtotal)}</span>
+          {/* ── Right: Summary ── */}
+          <div className="h-fit sticky top-6 space-y-4">
+            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+              <h2 className="mb-4 font-black text-[#1C1917]">ملخص الطلب ({items.length} منتج)</h2>
+              <div className="space-y-3">
+                {items.map((i: any) => (
+                  <div key={i.variantId} className="flex items-center gap-3">
+                    {i.imageUrl && (
+                      <img src={i.imageUrl} alt={i.nameAr}
+                        className="h-12 w-12 rounded-xl object-cover border border-[#E5E0D8] flex-shrink-0" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-[#1C1917] truncate">{i.nameAr}</p>
+                      <p className="text-xs text-[#A8A29E]">{i.sku} · الكمية: {i.quantity}</p>
+                    </div>
+                    <span className="text-sm font-bold text-[#B8860B] shrink-0">
+                      {fmt(i.priceSyp * i.quantity)}
+                    </span>
+                  </div>
+                ))}
               </div>
 
-              {/* Shipping */}
-              <div className="flex justify-between text-[#6F6658]">
-                <span>{t('checkout.shipping')}</span>
-                <span>
-                  {!governorate
-                    ? '”'
-                    : loadingShip
-                    ? '...'
-                    : shippingSyp === 0
-                    ? <span className="text-green-400">{t('checkout.freeShipping')}</span>
-                    : formatSYP(shippingSyp)
-                  }
-                </span>
+              <div className="mt-5 space-y-2 border-t border-[#F0ECE6] pt-4 text-sm">
+                <div className="flex justify-between text-[#57534E]">
+                  <span>المجموع الفرعي</span>
+                  <span>{fmt(subtotal)}</span>
+                </div>
+                <div className="flex justify-between text-[#57534E]">
+                  <span>الشحن</span>
+                  <span>
+                    {!governorate ? <span className="text-[#A8A29E]">—</span> :
+                     loadingShip ? '...' :
+                     shippingSyp === 0 ? <span className="text-green-600 font-bold">مجاني</span> :
+                     fmt(shippingSyp)}
+                  </span>
+                </div>
+                {discountSyp > 0 && (
+                  <div className="flex justify-between text-green-600 font-semibold">
+                    <span>خصم الكود</span>
+                    <span>- {fmt(discountSyp)}</span>
+                  </div>
+                )}
+                {loyaltyDiscountSyp > 0 && (
+                  <div className="flex justify-between text-[#B8860B] font-semibold">
+                    <span>خصم النقاط</span>
+                    <span>- {fmt(loyaltyDiscountSyp)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between border-t border-[#F0ECE6] pt-3 text-base font-black text-[#1C1917]">
+                  <span>الإجمالي</span>
+                  <span className="text-[#B8860B]">{fmt(totalSyp)}</span>
+                </div>
               </div>
-
-              {/* Discount code */}
-              {discountSyp > 0 && (
-                <div className="flex justify-between text-green-400">
-                  <span>{t('checkout.discount')}</span>
-                  <span>ˆ’ {formatSYP(discountSyp)}</span>
-                </div>
-              )}
-
-              {/* Loyalty */}
-              {loyaltyDiscountSyp > 0 && (
-                <div className="flex justify-between text-[#C9A84C]">
-                  <span>{t('checkout.loyaltyDiscount')}</span>
-                  <span>ˆ’ {formatSYP(loyaltyDiscountSyp)}</span>
-                </div>
-              )}
             </div>
 
-            {/* Total */}
-            <div className="flex items-center justify-between font-semibold text-lg border-t border-[#E8DCC3] pt-4 mt-4">
-              <span>{t('cart.total')}</span>
-              <span className="text-[#C9A84C]">{formatSYP(totalSyp)}</span>
+            <div className="rounded-2xl border border-[#E5E0D8] bg-[#FFF8ED] p-4 text-center text-xs text-[#57534E]">
+              سيتم التواصل معك هاتفياً لتأكيد الطلب والتحقق من العنوان
             </div>
-
-            <p className="mt-4 text-xs text-[#8B8172]">{t('cart.confirmNote')}</p>
           </div>
         </div>
       </div>

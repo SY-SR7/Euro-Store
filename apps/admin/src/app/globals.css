@@ -1,4 +1,4 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -258,3 +258,21 @@ body [class*="bg-blue"] {
 }
 
 /* EURO STORE TARGETED PRODUCT POLISH END */
+
+/* ─── Text contrast global fixes ─────────────────────────────── */
+/* Ensure all table headers are always readable */
+th { color: #57534E !important; }
+/* Ensure labels are always dark enough */
+label { color: #1C1917; }
+/* Form inputs always readable */
+input, select, textarea {
+  color: #1C1917 !important;
+  background-color: #FAFAF8 !important;
+}
+/* Fix any orphaned raw key display (key.like.this) */
+.text-muted { color: #57534E; }
+/* Table cells readable */
+td { color: #1C1917; }
+/* Status badges always have proper contrast */
+.badge-active   { background: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; }
+.badge-inactive { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }

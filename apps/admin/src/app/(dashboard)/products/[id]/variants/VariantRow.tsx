@@ -1,22 +1,24 @@
-'use client';
+﻿'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { formatSYP } from '@eurostore/shared';
 
 interface Variant {
   id: string; sku: string; price_syp: number;
   compare_price_syp: number | null; stock_quantity: number; is_active: boolean;
 }
 
+function fmt(n: number) {
+  return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
+}
+
 export function VariantRow({ variant, productId: _productId }: { variant: Variant; productId: string }) {
-  const t      = useTranslations('adminCatalog');
-  const tC     = useTranslations('common');
   const router = useRouter();
   const [editing,  setEditing]  = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [toggling, setToggling] = useState(false);
   const [stock,    setStock]    = useState(variant.stock_quantity);
   const [price,    setPrice]    = useState(variant.price_syp);
+  const [isActive, setIsActive] = useState(variant.is_active);
 
   async function handleSave() {
     const res = await fetch(`/api/catalog/variants/${variant.id}`, {
@@ -27,38 +29,52 @@ export function VariantRow({ variant, productId: _productId }: { variant: Varian
     if (res.ok) { setEditing(false); router.refresh(); }
   }
 
+  async function handleToggleActive() {
+    setToggling(true);
+    const res = await fetch(`/api/catalog/variants/${variant.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_active: !isActive }),
+    });
+    if (res.ok) {
+      setIsActive(prev => !prev);
+      router.refresh();
+    }
+    setToggling(false);
+  }
+
   async function handleDelete() {
-    if (!window.confirm(t('confirmDelete'))) return;
+    if (!window.confirm(`حذف الخيار "${variant.sku}"؟`)) return;
     setDeleting(true);
     const res = await fetch(`/api/catalog/variants/${variant.id}`, { method: 'DELETE' });
     if (res.ok) router.refresh();
     else setDeleting(false);
   }
 
+  const inp = "w-24 rounded-lg border border-[#B8860B] bg-[#FAFAF8] px-2 py-1 text-sm text-[#1C1917] outline-none";
+
   if (editing) {
     return (
-      <tr className="bg-[#F3EEE3]">
-        <td className="px-4 py-3 font-mono text-xs text-[#D6D3C7]">{variant.sku}</td>
+      <tr className="bg-[#FFF8ED]">
+        <td className="px-4 py-3 font-mono text-xs text-[#57534E]">{variant.sku}</td>
         <td className="px-4 py-3">
-          <input type="number" value={price} onChange={e => setPrice(Number(e.target.value))} min={0}
-            className="w-28 rounded border border-[#C9A84C] bg-[#111] px-2 py-1 text-sm text-[#1F1B16] outline-none" />
+          <input type="number" value={price} onChange={e => setPrice(Number(e.target.value))} min={0} className={inp} />
         </td>
-        <td className="px-4 py-3 text-[#8B8172]">
-          {variant.compare_price_syp ? formatSYP(variant.compare_price_syp) : '—'}
+        <td className="px-4 py-3 text-xs text-[#A8A29E]">
+          {variant.compare_price_syp ? <span className="line-through">{fmt(variant.compare_price_syp)}</span> : '—'}
         </td>
         <td className="px-4 py-3">
-          <input type="number" value={stock} onChange={e => setStock(Number(e.target.value))} min={0}
-            className="w-20 rounded border border-[#C9A84C] bg-[#111] px-2 py-1 text-sm text-[#1F1B16] outline-none" />
+          <input type="number" value={stock} onChange={e => setStock(Number(e.target.value))} min={0} className={inp} />
         </td>
         <td colSpan={2} className="px-4 py-3">
           <div className="flex gap-2">
             <button onClick={handleSave}
-              className="rounded-sm bg-[#C9A84C] px-3 py-1 text-xs font-semibold text-[#111] hover:bg-[#D8B95F]">
-              {tC('save')}
+              className="rounded-lg bg-[#B8860B] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#9A7209]">
+              حفظ
             </button>
             <button onClick={() => setEditing(false)}
-              className="rounded-sm border border-[#E8DCC3] px-3 py-1 text-xs text-[#6F6658] hover:text-[#1F1B16]">
-              {tC('cancel')}
+              className="rounded-lg border border-[#E5E0D8] px-3 py-1.5 text-xs font-semibold text-[#57534E] hover:bg-[#F5F0E8]">
+              إلغاء
             </button>
           </div>
         </td>
@@ -67,22 +83,42 @@ export function VariantRow({ variant, productId: _productId }: { variant: Varian
   }
 
   return (
-    <tr className="hover:bg-[#161616] transition-colors">
-      <td className="px-4 py-3 font-mono text-xs text-[#D6D3C7]">{variant.sku}</td>
-      <td className="px-4 py-3 text-[#C9A84C]">{formatSYP(variant.price_syp)}</td>
-      <td className="px-4 py-3 text-[#8B8172]">
-        {variant.compare_price_syp ? <span className="line-through">{formatSYP(variant.compare_price_syp)}</span> : '—'}
+    <tr className="hover:bg-[#FAFAF8] transition-colors border-b border-[#F0ECE6]">
+      <td className="px-4 py-3 font-mono text-xs text-[#57534E]">{variant.sku}</td>
+      <td className="px-4 py-3 font-bold text-[#B8860B]">{fmt(variant.price_syp)}</td>
+      <td className="px-4 py-3 text-xs text-[#A8A29E]">
+        {variant.compare_price_syp
+          ? <span className="line-through">{fmt(variant.compare_price_syp)}</span>
+          : <span className="text-[#D1CBC1]">—</span>}
       </td>
-      <td className="px-4 py-3 text-[#D6D3C7]">{variant.stock_quantity}</td>
+      <td className="px-4 py-3 font-semibold text-[#1C1917]">{variant.stock_quantity}</td>
       <td className="px-4 py-3">
-        <span className={`rounded-sm px-2 py-0.5 text-xs font-medium ${variant.is_active ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>
-          {variant.is_active ? tC('confirm') : tC('cancel')}
-        </span>
+        {/* CLICKABLE toggle button */}
+        <button
+          onClick={handleToggleActive}
+          disabled={toggling}
+          title={isActive ? 'اضغط لتعطيل الخيار' : 'اضغط لتفعيل الخيار'}
+          className={[
+            'rounded-full px-3 py-1 text-xs font-bold border transition-all cursor-pointer select-none',
+            'hover:opacity-80 active:scale-95 disabled:opacity-40',
+            isActive
+              ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
+              : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100',
+          ].join(' ')}
+        >
+          {toggling ? '...' : isActive ? '✓ مفعّل' : '✗ معطّل'}
+        </button>
       </td>
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
-          <button onClick={() => setEditing(true)} className="text-xs text-[#C9A84C] hover:underline">{tC('edit')}</button>
-          <button onClick={handleDelete} disabled={deleting} className="text-xs text-red-400 hover:underline disabled:opacity-50">{tC('delete')}</button>
+          <button onClick={() => setEditing(true)}
+            className="text-xs font-semibold text-[#B8860B] hover:underline">
+            تعديل
+          </button>
+          <button onClick={handleDelete} disabled={deleting}
+            className="text-xs font-semibold text-red-500 hover:underline disabled:opacity-40">
+            {deleting ? '...' : 'حذف'}
+          </button>
         </div>
       </td>
     </tr>

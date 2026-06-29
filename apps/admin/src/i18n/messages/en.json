@@ -258,7 +258,24 @@
                          "deleteImage":  "Delete image",
                          "stockUpdated":  "Stock updated",
                          "sku":  "SKU",
-                         "stockUpdate":  "Update stock"
+                         "stockUpdate":  "Update stock",
+                         "priceSYP":  "Price (SYP)",
+                         "comparePriceSYP":  "Compare Price (SYP)",
+                         "stockQty":  "Stock Quantity",
+                         "weight":  "Weight (g)",
+                         "active":  "Active",
+                         "inactive":  "Inactive",
+                         "toggleActive":  "Toggle Status",
+                         "confirmDelete":  "Delete this item?",
+                         "variantLabel":  "Variant",
+                         "attrColor":  "Color",
+                         "attrSize":  "Size",
+                         "noAttr":  "—",
+                         "saveVariant":  "Save Variant",
+                         "addVariant":  "Add Variant",
+                         "variantsTitle":  "Manage Variants",
+                         "editVariantTitle":  "Edit Variant",
+                         "sku":  "SKU"
                      },
     "newArrivals":  "New arrivals",
     "cart":  {
