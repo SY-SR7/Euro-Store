@@ -1,4 +1,4 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -67,7 +67,7 @@ export default function AdminSettingsPage() {
                 <input
                   type="text"
                   value={values[s.key] ?? ''}
-                  onChange={e => setValues(v => ({ ...v, [s.key]: (e.target as HTMLInputElement).value }))}
+                  onChange={e => setValues(v => ({ ...v, [s.key]: (e.target as unknown as HTMLInputElement).value }))}
                   className="flex-1 rounded border border-[#2E2E2E] bg-[#0F0F0F] px-3 py-2 text-sm text-[#E2E2E2] outline-none focus:border-[#C9A84C] font-mono"
                 />
                 <button

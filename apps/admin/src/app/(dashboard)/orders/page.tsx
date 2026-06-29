@@ -1,4 +1,4 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -46,7 +46,7 @@ export default function AdminOrdersPage() {
         <h1 className="text-2xl font-bold text-[#E2E2E2]">{t('admin.orders')} ({total})</h1>
         <select
           value={statusFilter}
-          onChange={e => { setStatusFilter((e.target as HTMLInputElement).value); setPage(1); }}
+          onChange={e => { setStatusFilter((e.target as unknown as HTMLInputElement).value); setPage(1); }}
           className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 text-sm text-[#E2E2E2] outline-none"
         >
           {statuses.map(s => <option key={s} value={s}>{s || t('admin.allStatuses')}</option>)}

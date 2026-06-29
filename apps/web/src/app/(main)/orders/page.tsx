@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
@@ -72,7 +72,7 @@ export default async function CustomerOrdersPage(): Promise<JSX.Element> {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#2E2E2E]">
-                {(orders ?? []).map((order) => (
+                {(orders ?? []).map((order: any) => (
                   <tr key={order.id} className="hover:bg-[#161616] transition-colors">
                     <td className="px-4 py-3 font-mono text-xs text-[#C9A84C]">{order.order_number}</td>
                     <td className="px-4 py-3 text-[#9CA3AF] text-xs">

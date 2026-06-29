@@ -1,9 +1,7 @@
-﻿/* eslint-disable */
+/// <reference lib="dom" />
+/* eslint-disable */
 // @ts-nocheck
 'use client';
-
-import { useTranslations } from 'next-intl';
-
 const locales = ['ar', 'en'] as const;
 type Locale = (typeof locales)[number];
 

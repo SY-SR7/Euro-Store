@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
@@ -141,7 +141,7 @@ export async function POST(request: Request) {
       .select('id, sku, price_syp, product_id, products(name_ar, name_en, slug)')
       .in('id', variantIds);
 
-    const variantMap = new Map((variants ?? []).map((v) => [v.id, v]));
+    const variantMap = new Map((variants ?? []).map((v: any) => [v.id, v]));
 
     const orderItems = items.map((i) => {
       const v = variantMap.get(i.variant_id);

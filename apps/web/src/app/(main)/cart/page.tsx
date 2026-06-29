@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 'use client';
 import Link from 'next/link';
@@ -42,7 +42,7 @@ export default function CartPage() {
         <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
           {/* Items list */}
           <div className="flex flex-col gap-3">
-            {items.map((item) => (
+            {items.map((item: any) => (
               <div key={item.variantId}
                 className="flex items-center gap-4 rounded-md border border-[#2E2E2E] bg-[#151515] p-4">
                 <div className="flex h-20 w-16 shrink-0 items-center justify-center rounded border border-[#2E2E2E] bg-[#202020] overflow-hidden">

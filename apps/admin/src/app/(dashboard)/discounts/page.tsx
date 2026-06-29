@@ -1,4 +1,4 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -85,7 +85,7 @@ export default function AdminDiscountsPage() {
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.discountCode')}</label>
-            <input className="input-admin" value={code} onChange={(e) => setCode((e.target as HTMLInputElement).value)} placeholder="SUMMER20" />
+            <input className="input-admin" value={code} onChange={(e) => setCode((e.target as unknown as HTMLInputElement).value)} placeholder="SUMMER20" />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.discountType')}</label>
@@ -96,19 +96,19 @@ export default function AdminDiscountsPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.discountValue')}</label>
-            <input className="input-admin" type="number" value={value} onChange={(e) => setValue((e.target as HTMLInputElement).value)} placeholder="20" />
+            <input className="input-admin" type="number" value={value} onChange={(e) => setValue((e.target as unknown as HTMLInputElement).value)} placeholder="20" />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.minOrderSyp')}</label>
-            <input className="input-admin" type="number" value={minOrder} onChange={(e) => setMinOrder((e.target as HTMLInputElement).value)} placeholder="0" />
+            <input className="input-admin" type="number" value={minOrder} onChange={(e) => setMinOrder((e.target as unknown as HTMLInputElement).value)} placeholder="0" />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.validUntil')}</label>
-            <input className="input-admin" type="date" value={validUntil} onChange={(e) => setValidUntil((e.target as HTMLInputElement).value)} />
+            <input className="input-admin" type="date" value={validUntil} onChange={(e) => setValidUntil((e.target as unknown as HTMLInputElement).value)} />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-[#9CA3AF]">{t('admin.maxUses')}</label>
-            <input className="input-admin" type="number" value={maxUses} onChange={(e) => setMaxUses((e.target as HTMLInputElement).value)} placeholder="∞" />
+            <input className="input-admin" type="number" value={maxUses} onChange={(e) => setMaxUses((e.target as unknown as HTMLInputElement).value)} placeholder="∞" />
           </div>
         </div>
         <button

@@ -1,4 +1,5 @@
-﻿'use server';
+/// <reference lib="dom" />
+'use server';
 
 import { getFormString, loginSchema } from '@eurostore/shared';
 import { redirect } from 'next/navigation';

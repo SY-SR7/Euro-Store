@@ -1,4 +1,5 @@
-﻿'use server';
+/// <reference lib="dom" />
+'use server';
 
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 import {

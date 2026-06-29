@@ -150,7 +150,7 @@ export default async function ProductPage({ params }: ProductPageProps): Promise
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#2E2E2E]">
-                      {variants.map((variant) => (
+                      {variants.map((variant: any) => (
                         <tr key={variant.id}>
                           <td className="px-4 py-3 text-[#D6D3C7] font-mono text-xs">{variant.sku}</td>
                           <td className="px-4 py-3 text-[#C9A84C]">{formatSYP(variant.price_syp)}</td>

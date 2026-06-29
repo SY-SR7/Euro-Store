@@ -1,4 +1,5 @@
-﻿/* eslint-disable */
+/// <reference lib="dom" />
+/* eslint-disable */
 // @ts-nocheck
 'use client';
 import { useState, useEffect, useCallback } from 'react';
@@ -139,7 +140,7 @@ export default function CheckoutPage() {
     setSubmitting(true);
     setFormError('');
 
-    const d = Object.fromEntries(new FormData(e.currentTarget));
+    const d = Object.fromEntries(new FormData(e.currentTarget as HTMLFormElement));
 
     const res = await fetch('/api/orders', {
       method:  'POST',
@@ -227,7 +228,7 @@ export default function CheckoutPage() {
                 required
                 className={inp}
                 value={governorate}
-                onChange={(e) => setGovernorate((e.target as HTMLInputElement).value)}
+                onChange={(e) => setGovernorate((e.target as unknown as HTMLInputElement).value)}
               >
                 <option value="">{t('checkout.selectGov')}</option>
                 {GOVERNORATES.map(g => (
@@ -271,7 +272,7 @@ export default function CheckoutPage() {
                   <input
                     type="text"
                     value={codeInput}
-                    onChange={e => setCodeInput((e.target as HTMLInputElement).value.toUpperCase())}
+                    onChange={e => setCodeInput((e.target as unknown as HTMLInputElement).value.toUpperCase())}
                     placeholder="EURO2026"
                     className={`${inp} flex-1`}
                     dir="ltr"

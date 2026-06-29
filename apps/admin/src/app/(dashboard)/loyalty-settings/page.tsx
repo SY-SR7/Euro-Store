@@ -1,4 +1,4 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -84,7 +84,7 @@ export default function AdminLoyaltySettingsPage() {
               <input
                 type="number"
                 value={values[s.key] ?? ''}
-                onChange={e => setValues(v => ({ ...v, [s.key]: (e.target as HTMLInputElement).value }))}
+                onChange={e => setValues(v => ({ ...v, [s.key]: (e.target as unknown as HTMLInputElement).value }))}
                 className="input-admin w-48"
               />
             </div>

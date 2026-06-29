@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
@@ -34,7 +34,7 @@ export default async function CategoriesPage(): Promise<JSX.Element> {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {categories.map((cat) => (
+            {categories.map((cat: any) => (
               <Link
                 key={cat.id}
                 href={`/categories/${cat.slug}`}

@@ -1,4 +1,4 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -47,15 +47,15 @@ export default function HomepagePage() {
       <h1 className="text-2xl font-bold text-[#E2E2E2]">{t('adminCatalog.homepageSections')}</h1>
 
       <form onSubmit={submit} className="grid gap-4 rounded-lg border border-[#2E2E2E] bg-[#151515] p-6 md:grid-cols-2">
-        <input className={inp} placeholder={t('adminCatalog.titleAr')} value={form.title_ar} onChange={e => setForm(f => ({ ...f, title_ar: (e.target as HTMLInputElement).value }))} required />
-        <input className={inp} placeholder={t('adminCatalog.titleEn')} value={form.title_en} onChange={e => setForm(f => ({ ...f, title_en: (e.target as HTMLInputElement).value }))} required />
-        <select className={inp} value={form.type} onChange={e => setForm(f => ({ ...f, type: (e.target as HTMLInputElement).value }))}>
+        <input className={inp} placeholder={t('adminCatalog.titleAr')} value={form.title_ar} onChange={e => setForm(f => ({ ...f, title_ar: (e.target as unknown as HTMLInputElement).value }))} required />
+        <input className={inp} placeholder={t('adminCatalog.titleEn')} value={form.title_en} onChange={e => setForm(f => ({ ...f, title_en: (e.target as unknown as HTMLInputElement).value }))} required />
+        <select className={inp} value={form.type} onChange={e => setForm(f => ({ ...f, type: (e.target as unknown as HTMLInputElement).value }))}>
           {['hero','featured_products','banner','categories_grid','loyalty_teaser'].map(tp => (
             <option key={tp} value={tp}>{tp}</option>
           ))}
         </select>
         <input type="number" className={inp} placeholder={t('adminCatalog.position')} value={form.position}
-          onChange={e => setForm(f => ({ ...f, position: Number((e.target as HTMLInputElement).value) }))} />
+          onChange={e => setForm(f => ({ ...f, position: Number((e.target as unknown as HTMLInputElement).value) }))} />
         <button type="submit" className="md:col-span-2 rounded bg-[#C9A84C] px-6 py-2.5 font-semibold text-[#111] hover:bg-[#b8943e]">
           {t('adminCatalog.addSection')}
         </button>

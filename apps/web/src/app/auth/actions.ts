@@ -1,4 +1,5 @@
-﻿/* eslint-disable */
+/// <reference lib="dom" />
+/* eslint-disable */
 // @ts-nocheck
 'use server';
 

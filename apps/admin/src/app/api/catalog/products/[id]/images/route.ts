@@ -1,4 +1,5 @@
-﻿import { NextResponse } from 'next/server';
+/// <reference lib="dom" />
+import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 
 interface RouteParams { params: { id: string } }

@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
@@ -124,7 +124,7 @@ export default async function ProductsPage({
         >
           {t('common.all')}
         </Link>
-        {categories.map((category) => (
+        {categories.map((category: any) => (
           <Link
             key={category.id}
             href={`/products?category=${category.id}${search ? `&q=${search}` : ''}`}

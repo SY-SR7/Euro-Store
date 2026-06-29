@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import type { Database } from '@eurostore/database';
 import { formatSYP } from '@eurostore/shared';
@@ -33,16 +33,16 @@ export interface ProductPriceSummary {
 }
 
 export function variantsForProduct(productId: string, variants: readonly CatalogVariant[]): CatalogVariant[] {
-  return variants.filter((variant) => variant.product_id === productId);
+  return variants.filter((variant: any) => variant.product_id === productId);
 }
 
 export function summarizeProductVariants(variants: readonly CatalogVariant[]): ProductPriceSummary {
   const prices = variants
-    .map((variant) => variant.price_syp)
+    .map((variant: any) => variant.price_syp)
     .filter((price): price is number => typeof price === 'number');
 
   const comparePrices = variants
-    .map((variant) => variant.compare_price_syp)
+    .map((variant: any) => variant.compare_price_syp)
     .filter((price): price is number => typeof price === 'number');
 
   const totalStock = variants.reduce((sum, variant) => {
@@ -70,5 +70,5 @@ export function summarizeProductVariants(variants: readonly CatalogVariant[]): P
 }
 
 export function createCatalogLookup<Row extends { id: string }>(rows: readonly Row[]): Map<string, Row> {
-  return new Map(rows.map((row) => [row.id, row]));
+  return new Map(rows.map((row: any) => [row.id, row]));
 }

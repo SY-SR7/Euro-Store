@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -98,7 +98,7 @@ export default function AdminDashboardPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#2E2E2E]">
-                    {orders.map((order) => (
+                    {orders.map((order: any) => (
                       <tr key={order.id} className="hover:bg-[#161616] transition-colors">
                         <td className="px-4 py-3 font-mono text-[#C9A84C] text-xs">#{order.order_number}</td>
                         <td className="px-4 py-3">{order.address_snapshot?.full_name ?? 'â€”'}</td>

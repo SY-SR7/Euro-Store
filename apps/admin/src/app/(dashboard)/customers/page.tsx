@@ -1,4 +1,4 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -35,7 +35,7 @@ export default function AdminCustomersPage() {
         <h1 className="text-2xl font-bold text-[#E2E2E2]">{t('admin.customers')} ({customers.length})</h1>
         <input
           value={search}
-          onChange={(e) => setSearch((e.target as HTMLInputElement).value)}
+          onChange={(e) => setSearch((e.target as unknown as HTMLInputElement).value)}
           placeholder="ابحث بالاسم أو الهاتف..."
           className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 text-sm text-[#E2E2E2] outline-none focus:border-[#C9A84C] w-64"
         />

@@ -1,4 +1,5 @@
-﻿'use client';
+/// <reference lib="dom" />
+'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -9,7 +10,7 @@ interface Variant {
   compare_price_syp: number | null; stock_quantity: number; is_active: boolean;
 }
 
-export function VariantRow({ variant, productId }: { variant: Variant; productId: string }) {
+export function VariantRow({ variant, productId: _productId }: { variant: Variant; productId: string }) {
   const t      = useTranslations('adminCatalog');
   const tC     = useTranslations('common');
   const router = useRouter();

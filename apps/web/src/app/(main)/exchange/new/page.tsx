@@ -1,4 +1,5 @@
-﻿/* eslint-disable */
+/// <reference lib="dom" />
+/* eslint-disable */
 // @ts-nocheck
 'use client';
 import { useState } from 'react';
@@ -46,7 +47,7 @@ export default function NewExchangePage() {
             <label className="text-sm text-[#9CA3AF]">{t('exchange.orderNumber')}</label>
             <input
               className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm text-[#E2E2E2] placeholder:text-[#6B7280] focus:border-[#C9A84C] focus:outline-none"
-              value={orderNumber} onChange={(e) => setOrderNumber((e.target as HTMLInputElement).value)}
+              value={orderNumber} onChange={(e) => setOrderNumber((e.target as unknown as HTMLInputElement).value)}
               placeholder="ES-2026-XXXX" required
             />
           </div>
@@ -54,7 +55,7 @@ export default function NewExchangePage() {
             <label className="text-sm text-[#9CA3AF]">{t('exchange.reason')}</label>
             <textarea
               className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm text-[#E2E2E2] placeholder:text-[#6B7280] focus:border-[#C9A84C] focus:outline-none h-28 resize-none"
-              value={reason} onChange={(e) => setReason((e.target as HTMLInputElement).value)}
+              value={reason} onChange={(e) => setReason((e.target as unknown as HTMLInputElement).value)}
               placeholder={t('exchange.reasonPlaceholder')} required
             />
           </div>

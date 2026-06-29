@@ -1,4 +1,4 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -89,15 +89,15 @@ export default function AdminSubAdminsPage() {
           {err && <p className="text-sm text-red-400">{err}</p>}
           <div>
             <label className="block text-xs text-[#9CA3AF] mb-1">Ø§Ù„Ø§Ø³Ù… Ø§Ù„Ø¸Ø§Ù‡Ø±</label>
-            <input className={inputCls} value={form.display_name} onChange={e => setForm(f => ({ ...f, display_name: (e.target as HTMLInputElement).value }))} placeholder="Ø§Ø³Ù… Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„" required />
+            <input className={inputCls} value={form.display_name} onChange={e => setForm(f => ({ ...f, display_name: (e.target as unknown as HTMLInputElement).value }))} placeholder="Ø§Ø³Ù… Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„" required />
           </div>
           <div>
             <label className="block text-xs text-[#9CA3AF] mb-1">Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ</label>
-            <input className={inputCls} type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: (e.target as HTMLInputElement).value }))} placeholder="admin@example.com" required />
+            <input className={inputCls} type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: (e.target as unknown as HTMLInputElement).value }))} placeholder="admin@example.com" required />
           </div>
           <div>
             <label className="block text-xs text-[#9CA3AF] mb-1">ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± (8 Ø£Ø­Ø±Ù Ø¹Ù„Ù‰ Ø§Ù„Ø£Ù‚Ù„)</label>
-            <input className={inputCls} type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: (e.target as HTMLInputElement).value }))} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" minLength={8} required />
+            <input className={inputCls} type="password" value={form.password} onChange={e => setForm(f => ({ ...f, password: (e.target as unknown as HTMLInputElement).value }))} placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" minLength={8} required />
           </div>
           <button
             type="submit"
