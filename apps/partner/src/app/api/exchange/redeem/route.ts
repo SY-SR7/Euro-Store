@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const { data: partner } = await admin
       .from('partner_profiles')
       .select('id')
-      .eq('user_id', user.id)
+      .eq('id', user.id)
       .maybeSingle();
     if (!partner) return NextResponse.json({ error: 'Not a partner' }, { status: 403 });
 
@@ -23,9 +23,9 @@ export async function POST(req: NextRequest) {
     if (!token) return NextResponse.json({ error: 'Token required' }, { status: 400 });
 
     // Verify JWT signature + expiry
-    let payload: { exchangeRequestId: string; customerId: string };
+    let payload: { exchange_request_id: string; customer_id: string };
     try {
-      payload = verifyExchangeQRToken(token);
+      payload = verifyExchangeQRToken(token, process.env.QR_SECRET ?? "");
     } catch (e) {
       return NextResponse.json({ error: (e as Error).message }, { status: 400 });
     }
@@ -48,20 +48,22 @@ export async function POST(req: NextRequest) {
     const now = new Date().toISOString();
     await Promise.all([
       admin.from('exchange_qr_tokens').update({ redeemed_at: now }).eq('id', tokenRecord.id),
-      admin.from('exchange_requests').update({ status: 'completed' }).eq('id', payload.exchangeRequestId),
+      admin.from('exchange_requests').update({ status: 'completed' }).eq('id', payload.exchange_request_id),
     ]);
 
     await admin.from('audit_logs').insert({
       actor_id  : user.id,
       actor_role: 'partner',
       action    : 'exchange.qr.redeemed',
-      target_id : payload.exchangeRequestId,
-      metadata  : { customer_id: payload.customerId },
+      entity_id  : payload.exchange_request_id,
+      metadata  : { customer_id: payload.customer_id },
     });
 
-    return NextResponse.json({ success: true, exchange_request_id: payload.exchangeRequestId });
+    return NextResponse.json({ success: true, exchange_request_id: payload.exchange_request_id });
   } catch (err) {
     console.error('Redeem QR error:', err);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+

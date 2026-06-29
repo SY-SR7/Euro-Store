@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const { data: helper } = await admin
       .from('helper_profiles')
       .select('id')
-      .eq('user_id', user.id)
+      .eq('id', user.id)
       .maybeSingle();
     if (!helper) return NextResponse.json({ error: 'Not a helper' }, { status: 403 });
 
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     const { error } = await admin.rpc('award_loyalty_points', {
       p_customer_id : body.customer_id,
       p_points      : body.points,
-      p_type        : 'helper_grant',
+      p_type        : 'admin_grant',
       p_description : body.description ?? 'منح نقاط من المندوب',
       p_reference_id: null,
     });
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
       actor_id  : user.id,
       actor_role: 'helper',
       action    : 'loyalty.points.granted',
-      target_id : body.customer_id,
+      entity_id  : body.customer_id,
       metadata  : { points: body.points },
     });
 
@@ -46,3 +46,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+

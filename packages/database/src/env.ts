@@ -1,4 +1,4 @@
-export interface SupabasePublicEnv {
+﻿export interface SupabasePublicEnv {
   supabaseUrl: string;
   supabaseAnonKey: string;
 }
@@ -65,7 +65,7 @@ export function getSupabasePublicEnv(env: EnvSource = process.env): SupabasePubl
 }
 
 export function getSupabaseServiceEnv(env: EnvSource = process.env): SupabaseServiceEnv {
-  if (typeof window !== 'undefined') {
+  if (typeof (globalThis as any)['window'] !== 'undefined') {
     throw new Error('Supabase service role configuration is server-only.');
   }
 
@@ -74,3 +74,4 @@ export function getSupabaseServiceEnv(env: EnvSource = process.env): SupabaseSer
     supabaseServiceRoleKey: readRequiredEnv(env, 'SUPABASE_SERVICE_ROLE_KEY'),
   };
 }
+

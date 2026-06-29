@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { formatSYP } from '@eurostore/shared';
@@ -45,7 +45,7 @@ export default function HelperDashboardPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[#E2E2E2]">{t('helper.orderQueue')}</h1>
         <button onClick={() => void load()} className="rounded border border-[#2E2E2E] px-4 py-2 text-sm text-[#E2E2E2] hover:border-[#C9A84C]">
-          ↻ {t('common.refresh')}
+          â†» {t('common.refresh')}
         </button>
       </div>
 
@@ -60,9 +60,9 @@ export default function HelperDashboardPage() {
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <p className="font-mono text-[#C9A84C] font-bold">#{o.order_number}</p>
-                  <p className="text-[#E2E2E2] mt-1">{o.address_snapshot.full_name} — {o.address_snapshot.phone}</p>
-                  <p className="text-sm text-[#9CA3AF]">{o.address_snapshot.governorate} — {o.address_snapshot.address}</p>
-                  <p className="text-sm text-[#9CA3AF] mt-1">{formatSYP(BigInt(Math.round(o.total_syp)))}</p>
+                  <p className="text-[#E2E2E2] mt-1">{o.address_snapshot.full_name} â€” {o.address_snapshot.phone}</p>
+                  <p className="text-sm text-[#9CA3AF]">{o.address_snapshot.governorate} â€” {o.address_snapshot.address}</p>
+                  <p className="text-sm text-[#9CA3AF] mt-1">{formatSYP(Math.round(o.total_syp))}</p>
                   <p className="text-xs text-[#6B7280] mt-1">{new Date(o.created_at).toLocaleString('ar-SY')}</p>
                 </div>
                 <div className="flex flex-col items-end gap-3">

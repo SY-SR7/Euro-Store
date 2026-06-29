@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { formatSYP } from '@eurostore/shared';
@@ -29,7 +29,7 @@ export default function AdminShippingRatesPage() {
 
   function startEdit(rate: ShippingRate) {
     setEditId(rate.id);
-    setEditValues({ base_rate_syp: rate.base_rate_syp, free_shipping_threshold_syp: rate.free_shipping_threshold_syp ?? undefined, is_active: rate.is_active });
+    setEditValues({ base_rate_syp: rate.base_rate_syp, free_shipping_threshold_syp: rate.free_shipping_threshold_syp ?? null, is_active: rate.is_active });
     setMsg('');
   }
 
@@ -44,10 +44,10 @@ export default function AdminShippingRatesPage() {
     if (res.ok) {
       const updated = await res.json() as ShippingRate;
       setRates(prev => prev.map(r => r.id === editId ? updated : r));
-      setMsg('تم الحفظ بنجاح ✓');
+      setMsg('ØªÙ… Ø§Ù„Ø­ÙØ¸ Ø¨Ù†Ø¬Ø§Ø­ âœ“');
       setEditId(null);
     } else {
-      setMsg('حدث خطأ أثناء الحفظ');
+      setMsg('Ø­Ø¯Ø« Ø®Ø·Ø£ Ø£Ø«Ù†Ø§Ø¡ Ø§Ù„Ø­ÙØ¸');
     }
     setSaving(false);
   }
@@ -60,7 +60,7 @@ export default function AdminShippingRatesPage() {
       </div>
 
       <p className="text-sm text-[#9CA3AF]">
-        تعديل أسعار الشحن لكل محافظة. اضغط تعديل، غيّر القيمة، ثم احفظ.
+        ØªØ¹Ø¯ÙŠÙ„ Ø£Ø³Ø¹Ø§Ø± Ø§Ù„Ø´Ø­Ù† Ù„ÙƒÙ„ Ù…Ø­Ø§ÙØ¸Ø©. Ø§Ø¶ØºØ· ØªØ¹Ø¯ÙŠÙ„ØŒ ØºÙŠÙ‘Ø± Ø§Ù„Ù‚ÙŠÙ…Ø©ØŒ Ø«Ù… Ø§Ø­ÙØ¸.
       </p>
 
       {loading ? (
@@ -70,10 +70,10 @@ export default function AdminShippingRatesPage() {
           <table className="w-full text-sm text-[#E2E2E2]">
             <thead className="bg-[#1A1A1A] text-[#9CA3AF]">
               <tr>
-                <th className="px-4 py-3 text-start">المحافظة</th>
-                <th className="px-4 py-3 text-start">سعر الشحن (ل.س)</th>
-                <th className="px-4 py-3 text-start">حد الشحن المجاني (ل.س)</th>
-                <th className="px-4 py-3 text-start">الحالة</th>
+                <th className="px-4 py-3 text-start">Ø§Ù„Ù…Ø­Ø§ÙØ¸Ø©</th>
+                <th className="px-4 py-3 text-start">Ø³Ø¹Ø± Ø§Ù„Ø´Ø­Ù† (Ù„.Ø³)</th>
+                <th className="px-4 py-3 text-start">Ø­Ø¯ Ø§Ù„Ø´Ø­Ù† Ø§Ù„Ù…Ø¬Ø§Ù†ÙŠ (Ù„.Ø³)</th>
+                <th className="px-4 py-3 text-start">Ø§Ù„Ø­Ø§Ù„Ø©</th>
                 <th className="px-4 py-3 text-start"></th>
               </tr>
             </thead>
@@ -104,10 +104,10 @@ export default function AdminShippingRatesPage() {
                         value={editValues.free_shipping_threshold_syp ?? ''}
                         onChange={e => setEditValues(v => ({ ...v, free_shipping_threshold_syp: e.target.value ? Number(e.target.value) : null }))}
                         className="w-36 rounded border border-[#C9A84C] bg-[#0F0F0F] px-2 py-1 text-sm text-[#E2E2E2] outline-none"
-                        placeholder="0 = معطل"
+                        placeholder="0 = Ù…Ø¹Ø·Ù„"
                       />
                     ) : (
-                      <span>{rate.free_shipping_threshold_syp ? formatSYP(rate.free_shipping_threshold_syp) : '—'}</span>
+                      <span>{rate.free_shipping_threshold_syp ? formatSYP(rate.free_shipping_threshold_syp) : 'â€”'}</span>
                     )}
                   </td>
 
@@ -119,8 +119,8 @@ export default function AdminShippingRatesPage() {
                         onChange={e => setEditValues(v => ({ ...v, is_active: e.target.value === '1' }))}
                         className="rounded border border-[#C9A84C] bg-[#0F0F0F] px-2 py-1 text-sm text-[#E2E2E2]"
                       >
-                        <option value="1">نشط</option>
-                        <option value="0">متوقف</option>
+                        <option value="1">Ù†Ø´Ø·</option>
+                        <option value="0">Ù…ØªÙˆÙ‚Ù</option>
                       </select>
                     ) : (
                       <span className={`rounded-sm px-2 py-0.5 text-xs font-medium ${rate.is_active ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'}`}>

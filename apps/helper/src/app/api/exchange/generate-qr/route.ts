@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const { data: helper } = await admin
       .from('helper_profiles')
       .select('id')
-      .eq('user_id', user.id)
+      .eq('id', user.id)
       .maybeSingle();
     if (!helper) return NextResponse.json({ error: 'Not a helper' }, { status: 403 });
 
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     if (exReq.status !== 'approved')
       return NextResponse.json({ error: 'Exchange request must be approved first' }, { status: 400 });
 
-    const token    = generateExchangeQRToken(exReq.id, exReq.customer_id as string);
+    const token    = generateExchangeQRToken({ exchange_request_id: exReq.id, customer_id: exReq.customer_id as string });
     const hash     = crypto.createHash('sha256').update(token).digest('hex');
     const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString();
 
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
       actor_id  : user.id,
       actor_role: 'helper',
       action    : 'exchange.qr.generated',
-      target_id : exReq.id,
+      entity_id  : exReq.id,
       metadata  : {},
     });
 
@@ -56,3 +56,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
+
+

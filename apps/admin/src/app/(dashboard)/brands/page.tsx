@@ -27,7 +27,7 @@ export default async function AdminBrandsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#2E2E2E]">
-                {brands.map((b) => (
+                {brands.map((b: any) => (
                   <tr key={b.id} className="hover:bg-[#161616]">
                     <td className="px-4 py-3 text-[#E2E2E2]">{b.name}</td>
                     <td className="px-4 py-3 font-mono text-xs text-[#6B7280]">{b.slug}</td>
@@ -50,3 +50,4 @@ export default async function AdminBrandsPage() {
     </div>
   );
 }
+

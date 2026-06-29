@@ -1,5 +1,5 @@
 ﻿import { getTranslations } from 'next-intl/server';
-import { getOrCreateTotpSetup, verifyTotpAction } from '../actions';
+import { verifyTotpAction } from '../actions';
 
 export default async function TotpSetupPage({ searchParams }: { searchParams: { error?: string; uri?: string; secret?: string; account?: string } }) {
   const t = await getTranslations('totp');
@@ -34,3 +34,4 @@ export default async function TotpSetupPage({ searchParams }: { searchParams: { 
     </main>
   );
 }
+

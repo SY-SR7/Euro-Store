@@ -1,5 +1,4 @@
-﻿import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+﻿import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 import { NewCategoryForm } from './NewCategoryForm';
 
@@ -33,7 +32,7 @@ export default async function AdminCategoriesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#2E2E2E]">
-                {categories.map((c) => (
+                {categories.map((c: any) => (
                   <tr key={c.id} className="hover:bg-[#161616]">
                     <td className="px-4 py-3 text-[#E2E2E2]">{c.name_ar}</td>
                     <td className="px-4 py-3 text-[#9CA3AF]">{c.name_en}</td>
@@ -57,3 +56,4 @@ export default async function AdminCategoriesPage() {
     </div>
   );
 }
+

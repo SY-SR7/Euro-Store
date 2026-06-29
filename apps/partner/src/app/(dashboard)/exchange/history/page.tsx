@@ -44,7 +44,7 @@ export default async function PartnerExchangeHistoryPage() {
               <tbody className="divide-y divide-[#2E2E2E]">
                 {rows.map((log) => (
                   <tr key={log.id}>
-                    <td className="px-4 py-3 font-mono text-xs text-[#C9A84C]">{String(log.target_id).slice(0, 8)}…</td>
+                    <td className="px-4 py-3 font-mono text-xs text-[#C9A84C]">{String(log.entity_id).slice(0, 8)}…</td>
                     <td className="px-4 py-3 text-[#D6D3C7]">{new Date(log.created_at as string).toLocaleDateString('ar-SY')}</td>
                   </tr>
                 ))}
@@ -56,3 +56,4 @@ export default async function PartnerExchangeHistoryPage() {
     </main>
   );
 }
+

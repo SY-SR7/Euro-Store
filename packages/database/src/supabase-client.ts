@@ -1,4 +1,4 @@
-import { createBrowserClient, createServerClient, type CookieOptions } from '@supabase/ssr';
+﻿import { createBrowserClient, createServerClient, type CookieOptions } from '@supabase/ssr';
 import { createClient as createSupabaseJSClient, type SupabaseClient } from '@supabase/supabase-js';
 import { getSupabasePublicEnv, getSupabaseServiceEnv } from './env';
 import type { Database } from './types';
@@ -42,7 +42,7 @@ export function createSupabaseAdminClient(
   supabaseUrl: string,
   supabaseServiceRoleKey: string
 ): EurostoreSupabaseClient {
-  if (typeof window !== 'undefined') {
+  if (typeof (globalThis as any)['window'] !== 'undefined') {
     throw new Error('createSupabaseAdminClient must only be used on the server.');
   }
   return createSupabaseJSClient<Database>(supabaseUrl, supabaseServiceRoleKey, {
@@ -86,3 +86,4 @@ export function createSupabaseAdminClientFromEnv(): EurostoreSupabaseClient {
   const { supabaseUrl, supabaseServiceRoleKey } = getSupabaseServiceEnv();
   return createSupabaseAdminClient(supabaseUrl, supabaseServiceRoleKey);
 }
+

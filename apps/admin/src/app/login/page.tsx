@@ -3,7 +3,7 @@ import { loginAdminAction } from './actions';
 
 export default async function AdminLoginPage({ searchParams }: { searchParams: { error?: string } }) {
   const t = await getTranslations('auth');
-  const tTotp = await getTranslations('totp');
+  // const tTotp = await getTranslations('totp');
   const errorMap: Record<string, string> = {
     invalid: t('errors.invalidCredentials'),
     failed:  t('errors.loginFailed'),
@@ -33,3 +33,4 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: {
     </main>
   );
 }
+
