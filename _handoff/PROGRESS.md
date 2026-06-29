@@ -1,5 +1,19 @@
 ---
 
+### Session 039 — Web Product Images Rendering Fix
+**Scope:** apps/web + _handoff only
+
+**Fix:**
+- Updated catalog product types to support image fields and `product_images`.
+- Rebuilt `ProductCard` to render a real `<img>` instead of only showing product name in the image placeholder.
+- Patched web product queries to include `product_images(id, product_id, url, alt_text, is_primary, sort_order)`.
+- Added CSS fallback to ensure product images are visible.
+
+**Smoke Test:**
+- Run `pnpm --filter web dev`
+- Open `/products` and verify product images render from `product_images.url`.
+---
+
 ### Session 038 — Admin/Web Color Consistency Polish
 **Scope:** apps/admin + apps/web + _handoff only
 

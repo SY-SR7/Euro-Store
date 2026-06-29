@@ -1,22 +1,20 @@
+'use client';
+
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+
 import {
   type CatalogBrand,
   type CatalogCategory,
   type CatalogProduct,
   type CatalogVariant,
+  type ProductPriceSummary,
+  createCatalogLookup,
+  productImageUrl,
   summarizeProductVariants,
   variantsForProduct,
-} from '@/app/catalog-types';
+} from './catalog-types';
 
-// Re-exported for backward compatibility with existing imports across the app ”
-// the actual definitions now live in catalog-types.ts (no 'use client'), since
-// they are plain types/functions that Server Components also need to call
-// directly. Importing a non-component value from a 'use client' module into a
-// Server Component is unreliable in the Next.js App Router; keeping the pure
-// logic in a server-safe module and only marking the actual component
-// ('ProductCard', which uses the useTranslations hook) as client-only fixes
-// "createCatalogLookup is not a function" style runtime errors.
 export {
   type CatalogBrand,
   type CatalogCategory,
@@ -26,7 +24,7 @@ export {
   createCatalogLookup,
   summarizeProductVariants,
   variantsForProduct,
-} from '@/app/catalog-types';
+};
 
 interface ProductCardProps {
   product: CatalogProduct;
@@ -38,14 +36,15 @@ interface ProductCardProps {
 export function ProductCard({ product, variants, category, brand }: ProductCardProps): JSX.Element {
   const t = useTranslations('catalog');
   const summary = summarizeProductVariants(variantsForProduct(product.id, variants));
+  const imageUrl = productImageUrl(product);
 
-  // Build translated labels
-  const priceLabel = summary.totalStock === 0 && summary.priceLabel === '”'
-    ? t('priceSoon')
-    : summary.priceLabel;
+  const priceLabel =
+    summary.totalStock === 0 && summary.priceLabel === '—'
+      ? t('priceSoon')
+      : summary.priceLabel;
 
   const stockLabel = (() => {
-    if (summary.priceLabel === '”') return t('stockUpdate');
+    if (summary.priceLabel === '—') return t('stockUpdate');
     if (summary.totalStock > 0) return t('inStock', { count: summary.totalStock });
     return t('outOfStock');
   })();
@@ -53,31 +52,51 @@ export function ProductCard({ product, variants, category, brand }: ProductCardP
   return (
     <Link
       href={`/products/${product.slug}`}
-      className="group flex h-full flex-col rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-4 transition hover:border-[#C9A84C] hover:bg-[#1C1C1C]"
+      className="group block overflow-hidden rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-4 shadow-xl transition duration-300 hover:-translate-y-1 hover:border-[#C9A84C] hover:shadow-2xl"
     >
-      <div className="flex aspect-[4/5] items-center justify-center rounded-md border border-[#E8DCC3] bg-[#F3EEE3] p-6 text-center">
-        <span className="text-2xl font-semibold leading-snug text-[#C9A84C]">{product.name_ar}</span>
-      </div>
-      <div className="flex flex-1 flex-col pt-4">
-        <div className="flex items-center justify-between gap-3 text-xs text-[#6F6658]">
-          <span>{category?.name_ar ?? 'EuroStore'}</span>
-          <span>{brand?.name ?? t('uncategorized')}</span>
-        </div>
-        <h3 className="mt-3 text-lg font-semibold text-[#F4F1E8] transition group-hover:text-[#C9A84C]">
-          {product.name_ar}
-        </h3>
-        <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#6F6658]">{product.description_ar}</p>
-        <div className="mt-4 flex items-end justify-between gap-3">
-          <div>
-            <p className="text-lg font-semibold text-[#C9A84C]">{priceLabel}</p>
-            {summary.comparePriceLabel ? (
-              <p className="text-sm text-[#8B8172] line-through">{summary.comparePriceLabel}</p>
-            ) : null}
+      <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-[#E8DCC3] bg-[#F3EEE3]">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={product.name_ar}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center px-6 text-center text-xl font-black text-[#C9A84C]">
+            {product.name_ar}
           </div>
-          <span className="rounded-sm border border-[#E8DCC3] px-2 py-1 text-xs text-[#B8B8B8]">{stockLabel}</span>
+        )}
+      </div>
+
+      <div className="mt-4 flex items-center justify-between gap-3 text-xs text-[#6F6658]">
+        <span>{brand?.name ?? 'EuroStore'}</span>
+        <span>{category?.name_ar ?? t('uncategorized')}</span>
+      </div>
+
+      <h3 className="mt-4 line-clamp-2 text-xl font-black text-[#1F1B16] transition group-hover:text-[#C9A84C]">
+        {product.name_ar}
+      </h3>
+
+      {product.description_ar ? (
+        <p className="mt-3 line-clamp-2 min-h-[3.5rem] text-sm leading-7 text-[#6F6658]">
+          {product.description_ar}
+        </p>
+      ) : null}
+
+      <div className="mt-4 flex items-end justify-between gap-3">
+        <div>
+          <p className="text-lg font-black text-[#C9A84C]">{priceLabel}</p>
+          {summary.comparePriceLabel ? (
+            <p className="text-sm text-[#8B8172] line-through">{summary.comparePriceLabel}</p>
+          ) : null}
         </div>
+
+        <span className="rounded-lg border border-[#E8DCC3] bg-[#FFFDF8] px-3 py-1 text-xs font-bold text-[#6F6658]">
+          {stockLabel}
+        </span>
       </div>
     </Link>
   );
 }
-

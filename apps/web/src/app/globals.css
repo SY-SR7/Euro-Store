@@ -305,3 +305,15 @@ body [class*="bg-blue"] {
 }
 
 /* EURO STORE TARGETED PRODUCT POLISH END */
+
+/* EURO STORE PRODUCT IMAGE FIX START */
+img {
+  max-width: 100%;
+}
+
+a[href*="/products/"] img {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+/* EURO STORE PRODUCT IMAGE FIX END */
