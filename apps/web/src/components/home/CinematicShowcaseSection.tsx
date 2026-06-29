@@ -20,8 +20,12 @@ export interface StoryBeat {
 }
 
 interface Props {
-  /** مسار الصور: يستقبل رقم الإطار (0-based) ويعيد مسار الصورة */
-  frameSrc: (index: number) => string;
+  /**
+   * نمط مسار الصورة — استخدم {index} كـ placeholder لرقم الإطار (0-based).
+   * مثال: "/frames/shoes/frame_{index}.jpg"
+   * يمكن أيضاً استخدام "{index:04d}" للترقيم بصفر padding
+   */
+  frameSrcPattern: string;
   /** عدد الإطارات الكلي */
   frameCount: number;
   /** ارتفاع مساحة السكرول — مثال: "300vh" */
@@ -136,12 +140,23 @@ function CanvasBridge({
 }
 
 export function CinematicShowcaseSection({
-  frameSrc,
+  frameSrcPattern,
   frameCount,
   scrollHeight = '350vh',
   storyBeats,
   bgColor = '#0C0C0C',
 }: Props) {
+  // Build the frameSrc function from the pattern string — stays client-side only
+  const frameSrc = useCallback(
+    (index: number) => {
+      // Support {index:04d} padding notation
+      const padded = String(index + 1).padStart(4, '0');
+      return frameSrcPattern
+        .replace('{index:04d}', padded)
+        .replace('{index}', String(index));
+    },
+    [frameSrcPattern],
+  );
   const prefersReduced = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
 
