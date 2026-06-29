@@ -1,15 +1,16 @@
+'use client';
 // @ts-nocheck
 /* eslint-disable */
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { createServerSupabaseClient } from '@/supabase-server';
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 
 export const dynamic = 'force-dynamic';
 
-export default async function LoyaltyPage() {
-  const t = await getTranslations();
+export default function LoyaltyPage() {
+  const t = useTranslations();
   const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/auth/login');

@@ -1,5 +1,4 @@
 'use client';
-
 import { useLocale, useTranslations } from 'next-intl';
 
 export function LanguageSwitcher() {

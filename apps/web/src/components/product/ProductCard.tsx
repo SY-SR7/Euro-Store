@@ -1,5 +1,4 @@
 // @ts-nocheck
-'use client';
 /* eslint-disable */
 import Image from 'next/image';
 import Link from 'next/link';

@@ -1,8 +1,9 @@
+'use client';
 /* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { createServerSupabaseClient } from '@/supabase-server';
 import { formatSYP } from '@eurostore/shared';
 
@@ -18,8 +19,8 @@ interface OrderItem {
   product_snapshot: { name_ar: string; sku: string };
 }
 
-export default async function OrderConfirmationPage({ params }: Props) {
-  const t = await getTranslations();
+export default function OrderConfirmationPage({ params }: Props) {
+  const t = useTranslations();
   const supabase = createServerSupabaseClient();
 
   const { data: order } = await supabase

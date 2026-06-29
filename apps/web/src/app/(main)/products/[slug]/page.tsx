@@ -1,8 +1,9 @@
+'use client';
 /* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { formatSYP } from '@eurostore/shared';
 import { createServerSupabaseClient } from '@/supabase-server';
 import {
@@ -14,8 +15,8 @@ export const dynamic = 'force-dynamic';
 
 interface ProductPageProps { params: { slug: string } }
 
-export default async function ProductPage({ params }: ProductPageProps): Promise<JSX.Element> {
-  const t           = await getTranslations();
+export default function ProductPage({ params }: ProductPageProps): Promise<JSX.Element> {
+  const t = useTranslations();
   const supabase = createServerSupabaseClient();
 
   const { data: productData } = await supabase

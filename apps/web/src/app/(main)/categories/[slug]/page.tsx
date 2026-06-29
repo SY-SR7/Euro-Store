@@ -1,8 +1,9 @@
+'use client';
 /* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { createServerSupabaseClient } from '@/supabase-server';
 import {
   ProductCard } from '@/app/catalog-components';
@@ -14,8 +15,8 @@ interface CategoryPageProps {
   params: { slug: string };
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps): Promise<JSX.Element> {
-  const t = await getTranslations();
+export default function CategoryPage({ params }: CategoryPageProps): Promise<JSX.Element> {
+  const t = useTranslations();
   const supabase = createServerSupabaseClient();
 
   const { data: categoryData } = await supabase

@@ -1,15 +1,16 @@
+'use client';
 /* apps/admin/src/app/(dashboard)/products/[id]/page.tsx */
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { createServerSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
 interface Props { params: { id: string } }
 
-export default async function ProductHubPage({ params }: Props) {
-  const t = await getTranslations();
+export default function ProductHubPage({ params }: Props) {
+  const t = useTranslations();
   const supabase = createServerSupabaseClient();
 
   const { data: product } = await supabase

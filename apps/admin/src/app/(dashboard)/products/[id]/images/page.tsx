@@ -1,5 +1,6 @@
+'use client';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
 import { createServerSupabaseClient } from '@/supabase-server';
 import Link from 'next/link';
 import { ImageUploadForm } from './ImageUploadForm';
@@ -8,8 +9,8 @@ export const dynamic = 'force-dynamic';
 
 interface Props { params: { id: string } }
 
-export default async function ProductImagesPage({ params }: Props) {
-  const t = await getTranslations('adminCatalog');
+export default function ProductImagesPage({ params }: Props) {
+  const t = useTranslations('adminCatalog');
   const supabase = createServerSupabaseClient();
 
   const [productRes, imagesRes] = await Promise.all([
