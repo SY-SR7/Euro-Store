@@ -96,7 +96,7 @@ function ScrollBeat({
         </motion.h2>
 
         {beat.subtitle && (
-          <p className="mt-2 text-xs md:text-sm text-white leading-relaxed font-light tracking-wide">
+          <p className="mt-2 text-xs md:text-sm leading-relaxed font-light tracking-wide" style={{ color: '#D4D4D4' }}>
             {beat.subtitle}
           </p>
         )}
