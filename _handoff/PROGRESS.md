@@ -770,3 +770,33 @@
 **Next Agent Must Start With:**
 - Exercise admin dashboard/orders/products end-to-end against the live Supabase project.
 - Do not touch helper, partner, or mobile unless explicitly requested.
+
+---
+
+### Session 021 — 2026-06-29
+**Agent:** PowerShell admin shell/dashboard recovery script
+
+**Scope:** apps/admin only.
+
+**Work Done:**
+- Fixed the admin dashboard being visually empty by restoring the dashboard shell layout.
+- Reconnected Sidebar inside apps/admin/src/app/(dashboard)/layout.tsx.
+- Rebuilt apps/admin/src/app/components/Sidebar.tsx with grouped navigation for operations, catalog, and system management.
+- Rebuilt apps/admin/src/app/(dashboard)/page.tsx as a server-rendered operations dashboard:
+  - Hero/header section
+  - Main stats cards
+  - Quick action grid for all admin sections
+  - Low-stock panel
+  - Recent orders table
+  - Safe Supabase fallback when database/env is unavailable
+- Added missing admin i18n keys in apps/admin/src/i18n/messages/ar.json and en.json.
+- Cleared admin .next cache.
+
+**Verification to run locally:**
+- pnpm --filter admin type-check
+- pnpm --filter admin dev
+
+**Next Agent Must Start With:**
+- Smoke-test every admin link from the Sidebar.
+- Verify Supabase env/service-role configuration if dashboard data fails to load.
+- Continue web/admin only unless explicitly asked otherwise.
