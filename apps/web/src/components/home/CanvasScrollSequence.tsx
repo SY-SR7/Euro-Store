@@ -112,16 +112,24 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
 
       const dpr = quality === 'high' ? (window.devicePixelRatio || 1) : 1;
 
-      const ro = new ResizeObserver(([entry]) => {
-        const { width, height } = entry.contentRect;
+      // Observe the PARENT element — canvas uses position:absolute so its own contentRect is unreliable
+      const target = canvas.parentElement ?? canvas;
+
+      const setSize = (width: number, height: number) => {
         canvas.width  = Math.round(width * dpr);
         canvas.height = Math.round(height * dpr);
-        canvas.style.width  = `${width}px`;
-        canvas.style.height = `${height}px`;
         drawFrame(currentFrameRef.current < 0 ? 0 : currentFrameRef.current);
+      };
+
+      // Set initial size immediately
+      setSize(target.clientWidth, target.clientHeight);
+
+      const ro = new ResizeObserver(([entry]) => {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) setSize(width, height);
       });
 
-      ro.observe(canvas);
+      ro.observe(target);
       return () => ro.disconnect();
     }, [quality, drawFrame]);
 
