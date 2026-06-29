@@ -5,6 +5,7 @@
  * using ffmpeg's zoompan filter.
  */
 
+import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import { execSync } from 'node:child_process';
 import { existsSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -39,7 +40,8 @@ console.log(`🎬 Generating ${frameCount} synthetic frames from ${absImage}...`
 // z='zoom+0.002' increases zoom by 0.002 each frame
 // s=1024x1024 (or whatever matches the image aspect ratio, let's just use 1920x1080)
 // We will use 1080x1920 since this is portrait/vertical scroll usually, or square 1024x1024
-const cmd = `npx -p @ffmpeg-installer/ffmpeg -c "ffmpeg -y -loop 1 -i \\"${absImage}\\" -vf \\"zoompan=z='min(zoom+0.002,1.5)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${frameCount}:s=1024x1024\\" -vframes ${frameCount} -q:v 3 \\"${absOutput}/frame_%04d.jpg\\""`;
+const ffmpegPath = ffmpegInstaller.path;
+const cmd = `"${ffmpegPath}" -y -loop 1 -i "${absImage}" -vf "zoompan=z='min(zoom+0.002,1.5)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${frameCount}:s=1024x1024" -vframes ${frameCount} -q:v 3 "${absOutput}/frame_%04d.jpg"`;
 
 try {
   execSync(cmd, { stdio: 'inherit', cwd: rootDir });
