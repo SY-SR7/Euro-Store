@@ -1,85 +1,99 @@
-'use client';
-
-import { useEffect, useState } from 'react';
+﻿'use client';
+import { useEffect, useState, useCallback } from 'react';
 
 interface Customer {
   id: string;
-  user_id: string;
-  full_name: string;
+  full_name: string | null;
   phone: string | null;
-  loyalty_points: number;
-  referral_code: string | null;
+  email: string | null;
   created_at: string;
+  loyalty_points?: number;
+  order_count?: number;
 }
 
 export default function AdminCustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading]     = useState(true);
-  const [search, setSearch]       = useState('');
-  const [error, setError]         = useState('');
+  const [loading,   setLoading]   = useState(true);
+  const [error,     setError]     = useState('');
+  const [search,    setSearch]    = useState('');
 
-  useEffect(() => {
-    setLoading(true);
-    fetch('/api/customers')
+  const load = useCallback(() => {
+    setLoading(true); setError('');
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    fetch(`/api/customers?${params}`, { cache: 'no-store' })
       .then(r => r.json())
-      .then((d: Customer[] | { error?: string }) => {
-        if (Array.isArray(d)) setCustomers(d);
-        else setError((d as { error?: string }).error ?? 'تعذر تحميل العملاء');
-        setLoading(false);
-      })
-      .catch(() => { setError('تعذر الاتصال'); setLoading(false); });
-  }, []);
+      .then(d => setCustomers(Array.isArray(d) ? d : []))
+      .catch(() => setError('تعذر تحميل بيانات العملاء'))
+      .finally(() => setLoading(false));
+  }, [search]);
 
-  const filtered = customers.filter(c =>
-    !search || c.full_name?.toLowerCase().includes(search.toLowerCase()) || c.phone?.includes(search)
-  );
+  useEffect(() => { load(); }, [load]);
 
   return (
     <div className="space-y-6" dir="rtl">
-      <div className="flex flex-col justify-between gap-4 rounded-3xl border border-white/10 bg-[#101010] p-6 sm:flex-row sm:items-end">
+
+      {/* Header */}
+      <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-[#101010] p-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-black text-white">العملاء ({customers.length})</h1>
-          <p className="mt-2 text-sm text-[#9CA3AF]">قائمة العملاء المسجّلين في المتجر.</p>
+          <h1 className="text-3xl font-black text-white">العملاء</h1>
+          <p className="mt-1 text-sm text-[#9CA3AF]">{customers.length} عميل مسجّل</p>
         </div>
+        <button onClick={load}
+          className="rounded-2xl border border-white/10 px-4 py-2.5 text-sm text-[#9CA3AF] hover:border-[#C9A84C] hover:text-[#EDE7DD] transition-colors">
+          تحديث ↻
+        </button>
+      </div>
+
+      {/* Search */}
+      <div className="rounded-3xl border border-white/10 bg-[#101010] p-4">
         <input
+          type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="ابحث بالاسم أو الهاتف..."
-          className="rounded-2xl border border-white/10 bg-[#151515] px-4 py-3 text-sm text-white outline-none focus:border-[#C9A84C] w-64"
+          placeholder="بحث بالاسم أو الهاتف أو البريد..."
+          className="w-full rounded-xl border border-white/10 bg-[#151515] px-4 py-2.5 text-sm text-[#EDE7DD] outline-none focus:border-[#C9A84C] transition-colors"
         />
       </div>
 
-      {error && <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-100">{error}</div>}
+      {error && <p className="rounded-2xl border border-red-400/20 bg-red-400/10 px-5 py-3 text-sm text-red-300">{error}</p>}
 
-      <section className="overflow-hidden rounded-3xl border border-white/10 bg-[#101010] shadow-2xl">
+      {/* Table */}
+      <section className="overflow-hidden rounded-3xl border border-white/10 bg-[#101010]">
         {loading ? (
-          <div className="p-10 text-center text-[#9CA3AF]">جار التحميل...</div>
-        ) : filtered.length === 0 ? (
-          <div className="p-10 text-center text-[#9CA3AF]">{search ? 'لا توجد نتائج للبحث.' : 'لا يوجد عملاء بعد.'}</div>
+          <div className="flex justify-center p-10">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#C9A84C] border-t-transparent" />
+          </div>
+        ) : customers.length === 0 ? (
+          <div className="p-10 text-center text-[#9CA3AF]">
+            {search ? 'لا نتائج للبحث' : 'لا يوجد عملاء مسجّلون'}
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
-              <thead className="bg-white/5 text-[#C9A84C]">
+              <thead className="bg-white/5">
                 <tr>
-                  <th className="px-4 py-4 text-right font-black">الاسم</th>
-                  <th className="px-4 py-4 text-right font-black">الهاتف</th>
-                  <th className="px-4 py-4 text-right font-black">نقاط الولاء</th>
-                  <th className="px-4 py-4 text-right font-black">كود الإحالة</th>
-                  <th className="px-4 py-4 text-right font-black">تاريخ التسجيل</th>
+                  <th className="px-5 py-4 text-right font-black text-[#C9A84C]">الاسم</th>
+                  <th className="px-5 py-4 text-right font-black text-[#C9A84C] hidden sm:table-cell">الهاتف</th>
+                  <th className="px-5 py-4 text-right font-black text-[#C9A84C] hidden md:table-cell">البريد الإلكتروني</th>
+                  <th className="px-5 py-4 text-right font-black text-[#C9A84C] hidden md:table-cell">النقاط</th>
+                  <th className="px-5 py-4 text-right font-black text-[#C9A84C] hidden lg:table-cell">تاريخ التسجيل</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">
-                {filtered.map(c => (
-                  <tr key={c.id} className="text-[#EDE7DD] hover:bg-white/[0.03]">
-                    <td className="px-4 py-4 font-bold text-white">{c.full_name || '—'}</td>
-                    <td className="px-4 py-4 font-mono text-xs text-[#9CA3AF]">{c.phone || '—'}</td>
-                    <td className="px-4 py-4">
-                      <span className="rounded-full border border-[#C9A84C]/20 bg-[#C9A84C]/10 px-3 py-1 text-xs font-black text-[#C9A84C]">
-                        ★ {c.loyalty_points}
-                      </span>
+                {customers.map(c => (
+                  <tr key={c.id} className="text-[#EDE7DD] hover:bg-white/[0.03] transition-colors">
+                    <td className="px-5 py-4 font-bold text-white">{c.full_name ?? '—'}</td>
+                    <td className="px-5 py-4 font-mono text-sm text-[#9CA3AF] hidden sm:table-cell">{c.phone ?? '—'}</td>
+                    <td className="px-5 py-4 text-xs text-[#9CA3AF] hidden md:table-cell">{c.email ?? '—'}</td>
+                    <td className="px-5 py-4 hidden md:table-cell">
+                      {c.loyalty_points !== undefined ? (
+                        <span className="rounded-full border border-[#C9A84C]/30 bg-[#C9A84C]/10 px-3 py-1 text-xs font-black text-[#C9A84C]">
+                          {c.loyalty_points} نقطة
+                        </span>
+                      ) : '—'}
                     </td>
-                    <td className="px-4 py-4 font-mono text-xs text-[#6B7280]">{c.referral_code || '—'}</td>
-                    <td className="px-4 py-4 text-xs text-[#9CA3AF]">
+                    <td className="px-5 py-4 text-xs text-[#9CA3AF] hidden lg:table-cell">
                       {new Date(c.created_at).toLocaleDateString('ar-SY')}
                     </td>
                   </tr>

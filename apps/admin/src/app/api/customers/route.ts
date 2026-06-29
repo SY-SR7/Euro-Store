@@ -1,18 +1,33 @@
 ﻿import { NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/supabase-server';
-import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
+import { createAdminSupabaseClient } from '@/supabase-server';
 
-export async function GET() {
-  const supabase = createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+export const dynamic = 'force-dynamic';
 
-  const admin = createSupabaseAdminClientFromEnv();
-  const { data, error } = await admin
-    .from('customer_profiles')
-    .select('id, user_id, full_name, phone, loyalty_points, referral_code, created_at')
-    .order('created_at', { ascending: false });
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get('search') ?? '';
+    const limit  = Math.min(100, parseInt(searchParams.get('limit') ?? '50'));
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data ?? []);
+    const supabase = createAdminSupabaseClient();
+
+    let query = supabase
+      .from('customer_profiles')
+      .select('id, full_name, phone, email, loyalty_points, created_at')
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (search) {
+      query = query.or(
+        `full_name.ilike.%${search}%,phone.ilike.%${search}%,email.ilike.%${search}%`
+      );
+    }
+
+    const { data, error } = await query;
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    return NextResponse.json(data ?? []);
+  } catch {
+    return NextResponse.json({ error: 'server_error' }, { status: 500 });
+  }
 }
