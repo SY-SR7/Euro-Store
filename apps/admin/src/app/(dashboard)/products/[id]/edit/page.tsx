@@ -1,7 +1,6 @@
 ﻿import { notFound } from 'next/navigation';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import Link from 'next/link';
 import { EditProductForm } from './EditProductForm';
 
@@ -11,8 +10,7 @@ interface Props { params: { id: string } }
 
 export default async function EditProductPage({ params }: Props) {
   const t = await getTranslations('adminCatalog');
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const [productRes, categoriesRes, brandsRes] = await Promise.all([
     supabase

@@ -2,9 +2,8 @@
 // @ts-nocheck
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { formatSYP } from '@eurostore/shared';
 
 export const dynamic = 'force-dynamic';
@@ -21,8 +20,7 @@ interface OrderItem {
 
 export default async function OrderConfirmationPage({ params }: Props) {
   const t = await getTranslations();
-  const cookieStore = cookies();
-  const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const { data: order } = await supabase
     .from('orders')

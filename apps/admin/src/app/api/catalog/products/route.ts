@@ -1,6 +1,5 @@
 ﻿import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { z } from 'zod';
 
 const createProductSchema = z.object({
@@ -23,12 +22,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'invalid_input', details: parsed.error.flatten() }, { status: 400 });
     }
 
-    const cookieStore = cookies();
-    const supabase = createSupabaseServerClientFromEnv(cookieStore);
+    const supabase = createServerSupabaseClient();
 
     const { data, error } = await supabase
       .from('products')
-      .insert(parsed.data)
+      .insert(parsed.data as any)
       .select('id, slug')
       .single();
 
@@ -43,8 +41,7 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const { data, error } = await supabase
     .from('products')

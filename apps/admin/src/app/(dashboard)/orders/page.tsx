@@ -68,7 +68,7 @@ export default function AdminOrdersPage() {
                   <td className="px-4 py-3 font-mono text-[#C9A84C]">{o.order_number}</td>
                   <td className="px-4 py-3">{o.address_snapshot.full_name}</td>
                   <td className="px-4 py-3 text-[#9CA3AF]">{o.address_snapshot.governorate}</td>
-                  <td className="px-4 py-3">{formatSYP(BigInt(Math.round(o.total_syp)))}</td>
+                  <td className="px-4 py-3">{formatSYP(Number(o.total_syp))}</td>
                   <td className="px-4 py-3">
                     <span className={`rounded px-2 py-1 text-xs font-medium ${STATUS_COLORS[o.status] ?? ''}`}>{o.status}</span>
                   </td>

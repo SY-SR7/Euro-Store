@@ -1,16 +1,14 @@
 ﻿/* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
 export default async function CategoriesPage(): Promise<JSX.Element> {
   const t = await getTranslations();
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const { data: categories } = await supabase
     .from('categories')

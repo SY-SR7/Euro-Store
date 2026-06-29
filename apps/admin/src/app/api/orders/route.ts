@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 
 export async function GET(request: Request) {
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
@@ -20,7 +18,8 @@ export async function GET(request: Request) {
     .order('created_at', { ascending: false })
     .range(from, from + limit - 1);
 
-  if (status) query = query.eq('status', status);
+  if (status) query = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    query.eq('status', status as any);
 
   const { data, error, count } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

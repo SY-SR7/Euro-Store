@@ -4,26 +4,22 @@ import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 export async function GET() {
   const supabase = createSupabaseAdminClientFromEnv();
   const { data, error } = await supabase
-    .from('user_profiles')
-    .select('user_id, display_name, is_active, created_at')
-    .eq('role', 'sub_admin')
+    .from('sub_admin_profiles')
+    .select('id, full_name, email, is_active, created_at')
     .order('created_at', { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Enrich with email from auth.users via admin client
-  const userIds = (data ?? []).map((p: { user_id: string }) => p.user_id);
-  const enriched = await Promise.all(
-    (data ?? []).map(async (profile: { user_id: string; display_name: string | null; is_active: boolean; created_at: string }) => {
-      const { data: authUser } = await supabase.auth.admin.getUserById(profile.user_id);
-      return {
-        ...profile,
-        email: authUser?.user?.email ?? '',
-      };
-    })
-  );
+  // Map to shape expected by the frontend
+  const mapped = (data ?? []).map((p) => ({
+    user_id: p.id,
+    display_name: p.full_name,
+    email: p.email,
+    is_active: p.is_active,
+    created_at: p.created_at,
+  }));
 
-  return NextResponse.json(enriched);
+  return NextResponse.json(mapped);
 }
 
 export async function POST(request: Request) {
@@ -50,18 +46,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: authErr?.message ?? 'auth_failed' }, { status: 500 });
   }
 
-  // Insert user_profile with role = sub_admin
+  // Insert into sub_admin_profiles (id = auth user id)
   const { error: profileErr } = await supabase
-    .from('user_profiles')
+    .from('sub_admin_profiles')
     .insert({
-      user_id:      authData.user.id,
-      role:         'sub_admin',
-      display_name: display_name || null,
-      is_active:    true,
-    });
+      id:        authData.user.id,
+      email:     email,
+      full_name: display_name || email,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
 
   if (profileErr) {
-    // Rollback auth user
     await supabase.auth.admin.deleteUser(authData.user.id);
     return NextResponse.json({ error: profileErr.message }, { status: 500 });
   }

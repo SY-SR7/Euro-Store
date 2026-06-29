@@ -1,10 +1,9 @@
 ﻿/* eslint-disable */
 // @ts-nocheck
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { formatSYP } from '@eurostore/shared';
 
 export const dynamic = 'force-dynamic';
@@ -28,8 +27,7 @@ const STATUS_COLOR: Record<string, string> = {
 
 export default async function CustomerOrdersPage(): Promise<JSX.Element> {
   const t = await getTranslations();
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/auth/login');

@@ -1,15 +1,13 @@
 ﻿import Link from 'next/link';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminProductsPage() {
   const t = await getTranslations('adminCatalog');
   const tCommon = await getTranslations('common');
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const { data: products } = await supabase
     .from('products')

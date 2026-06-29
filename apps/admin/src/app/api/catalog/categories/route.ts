@@ -1,6 +1,5 @@
 ﻿import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -18,9 +17,9 @@ export async function POST(request: Request) {
     if (!parsed.success) {
       return NextResponse.json({ error: 'invalid_input', details: parsed.error.flatten() }, { status: 400 });
     }
-    const cookieStore = cookies();
-    const supabase = createSupabaseServerClientFromEnv(cookieStore);
-    const { data, error } = await supabase.from('categories').insert(parsed.data).select('id, slug').single();
+    const supabase = createServerSupabaseClient();
+    const { data, error } = await supabase// eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .from('categories').insert(parsed.data as any).select('id, slug').single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json(data, { status: 201 });
   } catch {
@@ -29,8 +28,7 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from('categories')
     .select('id, name_ar, name_en, slug, sort_order, is_active')

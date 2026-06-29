@@ -1,10 +1,9 @@
-﻿import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv, createSupabaseAdminClientFromEnv } from '@eurostore/database';
+import { NextResponse } from 'next/server';
+import { createServerSupabaseClient } from '@/supabase-server';
+import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 
 export async function GET() {
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
@@ -19,8 +18,7 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 

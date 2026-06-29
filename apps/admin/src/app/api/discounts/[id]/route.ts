@@ -1,18 +1,18 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv, createSupabaseAdminClientFromEnv } from '@eurostore/database';
+import { NextRequest, NextResponse } from 'next/server';
+import { createServerSupabaseClient } from '@/supabase-server';
+import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
-  const cookieStore = cookies();
-  const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body  = await req.json() as Record<string, unknown>;
+  const body = await req.json() as Record<string, unknown>;
   const admin = createSupabaseAdminClientFromEnv();
   const { data, error } = await admin
     .from('discount_codes')
-    .update(body)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .update(body as any)
     .eq('id', params.id)
     .select()
     .single();
@@ -22,8 +22,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
-  const cookieStore = cookies();
-  const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 

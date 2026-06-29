@@ -1,7 +1,6 @@
 ﻿import { notFound } from 'next/navigation';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import Link from 'next/link';
 import { ImageUploadForm } from './ImageUploadForm';
 
@@ -11,8 +10,7 @@ interface Props { params: { id: string } }
 
 export default async function ProductImagesPage({ params }: Props) {
   const t = await getTranslations('adminCatalog');
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const [productRes, imagesRes] = await Promise.all([
     supabase.from('products').select('id, name_ar').eq('id', params.id).single(),

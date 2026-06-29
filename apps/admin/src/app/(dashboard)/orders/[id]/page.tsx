@@ -82,9 +82,9 @@ export default function OrderDetailPage() {
         </div>
         <div className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-5">
           <h2 className="mb-3 font-semibold text-[#C9A84C]">{t('checkout.orderSummary')}</h2>
-          <p className="text-sm text-[#9CA3AF]">{t('checkout.subtotal')}: {formatSYP(BigInt(Math.round(order.subtotal_syp)))}</p>
-          <p className="text-sm text-[#9CA3AF]">{t('checkout.shipping')}: {formatSYP(BigInt(Math.round(order.shipping_syp)))}</p>
-          <p className="mt-2 font-bold text-[#E2E2E2]">{t('checkout.total')}: {formatSYP(BigInt(Math.round(order.total_syp)))}</p>
+          <p className="text-sm text-[#9CA3AF]">{t('checkout.subtotal')}: {formatSYP(Number(order.subtotal_syp))}</p>
+          <p className="text-sm text-[#9CA3AF]">{t('checkout.shipping')}: {formatSYP(Number(order.shipping_syp))}</p>
+          <p className="mt-2 font-bold text-[#E2E2E2]">{t('checkout.total')}: {formatSYP(Number(order.total_syp))}</p>
         </div>
       </div>
 
@@ -104,7 +104,7 @@ export default function OrderDetailPage() {
                 <td className="px-4 py-3">{item.product_variants.products.name_ar}</td>
                 <td className="px-4 py-3 font-mono text-xs text-[#9CA3AF]">{item.product_variants.sku}</td>
                 <td className="px-4 py-3">{item.quantity}</td>
-                <td className="px-4 py-3">{formatSYP(BigInt(Math.round(item.total_price)))}</td>
+                <td className="px-4 py-3">{formatSYP(Number(item.total_price))}</td>
               </tr>
             ))}
           </tbody>

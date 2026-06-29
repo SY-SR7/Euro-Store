@@ -1,6 +1,5 @@
 ﻿import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 
 interface RouteParams { params: { id: string } }
 
@@ -8,8 +7,7 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 
 export async function GET(_req: Request, { params }: RouteParams) {
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from('product_images')
     .select('id, url, alt_ar, alt_en, sort_order, is_primary')
@@ -29,8 +27,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     if (file.size > MAX_SIZE)
       return NextResponse.json({ error: 'file_too_large' }, { status: 400 });
 
-    const cookieStore = cookies();
-    const supabase = createSupabaseServerClientFromEnv(cookieStore);
+    const supabase = createServerSupabaseClient();
 
     const ext = file.name.split('.').pop() ?? 'jpg';
     const storagePath = `${params.id}/${Date.now()}.${ext}`;

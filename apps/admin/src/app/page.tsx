@@ -1,13 +1,11 @@
 ﻿import { getTranslations } from 'next-intl/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
   const t = await getTranslations('admin');
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const [{ count: orders }, { count: products }, { count: customers }] = await Promise.all([
     supabase.from('orders').select('*', { count: 'exact', head: true }),

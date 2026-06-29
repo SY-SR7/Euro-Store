@@ -2,9 +2,8 @@
 // @ts-nocheck
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import {
   ProductCard } from '../../catalog-components';
 import { createCatalogLookup, type CatalogBrand, type CatalogCategory, type CatalogProduct, type CatalogVariant } from '../../catalog-types';
@@ -17,8 +16,7 @@ interface CategoryPageProps {
 
 export default async function CategoryPage({ params }: CategoryPageProps): Promise<JSX.Element> {
   const t = await getTranslations();
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
 
   const { data: categoryData } = await supabase
     .from('categories')

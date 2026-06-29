@@ -1,9 +1,8 @@
 ﻿/* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,8 +15,7 @@ const STATUS_COLOR: Record<string, string> = {
 
 export default async function ExchangeIndexPage(): Promise<JSX.Element> {
   const t = await getTranslations();
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   let requests: Array<{ id: string; status: string; reason: string; created_at: string }> = [];

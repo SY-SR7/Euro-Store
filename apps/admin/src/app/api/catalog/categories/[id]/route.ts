@@ -1,6 +1,5 @@
 ﻿import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { z } from 'zod';
 
 const updateSchema = z.object({
@@ -18,8 +17,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     const body: unknown = await request.json();
     const parsed = updateSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
-    const cookieStore = cookies();
-    const supabase = createSupabaseServerClientFromEnv(cookieStore);
+    const supabase = createServerSupabaseClient();
     const { data, error } = await supabase
       .from('categories').update(parsed.data).eq('id', params.id).select('id').single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -31,8 +29,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
 export async function DELETE(_req: Request, { params }: RouteParams) {
   try {
-    const cookieStore = cookies();
-    const supabase = createSupabaseServerClientFromEnv(cookieStore);
+    const supabase = createServerSupabaseClient();
     const { error } = await supabase.from('categories').delete().eq('id', params.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ deleted: true });

@@ -1,5 +1,5 @@
 ﻿import { getTranslations } from 'next-intl/server';
-import { totpVerify } from '../actions';
+import { verifyTotpAction } from '../actions';
 
 export default async function TotpVerifyPage({ searchParams }: { searchParams: { error?: string } }) {
   const t = await getTranslations('totp');
@@ -15,7 +15,7 @@ export default async function TotpVerifyPage({ searchParams }: { searchParams: {
         <p className="text-xs text-[#C9A84C] uppercase tracking-widest">EuroStore</p>
         <h1 className="mt-3 text-3xl font-semibold">{t('verifyTitle')}</h1>
         {errorMsg && <p className="mt-4 rounded border border-[#2E2E2E] p-4 text-sm text-red-400">{errorMsg}</p>}
-        <form action={totpVerify} className="mt-8 flex flex-col gap-4">
+        <form action={verifyTotpAction} className="mt-8 flex flex-col gap-4">
           <label className="flex flex-col gap-1 text-sm">
             {t('codeLabel')}
             <input name="token" type="text" inputMode="numeric" maxLength={6} required className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />

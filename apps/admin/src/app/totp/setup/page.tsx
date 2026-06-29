@@ -1,5 +1,5 @@
 ﻿import { getTranslations } from 'next-intl/server';
-import { totpSetup } from '../actions';
+import { getOrCreateTotpSetup, verifyTotpAction } from '../actions';
 
 export default async function TotpSetupPage({ searchParams }: { searchParams: { error?: string; uri?: string; secret?: string; account?: string } }) {
   const t = await getTranslations('totp');
@@ -19,7 +19,7 @@ export default async function TotpSetupPage({ searchParams }: { searchParams: { 
           <p className="mt-6 text-sm text-[#9CA3AF]">{t('setupLink')}</p>
           <p className="font-mono text-xs break-all text-[#E2E2E2]">{searchParams.uri ?? '—'}</p>
         </div>
-        <form action={totpSetup} className="mt-8 flex flex-col gap-4">
+        <form action={verifyTotpAction} className="mt-8 flex flex-col gap-4">
           <input type="hidden" name="uri" value={searchParams.uri ?? ''} />
           <input type="hidden" name="secret" value={searchParams.secret ?? ''} />
           <label className="flex flex-col gap-1 text-sm">

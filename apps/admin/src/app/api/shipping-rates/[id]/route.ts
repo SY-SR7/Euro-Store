@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createServerSupabaseClient } from '@/supabase-server';
 
 interface Params { params: { id: string } }
 
@@ -10,15 +9,14 @@ export async function PATCH(request: Request, { params }: Params) {
     free_shipping_threshold_syp?: number | null;
     is_active?: boolean;
   };
-  const supabase = createSupabaseServerClientFromEnv(cookies());
+  const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from('shipping_rates')
     .update({
       ...(body.base_rate_syp !== undefined && { base_rate_syp: body.base_rate_syp }),
       ...(body.free_shipping_threshold_syp !== undefined && { free_shipping_threshold_syp: body.free_shipping_threshold_syp }),
       ...(body.is_active !== undefined && { is_active: body.is_active }),
-      updated_at: new Date().toISOString(),
-    })
+    } as any)
     .eq('id', params.id)
     .select()
     .single();
