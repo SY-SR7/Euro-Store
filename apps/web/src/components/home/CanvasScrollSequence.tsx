@@ -60,14 +60,31 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
 
         let drawW: number, drawH: number, drawX: number, drawY: number;
 
-        if (imgAspect > canvasAspect) {
-          drawH = height; drawW = height * imgAspect;
-          drawX = (width - drawW) / 2; drawY = 0;
+        const isMobile = width < 768;
+
+        if (isMobile) {
+          // On mobile (portrait), if we use cover, the sides of the 16:9 video get chopped severely.
+          // To fix "لا يظهر الحذاء بأكمله", we use contain logic but scaled up slightly (e.g. 1.2x) 
+          // so it fills more height without chopping too much width.
+          const scale = (width / img.naturalWidth) * 1.3; // 130% of contain width
+          drawW = img.naturalWidth * scale;
+          drawH = img.naturalHeight * scale;
+          drawX = (width - drawW) / 2;
+          drawY = (height - drawH) / 2;
         } else {
-          drawW = width; drawH = width / imgAspect;
-          drawX = 0; drawY = (height - drawH) / 2;
+          // On desktop, we use cover logic for full cinematic immersion
+          if (imgAspect > canvasAspect) {
+            // Image is wider than canvas -> scale by height
+            drawH = height; drawW = height * imgAspect;
+            drawX = (width - drawW) / 2; drawY = 0;
+          } else {
+            // Image is taller than canvas -> scale by width
+            drawW = width; drawH = width / imgAspect;
+            drawX = 0; drawY = (height - drawH) / 2;
+          }
         }
 
+        // We fill the canvas with a background color if we want, but it's transparent by default
         ctx.clearRect(0, 0, width, height);
         ctx.drawImage(img, drawX, drawY, drawW, drawH);
         currentFrameRef.current = target;
