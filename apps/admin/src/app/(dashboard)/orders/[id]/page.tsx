@@ -1,12 +1,11 @@
-'use client';
+﻿'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { formatSYP } from '@eurostore/shared';
+import Link from 'next/link';
 
 interface OrderItem {
   id: string; quantity: number; unit_price: number; total_price: number;
-  product_variants: { sku: string; attributes: Record<string, string>; products: { name_ar: string } };
+  product_variants: { sku: string; attributes: Record<string,string>; products: { name_ar: string } };
 }
 interface OrderDetail {
   id: string; order_number: string; status: string;
@@ -17,24 +16,24 @@ interface OrderDetail {
 }
 
 const TRANSITIONS: Record<string, string[]> = {
-  pending:    ['confirmed','cancelled'],
-  confirmed:  ['processing','cancelled'],
-  processing: ['shipped','cancelled'],
-  shipped:    ['delivered'],
-  delivered:  [], cancelled:  [],
+  pending:['confirmed','cancelled'], confirmed:['processing','cancelled'],
+  processing:['shipped','cancelled'], shipped:['delivered'],
+  delivered:[], cancelled:[],
 };
-
-const STATUS_COLORS: Record<string, string> = {
-  pending:'bg-yellow-900/30 text-yellow-400', confirmed:'bg-blue-900/30 text-blue-400',
-  processing:'bg-purple-900/30 text-purple-400', shipped:'bg-indigo-900/30 text-indigo-400',
-  delivered:'bg-green-900/30 text-green-400', cancelled:'bg-red-900/30 text-red-400',
+const STATUS_BADGE: Record<string,string> = {
+  pending:'badge-gold', confirmed:'badge-blue', processing:'badge-purple',
+  shipped:'badge-blue', delivered:'badge-green', cancelled:'badge-red',
+};
+const STATUS_AR: Record<string,string> = {
+  pending:'معلق', confirmed:'مؤكد', processing:'قيد التجهيز',
+  shipped:'تم الشحن', delivered:'تم التسليم', cancelled:'ملغي',
 };
 
 export default function OrderDetailPage() {
-  const t = useTranslations();
   const { id } = useParams<{ id: string }>();
-  const [order, setOrder] = useState<OrderDetail | null>(null);
+  const [order, setOrder]   = useState<OrderDetail | null>(null);
   const [updating, setUpdating] = useState(false);
+  const [msg, setMsg]       = useState('');
 
   const load = async () => {
     const res = await fetch(`/api/orders/${id}`);
@@ -43,72 +42,83 @@ export default function OrderDetailPage() {
   useEffect(() => { void load(); }, [id]);
 
   const changeStatus = async (newStatus: string) => {
-    setUpdating(true);
-    await fetch(`/api/orders/${id}`, {
+    setUpdating(true); setMsg('');
+    const res = await fetch(`/api/orders/${id}`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus }),
     });
-    await load();
+    if (res.ok) { setMsg(`تم تحديث الحالة إلى: ${STATUS_AR[newStatus] ?? newStatus}`); await load(); }
     setUpdating(false);
   };
 
-  if (!order) return <p className="text-[#9CA3AF] p-8">{t('common.loading')}</p>;
-
+  if (!order) return <div className="p-10 text-center text-[#A8A29E]">جاري التحميل...</div>;
   const allowed = TRANSITIONS[order.status] ?? [];
 
   return (
-    <div className="space-y-8 max-w-4xl">
-      <div className="flex items-center justify-between">
+    <div className="space-y-5" dir="rtl">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#E2E2E2]">{t('admin.order')} #{order.order_number}</h1>
-          <span className={`mt-1 inline-block rounded px-2 py-1 text-xs font-medium ${STATUS_COLORS[order.status] ?? ''}`}>{order.status}</span>
+          <Link href="/orders" className="text-sm text-[#A8A29E] hover:text-[#B8860B]"> الطلبات</Link>
+          <h1 className="mt-1 text-2xl font-black text-[#1C1917]">طلب #{order.order_number}</h1>
+          <span className={`mt-1 inline-block ${STATUS_BADGE[order.status] ?? 'badge-gray'}`}>{STATUS_AR[order.status] ?? order.status}</span>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-wrap gap-2">
           {allowed.map(s => (
             <button key={s} onClick={() => void changeStatus(s)} disabled={updating}
-              className="rounded bg-[#C9A84C] px-4 py-2 text-sm font-medium text-[#111] hover:bg-[#b8943e] disabled:opacity-50">
-               {s}
+              className="rounded-xl bg-[#B8860B] px-4 py-2 text-sm font-bold text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
+              → {STATUS_AR[s] ?? s}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-5">
-          <h2 className="mb-3 font-semibold text-[#C9A84C]">{t('checkout.deliveryInfo')}</h2>
-          <p className="text-[#E2E2E2]">{order.address_snapshot.full_name}</p>
-          <p className="text-[#9CA3AF] text-sm">{order.address_snapshot.phone}</p>
-          <p className="text-[#9CA3AF] text-sm">{order.address_snapshot.governorate} — {order.address_snapshot.address}</p>
+      {msg && <div className="rounded-xl border border-green-200 bg-green-50 px-5 py-3 text-sm font-semibold text-green-700">{msg}</div>}
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+          <h2 className="mb-3 font-black text-[#B8860B]">معلومات التوصيل</h2>
+          <p className="font-semibold text-[#1C1917]">{order.address_snapshot?.full_name}</p>
+          <p className="text-sm text-[#57534E]">{order.address_snapshot?.phone}</p>
+          <p className="text-sm text-[#57534E]">{order.address_snapshot?.governorate}</p>
+          <p className="text-sm text-[#57534E]">{order.address_snapshot?.address}</p>
         </div>
-        <div className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-5">
-          <h2 className="mb-3 font-semibold text-[#C9A84C]">{t('checkout.orderSummary')}</h2>
-          <p className="text-sm text-[#9CA3AF]">{t('checkout.subtotal')}: {formatSYP(Number(order.subtotal_syp))}</p>
-          <p className="text-sm text-[#9CA3AF]">{t('checkout.shipping')}: {formatSYP(Number(order.shipping_syp))}</p>
-          <p className="mt-2 font-bold text-[#E2E2E2]">{t('checkout.total')}: {formatSYP(Number(order.total_syp))}</p>
+        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+          <h2 className="mb-3 font-black text-[#B8860B]">ملخص المبالغ</h2>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between text-[#57534E]"><span>المجموع الجزئي</span><span>{Number(order.subtotal_syp||0).toLocaleString('ar-SY')} ل.س</span></div>
+            <div className="flex justify-between text-[#57534E]"><span>الشحن</span><span>{Number(order.shipping_syp||0).toLocaleString('ar-SY')} ل.س</span></div>
+            <div className="flex justify-between border-t border-[#E5E0D8] pt-2 font-black text-[#1C1917]"><span>الإجمالي</span><span>{Number(order.total_syp||0).toLocaleString('ar-SY')} ل.س</span></div>
+          </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-[#2E2E2E] overflow-x-auto">
-        <table className="w-full text-sm text-[#E2E2E2]">
-          <thead className="bg-[#1A1A1A] text-[#9CA3AF]">
-            <tr>
-              <th className="px-4 py-3 text-start">{t('adminCatalog.product')}</th>
-              <th className="px-4 py-3 text-start">SKU</th>
-              <th className="px-4 py-3 text-start">{t('adminCatalog.quantity')}</th>
-              <th className="px-4 py-3 text-start">{t('admin.total')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {order.order_items.map(item => (
-              <tr key={item.id} className="border-t border-[#2E2E2E]">
-                <td className="px-4 py-3">{item.product_variants.products.name_ar}</td>
-                <td className="px-4 py-3 font-mono text-xs text-[#9CA3AF]">{item.product_variants.sku}</td>
-                <td className="px-4 py-3">{item.quantity}</td>
-                <td className="px-4 py-3">{formatSYP(Number(item.total_price))}</td>
+      <div className="rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
+        <h2 className="border-b border-[#E5E0D8] px-5 py-4 font-black text-[#1C1917]">المنتجات</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead className="bg-[#F8F6F2]">
+              <tr>
+                <th className="px-5 py-3 text-right text-xs font-black text-[#A8A29E]">المنتج</th>
+                <th className="px-5 py-3 text-right text-xs font-black text-[#A8A29E]">الكمية</th>
+                <th className="px-5 py-3 text-right text-xs font-black text-[#A8A29E]">السعر</th>
+                <th className="px-5 py-3 text-right text-xs font-black text-[#A8A29E]">الإجمالي</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-[#F0ECE6]">
+              {(order.order_items ?? []).map(item => (
+                <tr key={item.id} className="hover:bg-[#FAFAF8]">
+                  <td className="px-5 py-3">
+                    <p className="font-semibold text-[#1C1917]">{item.product_variants?.products?.name_ar ?? '—'}</p>
+                    <p className="text-xs text-[#A8A29E]">SKU: {item.product_variants?.sku ?? '—'}</p>
+                  </td>
+                  <td className="px-5 py-3 text-[#57534E]">{item.quantity}</td>
+                  <td className="px-5 py-3 text-[#57534E]">{Number(item.unit_price||0).toLocaleString('ar-SY')} ل.س</td>
+                  <td className="px-5 py-3 font-semibold text-[#1C1917]">{Number(item.total_price||0).toLocaleString('ar-SY')} ل.س</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

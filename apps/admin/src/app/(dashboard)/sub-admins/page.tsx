@@ -1,245 +1,116 @@
-'use client';
-
+﻿'use client';
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 
 interface SubAdmin {
-  user_id: string;
-  display_name: string | null;
-  email: string;
-  is_active: boolean;
-  created_at: string;
+  user_id: string; display_name: string|null; email: string;
+  is_active: boolean; created_at: string;
 }
-
-function pickArray<T>(payload: unknown): T[] {
-  if (Array.isArray(payload)) return payload as T[];
-
-  if (payload && typeof payload === 'object') {
-    const obj = payload as Record<string, unknown>;
-    for (const key of ['data', 'items', 'subAdmins', 'sub_admins', 'rows']) {
-      if (Array.isArray(obj[key])) return obj[key] as T[];
-    }
+function pickArray<T>(p: unknown): T[] {
+  if (Array.isArray(p)) return p as T[];
+  if (p && typeof p === 'object') {
+    const o = p as Record<string,unknown>;
+    for (const k of ['data','items','subAdmins','sub_admins','rows']) { if (Array.isArray(o[k])) return o[k] as T[]; }
   }
-
   return [];
 }
 
 export default function AdminSubAdminsPage() {
   const [subAdmins, setSubAdmins] = useState<SubAdmin[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ email: '', password: '', display_name: '' });
-  const [creating, setCreating] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [loading, setLoading]     = useState(true);
+  const [showForm, setShowForm]   = useState(false);
+  const [form, setForm]           = useState({ email:'', password:'', display_name:'' });
+  const [creating, setCreating]   = useState(false);
+  const [msg, setMsg]             = useState('');
+  const [error, setError]         = useState('');
 
-  async function loadSubAdmins() {
-    setLoading(true);
-    setError('');
-
+  async function load() {
+    setLoading(true); setError('');
     try {
-      const res = await fetch('/api/sub-admins', { cache: 'no-store' });
-      const payload = await res.json().catch(() => null);
-
-      if (!res.ok) {
-        setError((payload as { error?: string } | null)?.error ?? 'تعذر تحميل المسؤولين الفرعيين');
-        setSubAdmins([]);
-      } else {
-        setSubAdmins(pickArray<SubAdmin>(payload));
-      }
-    } catch {
-      setError('تعذر الاتصال بالخادم');
-      setSubAdmins([]);
-    } finally {
-      setLoading(false);
-    }
+      const res = await fetch('/api/sub-admins', { cache:'no-store' });
+      const d = await res.json().catch(()=>null);
+      if (!res.ok) { setError((d as {error?:string}|null)?.error ?? 'خطأ'); setSubAdmins([]); }
+      else setSubAdmins(pickArray<SubAdmin>(d));
+    } catch { setError('تعذر الاتصال'); setSubAdmins([]); }
+    finally { setLoading(false); }
   }
+  useEffect(() => { void load(); }, []);
 
-  useEffect(() => {
-    void loadSubAdmins();
-  }, []);
-
-  async function createSubAdmin(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setCreating(true);
-    setMessage('');
-    setError('');
-
+  async function handleCreate(e: FormEvent) {
+    e.preventDefault(); setMsg(''); setError(''); setCreating(true);
     try {
       const res = await fetch('/api/sub-admins', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(form),
       });
-
-      const payload = await res.json().catch(() => null);
-
-      if (!res.ok) {
-        setError((payload as { error?: string } | null)?.error ?? 'فشل إنشاء المسؤول الفرعي');
-      } else {
-        setMessage('تم إنشاء المسؤول الفرعي بنجاح');
-        setShowForm(false);
-        setForm({ email: '', password: '', display_name: '' });
-        await loadSubAdmins();
-      }
-    } catch {
-      setError('تعذر إنشاء المسؤول الفرعي');
-    } finally {
-      setCreating(false);
-    }
+      const d = await res.json().catch(()=>null);
+      if (!res.ok) setError((d as {error?:string}|null)?.error ?? 'فشل الإنشاء');
+      else { setMsg('تم إنشاء الحساب بنجاح'); setForm({email:'',password:'',display_name:''}); setShowForm(false); void load(); }
+    } catch { setError('تعذر الاتصال'); }
+    finally { setCreating(false); }
   }
 
-  async function toggleActive(userId: string, current: boolean) {
-    setError('');
-
-    try {
-      const res = await fetch(`/api/sub-admins/${userId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ is_active: !current })
-      });
-
-      const payload = await res.json().catch(() => null);
-
-      if (!res.ok) {
-        setError((payload as { error?: string } | null)?.error ?? 'فشل تحديث حالة المسؤول');
-      } else {
-        await loadSubAdmins();
-      }
-    } catch {
-      setError('تعذر تحديث حالة المسؤول');
-    }
+  async function handleToggle(userId: string, current: boolean) {
+    await fetch(`/api/sub-admins/${userId}`, {
+      method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ is_active:!current }),
+    });
+    void load();
   }
 
   return (
-    <div className="space-y-6" dir="rtl">
-      <section className="flex flex-col justify-between gap-4 rounded-3xl border border-white/10 bg-[#101010] p-6 shadow-2xl sm:flex-row sm:items-end">
+    <div className="space-y-5" dir="rtl">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-3xl font-black text-white">المسؤولون الفرعيون</h1>
-          <p className="mt-2 text-sm leading-7 text-[#9CA3AF]">
-            إنشاء وإدارة حسابات مسؤولي لوحة التحكم.
-          </p>
+          <h1 className="text-2xl font-black text-[#1C1917]">المسؤولون الفرعيون</h1>
+          <p className="mt-1 text-sm text-[#A8A29E]">{subAdmins.length} مسؤول</p>
         </div>
-
-        <button
-          type="button"
-          onClick={() => {
-            setShowForm((v) => !v);
-            setMessage('');
-            setError('');
-          }}
-          className="rounded-2xl bg-[#C9A84C] px-5 py-3 text-sm font-black text-[#111111] hover:bg-[#D8B95F]"
-        >
-          {showForm ? 'إلغاء' : 'إضافة مسؤول فرعي +'}
+        <button onClick={()=>setShowForm(v=>!v)} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] transition-colors">
+          {showForm ? 'إلغاء' : '+ مسؤول جديد'}
         </button>
-      </section>
+      </div>
 
-      {message ? (
-        <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4 text-sm text-green-100">
-          {message}
+      {msg && <div className="rounded-xl border border-green-200 bg-green-50 px-5 py-3 text-sm font-semibold text-green-700">{msg}</div>}
+      {error && <div className="rounded-xl border border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700">{error}</div>}
+
+      {showForm && (
+        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+          <h2 className="mb-4 font-black text-[#B8860B]">إنشاء حساب مسؤول فرعي</h2>
+          <form onSubmit={handleCreate} className="grid gap-3 sm:grid-cols-2">
+            <input value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} placeholder="البريد الإلكتروني *" type="email" className="input-field" dir="ltr" />
+            <input value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} placeholder="كلمة المرور (8 أحرف+) *" type="password" className="input-field" dir="ltr" />
+            <input value={form.display_name} onChange={e=>setForm(f=>({...f,display_name:e.target.value}))} placeholder="الاسم" className="input-field sm:col-span-2" />
+            <button type="submit" disabled={creating} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors sm:col-span-2 w-fit">
+              {creating ? 'جاري الإنشاء...' : 'إنشاء الحساب'}
+            </button>
+          </form>
         </div>
-      ) : null}
+      )}
 
-      {error ? (
-        <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-100">
-          {error}
-        </div>
-      ) : null}
-
-      {showForm ? (
-        <form onSubmit={createSubAdmin} className="rounded-3xl border border-white/10 bg-[#101010] p-6 shadow-2xl">
-          <h2 className="mb-5 text-xl font-black text-white">إنشاء حساب مسؤول فرعي</h2>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            <label className="space-y-2">
-              <span className="text-sm font-bold text-[#B8B1A4]">الاسم الظاهر</span>
-              <input
-                value={form.display_name}
-                onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
-                required
-                className="w-full rounded-2xl border border-white/10 bg-[#151515] px-4 py-3 text-white outline-none focus:border-[#C9A84C]"
-              />
-            </label>
-
-            <label className="space-y-2">
-              <span className="text-sm font-bold text-[#B8B1A4]">البريد الإلكتروني</span>
-              <input
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                required
-                className="w-full rounded-2xl border border-white/10 bg-[#151515] px-4 py-3 text-white outline-none focus:border-[#C9A84C]"
-              />
-            </label>
-
-            <label className="space-y-2">
-              <span className="text-sm font-bold text-[#B8B1A4]">كلمة المرور</span>
-              <input
-                type="password"
-                minLength={8}
-                value={form.password}
-                onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-                required
-                className="w-full rounded-2xl border border-white/10 bg-[#151515] px-4 py-3 text-white outline-none focus:border-[#C9A84C]"
-              />
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            disabled={creating}
-            className="mt-5 rounded-2xl bg-[#C9A84C] px-6 py-3 text-sm font-black text-[#111111] hover:bg-[#D8B95F] disabled:opacity-50"
-          >
-            {creating ? 'جار الإنشاء...' : 'إنشاء الحساب'}
-          </button>
-        </form>
-      ) : null}
-
-      <section className="overflow-hidden rounded-3xl border border-white/10 bg-[#101010] shadow-2xl">
-        {loading ? (
-          <div className="p-10 text-center text-[#9CA3AF]">جار التحميل...</div>
-        ) : subAdmins.length === 0 ? (
-          <div className="p-10 text-center text-[#9CA3AF]">لا يوجد مسؤولون فرعيون حتى الآن.</div>
-        ) : (
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
+        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">جاري التحميل...</p>
+        : subAdmins.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">لا يوجد مسؤولون فرعيون</p>
+        : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
-              <thead className="bg-white/5 text-[#C9A84C]">
+              <thead className="bg-[#F8F6F2]">
                 <tr>
-                  <th className="px-4 py-4 text-right font-black">الاسم</th>
-                  <th className="px-4 py-4 text-right font-black">البريد الإلكتروني</th>
-                  <th className="px-4 py-4 text-right font-black">الحالة</th>
-                  <th className="px-4 py-4 text-right font-black">تاريخ الإنشاء</th>
-                  <th className="px-4 py-4 text-left font-black">الإجراء</th>
+                  {['الاسم','البريد الإلكتروني','تاريخ الإنشاء','الحالة','إجراء'].map((h,i) => (
+                    <th key={i} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i===2?'hidden md:table-cell':''} ${i===4?'text-left':''}`}>{h}</th>
+                  ))}
                 </tr>
               </thead>
-
-              <tbody className="divide-y divide-white/10">
-                {subAdmins.map((admin) => (
-                  <tr key={admin.user_id} className="text-[#EDE7DD] hover:bg-white/[0.03]">
-                    <td className="px-4 py-4 font-bold text-white">{admin.display_name ?? '—'}</td>
-                    <td className="px-4 py-4 font-mono text-xs">{admin.email}</td>
-                    <td className="px-4 py-4">
-                      <span
-                        className={[
-                          'rounded-full border px-3 py-1 text-xs font-black',
-                          admin.is_active
-                            ? 'border-green-400/20 bg-green-400/10 text-green-200'
-                            : 'border-red-400/20 bg-red-400/10 text-red-200'
-                        ].join(' ')}
-                      >
-                        {admin.is_active ? 'مفعّل' : 'موقوف'}
-                      </span>
+              <tbody className="divide-y divide-[#F0ECE6]">
+                {subAdmins.map(sa => (
+                  <tr key={sa.user_id} className="hover:bg-[#FAFAF8] transition-colors">
+                    <td className="px-5 py-3 font-semibold text-[#1C1917]">{sa.display_name ?? '—'}</td>
+                    <td className="px-5 py-3 font-mono text-xs text-[#57534E]">{sa.email}</td>
+                    <td className="px-5 py-3 text-xs text-[#A8A29E] hidden md:table-cell">{new Date(sa.created_at).toLocaleDateString('ar-SY')}</td>
+                    <td className="px-5 py-3">
+                      <span className={sa.is_active?'badge-green':'badge-gray'}>{sa.is_active?'نشط':'معطّل'}</span>
                     </td>
-                    <td className="px-4 py-4">
-                      {admin.created_at ? new Date(admin.created_at).toLocaleDateString('ar-SY') : '—'}
-                    </td>
-                    <td className="px-4 py-4 text-left">
-                      <button
-                        type="button"
-                        onClick={() => toggleActive(admin.user_id, admin.is_active)}
-                        className={admin.is_active ? 'text-xs font-black text-red-300' : 'text-xs font-black text-green-300'}
-                      >
-                        {admin.is_active ? 'إيقاف' : 'تفعيل'}
+                    <td className="px-5 py-3 text-left">
+                      <button onClick={()=>void handleToggle(sa.user_id, sa.is_active)}
+                        className={`font-bold text-xs hover:underline ${sa.is_active?'text-red-500':'text-green-600'}`}>
+                        {sa.is_active ? 'تعطيل' : 'تفعيل'}
                       </button>
                     </td>
                   </tr>
@@ -248,7 +119,7 @@ export default function AdminSubAdminsPage() {
             </table>
           </div>
         )}
-      </section>
+      </div>
     </div>
   );
 }

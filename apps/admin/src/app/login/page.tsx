@@ -1,37 +1,47 @@
-import { getTranslations } from 'next-intl/server';
-import { loginAdminAction } from './actions';
+﻿// @ts-nocheck
+/* eslint-disable */
+import { redirect } from 'next/navigation';
+import { loginAction } from './actions';
 
-export default async function AdminLoginPage({ searchParams }: { searchParams: { error?: string } }) {
-  const t = await getTranslations('auth');
-  // const tTotp = await getTranslations('totp');
-  const errorMap: Record<string, string> = {
-    invalid: t('errors.invalidCredentials'),
-    failed:  t('errors.loginFailed'),
-  };
-  const errorMsg = searchParams.error ? (errorMap[searchParams.error] ?? '') : '';
-
+export default function AdminLoginPage({ searchParams }: { searchParams: { error?: string } }) {
   return (
-    <main className="min-h-screen bg-[#0F0F0F] text-[#E2E2E2] flex items-center justify-center px-4">
+    <main className="flex min-h-screen items-center justify-center bg-[#F8F6F2] px-4" dir="rtl">
       <div className="w-full max-w-sm">
-        <p className="text-xs text-[#C9A84C] uppercase">EuroStore</p>
-        <h1 className="mt-3 text-3xl font-semibold">{t('adminLogin')}</h1>
-        {errorMsg && <p className="mt-4 rounded border border-[#2E2E2E] p-4 text-sm text-red-400">{errorMsg}</p>}
-        <form action={loginAdminAction} className="mt-8 flex flex-col gap-4">
-          <label className="flex flex-col gap-1 text-sm">
-            {t('email')}
-            <input name="email" type="email" required className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            {t('password')}
-            <input name="password" type="password" required className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
-          </label>
-          <button type="submit" className="mt-2 rounded-sm bg-[#C9A84C] py-2.5 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors">
-            {t('continueBtn')}
-          </button>
-        </form>
+        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-8 shadow-sm">
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#B8860B] text-white font-black text-lg">
+              ES
+            </div>
+            <h1 className="text-xl font-black text-[#1C1917]">لوحة إدارة EuroStore</h1>
+            <p className="mt-1 text-sm text-[#A8A29E]">للمسؤولين فقط</p>
+          </div>
+
+          {searchParams.error && (
+            <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {searchParams.error === 'invalid_credentials' ? 'بيانات الدخول غير صحيحة' : searchParams.error}
+            </div>
+          )}
+
+          <form action={loginAction} className="space-y-4">
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">البريد الإلكتروني</label>
+              <input name="email" type="email" required autoComplete="email"
+                className="w-full rounded-xl border border-[#E5E0D8] bg-[#F8F6F2] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B] placeholder:text-[#A8A29E]"
+                placeholder="admin@eurostore.com" dir="ltr" />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">كلمة المرور</label>
+              <input name="password" type="password" required autoComplete="current-password"
+                className="w-full rounded-xl border border-[#E5E0D8] bg-[#F8F6F2] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]"
+                placeholder="••••••••" dir="ltr" />
+            </div>
+            <button type="submit"
+              className="w-full rounded-xl bg-[#B8860B] py-3 text-sm font-black text-white hover:bg-[#9A7209] transition-colors">
+              دخول
+            </button>
+          </form>
+        </div>
       </div>
     </main>
   );
 }
-
-

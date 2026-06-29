@@ -1,30 +1,20 @@
-'use client';
-
+﻿'use client';
 import { useEffect, useState } from 'react';
 
 interface Category {
-  id: string;
-  name_ar: string | null;
-  name_en: string | null;
-  slug: string | null;
-  sort_order: number | null;
-  is_active: boolean | null;
+  id: string; name_ar: string|null; name_en: string|null;
+  slug: string|null; sort_order: number|null; is_active: boolean|null;
 }
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState('');
-
-  // New form
-  const [nameAr, setNameAr] = useState('');
-  const [nameEn, setNameEn] = useState('');
-  const [slug, setSlug]     = useState('');
-  const [sortOrder, setSortOrder] = useState('0');
-  const [creating, setCreating]   = useState(false);
-
-  // Edit state
-  const [editId, setEditId]         = useState<string | null>(null);
+  const [nameAr, setNameAr]         = useState('');
+  const [nameEn, setNameEn]         = useState('');
+  const [slug, setSlug]             = useState('');
+  const [creating, setCreating]     = useState(false);
+  const [editId, setEditId]         = useState<string|null>(null);
   const [editNameAr, setEditNameAr] = useState('');
   const [editNameEn, setEditNameEn] = useState('');
 
@@ -35,7 +25,6 @@ export default function AdminCategoriesPage() {
     setCategories(Array.isArray(d) ? d : []);
     setLoading(false);
   }
-
   useEffect(() => { void load(); }, []);
 
   async function handleCreate(e: React.FormEvent) {
@@ -43,113 +32,100 @@ export default function AdminCategoriesPage() {
     if (!nameAr.trim() || !slug.trim()) { setError('الاسم بالعربية والرابط مطلوبان'); return; }
     setError(''); setCreating(true);
     const res = await fetch('/api/catalog/categories', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name_ar: nameAr.trim(), name_en: nameEn.trim() || nameAr.trim(), slug: slug.trim().toLowerCase(), sort_order: parseInt(sortOrder, 10) || 0, is_active: true }),
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name_ar:nameAr.trim(), name_en:nameEn.trim()||nameAr.trim(), slug:slug.trim().toLowerCase(), sort_order:0, is_active:true }),
     });
-    if (res.ok) { setNameAr(''); setNameEn(''); setSlug(''); setSortOrder('0'); void load(); }
-    else { const p = await res.json().catch(() => null); setError((p as {error?:string}|null)?.error ?? 'فشل الإضافة'); }
+    if (res.ok) { setNameAr(''); setNameEn(''); setSlug(''); void load(); }
+    else { const p = await res.json().catch(()=>null); setError((p as {error?:string}|null)?.error ?? 'فشل الإضافة'); }
     setCreating(false);
   }
 
   async function handleEditSave(id: string) {
     await fetch(`/api/catalog/categories/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name_ar: editNameAr, name_en: editNameEn }),
+      method:'PATCH', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name_ar:editNameAr, name_en:editNameEn }),
     });
-    setEditId(null);
-    void load();
+    setEditId(null); void load();
   }
 
-  async function handleToggle(id: string, current: boolean | null) {
+  async function handleToggle(id: string, current: boolean|null) {
     await fetch(`/api/catalog/categories/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      method:'PATCH', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ is_active: !current }),
     });
     void load();
   }
 
   async function handleDelete(id: string) {
-    if (!window.confirm('حذف هذا التصنيف؟ تأكد أنه لا يحتوي منتجات.')) return;
-    await fetch(`/api/catalog/categories/${id}`, { method: 'DELETE' });
+    if (!confirm('حذف هذا التصنيف؟')) return;
+    await fetch(`/api/catalog/categories/${id}`, { method:'DELETE' });
     void load();
   }
 
-  const inp = 'rounded-2xl border border-white/10 bg-[#151515] px-3 py-2 text-sm text-white outline-none focus:border-[#C9A84C]';
-
   return (
-    <div className="space-y-6" dir="rtl">
-      <div className="rounded-3xl border border-white/10 bg-[#101010] p-6">
-        <h1 className="text-3xl font-black text-white">إدارة التصنيفات</h1>
-        <p className="mt-2 text-sm text-[#9CA3AF]">إضافة وتعديل وحذف تصنيفات المتجر.</p>
+    <div className="space-y-5" dir="rtl">
+      <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+        <h1 className="text-2xl font-black text-[#1C1917]">التصنيفات</h1>
+        <p className="mt-1 text-sm text-[#A8A29E]">{categories.length} تصنيف</p>
       </div>
 
-      {error && <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-100">{error}</div>}
-
-      {/* New category form */}
-      <div className="rounded-3xl border border-white/10 bg-[#101010] p-6">
-        <h2 className="mb-4 text-lg font-black text-white">تصنيف جديد</h2>
-        <form onSubmit={e => void handleCreate(e)} className="flex flex-wrap gap-3 items-end">
-          <input value={nameAr} onChange={e => setNameAr(e.target.value)} placeholder="الاسم بالعربية *" className={inp} />
-          <input value={nameEn} onChange={e => setNameEn(e.target.value)} placeholder="Name in English" className={inp} />
-          <input value={slug}   onChange={e => setSlug(e.target.value)}   placeholder="slug-url *" className={inp + ' font-mono'} />
-          <input value={sortOrder} onChange={e => setSortOrder(e.target.value)} type="number" placeholder="الترتيب" className={inp + ' w-24'} />
-          <button type="submit" disabled={creating} className="rounded-2xl bg-[#C9A84C] px-5 py-2 text-sm font-black text-[#111] hover:bg-[#D8B95F] disabled:opacity-50">
-            {creating ? 'جار...' : 'إضافة +'}
+      <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+        <h2 className="mb-4 font-black text-[#B8860B]">إضافة تصنيف جديد</h2>
+        {error && <div className="mb-3 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">{error}</div>}
+        <form onSubmit={handleCreate} className="grid gap-3 sm:grid-cols-3">
+          <input value={nameAr} onChange={e=>setNameAr(e.target.value)} placeholder="الاسم بالعربية *" className="input-field" />
+          <input value={nameEn} onChange={e=>setNameEn(e.target.value)} placeholder="الاسم بالإنجليزية" className="input-field" />
+          <input value={slug} onChange={e=>setSlug(e.target.value)} placeholder="الرابط (en-slug) *" className="input-field" dir="ltr" />
+          <button type="submit" disabled={creating} className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors sm:col-span-3 w-fit">
+            {creating ? 'جاري الإضافة...' : '+ إضافة'}
           </button>
         </form>
       </div>
 
-      {/* List */}
-      <div className="overflow-hidden rounded-3xl border border-white/10 bg-[#101010] shadow-2xl">
-        {loading ? <div className="p-10 text-center text-[#9CA3AF]">جار التحميل...</div> : categories.length === 0 ? (
-          <div className="p-10 text-center text-[#9CA3AF]">لا توجد تصنيفات.</div>
-        ) : (
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
+        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">جاري التحميل...</p>
+        : categories.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد تصنيفات</p>
+        : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
-              <thead className="bg-white/5 text-[#C9A84C]">
+              <thead className="bg-[#F8F6F2]">
                 <tr>
-                  <th className="px-4 py-4 text-right font-black">الاسم بالعربية</th>
-                  <th className="px-4 py-4 text-right font-black">الاسم بالإنجليزية</th>
-                  <th className="px-4 py-4 text-right font-black">slug</th>
-                  <th className="px-4 py-4 text-right font-black">ترتيب</th>
-                  <th className="px-4 py-4 text-right font-black">الحالة</th>
-                  <th className="px-4 py-4 text-left font-black">إجراء</th>
+                  {['الاسم (عربي)','الاسم (إنجليزي)','الرابط','الحالة','الإجراءات'].map((h,i) => (
+                    <th key={i} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i===1?'hidden sm:table-cell':''} ${i===2?'hidden md:table-cell':''} ${i===4?'text-left':''}`}>{h}</th>
+                  ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10">
-                {categories.map(c => (
-                  <tr key={c.id} className="text-[#EDE7DD] hover:bg-white/[0.03]">
-                    <td className="px-4 py-3">
-                      {editId === c.id
-                        ? <input value={editNameAr} onChange={e => setEditNameAr(e.target.value)} className={inp + ' w-full'} />
-                        : <span className="font-bold text-white">{c.name_ar ?? '—'}</span>}
+              <tbody className="divide-y divide-[#F0ECE6]">
+                {categories.map(cat => (
+                  <tr key={cat.id} className="hover:bg-[#FAFAF8] transition-colors">
+                    <td className="px-5 py-3">
+                      {editId === cat.id ? (
+                        <input value={editNameAr} onChange={e=>setEditNameAr(e.target.value)} className="input-field" />
+                      ) : (
+                        <span className="font-semibold text-[#1C1917]">{cat.name_ar ?? '—'}</span>
+                      )}
                     </td>
-                    <td className="px-4 py-3">
-                      {editId === c.id
-                        ? <input value={editNameEn} onChange={e => setEditNameEn(e.target.value)} className={inp + ' w-full'} />
-                        : c.name_en ?? '—'}
+                    <td className="px-5 py-3 text-[#57534E] hidden sm:table-cell">
+                      {editId === cat.id ? (
+                        <input value={editNameEn} onChange={e=>setEditNameEn(e.target.value)} className="input-field" dir="ltr" />
+                      ) : (cat.name_en ?? '—')}
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs text-[#9CA3AF]">{c.slug ?? '—'}</td>
-                    <td className="px-4 py-3 text-[#9CA3AF]">{c.sort_order ?? 0}</td>
-                    <td className="px-4 py-3">
-                      <button type="button" onClick={() => void handleToggle(c.id, c.is_active)}
-                        className={['rounded-full border px-3 py-1 text-xs font-black', c.is_active ? 'border-green-400/20 bg-green-400/10 text-green-200' : 'border-white/10 bg-white/5 text-[#9CA3AF]'].join(' ')}>
-                        {c.is_active ? 'مفعّل' : 'موقوف'}
+                    <td className="px-5 py-3 font-mono text-xs text-[#A8A29E] hidden md:table-cell">{cat.slug ?? '—'}</td>
+                    <td className="px-5 py-3">
+                      <button onClick={() => void handleToggle(cat.id, cat.is_active)} className="transition-opacity hover:opacity-70">
+                        <span className={cat.is_active ? 'badge-green' : 'badge-gray'}>{cat.is_active ? 'نشط' : 'معطّل'}</span>
                       </button>
                     </td>
-                    <td className="px-4 py-3 text-left">
-                      {editId === c.id ? (
-                        <div className="flex gap-2 justify-end">
-                          <button type="button" onClick={() => void handleEditSave(c.id)} className="text-xs font-black text-green-300 hover:text-green-200">حفظ</button>
-                          <button type="button" onClick={() => setEditId(null)} className="text-xs text-[#9CA3AF] hover:text-white">إلغاء</button>
+                    <td className="px-5 py-3 text-left">
+                      {editId === cat.id ? (
+                        <div className="flex gap-2">
+                          <button onClick={() => void handleEditSave(cat.id)} className="font-bold text-green-600 hover:underline text-xs">حفظ</button>
+                          <button onClick={() => setEditId(null)} className="font-bold text-[#A8A29E] hover:underline text-xs">إلغاء</button>
                         </div>
                       ) : (
-                        <div className="flex gap-3 justify-end">
-                          <button type="button" onClick={() => { setEditId(c.id); setEditNameAr(c.name_ar ?? ''); setEditNameEn(c.name_en ?? ''); }} className="text-xs font-black text-[#C9A84C] hover:text-[#D8B95F]">تعديل</button>
-                          <button type="button" onClick={() => void handleDelete(c.id)} className="text-xs font-black text-red-300 hover:text-red-200">حذف</button>
+                        <div className="flex gap-3">
+                          <button onClick={() => { setEditId(cat.id); setEditNameAr(cat.name_ar??''); setEditNameEn(cat.name_en??''); }} className="font-bold text-[#B8860B] hover:underline text-xs">تعديل</button>
+                          <button onClick={() => void handleDelete(cat.id)} className="font-bold text-red-500 hover:underline text-xs">حذف</button>
                         </div>
                       )}
                     </td>

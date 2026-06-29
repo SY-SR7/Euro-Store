@@ -1,283 +1,94 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Manrope:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Manrope:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
 
+/* ── Light Brand Tokens ── */
 :root {
-  --gold:          #C9A84C;
-  --gold-dark:     #A67C2E;
-  --bg-base:       #0A0A0A;
-  --bg-surface:    #111111;
-  --bg-elevated:   #151515;
-  --border:        #2E2E2E;
-  --text-primary:  #E2E2E2;
-  --text-secondary:#9CA3AF;
-  --text-muted:    #6B7280;
+  --gold:           #B8860B;
+  --gold-hover:     #9A7209;
+  --gold-light:     #F5E6A3;
+  --gold-badge:     #FEFCE8;
+  --bg:             #F8F6F2;
+  --bg-card:        #FFFFFF;
+  --bg-card-2:      #FAFAF8;
+  --bg-sidebar:     #FFFFFF;
+  --border:         #E5E0D8;
+  --border-strong:  #C9A84C;
+  --text-primary:   #1C1917;
+  --text-secondary: #57534E;
+  --text-muted:     #A8A29E;
+  --green:          #15803D;
+  --green-bg:       #DCFCE7;
+  --red:            #DC2626;
+  --red-bg:         #FEE2E2;
+  --blue:           #1D4ED8;
+  --blue-bg:        #DBEAFE;
+  --purple:         #7C3AED;
+  --purple-bg:      #EDE9FE;
+  --admin-sidebar-space: 17rem;
 }
 
+html { scroll-behavior: smooth; }
+
 body {
-  background-color: #0A0A0A;
+  background: var(--bg);
   color: var(--text-primary);
   font-family: 'Manrope', 'Noto Naskh Arabic', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-[dir="rtl"] body { font-family: 'Noto Naskh Arabic', 'Manrope', system-ui, sans-serif; }
+[dir="rtl"] body {
+  font-family: 'Noto Naskh Arabic', 'Manrope', system-ui, sans-serif;
+}
 
-.font-headline { font-family: 'Playfair Display', 'Noto Naskh Arabic', Georgia, serif; }
+.font-headline {
+  font-family: 'Playfair Display', 'Noto Naskh Arabic', Georgia, serif;
+}
 
-.input-admin { @apply rounded-md border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-2 text-sm text-[#E2E2E2] placeholder:text-[#6B7280] focus:border-[#C9A84C] focus:outline-none w-full; }
-
-::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-surface); }
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--gold-dark); }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-::selection    { background: rgba(201,168,76,0.25); color: var(--text-primary); }
+::selection    { background: rgba(184,134,11,0.18); }
 
-/* admin-sidebar-layout:start */
-:root {
-  --admin-sidebar-space: 18rem;
-}
-
-.admin-main {
-  max-width: 100vw;
-  box-sizing: border-box;
-}
-
+/* ── Sidebar Layout ── */
 @media (min-width: 768px) {
-  .admin-main {
-    padding-right: var(--admin-sidebar-space, 18rem) !important;
-  }
+  .admin-main { padding-right: var(--admin-sidebar-space, 17rem); }
 }
-
 @media (max-width: 767px) {
-  .admin-main {
-    padding-right: 1rem !important;
-    padding-left: 1rem !important;
-  }
-}
-/* admin-sidebar-layout:end */
-
-/* admin-visual-polish:start */
-:root {
-  --admin-bg: #070707;
-  --admin-surface: #101010;
-  --admin-surface-2: #151515;
-  --admin-surface-3: #1A1A1A;
-  --admin-border: rgba(255, 255, 255, 0.10);
-  --admin-border-strong: rgba(201, 168, 76, 0.45);
-  --admin-text: #F7F3EA;
-  --admin-muted: #B8B1A4;
-  --admin-soft: #8E867A;
-  --admin-gold: #C9A84C;
-  --admin-gold-hover: #D8B95F;
+  .admin-main { padding-right: 1rem; padding-left: 1rem; }
 }
 
-body {
-  background: var(--admin-bg) !important;
-  color: var(--admin-text) !important;
+/* ── Shared Card/Input ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1.25rem;
 }
+.input-field {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 0.625rem;
+  background: var(--bg);
+  padding: 0.55rem 0.9rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input-field:focus { border-color: var(--gold); }
+.input-field::placeholder { color: var(--text-muted); }
 
-.admin-main {
-  max-width: 100vw;
-  box-sizing: border-box;
-  background:
-    radial-gradient(circle at 15% 0%, rgba(201, 168, 76, 0.08), transparent 28rem),
-    radial-gradient(circle at 85% 10%, rgba(255, 255, 255, 0.05), transparent 24rem),
-    var(--admin-bg) !important;
-  color: var(--admin-text) !important;
-}
-
-@media (min-width: 768px) {
-  .admin-main {
-    padding-right: var(--admin-sidebar-space, 18rem) !important;
-  }
-}
-
-@media (max-width: 767px) {
-  .admin-main {
-    padding-right: 1rem !important;
-    padding-left: 1rem !important;
-  }
-}
-
-/* اجبار الكروت البيضاء القديمة على ثيم الأدمن */
-.admin-main :is(
-  [class~="bg-white"],
-  [class~="bg-[#fff]"],
-  [class~="bg-[#FFF]"],
-  [class~="bg-[#ffffff]"],
-  [class~="bg-[#FFFFFF]"],
-  [class~="bg-[#F8F5EF]"],
-  [class~="bg-[#F7F3EA]"],
-  [class~="bg-[#FAF7EF]"],
-  [class~="bg-gray-50"],
-  [class~="bg-gray-100"],
-  [class~="bg-slate-50"],
-  [class~="bg-slate-100"],
-  [class~="bg-zinc-50"],
-  [class~="bg-zinc-100"],
-  [class~="bg-neutral-50"],
-  [class~="bg-neutral-100"]
-) {
-  background-color: var(--admin-surface) !important;
-  color: var(--admin-text) !important;
-  border-color: var(--admin-border) !important;
-}
-
-/* النصوص الداكنة القديمة */
-.admin-main :is(
-  [class~="text-[#171411]"],
-  [class~="text-[#3C352C]"],
-  [class~="text-[#2E261D]"],
-  [class~="text-gray-950"],
-  [class~="text-gray-900"],
-  [class~="text-gray-800"],
-  [class~="text-slate-950"],
-  [class~="text-slate-900"],
-  [class~="text-zinc-950"],
-  [class~="text-zinc-900"],
-  [class~="text-neutral-950"],
-  [class~="text-neutral-900"]
-) {
-  color: var(--admin-text) !important;
-}
-
-/* النصوص الثانوية */
-.admin-main :is(
-  [class~="text-[#6F6558]"],
-  [class~="text-[#7E766B]"],
-  [class~="text-gray-700"],
-  [class~="text-gray-600"],
-  [class~="text-gray-500"],
-  [class~="text-slate-700"],
-  [class~="text-slate-600"],
-  [class~="text-zinc-700"],
-  [class~="text-zinc-600"],
-  [class~="text-neutral-700"],
-  [class~="text-neutral-600"]
-) {
-  color: var(--admin-muted) !important;
-}
-
-/* حدود وفواصل قديمة */
-.admin-main :is(
-  [class~="border-gray-100"],
-  [class~="border-gray-200"],
-  [class~="border-gray-300"],
-  [class~="border-slate-100"],
-  [class~="border-slate-200"],
-  [class~="border-zinc-100"],
-  [class~="border-zinc-200"],
-  [class~="border-neutral-100"],
-  [class~="border-neutral-200"],
-  [class~="border-[#E7DED1]"],
-  [class~="border-[#DED6CA]"]
-) {
-  border-color: var(--admin-border) !important;
-}
-
-/* الجداول */
-.admin-main table {
-  border-color: var(--admin-border) !important;
-}
-
-.admin-main thead,
-.admin-main [class~="bg-[#161616]"] {
-  background-color: var(--admin-surface-3) !important;
-}
-
-.admin-main th {
-  color: var(--admin-gold) !important;
-  border-color: var(--admin-border) !important;
-}
-
-.admin-main td {
-  color: var(--admin-text) !important;
-  border-color: var(--admin-border) !important;
-}
-
-.admin-main tr {
-  border-color: var(--admin-border) !important;
-}
-
-/* الحقول */
-.admin-main input,
-.admin-main select,
-.admin-main textarea {
-  background-color: var(--admin-surface-2) !important;
-  color: var(--admin-text) !important;
-  border-color: var(--admin-border) !important;
-  caret-color: var(--admin-gold) !important;
-}
-
-.admin-main input:focus,
-.admin-main select:focus,
-.admin-main textarea:focus {
-  border-color: var(--admin-gold) !important;
-  outline: none !important;
-  box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.35) !important;
-}
-
-.admin-main option {
-  background-color: var(--admin-surface) !important;
-  color: var(--admin-text) !important;
-}
-
-.admin-main ::placeholder {
-  color: var(--admin-soft) !important;
-}
-
-/* أزرار الذهب تبقى مقروءة */
-.admin-main :is(
-  button[class*="bg-[#C9A84C]"],
-  a[class*="bg-[#C9A84C]"],
-  button[class*="bg-[#D8B95F]"],
-  a[class*="bg-[#D8B95F]"]
-) {
-  background-color: var(--admin-gold) !important;
-  color: #111111 !important;
-  border-color: var(--admin-gold) !important;
-}
-
-.admin-main :is(
-  button[class*="bg-[#C9A84C]"],
-  a[class*="bg-[#C9A84C]"]
-):hover {
-  background-color: var(--admin-gold-hover) !important;
-}
-
-/* الكروت */
-.admin-main :is(section, article, aside, div)[class*="rounded"] {
-  border-color: var(--admin-border);
-}
-
-/* صور المنتجات الفارغة أو الحاويات البيضاء */
-.admin-main img {
-  background-color: transparent !important;
-}
-
-.admin-main [class*="shadow"] {
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35) !important;
-}
-
-/* شارات الحالات */
-.admin-main :is([class*="text-green"], [class*="bg-green"]) {
-  color: #86EFAC !important;
-}
-
-.admin-main :is([class*="text-red"], [class*="bg-red"]) {
-  color: #FCA5A5 !important;
-}
-
-.admin-main :is([class*="text-yellow"], [class*="bg-yellow"]) {
-  color: #FDE68A !important;
-}
-
-.admin-main :is([class*="text-blue"], [class*="bg-blue"]) {
-  color: #93C5FD !important;
-}
-/* admin-visual-polish:end */
+/* ── Badge helpers ── */
+.badge-green  { background: var(--green-bg);  color: var(--green);  border-radius: 9999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; }
+.badge-red    { background: var(--red-bg);    color: var(--red);    border-radius: 9999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; }
+.badge-blue   { background: var(--blue-bg);   color: var(--blue);   border-radius: 9999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; }
+.badge-purple { background: var(--purple-bg); color: var(--purple); border-radius: 9999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; }
+.badge-gold   { background: var(--gold-badge); color: var(--gold);  border-radius: 9999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; }
+.badge-gray   { background: #F5F5F4; color: var(--text-secondary); border-radius: 9999px; padding: 2px 10px; font-size: 0.75rem; font-weight: 700; }

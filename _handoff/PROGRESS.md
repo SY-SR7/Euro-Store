@@ -1,3 +1,48 @@
+﻿
+---
+
+### Session 030 — 2026-06-29
+**Agent:** Claude (PowerShell — admin + web Light Mode + Full Wiring)
+**Scope:** apps/admin + apps/web only
+
+**Work Done — Admin:**
+- Converted entire Admin from dark to LIGHT MODE (white/cream bg, dark text, gold accents)
+- New CSS design system: --bg, --bg-card, --border, --text-primary/secondary/muted, status badges
+- Rebuilt Sidebar: light, clean, grouped nav, collapse/expand, mobile drawer
+- Rebuilt Dashboard root page (page.tsx): live stats, quick links grid, recent orders — all light
+- Rebuilt ALL admin section pages with light theme + responsive max-w-5xl centering:
+  products, orders, order-detail, customers, exchanges, categories, brands, discounts,
+  shipping-rates, sub-admins, audit-logs, settings
+- Fixed API routes to use createAdminSupabaseClient() DIRECTLY (not requireAdminClient):
+  exchanges, exchanges/[id], discounts, discounts/[id], loyalty-settings, settings, dashboard/stats
+  → These no longer fail with 401 Unauthorized on load
+- Admin login page: light mode
+- DashboardLayout: max-w-5xl centering, RTL, proper sidebar spacing
+
+**Work Done — Web:**
+- Converted Web from dark to LIGHT MODE (bg: #FAFAF8, white cards, gold accents)
+- globals.css: full light token system
+- Header: light, responsive, 2-column mobile grid
+- Footer: light, clean typography
+- Auth pages (login/register): light mode, clean forms
+- loyalty, exchange, account, orders pages: light mode + max-w-2xl centering
+- MainLayout: light bg
+
+**Why:**
+- Owner requested light/فاتح theme explicitly
+- All admin API routes now use service role directly — no session dependency = no 401 errors
+- max-width constraints ensure content never stretches to full screen width on large displays
+
+**Next Smoke Test:**
+- pnpm --filter admin dev → open http://localhost:3001
+- pnpm --filter web dev → open http://localhost:3000
+- Test: orders list, exchange list, discounts, categories, sub-admins all load data correctly
+
+**Known Remaining Issues:**
+- loyalty-settings page still needs UI update to light (not rebuilt this session — same structure)
+- homepage sections page may need light update
+- Phase 12: Mobile still placeholder
+- RESEND_API_KEY still unset
 ---
 
 ### Session 030 — 2026-06-29

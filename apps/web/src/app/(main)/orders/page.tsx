@@ -1,34 +1,25 @@
-// @ts-nocheck
+﻿// @ts-nocheck
 /* eslint-disable */
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
-import { formatSYP } from '@eurostore/shared';
 
 export const dynamic = 'force-dynamic';
 
 const STATUS_LABEL: Record<string, string> = {
-  pending:    'statusPending',
-  confirmed:  'statusConfirmed',
-  processing: 'statusProcessing',
-  shipped:    'statusShipped',
-  delivered:  'statusDelivered',
-  cancelled:  'statusCancelled',
+  pending:'معلق', confirmed:'مؤكد', processing:'قيد التجهيز',
+  shipped:'تم الشحن', delivered:'تم التسليم', cancelled:'ملغي',
 };
 const STATUS_COLOR: Record<string, string> = {
-  pending:    'bg-yellow-900/30 text-yellow-400',
-  confirmed:  'bg-blue-900/30 text-blue-400',
-  processing: 'bg-purple-900/30 text-purple-400',
-  shipped:    'bg-indigo-900/30 text-indigo-400',
-  delivered:  'bg-green-900/30 text-green-400',
-  cancelled:  'bg-red-900/30 text-red-400',
+  pending:'bg-amber-50 text-amber-700', confirmed:'bg-blue-50 text-blue-700',
+  processing:'bg-purple-50 text-purple-700', shipped:'bg-indigo-50 text-indigo-700',
+  delivered:'bg-green-50 text-green-700', cancelled:'bg-red-50 text-red-700',
 };
 
-export default async function CustomerOrdersPage(): Promise<JSX.Element> {
+export default async function CustomerOrdersPage() {
   const t = await getTranslations();
   const supabase = createServerSupabaseClient();
-
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/auth/login');
 
@@ -39,63 +30,39 @@ export default async function CustomerOrdersPage(): Promise<JSX.Element> {
     .order('created_at', { ascending: false });
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] text-[#E2E2E2] px-6 py-12">
-      <div className="mx-auto max-w-3xl">
-        <nav className="mb-8">
-          <Link href="/" className="text-[#C9A84C] text-sm hover:underline">
-             {t('common.appName')}
-          </Link>
-        </nav>
-
-        <h1 className="text-2xl font-semibold mb-8">{t('orders.title')}</h1>
+    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir="rtl">
+      <div className="mx-auto max-w-2xl space-y-5">
+        <div>
+          <Link href="/" className="text-sm text-[#B8860B] hover:underline">الرئيسية</Link>
+          <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('orders.title')}</h1>
+        </div>
 
         {(!orders || orders.length === 0) ? (
-          <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-12 text-center">
-            <p className="text-[#9CA3AF] mb-6">{t('orders.empty')}</p>
-            <Link
-              href="/products"
-              className="inline-block rounded-sm bg-[#C9A84C] px-6 py-2.5 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors"
-            >
-              {t('nav.shop')}
+          <div className="rounded-2xl border border-[#E7E3DC] bg-white p-10 text-center shadow-sm">
+            <p className="text-[#A8A29E]">لا توجد طلبات حتى الآن</p>
+            <Link href="/products" className="mt-4 inline-block rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#9A7209] transition-colors">
+              تصفح المنتجات
             </Link>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-md border border-[#2E2E2E]">
-            <table className="w-full text-sm">
-              <thead className="bg-[#161616] text-[#9CA3AF]">
-                <tr>
-                  <th className="px-4 py-3 text-start font-medium">{t('orders.orderNumber')}</th>
-                  <th className="px-4 py-3 text-start font-medium">{t('orders.date')}</th>
-                  <th className="px-4 py-3 text-start font-medium">{t('orders.total')}</th>
-                  <th className="px-4 py-3 text-start font-medium">{t('orders.status')}</th>
-                  <th className="px-4 py-3 text-start font-medium"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#2E2E2E]">
-                {(orders ?? []).map((order: any) => (
-                  <tr key={order.id} className="hover:bg-[#161616] transition-colors">
-                    <td className="px-4 py-3 font-mono text-xs text-[#C9A84C]">{order.order_number}</td>
-                    <td className="px-4 py-3 text-[#9CA3AF] text-xs">
-                      {new Date(order.created_at as string).toLocaleDateString('ar-SY')}
-                    </td>
-                    <td className="px-4 py-3 text-[#E2E2E2] font-semibold">{formatSYP(order.total_syp)}</td>
-                    <td className="px-4 py-3">
-                      <span className={`rounded-sm px-2 py-1 text-xs font-medium ${STATUS_COLOR[order.status] ?? 'text-[#9CA3AF]'}`}>
-                        {t(`orders.${STATUS_LABEL[order.status] ?? 'status'}`)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Link
-                        href={`/orders/${order.order_number}`}
-                        className="text-xs text-[#C9A84C] hover:underline"
-                      >
-                        {t('orders.viewDetails')}
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="rounded-2xl border border-[#E7E3DC] bg-white shadow-sm">
+            <div className="divide-y divide-[#F0ECE6]">
+              {orders.map((o: any) => (
+                <Link key={o.id} href={`/orders/${o.order_number}`}
+                  className="flex items-center justify-between px-5 py-4 hover:bg-[#FAFAF8] transition-colors">
+                  <div>
+                    <p className="font-mono text-sm font-bold text-[#1C1917]">#{o.order_number}</p>
+                    <p className="mt-0.5 text-xs text-[#A8A29E]">{new Date(o.created_at).toLocaleDateString('ar-SY')}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <p className="text-sm font-semibold text-[#57534E]">{Number(o.total_syp).toLocaleString('ar-SY')} ل.س</p>
+                    <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_COLOR[o.status] ?? 'bg-stone-100 text-stone-500'}`}>
+                      {STATUS_LABEL[o.status] ?? o.status}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         )}
       </div>

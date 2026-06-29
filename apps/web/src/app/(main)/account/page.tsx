@@ -1,14 +1,14 @@
-// @ts-nocheck
+﻿// @ts-nocheck
 /* eslint-disable */
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
-import { User, ShoppingBag, Star, RefreshCw, LogOut } from 'lucide-react';
+import { ShoppingBag, Star, RefreshCw, LogOut, User } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-export default async function AccountPage(): Promise<JSX.Element> {
+export default async function AccountPage() {
   const t = await getTranslations();
   const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -16,67 +16,58 @@ export default async function AccountPage(): Promise<JSX.Element> {
 
   const { data: profile } = await supabase
     .from('customer_profiles')
-    .select('loyalty_points, referral_code')
+    .select('loyalty_points, referral_code, full_name')
     .eq('user_id', user.id)
     .maybeSingle();
 
   const { count: orderCount } = await supabase
-    .from('orders')
-    .select('id', { count: 'exact', head: true })
-    .eq('customer_id', user.id);
+    .from('orders').select('id', { count:'exact', head:true }).eq('customer_id', user.id);
 
   const quickLinks = [
-    { href: '/orders',   icon: ShoppingBag, label: t('orders.title'),   badge: String(orderCount ?? 0) },
-    { href: '/loyalty',  icon: Star,        label: t('loyalty.title'),   badge: String(profile?.loyalty_points ?? 0) + ' ' + t('loyalty.pointsUnit') },
-    { href: '/exchange', icon: RefreshCw,   label: t('exchange.title'),  badge: null },
+    { href:'/orders',   icon:ShoppingBag, label:t('orders.title'),   badge:String(orderCount??0), badgeColor:'bg-blue-50 text-blue-700' },
+    { href:'/loyalty',  icon:Star,        label:t('loyalty.title'),   badge:String(profile?.loyalty_points??0)+' '+t('loyalty.pointsUnit'), badgeColor:'bg-amber-50 text-amber-700' },
+    { href:'/exchange', icon:RefreshCw,   label:t('exchange.title'),  badge:null, badgeColor:'' },
   ];
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-12">
-      {/* Profile card */}
-      <div className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-6 flex items-center gap-5 mb-8">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#C9A84C]/10 text-[#C9A84C] flex-shrink-0">
-          <User className="w-8 h-8" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold text-[#E2E2E2] truncate">{user.email}</p>
-          {profile?.referral_code && (
-            <p className="mt-1 text-xs text-[#6B7280] font-mono">
-              {t('loyalty.referralCode')}: {profile.referral_code}
-            </p>
-          )}
-        </div>
-      </div>
+    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir="rtl">
+      <div className="mx-auto max-w-lg space-y-5">
+        <h1 className="text-2xl font-black text-[#1C1917]">حسابي</h1>
 
-      {/* Quick links */}
-      <div className="grid gap-3 sm:grid-cols-3 mb-8">
-        {quickLinks.map(({ href, icon: Icon, label, badge }) => (
-          <Link
-            key={href}
-            href={href}
-            className="group flex flex-col gap-3 rounded-lg border border-[#2E2E2E] bg-[#151515] p-5 hover:border-[#C9A84C] transition-colors"
-          >
-            <Icon className="w-5 h-5 text-[#C9A84C]" />
-            <div>
-              <p className="text-sm font-medium text-[#E2E2E2] group-hover:text-[#C9A84C] transition-colors">{label}</p>
-              {badge && (
-                <p className="mt-1 text-xs text-[#9CA3AF]">{badge}</p>
-              )}
-            </div>
-          </Link>
-        ))}
-      </div>
+        <div className="rounded-2xl border border-[#E7E3DC] bg-white p-5 shadow-sm flex items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#FEF3C7] text-[#B8860B] shrink-0">
+            <User className="h-7 w-7" />
+          </div>
+          <div className="min-w-0">
+            <p className="font-bold text-[#1C1917] truncate">{profile?.full_name ?? user.email}</p>
+            <p className="text-xs text-[#A8A29E] truncate">{user.email}</p>
+            {profile?.referral_code && (
+              <p className="mt-1 font-mono text-xs text-[#A8A29E]">كود الإحالة: {profile.referral_code}</p>
+            )}
+          </div>
+        </div>
 
-      {/* Logout */}
-      <form action="/api/auth/logout" method="POST">
-        <button
-          type="submit"
-          className="flex items-center gap-2 text-sm text-[#9CA3AF] hover:text-red-400 transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-          {t('auth.logout')}
-        </button>
-      </form>
-    </div>
+        <div className="grid gap-3">
+          {quickLinks.map(l => (
+            <Link key={l.href} href={l.href}
+              className="flex items-center justify-between rounded-2xl border border-[#E7E3DC] bg-white p-4 shadow-sm hover:border-[#B8860B] transition-colors">
+              <div className="flex items-center gap-3">
+                <l.icon className="h-5 w-5 text-[#B8860B]" />
+                <span className="font-semibold text-[#1C1917]">{l.label}</span>
+              </div>
+              {l.badge && <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${l.badgeColor}`}>{l.badge}</span>}
+            </Link>
+          ))}
+        </div>
+
+        <form action="/api/auth/logout" method="post">
+          <button type="submit"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-200 bg-red-50 py-3 text-sm font-bold text-red-600 hover:bg-red-100 transition-colors">
+            <LogOut className="h-4 w-4" />
+            <span>تسجيل الخروج</span>
+          </button>
+        </form>
+      </div>
+    </main>
   );
 }

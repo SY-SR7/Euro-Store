@@ -1,60 +1,76 @@
+﻿// @ts-nocheck
 /* eslint-disable */
-// @ts-nocheck
+'use client';
+import { useState } from 'react';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
-import { register } from '../actions';
+import { useRouter } from 'next/navigation';
+import { createBrowserClient } from '@supabase/ssr';
 
-export default async function RegisterPage({
-  searchParams,
-}: {
-  searchParams: { error?: string };
-}) {
-  const t = await getTranslations('auth');
-  const errorMap: Record<string, string> = {
-    invalid: t('errors.registerInvalid'),
-    failed:  t('errors.registerFailed'),
-  };
-  const errorMsg = searchParams.error ? (errorMap[searchParams.error] ?? '') : '';
+export default function RegisterPage() {
+  const router = useRouter();
+  const [email, setEmail]     = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName]       = useState('');
+  const [error, setError]     = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault(); setError(''); setLoading(true);
+    const { data, error: err } = await supabase.auth.signUp({
+      email, password,
+      options: { data: { full_name: name } },
+    });
+    if (err) { setError(err.message); setLoading(false); return; }
+    router.push('/account');
+  }
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] text-[#E2E2E2] flex items-center justify-center px-4">
+    <main className="flex min-h-screen items-center justify-center bg-[#FAFAF8] px-4" dir="rtl">
       <div className="w-full max-w-sm">
-        <p className="text-xs text-[#C9A84C] uppercase">EuroStore</p>
-        <h1 className="mt-3 text-3xl font-semibold">{t('createAccount')}</h1>
-        {errorMsg && <p className="mt-4 rounded border border-[#2E2E2E] p-4 text-sm text-red-400">{errorMsg}</p>}
-        <form action={register} className="mt-8 flex flex-col gap-4">
-          <label className="flex flex-col gap-1 text-sm">
-            {t('fullName')}
-            <input name="full_name" type="text" required className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            {t('email')}
-            <input name="email" type="email" required className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            {t('phone')}
-            <input name="phone" type="tel" className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            {t('preferredLanguage')}
-            <select name="preferred_language" className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]">
-              <option value="ar">{t('langAr')}</option>
-              <option value="en">{t('langEn')}</option>
-            </select>
-          </label>
-          <label className="flex flex-col gap-1 text-sm">
-            {t('password')}
-            <input name="password" type="password" required className="rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-[#C9A84C]" />
-          </label>
-          <button type="submit" className="mt-2 rounded-sm bg-[#C9A84C] py-2.5 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors">
-            {t('registerBtn')}
-          </button>
-        </form>
-        <p className="mt-6 text-center text-sm text-[#9CA3AF]">
-          <Link href="/auth/login" className="text-[#C9A84C] hover:underline">{t('alreadyHaveAccount')}</Link>
-        </p>
+        <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 shadow-sm">
+          <div className="mb-6 text-center">
+            <Link href="/" className="text-lg font-black tracking-widest text-[#B8860B]">EURO STORE</Link>
+            <h1 className="mt-2 text-xl font-black text-[#1C1917]">إنشاء حساب جديد</h1>
+          </div>
+
+          {error && <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
+
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">الاسم الكامل</label>
+              <input type="text" value={name} onChange={e=>setName(e.target.value)} required
+                className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B] placeholder:text-[#A8A29E]"
+                placeholder="الاسم" />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">البريد الإلكتروني</label>
+              <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required
+                className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B] placeholder:text-[#A8A29E]"
+                placeholder="you@example.com" dir="ltr" />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">كلمة المرور</label>
+              <input type="password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={8}
+                className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]"
+                placeholder="8 أحرف على الأقل" dir="ltr" />
+            </div>
+            <button type="submit" disabled={loading}
+              className="w-full rounded-xl bg-[#B8860B] py-3 text-sm font-black text-white hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
+              {loading ? 'جاري الإنشاء...' : 'إنشاء الحساب'}
+            </button>
+          </form>
+
+          <p className="mt-5 text-center text-sm text-[#A8A29E]">
+            لديك حساب بالفعل؟{' '}
+            <Link href="/auth/login" className="font-bold text-[#B8860B] hover:underline">تسجيل الدخول</Link>
+          </p>
+        </div>
       </div>
     </main>
   );
 }
-

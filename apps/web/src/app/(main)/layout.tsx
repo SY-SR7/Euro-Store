@@ -7,11 +7,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-[#0F0F0F] text-[#E2E2E2]">
+      <main className="min-h-screen bg-[#FAFAF8] text-[#1C1917]">
         {children}
       </main>
       <Footer />
     </>
   );
 }
-

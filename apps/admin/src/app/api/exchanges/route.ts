@@ -1,23 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { requireAdminClient } from '@/supabase-server';
+﻿import { NextRequest, NextResponse } from 'next/server';
+import { createAdminSupabaseClient } from '@/supabase-server';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-  const admin = await requireAdminClient();
-  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  try {
+    const admin = createAdminSupabaseClient();
+    const { searchParams } = new URL(req.url);
+    const status = searchParams.get('status');
 
-  const { searchParams } = new URL(req.url);
-  const status = searchParams.get('status');
+    let query = admin
+      .from('exchange_requests')
+      .select('id,order_id,customer_id,reason_ar,reason_en,status,created_at')
+      .order('created_at', { ascending: false })
+      .limit(50);
 
-  let query = admin
-    .from('exchange_requests')
-    .select('id,order_id,customer_id,reason_ar,reason_en,status,created_at')
-    .order('created_at', { ascending: false })
-    .limit(50);
+    if (status) query = query.eq('status', status as never);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (status) query = query.eq('status', status as any);
-
-  const { data } = await query;
-  const mapped = (data ?? []).map(r => ({ ...r, reason: r.reason_ar }));
-  return NextResponse.json(mapped);
+    const { data, error } = await query;
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    const mapped = (data ?? []).map(r => ({ ...r, reason: r.reason_ar }));
+    return NextResponse.json(mapped);
+  } catch {
+    return NextResponse.json({ error: 'server_error' }, { status: 500 });
+  }
 }

@@ -1,4 +1,4 @@
-/* eslint-disable */
+﻿/* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
@@ -7,16 +7,11 @@ import { createServerSupabaseClient } from '@/supabase-server';
 export const dynamic = 'force-dynamic';
 
 const STATUS_COLOR: Record<string, string> = {
-  pending:   'bg-yellow-900/30 text-yellow-400',
-  approved:  'bg-blue-900/30 text-blue-400',
-  rejected:  'bg-red-900/30 text-red-400',
-  completed: 'bg-green-900/30 text-green-400',
+  pending:'bg-amber-50 text-amber-700', approved:'bg-green-50 text-green-700',
+  rejected:'bg-red-50 text-red-700', completed:'bg-blue-50 text-blue-700',
 };
 const STATUS_LABEL: Record<string, string> = {
-  pending:   'معلق',
-  approved:  'مقبول',
-  rejected:  'مرفوض',
-  completed: 'مكتمل',
+  pending:'معلق', approved:'مقبول', rejected:'مرفوض', completed:'مكتمل',
 };
 
 export default async function ExchangeIndexPage() {
@@ -35,65 +30,51 @@ export default async function ExchangeIndexPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] text-[#E2E2E2] px-6 py-12">
-      <div className="mx-auto max-w-2xl">
-        <nav className="mb-8">
-          <Link href="/" className="text-[#C9A84C] text-sm hover:underline"> {t('common.appName')}</Link>
-        </nav>
-
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-semibold">{t('exchange.title')}</h1>
+    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir="rtl">
+      <div className="mx-auto max-w-2xl space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <Link href="/" className="text-sm text-[#B8860B] hover:underline">الرئيسية</Link>
+            <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('exchange.title')}</h1>
+          </div>
           <Link href="/exchange/new"
-            className="rounded-sm bg-[#C9A84C] px-4 py-2 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors">
+            className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] transition-colors">
             + {t('exchange.newRequest')}
           </Link>
         </div>
 
-        <div className="mb-6 rounded-md border border-[#2E2E2E] bg-[#151515] p-4">
-          <p className="text-sm text-[#9CA3AF] leading-6">
-            🔄 سياسة الاستبدال: يمكنك طلب الاستبدال خلال <strong className="text-[#C9A84C]">7 أيام</strong> من استلام طلبك، بشرط أن يكون المنتج بحالته الأصلية وغير مستخدم.
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+          <p className="text-sm text-amber-800 leading-6">
+            🔄 سياسة الاستبدال: يمكنك طلب الاستبدال خلال <strong>7 أيام</strong> من استلام طلبك، بشرط أن يكون المنتج بحالته الأصلية وغير مستخدم.
           </p>
         </div>
 
         {!user ? (
-          <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-8 text-center">
-            <p className="text-[#9CA3AF] mb-4">سجّل دخولك لمتابعة طلبات الاستبدال الخاصة بك</p>
-            <Link href="/auth/login" className="text-[#C9A84C] hover:underline text-sm">تسجيل الدخول</Link>
-          </div>
-        ) : requests.length === 0 ? (
-          <div className="rounded-md border border-[#2E2E2E] bg-[#151515] p-8 text-center">
-            <p className="text-[#9CA3AF] mb-4">لا توجد طلبات استبدال بعد</p>
-            <Link href="/exchange/new"
-              className="inline-block rounded-sm bg-[#C9A84C] px-5 py-2 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors">
-              إنشاء طلب استبدال
+          <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 text-center shadow-sm">
+            <p className="text-[#A8A29E] mb-4">سجّل دخولك لمتابعة طلبات الاستبدال الخاصة بك</p>
+            <Link href="/auth/login" className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-white hover:bg-[#9A7209] transition-colors">
+              تسجيل الدخول
             </Link>
           </div>
+        ) : requests.length === 0 ? (
+          <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 text-center shadow-sm">
+            <p className="text-[#A8A29E]">لا توجد طلبات استبدال حتى الآن</p>
+          </div>
         ) : (
-          <div className="overflow-hidden rounded-md border border-[#2E2E2E]">
-            <table className="w-full text-sm text-[#E2E2E2]">
-              <thead className="bg-[#1A1A1A] text-[#9CA3AF]">
-                <tr>
-                  <th className="px-4 py-3 text-start font-medium">{t('exchange.reason')}</th>
-                  <th className="px-4 py-3 text-start font-medium">الحالة</th>
-                  <th className="px-4 py-3 text-start font-medium">التاريخ</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#2E2E2E]">
-                {requests.map(r => (
-                  <tr key={r.id} className="hover:bg-[#1A1A1A] transition-colors">
-                    <td className="px-4 py-3 text-[#D6D3C7] text-xs max-w-[200px] truncate">{r.reason_ar}</td>
-                    <td className="px-4 py-3">
-                      <span className={`rounded px-2 py-1 text-xs font-medium ${STATUS_COLOR[r.status] ?? ''}`}>
-                        {STATUS_LABEL[r.status] ?? r.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-[#9CA3AF] text-xs">
-                      {new Date(r.created_at).toLocaleDateString('ar-SY')}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="rounded-2xl border border-[#E7E3DC] bg-white shadow-sm">
+            <div className="divide-y divide-[#F0ECE6]">
+              {requests.map(req => (
+                <div key={req.id} className="flex items-center justify-between px-5 py-4">
+                  <div>
+                    <p className="font-semibold text-[#1C1917] text-sm">{req.reason_ar ?? '—'}</p>
+                    <p className="mt-1 text-xs text-[#A8A29E]">{new Date(req.created_at).toLocaleDateString('ar-SY')}</p>
+                  </div>
+                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_COLOR[req.status] ?? 'bg-stone-100 text-stone-500'}`}>
+                    {STATUS_LABEL[req.status] ?? req.status}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
