@@ -14,7 +14,8 @@
                     "tag":  "Catalog",
                     "allProducts":  "All products",
                     "allCategoriesLink":  "All categories",
-                    "categoryTag":  "Category"
+                    "categoryTag":  "Category",
+                    "noCategoryProducts":  "No products in this category yet"
                 },
     "home":  {
                  "categoriesTitle":  "Shop by category",

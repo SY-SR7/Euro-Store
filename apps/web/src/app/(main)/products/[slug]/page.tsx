@@ -16,7 +16,7 @@ export default async function ProductPage({ params }: Props) {
 
   const { data: productData } = await supabase
     .from('products')
-    .select('id, name_ar, name_en, slug, description_ar, category_id, brand_id, is_featured, product_images(id, product_id, url, alt_text, is_primary, sort_order)')
+    .select('id, name_ar, name_en, slug, description_ar, category_id, brand_id, is_featured, image_url')
     .eq('slug', params.slug)
     .eq('is_active', true)
     .maybeSingle();

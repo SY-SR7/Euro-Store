@@ -1,5 +1,20 @@
 ---
 
+### Session 040 — Restore Web Products After Image Relation Patch
+**Scope:** apps/web + _handoff only
+
+**Fix:**
+- Removed `product_images(...)` relation from web Supabase product queries because it can break when no FK relationship is exposed.
+- Added direct `image_url` selection for product cards.
+- Rebuilt `ProductCard` to render `products.image_url`.
+- Added missing `catalog.noCategoryProducts` translation key.
+- Cleared web cache.
+
+**Smoke Test:**
+- Run `pnpm --filter web dev`.
+- Open `/products` and every `/categories/[slug]`.
+---
+
 ### Session 039 — Web Product Images Rendering Fix
 **Scope:** apps/web + _handoff only
 

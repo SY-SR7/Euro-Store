@@ -14,7 +14,8 @@
                     "tag":  "التصنيفات",
                     "allProducts":  "كل المنتجات",
                     "allCategoriesLink":  "كل التصنيفات",
-                    "categoryTag":  "تصنيف"
+                    "categoryTag":  "تصنيف",
+                    "noCategoryProducts":  "لا توجد منتجات في هذا التصنيف حالياً"
                 },
     "home":  {
                  "categoriesTitle":  "تسوق حسب التصنيف",
