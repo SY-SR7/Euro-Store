@@ -817,3 +817,26 @@
 **Next:**
 - Run pnpm --filter admin dev and open http://localhost:3001
 - Smoke-test Sidebar links.
+
+---
+
+### Session 023 — 2026-06-29
+**Scope:** apps/admin only.
+
+**Fix:**
+- Added missing adminCatalog/common/admin i18n keys to Arabic and English message files.
+- Replaced unresolved-key-heavy catalog pages with stable Arabic admin pages:
+  - products
+  - categories
+  - brands
+  - homepage sections
+  - category form
+  - brand form
+- Fixed runtime crashes in exchanges and discounts by normalizing API responses before calling .map().
+- Added safe empty/error states for exchanges and discounts.
+- Cleared apps/admin/.next cache.
+
+**Next:**
+- Run pnpm --filter admin dev.
+- Smoke-test: products, categories, brands, homepage, exchanges, discounts.
+- Continue admin/web only.
