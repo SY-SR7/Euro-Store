@@ -1,4 +1,5 @@
 import { CinematicShowcaseSection, type StoryBeat } from '@/components/home/CinematicShowcaseSection';
+import { HeroSection } from '@/components/home/HeroSection';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,7 +40,10 @@ const FRAME_COUNT  = 100; // Because the new scripts extract 100 frames
 export default function HomePage() {
   return (
     <main className="bg-[#0C0C0C] text-[#E2E2E2]" dir="rtl">
-      {/* 1. SHOES (Already has 120 frames) */}
+      {/* 0. HERO — Full-screen autoplay video with animated content */}
+      <HeroSection />
+
+      {/* 1. SHOES (scroll-driven cinematic sequence) */}
       <CinematicShowcaseSection
         frameSrcPattern="/frames/shoes/frame_{index:04d}.jpg"
         frameCount={120}
