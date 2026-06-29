@@ -12,7 +12,7 @@ import {
   LogOut,
 } from 'lucide-react';
 
-export default function Navbar() {
+export function Navbar() {
   async function logout() {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
@@ -105,3 +105,5 @@ export default function Navbar() {
     </header>
   );
 }
+
+export default Navbar;
