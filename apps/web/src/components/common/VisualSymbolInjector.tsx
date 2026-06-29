@@ -17,11 +17,28 @@ function svgIcon(kind: string, size = 22) {
   if (kind === 'account') return `<svg ${common}><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>`;
   if (kind === 'favorite') return `<svg ${common}><polygon points="12 2 15 8.5 22 9 17 14 18.5 21 12 17.3 5.5 21 7 14 2 9 9 8.5 12 2"/></svg>`;
   if (kind === 'search') return `<svg ${common}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`;
+  if (kind === 'home') return `<svg ${common}><path d="m3 10 9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>`;
   if (kind === 'image') return `<svg ${common}><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>`;
+
   return `<svg ${common}><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>`;
 }
 
-function dataSvg(label: string, kind = 'image') {
+function detectKind(text: string) {
+  const t = text || '';
+  if (/سلة|cart|basket|bag/i.test(t)) return 'cart';
+  if (/طلب|orders?|شحن|توصيل/i.test(t)) return 'order';
+  if (/استبدال|exchange|return/i.test(t)) return 'exchange';
+  if (/ولاء|نقاط|مكاف/i.test(t)) return 'loyalty';
+  if (/حساب|دخول|مستخدم|profile|account|login|user/i.test(t)) return 'account';
+  if (/مفضلة|wishlist|favorite/i.test(t)) return 'favorite';
+  if (/تصنيف|category/i.test(t)) return 'category';
+  if (/بحث|search/i.test(t)) return 'search';
+  if (/الرئيسية|home/i.test(t)) return 'home';
+  if (/منتج|product|sku|مخزون|variant/i.test(t)) return 'product';
+  return 'image';
+}
+
+function fallbackImage(label: string, kind = 'image') {
   const safe = String(label || 'Euro Store').replace(/[<>&"]/g, '').slice(0, 42);
   const icon = svgIcon(kind, 82).replaceAll('currentColor', GOLD);
 
@@ -35,7 +52,7 @@ function dataSvg(label: string, kind = 'image') {
       </linearGradient>
     </defs>
     <rect width="900" height="700" fill="url(#g)"/>
-    <circle cx="450" cy="285" r="112" fill="#fff" stroke="${GOLD}" stroke-width="5" opacity=".95"/>
+    <circle cx="450" cy="285" r="112" fill="#fff" stroke="${GOLD}" stroke-width="5"/>
     <g transform="translate(409 244)">${icon}</g>
     <text x="450" y="455" text-anchor="middle" font-size="34" font-family="Arial, sans-serif" font-weight="800" fill="${TEXT}">${safe}</text>
     <text x="450" y="505" text-anchor="middle" font-size="22" font-family="Arial, sans-serif" fill="#A8A29E">Euro Store</text>
@@ -44,39 +61,23 @@ function dataSvg(label: string, kind = 'image') {
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
 
-function detectKindFromText(text: string) {
-  const t = text || '';
-  if (/سلة|cart/i.test(t)) return 'cart';
-  if (/طلب|orders?|شحن|توصيل/i.test(t)) return 'order';
-  if (/استبدال|exchange|return/i.test(t)) return 'exchange';
-  if (/ولاء|نقاط|مكاف/i.test(t)) return 'loyalty';
-  if (/حساب|دخول|مستخدم|profile|account|login/i.test(t)) return 'account';
-  if (/مفضلة|wishlist|favorite/i.test(t)) return 'favorite';
-  if (/تصنيف|category/i.test(t)) return 'category';
-  if (/بحث|search/i.test(t)) return 'search';
-  if (/منتج|product|صورة/i.test(t)) return 'product';
-  return 'image';
-}
-
 function readCartCount() {
   try {
     let total = 0;
 
     const walk = (value: any, depth = 0): number => {
-      if (!value || depth > 6) return 0;
+      if (!value || depth > 8) return 0;
 
       if (Array.isArray(value)) {
         return value.reduce((s, x) => s + walk(x, depth + 1), 0);
       }
 
       if (typeof value === 'object') {
-        const looksCartItem =
-          'quantity' in value &&
+        const looksItem =
+          ('quantity' in value || 'qty' in value) &&
           ('variantId' in value || 'variant_id' in value || 'productId' in value || 'product_id' in value || 'sku' in value);
 
-        if (looksCartItem) {
-          return Math.max(1, Number(value.quantity || value.qty || 1));
-        }
+        if (looksItem) return Math.max(1, Number(value.quantity || value.qty || 1));
 
         return Object.values(value).reduce((s: number, x: any) => s + walk(x, depth + 1), 0);
       }
@@ -87,10 +88,8 @@ function readCartCount() {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i) || '';
       if (!/cart|basket|bag|سلة/i.test(key)) continue;
-
       try {
-        const parsed = JSON.parse(localStorage.getItem(key) || 'null');
-        total += walk(parsed);
+        total += walk(JSON.parse(localStorage.getItem(key) || 'null'));
       } catch {}
     }
 
@@ -124,15 +123,8 @@ function ensureStyle() {
       visibility: visible !important;
       overflow: visible !important;
       box-shadow: 0 1px 5px rgba(31,27,22,.06) !important;
-      transition: .18s ease !important;
       text-decoration: none !important;
-    }
-
-    .euro-cart-link:hover,
-    a[data-euro-cart-fixed="1"]:hover {
-      color: #C9A84C !important;
-      border-color: #C9A84C !important;
-      transform: translateY(-1px);
+      z-index: 5 !important;
     }
 
     .euro-cart-link svg,
@@ -145,11 +137,17 @@ function ensureStyle() {
       visibility: visible !important;
     }
 
+    .euro-cart-link:hover,
+    a[data-euro-cart-fixed="1"]:hover {
+      color: #C9A84C !important;
+      border-color: #C9A84C !important;
+    }
+
     .euro-cart-badge {
       position: absolute !important;
       top: -7px !important;
       right: -7px !important;
-      display: inline-flex !important;
+      display: none;
       align-items: center !important;
       justify-content: center !important;
       min-width: 20px !important;
@@ -160,10 +158,8 @@ function ensureStyle() {
       color: #111 !important;
       font-size: 10px !important;
       font-weight: 900 !important;
-      line-height: 1 !important;
       border: 2px solid #fff !important;
-      box-shadow: 0 2px 8px rgba(0,0,0,.12) !important;
-      z-index: 3 !important;
+      z-index: 10 !important;
     }
 
     .euro-empty-symbol {
@@ -203,7 +199,7 @@ function ensureStyle() {
   document.head.appendChild(style);
 }
 
-function decorateCartLink(a: HTMLAnchorElement) {
+function decorateCart(a: HTMLAnchorElement) {
   a.dataset.euroCartFixed = '1';
   a.classList.add('euro-cart-link');
   a.setAttribute('aria-label', a.getAttribute('aria-label') || 'السلة');
@@ -217,7 +213,6 @@ function decorateCartLink(a: HTMLAnchorElement) {
   if (!badge) {
     badge = document.createElement('span');
     badge.className = 'euro-cart-badge';
-    badge.textContent = '0';
     a.appendChild(badge);
   }
 
@@ -226,31 +221,35 @@ function decorateCartLink(a: HTMLAnchorElement) {
   badge.style.display = count > 0 ? 'inline-flex' : 'none';
 }
 
-function ensureCartInHeader() {
+function ensureCart() {
   const header = document.querySelector('header') || document.querySelector('nav');
   if (!header) return;
 
   const existing = Array.from(header.querySelectorAll('a[href]')).find((x) => {
     const a = x as HTMLAnchorElement;
+    const href = a.getAttribute('href') || '';
     try {
       return new URL(a.href).pathname.replace(/\/$/, '') === '/cart';
     } catch {
-      return /\/cart\/?$/i.test(a.getAttribute('href') || '');
+      return /\/cart\/?$/i.test(href);
     }
   }) as HTMLAnchorElement | undefined;
 
   if (existing) {
-    decorateCartLink(existing);
+    decorateCart(existing);
     return;
   }
 
-  if (header.querySelector('[data-euro-injected-cart="1"]')) return;
+  if (header.querySelector('[data-euro-injected-cart="1"]')) {
+    decorateCart(header.querySelector('[data-euro-injected-cart="1"]') as HTMLAnchorElement);
+    return;
+  }
 
   const cart = document.createElement('a');
   cart.href = '/cart';
   cart.dataset.euroInjectedCart = '1';
-  cart.innerHTML = svgIcon('cart') + '<span class="euro-cart-badge">0</span>';
-  decorateCartLink(cart);
+  cart.innerHTML = svgIcon('cart') + '<span class="euro-cart-badge"></span>';
+  decorateCart(cart);
 
   const search =
     header.querySelector('a[href="/search"]') ||
@@ -258,16 +257,14 @@ function ensureCartInHeader() {
     header.querySelector('[aria-label*="بحث"]') ||
     header.querySelector('[title*="بحث"]');
 
-  const target = search?.parentElement || header.querySelector('nav div') || header;
-
-  if (search && search.parentElement) {
+  if (search?.parentElement) {
     search.parentElement.insertBefore(cart, search);
   } else {
-    target.appendChild(cart);
+    header.appendChild(cart);
   }
 }
 
-function fixBrokenImages() {
+function fixImages() {
   document.querySelectorAll('img').forEach((img) => {
     const el = img as HTMLImageElement;
     if (el.dataset.euroImageFixed === '1') return;
@@ -276,9 +273,9 @@ function fixBrokenImages() {
     const apply = () => {
       if (el.dataset.euroFallbackApplied === '1') return;
       const label = el.alt || el.title || 'صورة المنتج';
-      const kind = detectKindFromText(label);
+      const kind = detectKind(label);
       el.dataset.euroFallbackApplied = '1';
-      el.src = dataSvg(label, kind);
+      el.src = fallbackImage(label, kind);
       el.style.objectFit = 'cover';
       el.style.background = '#FAF7EF';
     };
@@ -290,22 +287,17 @@ function fixBrokenImages() {
   });
 }
 
-function addEmptyStateIcons() {
-  const patterns = [
-    /لا توجد|لا يوجد|فارغ|فارغة|غير موجود|لم يتم العثور|سجّل الدخول|تسجيل الدخول|ابدأ|لا تملك/i,
-  ];
-
+function addEmptyIcons() {
   document.querySelectorAll('main div, main section, main article').forEach((node) => {
     const el = node as HTMLElement;
     if (el.dataset.euroEmptyIcon === '1') return;
-    if (el.querySelector('.euro-empty-symbol')) return;
+    if (el.querySelector('.euro-empty-symbol, svg, img')) return;
 
     const text = (el.innerText || '').trim();
     if (!text || text.length > 180) return;
-    if (!patterns.some((p) => p.test(text))) return;
-    if (el.querySelector('svg,img')) return;
+    if (!/لا توجد|لا يوجد|فارغ|فارغة|غير موجود|لم يتم العثور|سجّل الدخول|تسجيل الدخول|ابدأ|لا تملك/i.test(text)) return;
 
-    const kind = detectKindFromText(text);
+    const kind = detectKind(text);
     const icon = document.createElement('div');
     icon.className = 'euro-empty-symbol';
     icon.innerHTML = svgIcon(kind, 34);
@@ -315,13 +307,14 @@ function addEmptyStateIcons() {
   });
 }
 
-function fillEmptyVisualBoxes() {
+function fillEmptyBoxes() {
   const selector = [
     '[class*="aspect-square"]',
     '[class*="aspect-["]',
     '[class*="image"]',
     '[class*="thumbnail"]',
     '[class*="photo"]',
+    '[class*="avatar"]',
   ].join(',');
 
   document.querySelectorAll(selector).forEach((node) => {
@@ -330,15 +323,14 @@ function fillEmptyVisualBoxes() {
     if (el.querySelector('img,svg,.euro-placeholder-symbol')) return;
 
     const rect = el.getBoundingClientRect();
-    if (rect.width < 70 || rect.height < 70) return;
-    if ((el.innerText || '').trim().length > 5) return;
+    if (rect.width < 60 || rect.height < 60) return;
+    if ((el.innerText || '').trim().length > 8) return;
 
-    const pos = getComputedStyle(el).position;
-    if (pos === 'static') el.style.position = 'relative';
-    el.style.overflow = el.style.overflow || 'hidden';
+    if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+    el.style.overflow = 'hidden';
 
     const label = el.getAttribute('aria-label') || el.getAttribute('title') || 'صورة';
-    const kind = detectKindFromText(label);
+    const kind = detectKind(label);
 
     const box = document.createElement('div');
     box.className = 'euro-placeholder-symbol';
@@ -349,69 +341,32 @@ function fillEmptyVisualBoxes() {
   });
 }
 
-function decorateKnownHeaderLinks() {
-  const header = document.querySelector('header') || document.querySelector('nav');
-  if (!header) return;
-
-  const map: Array<[RegExp, string, string]> = [
-    [/\/account|\/profile|\/auth\/login/i, 'account', 'الحساب'],
-    [/\/orders/i, 'order', 'طلباتي'],
-    [/\/exchange/i, 'exchange', 'الاستبدال'],
-    [/\/loyalty/i, 'loyalty', 'الولاء'],
-    [/\/favorites|\/wishlist/i, 'favorite', 'المفضلة'],
-    [/\/search/i, 'search', 'بحث'],
-    [/\/products/i, 'product', 'المنتجات'],
-    [/\/categories/i, 'category', 'التصنيفات'],
-  ];
-
-  header.querySelectorAll('a[href]').forEach((x) => {
-    const a = x as HTMLAnchorElement;
-    if (a.dataset.euroSemanticIcon === '1') return;
-    if (a.querySelector('svg,img')) return;
-
-    const href = a.getAttribute('href') || '';
-
-    for (const [re, kind, label] of map) {
-      if (!re.test(href)) continue;
-
-      a.dataset.euroSemanticIcon = '1';
-      a.setAttribute('aria-label', a.getAttribute('aria-label') || label);
-      a.setAttribute('title', a.getAttribute('title') || label);
-      a.insertAdjacentHTML('afterbegin', svgIcon(kind, 20));
-      break;
-    }
-  });
-}
-
 export function VisualSymbolInjector() {
   useEffect(() => {
     ensureStyle();
 
     const run = () => {
-      ensureCartInHeader();
-      decorateKnownHeaderLinks();
-      fixBrokenImages();
-      addEmptyStateIcons();
-      fillEmptyVisualBoxes();
+      ensureCart();
+      fixImages();
+      addEmptyIcons();
+      fillEmptyBoxes();
     };
 
     run();
 
-    const mo = new MutationObserver(() => run());
-    mo.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['src', 'href', 'class'],
-    });
+    const mo = new MutationObserver(run);
+    mo.observe(document.body, { childList: true, subtree: true });
 
     window.addEventListener('storage', run);
     window.addEventListener('focus', run);
+
+    const timer = window.setInterval(run, 1500);
 
     return () => {
       mo.disconnect();
       window.removeEventListener('storage', run);
       window.removeEventListener('focus', run);
+      window.clearInterval(timer);
     };
   }, []);
 
