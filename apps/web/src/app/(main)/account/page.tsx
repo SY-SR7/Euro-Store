@@ -1,16 +1,15 @@
-﻿// @ts-nocheck
+// @ts-nocheck
 /* eslint-disable */
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { createServerSupabaseClient } from '@/supabase-server';
+import { getSessionClient } from '@/supabase-server';
 import { ShoppingBag, Star, RefreshCw, User, LogOut, ChevronLeft } from 'lucide-react';
 import { LogoutButton } from '@/components/common/LogoutButton';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AccountPage() {
-  const supabase = createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { client: supabase, user } = await getSessionClient();
   if (!user) redirect('/auth/login');
 
   const { data: profile } = await supabase

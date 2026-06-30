@@ -3,24 +3,23 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
-import { createServerSupabaseClient } from '@/supabase-server';
+import { getSessionClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
 const STATUS_LABEL: Record<string, string> = {
   pending:'معلق', confirmed:'مؤكد', processing:'قيد التجهيز',
-  shipped:'تم الشحن', delivered:'تم التسليم', cancelled:'ملغي',
+  shipped:'تم الشحن', delivered:'تم التسليم', completed:'مكتمل', cancelled:'ملغي',
 };
 const STATUS_COLOR: Record<string, string> = {
   pending:'bg-amber-50 text-amber-700', confirmed:'bg-blue-50 text-blue-700',
   processing:'bg-purple-50 text-purple-700', shipped:'bg-indigo-50 text-indigo-700',
-  delivered:'bg-green-50 text-green-700', cancelled:'bg-red-50 text-red-700',
+  delivered:'bg-green-50 text-green-700', completed:'bg-green-50 text-green-700', cancelled:'bg-red-50 text-red-700',
 };
 
 export default async function CustomerOrdersPage() {
   const t = await getTranslations();
-  const supabase = createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { client: supabase, user } = await getSessionClient();
   if (!user) redirect('/auth/login');
 
   const { data: orders } = await supabase
