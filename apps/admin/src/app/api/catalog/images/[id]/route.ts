@@ -14,6 +14,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       await admin.from('product_images').update({ is_primary: false } as never).eq('product_id', body.product_id);
     }
     const update: Record<string, unknown> = {};
+    if (typeof body.url === 'string') update.url = body.url.trim();
     if (typeof body.is_primary === 'boolean') update.is_primary = body.is_primary;
     if (typeof body.alt_ar === 'string') update.alt_ar = body.alt_ar;
     if (typeof body.sort_order === 'number') update.sort_order = body.sort_order;

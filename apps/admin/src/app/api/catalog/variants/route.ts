@@ -9,6 +9,7 @@ const schema = z.object({
   price_syp:         z.number().nonnegative(),
   compare_price_syp: z.number().nonnegative().nullable().optional(),
   stock_quantity:    z.number().int().nonnegative().default(0),
+  weight_grams:      z.number().int().nonnegative().nullable().optional(),
   is_active:         z.boolean().default(true),
   attribute_value_ids: z.array(z.string().uuid()).optional(),
 });

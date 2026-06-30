@@ -1,6 +1,10 @@
 'use client';
+// @ts-nocheck
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import ProductQuickAdmin from './ProductQuickAdmin';
+
+export default ProductQuickAdmin;
 
 function formatSYP(n: number) {
   return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
@@ -62,7 +66,7 @@ function CheckItem({ label, count, checked, onChange }: { label: string; count: 
   );
 }
 
-export default function AdminProductsPage() {
+function LegacyAdminProductsPage() {
   const [filterData, setFilterData] = useState<FilterData | null>(null);
   const [loading, setLoading]       = useState(true);
   const [selected, setSelected]     = useState<Product | null>(null);

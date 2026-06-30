@@ -74,7 +74,7 @@ export async function GET(req: NextRequest) {
     const { data: rawProducts } = await supabase
       .from('products')
       .select(`
-        id, name_ar, name_en, slug, is_active, is_featured, image_url,
+        id, name_ar, name_en, slug, is_active, is_featured,
         category_id, brand_id, created_at,
         product_variants(
           id, price_syp, is_active,
@@ -82,6 +82,21 @@ export async function GET(req: NextRequest) {
         )
       `)
       .order('created_at', { ascending: false });
+
+    const productIds = (rawProducts ?? []).map((p: any) => p.id).filter(Boolean);
+    const { data: rawImages } = productIds.length
+      ? await supabase
+          .from('product_images')
+          .select('product_id,url,is_primary,sort_order')
+          .in('product_id', productIds)
+          .order('sort_order')
+      : { data: [] as any[] };
+
+    const imageByProductId: Record<string, string> = {};
+    for (const img of rawImages ?? []) {
+      const current = imageByProductId[img.product_id];
+      if (!current || img.is_primary) imageByProductId[img.product_id] = img.url;
+    }
 
     type NormProduct = {
       id: string; name_ar: string; name_en: string; slug: string;
@@ -103,7 +118,7 @@ export async function GET(req: NextRequest) {
       }
       products.push({
         id: p.id, name_ar: p.name_ar, name_en: p.name_en, slug: p.slug,
-        image_url: p.image_url ?? '', is_active: p.is_active, is_featured: p.is_featured,
+        image_url: imageByProductId[p.id] ?? '', is_active: p.is_active, is_featured: p.is_featured,
         category_id: p.category_id, brand_id: p.brand_id, created_at: p.created_at,
         minPrice: prices.length ? Math.min(...prices) : 0,
         maxPrice: prices.length ? Math.max(...prices) : 0,
