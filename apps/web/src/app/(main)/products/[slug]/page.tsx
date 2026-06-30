@@ -4,6 +4,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 import { createBrowserClient } from '@supabase/ssr';
 import { useCartStore } from '@/lib/cart/cartStore';
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
@@ -37,6 +38,9 @@ export default function ProductPage({ params }: { params: any }) {
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
+  const locale = useLocale();
+  const t = useTranslations('catalog');
+  const isAr = locale === 'ar';
 
   const addItem = useCartStore((s: any) => s.addItem);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -207,11 +211,11 @@ export default function ProductPage({ params }: { params: any }) {
         {category && (
           <>
             <span>/</span>
-            <Link href={`/categories/${category.slug}`} className="hover:text-[#C9A84C]">{category.name_ar}</Link>
+            <Link href={`/categories/${category.slug}`} className="hover:text-[#C9A84C]">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</Link>
           </>
         )}
         <span>/</span>
-        <span className="text-[#1F1B16]">{product.name_ar}</span>
+        <span className="text-[#1F1B16]">{isAr ? product.name_ar : (product.name_en || product.name_ar)}</span>
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-2">
@@ -219,10 +223,10 @@ export default function ProductPage({ params }: { params: any }) {
           <div className="aspect-square overflow-hidden rounded-3xl border border-black/5 bg-[#F3EDE3] shadow-sm">
             <ImageWithFallback
               src={mainImage}
-              alt={product.name_ar}
+              alt={isAr ? product.name_ar : (product.name_en || product.name_ar)}
               kind="product"
               label="صورة المنتج"
-              sublabel={product.name_ar}
+              sublabel={isAr ? product.name_ar : (product.name_en || product.name_ar)}
               className="h-full w-full object-cover"
             />
           </div>
@@ -239,7 +243,7 @@ export default function ProductPage({ params }: { params: any }) {
               >
                 <ImageWithFallback
                   src={img.url}
-                  alt={img.alt_ar ?? product.name_ar}
+                  alt={img.alt_ar ?? (isAr ? product.name_ar : (product.name_en || product.name_ar))}
                   kind="product"
                   label="صورة"
                   className="h-full w-full object-cover"
@@ -253,8 +257,9 @@ export default function ProductPage({ params }: { params: any }) {
           {brand && <p className="text-xs font-semibold uppercase tracking-widest text-[#C9A84C]">{brand.name}</p>}
 
           <div>
-            <h1 className="text-3xl font-black leading-tight text-[#171411]">{product.name_ar}</h1>
-            {product.name_en && <p className="mt-1 text-sm text-[#6F6658]" dir="ltr">{product.name_en}</p>}
+            <h1 className="text-3xl font-black leading-tight text-[#171411]">{isAr ? product.name_ar : (product.name_en || product.name_ar)}</h1>
+            {(!isAr && product.name_ar) && <p className="mt-1 text-sm text-[#6F6658]" dir="rtl">{product.name_ar}</p>}
+            {(isAr && product.name_en) && <p className="mt-1 text-sm text-[#6F6658]" dir="ltr">{product.name_en}</p>}
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -375,7 +380,7 @@ export default function ProductPage({ params }: { params: any }) {
 
           {product.description_ar && (
             <div className="rounded-2xl bg-[#F8F5EF] p-5">
-              <p className="text-sm leading-relaxed text-[#3C352C]">{product.description_ar}</p>
+              <p className="text-sm leading-relaxed text-[#3C352C]">{isAr ? product.description_ar : (product.description_en || product.description_ar)}</p>
             </div>
           )}
 
@@ -406,7 +411,7 @@ export default function ProductPage({ params }: { params: any }) {
             <p className="text-xs text-[#6F6658]">
               التصنيف:{' '}
               <Link href={`/categories/${category.slug}`} className="text-[#C9A84C] hover:underline">
-                {category.name_ar}
+                {isAr ? category.name_ar : (category.name_en || category.name_ar)}
               </Link>
             </p>
           )}
