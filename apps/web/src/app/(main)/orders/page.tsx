@@ -2,7 +2,7 @@
 /* eslint-disable */
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { getSessionClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
@@ -18,7 +18,9 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 export default async function CustomerOrdersPage() {
-  const t = await getTranslations();
+  const t = await getTranslations('orders');
+  const locale = await getLocale();
+  const isAr = locale === 'ar';
   const { client: supabase, user } = await getSessionClient();
   if (!user) redirect('/auth/login');
 
@@ -29,18 +31,18 @@ export default async function CustomerOrdersPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir="rtl">
+    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-2xl space-y-5">
         <div>
-          <Link href="/" className="text-sm text-[#B8860B] hover:underline">الرئيسية</Link>
-          <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('orders.title')}</h1>
+          <Link href="/" className="text-sm text-[#B8860B] hover:underline">{t('home', { fallback: 'الرئيسية' })}</Link>
+          <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('title', { fallback: 'طلباتي' })}</h1>
         </div>
 
         {(!orders || orders.length === 0) ? (
           <div className="rounded-2xl border border-[#E7E3DC] bg-white p-10 text-center shadow-sm">
-            <p className="text-[#A8A29E]">لا توجد طلبات حتى الآن</p>
+            <p className="text-[#A8A29E]">{t('noOrders', { fallback: 'لا توجد طلبات حتى الآن' })}</p>
             <Link href="/products" className="mt-4 inline-block rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-bold text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
-              تصفح المنتجات
+              {t('browseProducts', { fallback: 'تصفح المنتجات' })}
             </Link>
           </div>
         ) : (
@@ -51,12 +53,12 @@ export default async function CustomerOrdersPage() {
                   className="flex items-center justify-between px-5 py-4 hover:bg-[#FAFAF8] transition-colors">
                   <div>
                     <p className="font-mono text-sm font-bold text-[#1C1917]">#{o.order_number}</p>
-                    <p className="mt-0.5 text-xs text-[#A8A29E]">{new Date(o.created_at).toLocaleDateString('ar-SY')}</p>
+                    <p className="mt-0.5 text-xs text-[#A8A29E]">{new Date(o.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <p className="text-sm font-semibold text-[#57534E]">{Number(o.total_syp).toLocaleString('ar-SY')} ل.س</p>
+                    <p className="text-sm font-semibold text-[#57534E]">{Number(o.total_syp).toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US')} {t('syp', { fallback: 'ل.س' })}</p>
                     <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_COLOR[o.status] ?? 'bg-stone-100 text-stone-500'}`}>
-                      {STATUS_LABEL[o.status] ?? o.status}
+                      {t(`status.${o.status}`, { fallback: STATUS_LABEL[o.status] ?? o.status })}
                     </span>
                   </div>
                 </Link>
