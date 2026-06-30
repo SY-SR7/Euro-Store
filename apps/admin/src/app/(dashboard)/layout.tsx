@@ -17,13 +17,14 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/notifications', label: 'الإشعارات', icon: '🔔', group: 'الرئيسية' },
 
   { href: '/orders', label: 'الطلبات', icon: '🛒', group: 'المبيعات' },
-  { href: '/exchanges', label: 'التبديلات', icon: '↔', group: 'المبيعات' },
+  { href: '/exchanges', label: 'طلبات الاستبدال', icon: '↔', group: 'المبيعات' },
   { href: '/customers', label: 'العملاء', icon: '👤', group: 'المبيعات' },
 
   { href: '/products', label: 'المنتجات', icon: '📦', group: 'الكتالوج' },
   { href: '/categories', label: 'التصنيفات', icon: '🗂', group: 'الكتالوج' },
   { href: '/brands', label: 'الماركات', icon: '🏷', group: 'الكتالوج' },
   { href: '/homepage', label: 'الواجهة الرئيسية', icon: '🏠', group: 'الكتالوج' },
+  { href: '/attribute-types', label: 'الصفات (لون/مقاس)', icon: '🎨', group: 'الكتالوج' },
 
   { href: '/discounts', label: 'الخصومات', icon: '%', group: 'التجارة' },
   { href: '/shipping-rates', label: 'أسعار الشحن', icon: '🚚', group: 'التجارة' },

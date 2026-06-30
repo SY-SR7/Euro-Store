@@ -413,12 +413,12 @@ export default function AdminLoyaltySettingsPage() {
                   <div className="mt-4 grid gap-3 md:grid-cols-2">
                     <div className="rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-4">
                       <p className="text-xs font-black text-[#C9A84C]">معناه للإدارة</p>
-                      <p className="mt-2 text-sm leading-7 text-[#6F6658]">{field.adminMeaning}</p>
+                      <p className="mt-2 text-sm leading-7 text-[#D1D5DB]">{field.adminMeaning}</p>
                     </div>
 
                     <div className="rounded-2xl border border-[#E8DCC3] bg-[#FFFDF8] p-4">
                       <p className="text-xs font-black text-[#C9A84C]">معناه للعميل</p>
-                      <p className="mt-2 text-sm leading-7 text-[#6F6658]">{field.customerMeaning}</p>
+                      <p className="mt-2 text-sm leading-7 text-[#D1D5DB]">{field.customerMeaning}</p>
                     </div>
                   </div>
 

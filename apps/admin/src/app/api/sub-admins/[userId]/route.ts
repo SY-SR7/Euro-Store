@@ -9,13 +9,18 @@ interface Params {
 
 type PatchBody = {
   is_active?: boolean;
+  display_name?: string;
 };
 
 export async function PATCH(request: Request, { params }: Params) {
   try {
     const body = (await request.json()) as PatchBody;
 
-    if (body.is_active === undefined) {
+    const update: Record<string, unknown> = {};
+    if (typeof body.is_active === 'boolean') update.is_active = body.is_active;
+    if (typeof body.display_name === 'string') update.full_name = body.display_name;
+
+    if (Object.keys(update).length === 0) {
       return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
     }
 
@@ -23,7 +28,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
     const { data, error } = await admin
       .from('sub_admin_profiles')
-      .update({ is_active: body.is_active } as never)
+      .update(update as never)
       .eq('id', params.userId)
       .select('id, full_name, email, is_active, created_at')
       .single();

@@ -3,8 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 
 interface Customer {
   id: string; full_name: string|null; phone: string|null;
-  email: string|null; created_at: string; loyalty_points?: number|null;
-  referral_code?: string|null; is_blocked?: boolean|null;
+  email: string|null; created_at: string; loyalty_points?: number|null; referral_code?: string|null;
 }
 function Modal({ title, onClose, children }: { title:string; onClose:()=>void; children:React.ReactNode }) {
   return (
@@ -84,21 +83,6 @@ export default function AdminCustomersPage() {
     setSaving(false);
   };
 
-  const toggleBlocked = async (c:Customer) => {
-    const next = !c.is_blocked;
-    setCustomers(cs=>cs.map(x=>x.id===c.id?{...x,is_blocked:next}:x));
-    if (selected?.id===c.id) setSelected({...c,is_blocked:next});
-    const res = await fetch(`/api/customers/${c.id}`,{
-      method:'PATCH', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ is_blocked:next }),
-    });
-    if (!res.ok) {
-      setCustomers(cs=>cs.map(x=>x.id===c.id?{...x,is_blocked:c.is_blocked}:x));
-      if (selected?.id===c.id) setSelected({...c,is_blocked:c.is_blocked});
-      setMsg('✗ فشل تغيير حالة الحظر');
-    }
-  };
-
   return (
     <div className="space-y-5" dir="rtl">
       <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
@@ -116,7 +100,7 @@ export default function AdminCustomersPage() {
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]"><tr>
-                {['الاسم','الهاتف','النقاط','الحالة','تاريخ التسجيل'].map((h,i)=><th key={i} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i===2?'hidden md:table-cell':''} ${i===4?'hidden md:table-cell':''}`}>{h}</th>)}
+                {['الاسم','الهاتف','النقاط','تاريخ التسجيل'].map((h,i)=><th key={i} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i>=2?'hidden md:table-cell':''}`}>{h}</th>)}
               </tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {customers.map(c=>(
@@ -124,11 +108,6 @@ export default function AdminCustomersPage() {
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B] transition-colors">{c.full_name??'—'}</td>
                     <td className="px-5 py-3 text-[#57534E]" dir="ltr">{c.phone??''}</td>
                     <td className="px-5 py-3 font-bold text-[#B8860B] hidden md:table-cell">{c.loyalty_points??0}</td>
-                    <td className="px-5 py-3" onClick={e=>{e.stopPropagation(); void toggleBlocked(c);}}>
-                      <span className={`cursor-pointer rounded-full border px-3 py-1 text-xs font-bold transition-colors ${c.is_blocked?'bg-red-50 text-red-700 border-red-200 hover:bg-green-50 hover:text-green-700 hover:border-green-200':'bg-green-50 text-green-700 border-green-200 hover:bg-red-50 hover:text-red-700 hover:border-red-200'}`}>
-                        {c.is_blocked?'محظور':'نشط'}
-                      </span>
-                    </td>
                     <td className="px-5 py-3 text-xs text-[#A8A29E] hidden md:table-cell">{new Date(c.created_at).toLocaleDateString('ar-SY')}</td>
                   </tr>
                 ))}
@@ -142,16 +121,6 @@ export default function AdminCustomersPage() {
         <Modal title={selected.full_name??'عميل'} onClose={()=>setSelected(null)}>
           {msg&&<div className={`mb-4 rounded-xl px-4 py-2 text-sm ${msg.startsWith('✓')?'bg-green-50 text-green-700 border border-green-200':'bg-red-50 text-red-700 border border-red-200'}`}>{msg}</div>}
           <div className="space-y-4">
-            <div className="flex items-center justify-between rounded-2xl border border-[#F0ECE6] bg-[#FAFAF8] p-4">
-              <div>
-                <p className="text-sm font-bold text-[#1C1917]">حالة الحساب</p>
-                <p className="mt-0.5 text-xs text-[#A8A29E]">{selected.is_blocked?'هذا العميل محظور من الطلب':'العميل يمكنه الطلب بشكل طبيعي'}</p>
-              </div>
-              <button onClick={()=>void toggleBlocked(selected)} className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${!selected.is_blocked?'bg-[#B8860B]':'bg-red-400'}`}>
-                <span className={`inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow transition-transform ${!selected.is_blocked?'translate-x-[-1.375rem]':'translate-x-[-0.125rem]'}`}/>
-              </button>
-            </div>
-
             {editMode?(
               <div className="space-y-3">
                 <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">الاسم الكامل</label><input value={editName} onChange={e=>setEditName(e.target.value)} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/></div>

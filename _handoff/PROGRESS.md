@@ -1,4 +1,63 @@
+
 ---
+
+### Session 045 -- Admin Bug Fixes + Click-to-Edit Consistency (Claude)
+**Scope:** apps/admin + supabase/migrations only
+
+**Bugs fixed:**
+- /exchanges previously rendered a currency-rate management UI (calling a
+  nonexistent /api/exchange-rates endpoint -- 404 on every load). It now shows
+  real exchange/return requests (the existing, working /api/exchanges API),
+  styled to match the rest of the admin panel. Currency rate is correctly a
+  single system_settings key and is already editable on /settings -- no
+  separate page was needed.
+- Customer edit (name/phone/email) silently failed: the UI called
+  PATCH /api/customers/[id], which did not exist. Created it.
+- Added customer block/unblock: new is_blocked column (migration
+  20260630000012_customer_blocking.sql), exposed in the customers list/detail
+  API, and a toggle in the admin Customers page (table badge + modal switch).
+- Dashboard showed fabricated stats from client-side counting of paginated
+  API calls and never showed revenue. It now calls the already-correct
+  /api/dashboard/stats endpoint (real revenue, orders, customers, products,
+  pending exchanges).
+- Removed two dead files (components/Sidebar.tsx, components/Navbar.tsx) that
+  were not imported anywhere -- the real navigation lives inline in
+  (dashboard)/layout.tsx. Several earlier sessions edited these without effect.
+- Removed 13 stray .bak-*/.corrupted.* files left by earlier PowerShell sessions.
+- Fixed two invisible-text spots on /loyalty-settings (light-gray text left
+  over from an earlier dark-theme version, unreadable on the current light card).
+- Added the missing /attribute-types sidebar link (page existed, was unreachable).
+- Relabeled the /exchanges sidebar entry to match its real content.
+
+**Click-to-edit / toggle consistency (now matches categories/brands/discounts/
+products/customers/shipping-rates everywhere):**
+- /sub-admins: row click now opens a detail modal with a toggle switch and
+  inline name editing (previously only had a bare inline activate/deactivate
+  link, no modal, no name edit). Added display_name support to the PATCH route.
+- /homepage: sections are now fully click-to-edit (title AR/EN, sort order)
+  in addition to the existing toggle+delete.
+- /attribute-types: values are now click-to-edit (previously add/delete only).
+  Added a PATCH route for attribute_values (previously DELETE-only).
+
+**New migration:** 20260630000012_customer_blocking.sql -- adds
+customer_profiles.is_blocked (specified in the PRD's schema draft, never
+applied to the live migration).
+
+**Still open (flagged, not fixed in this pass -- larger PRD gaps):**
+- Wishlist (PRD 6.13) does not exist anywhere: no DB table, no web UI.
+- Product reviews (PRD 6.2.9, 6.15.3 moderation) do not exist anywhere.
+- Web product detail page is missing: share buttons, size guide, "notify me
+  when back in stock", reviews section, "you might also like".
+- No dedicated search page/API (PRD 6.3.2) -- the header search icon just
+  links to /products.
+- No light/dark theme toggle anywhere (PRD 11.2) -- both apps are light-only.
+- ~16 admin files and ~26 web files still carry @ts-nocheck / eslint-disable
+  (pre-existing, not touched by this pass to limit risk -- recommend a
+  dedicated follow-up to re-enable type checking file by file).
+
+**Next agent should start with:** pick one item from "Still open" above,
+or run a full pnpm --filter admin type-check / pnpm --filter web type-check
+pass and fix whatever the now-stricter customers/exchanges files surface.---
 
 ### Session 044 — Cascading Faceted Filters (Web + Admin)
 **Scope:** apps/web + apps/admin + _handoff only

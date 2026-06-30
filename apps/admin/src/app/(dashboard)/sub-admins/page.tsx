@@ -14,6 +14,19 @@ function pickArray<T>(p: unknown): T[] {
   }
   return [];
 }
+function Modal({ title, onClose, children }: { title:string; onClose:()=>void; children:React.ReactNode }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+      <div className="w-full max-w-md rounded-3xl border border-[#E5E0D8] bg-white shadow-2xl" onClick={e=>e.stopPropagation()}>
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] px-6 py-4">
+          <h2 className="font-black text-[#1C1917]">{title}</h2>
+          <button onClick={onClose} className="flex h-7 w-7 items-center justify-center rounded-full bg-[#F8F6F2] text-[#A8A29E] hover:bg-[#E5E0D8] text-lg">×</button>
+        </div>
+        <div className="p-6">{children}</div>
+      </div>
+    </div>
+  );
+}
 
 export default function AdminSubAdminsPage() {
   const [subAdmins, setSubAdmins] = useState<SubAdmin[]>([]);
@@ -23,6 +36,10 @@ export default function AdminSubAdminsPage() {
   const [creating, setCreating]   = useState(false);
   const [msg, setMsg]             = useState('');
   const [error, setError]         = useState('');
+  const [selected, setSelected]   = useState<SubAdmin|null>(null);
+  const [editing, setEditing]     = useState(false);
+  const [editName, setEditName]   = useState('');
+  const [saving, setSaving]       = useState(false);
 
   async function load() {
     setLoading(true); setError('');
@@ -49,11 +66,33 @@ export default function AdminSubAdminsPage() {
     finally { setCreating(false); }
   }
 
-  async function handleToggle(userId: string, current: boolean) {
-    await fetch(`/api/sub-admins/${userId}`, {
-      method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ is_active:!current }),
+  const open = (sa: SubAdmin) => { setSelected(sa); setEditing(false); setEditName(sa.display_name ?? ''); };
+
+  async function handleToggle(sa: SubAdmin) {
+    const next = !sa.is_active;
+    setSubAdmins(list => list.map(x => x.user_id===sa.user_id ? {...x, is_active:next} : x));
+    if (selected?.user_id === sa.user_id) setSelected({...sa, is_active:next});
+    const res = await fetch(`/api/sub-admins/${sa.user_id}`, {
+      method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ is_active:next }),
     });
-    void load();
+    if (!res.ok) {
+      setSubAdmins(list => list.map(x => x.user_id===sa.user_id ? {...x, is_active:sa.is_active} : x));
+      if (selected?.user_id === sa.user_id) setSelected({...sa, is_active:sa.is_active});
+    }
+  }
+
+  async function saveName() {
+    if (!selected) return;
+    setSaving(true);
+    const res = await fetch(`/api/sub-admins/${selected.user_id}`, {
+      method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ display_name:editName }),
+    });
+    if (res.ok) {
+      const u = { ...selected, display_name: editName };
+      setSelected(u); setSubAdmins(list => list.map(x => x.user_id===selected.user_id ? u : x));
+      setEditing(false);
+    }
+    setSaving(false);
   }
 
   return (
@@ -93,25 +132,21 @@ export default function AdminSubAdminsPage() {
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]">
                 <tr>
-                  {['الاسم','البريد الإلكتروني','تاريخ الإنشاء','الحالة','إجراء'].map((h,i) => (
-                    <th key={i} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i===2?'hidden md:table-cell':''} ${i===4?'text-left':''}`}>{h}</th>
+                  {['الاسم','البريد الإلكتروني','تاريخ الإنشاء','الحالة'].map((h,i) => (
+                    <th key={i} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i===2?'hidden md:table-cell':''}`}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {subAdmins.map(sa => (
-                  <tr key={sa.user_id} className="hover:bg-[#FAFAF8] transition-colors">
-                    <td className="px-5 py-3 font-semibold text-[#1C1917]">{sa.display_name ?? '—'}</td>
+                  <tr key={sa.user_id} className="group hover:bg-[#FFFBF0] cursor-pointer transition-colors" onClick={()=>open(sa)}>
+                    <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B] transition-colors">{sa.display_name ?? '—'}</td>
                     <td className="px-5 py-3 font-mono text-xs text-[#57534E]">{sa.email}</td>
                     <td className="px-5 py-3 text-xs text-[#A8A29E] hidden md:table-cell">{new Date(sa.created_at).toLocaleDateString('ar-SY')}</td>
-                    <td className="px-5 py-3">
-                      <span className={sa.is_active?'badge-green':'badge-gray'}>{sa.is_active?'نشط':'معطّل'}</span>
-                    </td>
-                    <td className="px-5 py-3 text-left">
-                      <button onClick={()=>void handleToggle(sa.user_id, sa.is_active)}
-                        className={`font-bold text-xs hover:underline ${sa.is_active?'text-red-500':'text-green-600'}`}>
-                        {sa.is_active ? 'تعطيل' : 'تفعيل'}
-                      </button>
+                    <td className="px-5 py-3" onClick={e=>{e.stopPropagation(); void handleToggle(sa);}}>
+                      <span className={`cursor-pointer rounded-full border px-3 py-1 text-xs font-bold transition-colors ${sa.is_active?'bg-green-50 text-green-700 border-green-200 hover:bg-red-50 hover:text-red-700 hover:border-red-200':'bg-red-50 text-red-700 border-red-200 hover:bg-green-50 hover:text-green-700 hover:border-green-200'}`}>
+                        {sa.is_active?'نشط':'معطّل'}
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -120,6 +155,41 @@ export default function AdminSubAdminsPage() {
           </div>
         )}
       </div>
+
+      {selected && (
+        <Modal title={selected.display_name ?? 'مسؤول فرعي'} onClose={()=>setSelected(null)}>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between rounded-2xl border border-[#F0ECE6] bg-[#FAFAF8] p-4">
+              <div>
+                <p className="text-sm font-bold text-[#1C1917]">حالة الحساب</p>
+                <p className="mt-0.5 text-xs text-[#A8A29E]">{selected.is_active?'يمكنه الدخول للوحة الإدارة':'لا يمكنه الدخول حالياً'}</p>
+              </div>
+              <button onClick={()=>void handleToggle(selected)} className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${selected.is_active?'bg-[#B8860B]':'bg-gray-300'}`}>
+                <span className={`inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow transition-transform ${selected.is_active?'translate-x-[-1.375rem]':'translate-x-[-0.125rem]'}`}/>
+              </button>
+            </div>
+
+            {editing ? (
+              <div className="space-y-3">
+                <div><label className="mb-1 block text-xs font-bold text-[#A8A29E]">الاسم</label>
+                  <input value={editName} onChange={e=>setEditName(e.target.value)} className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B]"/>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={saveName} disabled={saving} className="flex-1 rounded-xl bg-[#B8860B] py-2 text-sm font-bold text-white disabled:opacity-50">{saving?'...':'حفظ'}</button>
+                  <button onClick={()=>setEditing(false)} className="rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E]">إلغاء</button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">الاسم</span><span className="font-semibold text-[#1C1917]">{selected.display_name??'—'}</span></div>
+                <div className="flex justify-between border-b border-[#F0ECE6] pb-2"><span className="text-[#A8A29E]">البريد</span><span className="font-semibold text-[#1C1917]" dir="ltr">{selected.email}</span></div>
+                <div className="flex justify-between"><span className="text-[#A8A29E]">تاريخ الإنشاء</span><span className="font-semibold text-[#1C1917]">{new Date(selected.created_at).toLocaleDateString('ar-SY')}</span></div>
+                <button onClick={()=>setEditing(true)} className="w-full rounded-xl border border-[#B8860B] py-2 text-sm font-bold text-[#B8860B] hover:bg-[#B8860B]/10">✎ تعديل الاسم</button>
+              </div>
+            )}
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const admin = createAdminSupabaseClient();
     let query = admin
       .from('customer_profiles')
-      .select('id,full_name,phone,email,created_at,loyalty_points,referral_code')
+      .select('id,full_name,phone,email,created_at,loyalty_points,referral_code,is_blocked')
       .order('created_at', { ascending: false })
       .limit(100);
     if (search) {
