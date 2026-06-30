@@ -4,6 +4,7 @@
 
 import { useState, useEffect, useCallback, useTransition } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { ProductCard } from './catalog-components';
 
 function formatSYP(n: number) {
@@ -38,6 +39,9 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
   const pathname     = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const locale = useLocale();
+  const t = useTranslations('catalog');
+  const isAr = locale === 'ar';
 
   // ── read initial state from URL ──────────────────────────────────────
   const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
@@ -170,16 +174,16 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
               onChange={e => setFeaturedOnly(e.target.checked)}
               className="accent-[#C9A84C]"
             />
-            <span className="text-sm font-bold text-[#1F1B16]">⭐ المنتجات المميزة</span>
+            <span className="text-sm font-bold text-[#1F1B16]">⭐ {t('featuredOnly', { fallback: 'المنتجات المميزة' })}</span>
           </label>
 
           {/* categories (only shown if not locked) */}
           {!lockedCategorySlug && facets && facets.categories.length > 0 && (
-            <FilterSection title="التصنيفات">
+            <FilterSection title={t('categories', { fallback: 'التصنيفات' })}>
               {facets.categories.map(cat => (
                 <CheckItem
                   key={cat.id}
-                  label={cat.name_ar}
+                  label={isAr ? cat.name_ar : (cat.name_en || cat.name_ar)}
                   count={cat.count}
                   checked={selectedCategories.includes(cat.slug)}
                   onChange={() => { toggle(selectedCategories, cat.slug, setSelectedCategories); }}
@@ -190,7 +194,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
 
           {/* brands */}
           {facets && facets.brands.length > 0 && (
-            <FilterSection title="العلامات التجارية">
+            <FilterSection title={t('brands', { fallback: 'العلامات التجارية' })}>
               {facets.brands.map(b => (
                 <CheckItem
                   key={b.id}
@@ -205,7 +209,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
 
           {/* dynamic attribute facets */}
           {facets && facets.attributes.map(attrType => (
-            <FilterSection key={attrType.id} title={attrType.name_ar}>
+            <FilterSection key={attrType.id} title={isAr ? attrType.name_ar : (attrType.name_en || attrType.name_ar)}>
               <div className={attrType.slug === 'color' ? 'flex flex-wrap gap-2' : 'space-y-1.5'}>
                 {attrType.values.map(val => {
                   const attrKey = `${attrType.slug}:${val.slug}`;
@@ -215,7 +219,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                     return (
                       <button
                         key={val.id}
-                        title={`${val.value_ar} (${val.count})`}
+                        title={`${isAr ? val.value_ar : (val.value_en || val.value_ar)} (${val.count})`}
                         onClick={() => toggle(selectedAttrs, attrKey, setSelectedAttrs)}
                         className={`relative h-7 w-7 rounded-full border-2 transition-all ${
                           checked ? 'border-[#1F1B16] scale-110 shadow-md' : 'border-[#E8DCC3] hover:border-[#C9A84C]'
@@ -232,7 +236,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                   return (
                     <CheckItem
                       key={val.id}
-                      label={val.value_ar}
+                      label={isAr ? val.value_ar : (val.value_en || val.value_ar)}
                       count={val.count}
                       checked={checked}
                       onChange={() => toggle(selectedAttrs, attrKey, setSelectedAttrs)}
@@ -245,7 +249,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
 
           {/* price range */}
           {facets && facets.priceRange.max > 0 && (
-            <FilterSection title="نطاق السعر">
+            <FilterSection title={t('priceRange', { fallback: 'نطاق السعر' })}>
               <div className="space-y-3">
                 <div className="flex gap-2">
                   <div className="flex-1">
