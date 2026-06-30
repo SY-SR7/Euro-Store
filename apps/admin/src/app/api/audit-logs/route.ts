@@ -144,10 +144,6 @@ export async function POST(request: NextRequest) {
       request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
       request.headers.get('x-real-ip') ||
       '',
-    ...isObject(body) ? body : {},
-    id,
-    admin_email: inferEmail(request, body),
-    created_at: isObject(body) && typeof body.created_at === 'string' ? body.created_at : now,
   };
 
   logs.unshift(log);
