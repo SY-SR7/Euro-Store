@@ -17,6 +17,8 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   const body = await request.json().catch(() => null) as Record<string, unknown> | null;
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const update: Record<string, unknown> = {};
+  if (typeof body.code === 'string') update.code = body.code.trim().toUpperCase();
+  if (body.type === 'percentage' || body.type === 'fixed') update.type = body.type;
   if (typeof body.value === 'number') update.value = body.value;
   if (typeof body.is_active === 'boolean') update.is_active = body.is_active;
   if (typeof body.min_order_syp === 'number' || body.min_order_syp === null) update.min_order_syp = body.min_order_syp;
