@@ -2,6 +2,7 @@
 
 import { FormEvent, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Eye, EyeOff, LogIn } from 'lucide-react';
 
 function safeNext(value: string | null) {
   if (!value) return '/';
@@ -79,9 +80,6 @@ export default function LoginPage() {
         <div className="mb-8 text-center">
           <p className="text-sm font-black tracking-[0.35em] text-[#C9A84C]">EURO STORE</p>
           <h1 className="mt-4 text-3xl font-black text-[#1F1B16]">تسجيل دخول الأدمن</h1>
-          <p className="mt-2 text-sm leading-7 text-[#6F6658]">
-            أدخل بيانات حساب الإدارة للوصول إلى لوحة التحكم.
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} method="post" className="space-y-5">
@@ -121,9 +119,10 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((current) => !current)}
-                className="border-r border-[#E8DCC3] px-4 text-xs font-black text-[#6F6658] transition hover:text-[#C9A84C]"
+                className="grid w-12 place-items-center border-r border-[#E8DCC3] text-[#6F6658] transition hover:text-[#C9A84C]"
+                title={showPassword ? 'إخفاء' : 'إظهار'}
               >
-                {showPassword ? 'إخفاء' : 'إظهار'}
+                {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
             </div>
           </label>
@@ -131,14 +130,11 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-2xl bg-[#C9A84C] px-5 py-3 text-sm font-black text-[#1F1B16] transition hover:bg-[#D8B95F] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#C9A84C] px-5 py-3 text-sm font-black text-[#1F1B16] transition hover:bg-[#D8B95F] disabled:cursor-not-allowed disabled:opacity-60"
           >
+            <LogIn size={17} />
             {loading ? 'جار تسجيل الدخول...' : 'دخول'}
           </button>
-
-          <p className="text-center text-xs leading-6 text-[#8B8172]">
-            يتم تسجيل الدخول عبر POST آمن، ولن تظهر كلمة المرور في رابط الصفحة.
-          </p>
         </form>
       </section>
     </main>
