@@ -23,13 +23,26 @@ export async function PATCH(request: Request) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { admin } = ctx;
-  const body = await request.json().catch(() => null) as Array<{ key: string; value: string }> | { key: string; value: string } | null;
+  const body = await request.json().catch(() => null) as unknown;
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
-  const rows = Array.isArray(body) ? body : [body];
-  const allowed = rows.filter(r => ALLOWED_KEYS.includes(r.key));
+
+  const rows = Array.isArray(body)
+    ? body
+    : body && typeof body === 'object' && Array.isArray((body as { updates?: unknown }).updates)
+      ? (body as { updates: unknown[] }).updates
+      : [body];
+
+  const allowed = rows
+    .filter((row): row is Record<string, unknown> => Boolean(row) && typeof row === 'object')
+    .filter((row) => typeof row.key === 'string' && ALLOWED_KEYS.includes(row.key) && row.value !== undefined);
   if (allowed.length === 0) return NextResponse.json({ error: 'No valid keys' }, { status: 400 });
   for (const row of allowed) {
-    await admin.from('system_settings').upsert({ key: row.key, value: String(row.value), updated_at: new Date().toISOString() } as never, { onConflict: 'key' });
+    await admin.from('system_settings').upsert({
+      key: String(row.key),
+      value: String(row.value),
+      description: typeof row.description === 'string' ? row.description : undefined,
+      updated_at: new Date().toISOString()
+    } as never, { onConflict: 'key' });
   }
   return NextResponse.json({ updated: allowed.length });
 }
