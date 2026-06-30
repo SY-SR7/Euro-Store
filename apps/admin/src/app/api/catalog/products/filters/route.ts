@@ -1,5 +1,3 @@
-// @ts-nocheck
-/* eslint-disable */
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-server';
 
