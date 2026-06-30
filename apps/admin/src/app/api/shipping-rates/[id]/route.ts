@@ -1,5 +1,12 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-server';
+
+export async function GET(_request: Request, { params }: { params: { id: string } }) {
+  const admin = createAdminSupabaseClient();
+  const { data, error } = await admin.from('shipping_rates').select('*').eq('id', params.id).single();
+  if (error) return NextResponse.json({ error: error.message }, { status: 404 });
+  return NextResponse.json(data);
+}
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   const ctx = await requireAdminContext();

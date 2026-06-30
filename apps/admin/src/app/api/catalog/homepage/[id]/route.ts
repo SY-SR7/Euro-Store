@@ -1,8 +1,20 @@
 import { NextResponse } from 'next/server';
-import { requireAdminContext, writeAuditLog } from '@/supabase-server';
+import { createAdminSupabaseClient, requireAdminContext, writeAuditLog } from '@/supabase-server';
 
 interface RouteParams {
   params: { id: string };
+}
+
+export async function GET(_request: Request, { params }: RouteParams) {
+  const admin = createAdminSupabaseClient();
+  const { data, error } = await admin
+    .from('homepage_sections')
+    .select('*')
+    .eq('id', params.id)
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 404 });
+  return NextResponse.json(data);
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
