@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Heart } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 import type { Database } from '@eurostore/database';
 
 type Product = Database['public']['Tables']['products']['Row'];
@@ -23,6 +24,10 @@ const tiltVariants = {
 
 export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductCardProps) {
   const displayPrice = variantPrice || product.base_price;
+  const locale = useLocale();
+  const t = useTranslations('catalog');
+  const isAr = locale === 'ar';
+  const productName = isAr ? product.name_ar : (product.name_en || product.name_ar);
 
   return (
     <motion.div
@@ -36,14 +41,14 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         {product.primary_image_url ? (
           <Image 
             src={product.primary_image_url}
-            alt={product.name_ar}
+            alt={productName}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-[#6F6658]">
-            Ù„Ø§ ØªÙˆØ¬Ø¯ ØµÙˆØ±Ø©
+            {t('noImage')}
           </div>
         )}
         
@@ -51,12 +56,12 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         <div className="absolute top-3 start-3 flex flex-col gap-2">
           {isNew && (
             <span className="bg-[#C9A84C] text-black text-[10px] font-bold px-2 py-1 rounded-sm uppercase shimmer">
-              Ø¬Ø¯ÙŠØ¯
+              {t('new')}
             </span>
           )}
           {isOnSale && (
             <span className="bg-[#FF4444] text-[#1F1B16] text-[10px] font-bold px-2 py-1 rounded-sm uppercase">
-              Ø®ØµÙ…
+              {t('sale')}
             </span>
           )}
         </div>
@@ -70,19 +75,19 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
       <div className="p-4 text-center flex flex-col flex-grow justify-between">
         <div>
           <p className="text-[#6F6658] text-[10px] uppercase mb-1">
-            {product.brand?.name_en || product.brand?.name_ar || 'EuroStore'}
+            {isAr ? (product.brand?.name_ar || product.brand?.name_en || 'EuroStore') : (product.brand?.name_en || product.brand?.name_ar || 'EuroStore')}
           </p>
           <Link href={`/products/${product.slug}`} className="block">
             <h3 className="text-[#1F1B16] text-sm font-medium line-clamp-1 hover:text-[#C9A84C] transition-colors">
-              {product.name_ar}
+              {productName}
             </h3>
           </Link>
         </div>
         <p className="text-[#C9A84C] font-semibold mt-2 text-sm">
-          {new Intl.NumberFormat('ar-SY', { style: 'currency', currency: 'SYP', maximumFractionDigits: 0 }).format(displayPrice)}
+          {new Intl.NumberFormat(isAr ? 'ar-SY' : 'en-US', { style: 'currency', currency: 'SYP', maximumFractionDigits: 0 }).format(displayPrice)}
         </p>
       </div>
-      <Link href={`/products/${product.slug}`} className="absolute inset-0 z-0" aria-label={`Ø¹Ø±Ø¶ ${product.name_ar}`} />
+      <Link href={`/products/${product.slug}`} className="absolute inset-0 z-0" aria-label={`${t('viewProduct')} ${productName}`} />
     </motion.div>
   );
 }
