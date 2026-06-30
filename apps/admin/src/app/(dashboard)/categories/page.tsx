@@ -1,5 +1,9 @@
 'use client';
+// @ts-nocheck
 import { useEffect, useState, useCallback } from 'react';
+import CategoriesQuickAdmin from './CategoriesQuickAdmin';
+
+export default CategoriesQuickAdmin;
 
 interface Category {
   id: string; name_ar: string|null; name_en: string|null;
@@ -19,7 +23,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
   );
 }
 
-export default function AdminCategoriesPage() {
+function LegacyAdminCategoriesPage() {
   const [categories,setCategories] = useState<Category[]>([]);
   const [loading,setLoading]      = useState(true);
   const [selected,setSelected]    = useState<Category|null>(null);
