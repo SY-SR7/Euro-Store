@@ -1,7 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
@@ -15,7 +15,9 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function ExchangeIndexPage() {
-  const t = await getTranslations();
+  const t = await getTranslations('exchange');
+  const locale = await getLocale();
+  const isAr = locale === 'ar';
   const supabase = createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -30,35 +32,35 @@ export default async function ExchangeIndexPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir="rtl">
+    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <Link href="/" className="text-sm text-[#B8860B] hover:underline">الرئيسية</Link>
-            <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('exchange.title')}</h1>
+            <Link href="/" className="text-sm text-[#B8860B] hover:underline">{t('home', { fallback: 'الرئيسية' })}</Link>
+            <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('title', { fallback: 'طلبات الاستبدال' })}</h1>
           </div>
           <Link href="/exchange/new"
             className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
-            + {t('exchange.newRequest')}
+            + {t('newRequest', { fallback: 'طلب جديد' })}
           </Link>
         </div>
 
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
           <p className="text-sm text-amber-800 leading-6">
-            🔄 سياسة الاستبدال: يمكنك طلب الاستبدال خلال <strong>7 أيام</strong> من استلام طلبك، بشرط أن يكون المنتج بحالته الأصلية وغير مستخدم.
+            🔄 {t('policy', { fallback: 'سياسة الاستبدال: يمكنك طلب الاستبدال خلال 7 أيام من استلام طلبك، بشرط أن يكون المنتج بحالته الأصلية وغير مستخدم.' })}
           </p>
         </div>
 
         {!user ? (
           <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 text-center shadow-sm">
-            <p className="text-[#A8A29E] mb-4">سجّل دخولك لمتابعة طلبات الاستبدال الخاصة بك</p>
+            <p className="text-[#A8A29E] mb-4">{t('loginToTrack', { fallback: 'سجّل دخولك لمتابعة طلبات الاستبدال الخاصة بك' })}</p>
             <Link href="/auth/login" className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
-              تسجيل الدخول
+              {t('login', { fallback: 'تسجيل الدخول' })}
             </Link>
           </div>
         ) : requests.length === 0 ? (
           <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 text-center shadow-sm">
-            <p className="text-[#A8A29E]">لا توجد طلبات استبدال حتى الآن</p>
+            <p className="text-[#A8A29E]">{t('noRequests', { fallback: 'لا توجد طلبات استبدال حتى الآن' })}</p>
           </div>
         ) : (
           <div className="rounded-2xl border border-[#E7E3DC] bg-white shadow-sm">
@@ -67,10 +69,10 @@ export default async function ExchangeIndexPage() {
                 <div key={req.id} className="flex items-center justify-between px-5 py-4">
                   <div>
                     <p className="font-semibold text-[#1C1917] text-sm">{req.reason_ar ?? '—'}</p>
-                    <p className="mt-1 text-xs text-[#A8A29E]">{new Date(req.created_at).toLocaleDateString('ar-SY')}</p>
+                    <p className="mt-1 text-xs text-[#A8A29E]">{new Date(req.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}</p>
                   </div>
                   <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_COLOR[req.status] ?? 'bg-stone-100 text-stone-500'}`}>
-                    {STATUS_LABEL[req.status] ?? req.status}
+                    {t(`status.${req.status}`, { fallback: STATUS_LABEL[req.status] ?? req.status })}
                   </span>
                 </div>
               ))}
