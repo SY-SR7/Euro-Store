@@ -3,6 +3,7 @@
 import { useRef, useCallback } from 'react';
 import { useScroll, useTransform, useSpring, motion, useReducedMotion, useAnimationFrame, useMotionValue } from 'framer-motion';
 import { CanvasScrollSequence } from './CanvasScrollSequence';
+import { useLocale, useTranslations } from 'next-intl';
 
 export interface StoryBeat {
   /** 0–1 متى يبدأ */
@@ -45,6 +46,8 @@ function ScrollBeat({
   scrollProgress: ReturnType<typeof useSpring>;
   isLightBg?: boolean;
 }) {
+  const locale = useLocale();
+  const isAr = locale === 'ar';
   const opacity = useTransform(
     scrollProgress,
     [
@@ -66,7 +69,7 @@ function ScrollBeat({
     <motion.div
       style={{ opacity, y }}
       className="absolute inset-0 flex flex-col justify-end pointer-events-none will-change-transform"
-      dir="rtl"
+      dir={isAr ? "rtl" : "ltr"}
     >
       {/* Frosted glass text card — removed for clean look */}
       <div
@@ -178,6 +181,7 @@ export function CinematicShowcaseSection({
   );
   const prefersReduced = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations('home.hero');
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -247,7 +251,7 @@ export function CinematicShowcaseSection({
           style={{ opacity: scrollHintOpacity }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="text-white/40 text-[10px] uppercase tracking-[0.25em]">مرر للأسفل</span>
+          <span className="text-white/40 text-[10px] uppercase tracking-[0.25em]">{t('scrollDown', { fallback: 'مرر للأسفل' })}</span>
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
