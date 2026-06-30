@@ -1,5 +1,8 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
+import SettingsQuickAdmin from './SettingsQuickAdmin';
+
+export default SettingsQuickAdmin;
 
 interface Setting { key: string; value: string; description?: string|null; }
 
@@ -21,7 +24,7 @@ function pickArray<T>(p: unknown): T[] {
   return [];
 }
 
-export default function AdminSettingsPage() {
+function LegacyAdminSettingsPage() {
   const [settings, setSettings] = useState<Setting[]>([]);
   const [loading, setLoading]   = useState(true);
   const [saving, setSaving]     = useState(false);

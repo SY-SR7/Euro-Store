@@ -1,0 +1,191 @@
+'use client';
+
+import { RefreshCw } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { KeyboardEvent } from 'react';
+
+type Setting = {
+  key: string;
+  value: string;
+  description?: string | null;
+  updated_at?: string | null;
+};
+
+type SettingConfig = {
+  key: string;
+  label: string;
+  group: string;
+  fallback: string;
+  unit: string;
+  type: 'number' | 'text';
+};
+
+const SETTINGS: SettingConfig[] = [
+  { key: 'usd_exchange_rate', label: 'سعر الدولار', group: 'النظام', fallback: '15000', unit: 'ل.س', type: 'number' },
+  { key: 'max_exchange_days', label: 'مدة الاستبدال', group: 'النظام', fallback: '7', unit: 'يوم', type: 'number' },
+  { key: 'loyalty_earn_amount_syp', label: 'مبلغ كسب النقاط', group: 'الولاء', fallback: '1000', unit: 'ل.س', type: 'number' },
+  { key: 'loyalty_earn_points', label: 'نقاط الكسب', group: 'الولاء', fallback: '10', unit: 'نقطة', type: 'number' },
+  { key: 'loyalty_redeem_points_per_syp', label: 'نقاط كل ليرة', group: 'الولاء', fallback: '1', unit: 'نقطة', type: 'number' },
+  { key: 'loyalty_max_redeem_percent', label: 'حد خصم النقاط', group: 'الولاء', fallback: '20', unit: '%', type: 'number' },
+  { key: 'loyalty_referral_bonus_points', label: 'مكافأة الإحالة', group: 'الولاء', fallback: '50', unit: 'نقطة', type: 'number' },
+  { key: 'referral_bonus_points', label: 'إحالة قديمة', group: 'الولاء', fallback: '50', unit: 'نقطة', type: 'number' },
+];
+
+const inputClass =
+  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+
+async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(url, init);
+  const payload = (await res.json().catch(() => null)) as T | { error?: string } | null;
+  if (!res.ok) {
+    const message =
+      payload && typeof payload === 'object' && 'error' in payload && payload.error
+        ? String(payload.error)
+        : 'request_failed';
+    throw new Error(message);
+  }
+  return payload as T;
+}
+
+function formatDate(value?: string | null) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  return new Intl.DateTimeFormat('ar-SY', { dateStyle: 'medium', timeStyle: 'short' }).format(date);
+}
+
+function InlineSetting({
+  config,
+  value,
+  onSave,
+}: {
+  config: SettingConfig;
+  value: string;
+  onSave: (value: string) => void | Promise<void>;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => {
+    if (!editing) setDraft(value);
+  }, [editing, value]);
+
+  const commit = () => {
+    const next = draft.trim();
+    setEditing(false);
+    if (next !== value) void onSave(next);
+  };
+
+  if (editing) {
+    return (
+      <div className="flex items-center gap-2">
+        <input
+          autoFocus
+          type={config.type}
+          value={draft}
+          dir="ltr"
+          onBlur={commit}
+          onChange={(event) => setDraft(event.target.value)}
+          onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === 'Enter') commit();
+            if (event.key === 'Escape') setEditing(false);
+          }}
+          className={inputClass}
+        />
+        <span className="w-14 shrink-0 text-xs font-black text-[#8B8172]">{config.unit}</span>
+      </div>
+    );
+  }
+
+  return (
+    <button type="button" onClick={() => setEditing(true)} className="flex min-h-10 w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-start transition hover:bg-[#FAF7EF]">
+      <span className="font-mono text-sm font-black text-[#1C1917]" dir="ltr">{value || '-'}</span>
+      <span className="shrink-0 text-xs font-black text-[#8B8172]">{config.unit}</span>
+    </button>
+  );
+}
+
+export default function SettingsQuickAdmin() {
+  const [settings, setSettings] = useState<Setting[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [msg, setMsg] = useState('');
+
+  const load = useCallback(() => {
+    setLoading(true);
+    fetchJson<Setting[]>('/api/settings', { cache: 'no-store' })
+      .then((data) => setSettings(Array.isArray(data) ? data : []))
+      .catch(() => setSettings([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const values = useMemo(() => {
+    const map = new Map(settings.map((setting) => [setting.key, setting]));
+    return SETTINGS.map((config) => ({ config, row: map.get(config.key), value: map.get(config.key)?.value ?? config.fallback }));
+  }, [settings]);
+
+  const patchSetting = async (config: SettingConfig, value: string) => {
+    const previous = settings;
+    setMsg('');
+    setSettings((current) => {
+      const exists = current.some((item) => item.key === config.key);
+      const updated: Setting = { key: config.key, value, description: config.label, updated_at: new Date().toISOString() };
+      return exists ? current.map((item) => (item.key === config.key ? { ...item, ...updated } : item)) : [...current, updated];
+    });
+    try {
+      await fetchJson<{ updated: number }>('/api/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: config.key, value, description: config.label }),
+      });
+      setMsg('تم الحفظ');
+    } catch (error) {
+      setSettings(previous);
+      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+    }
+  };
+
+  const groups = [...new Set(SETTINGS.map((item) => item.group))];
+
+  return (
+    <div className="space-y-5" dir="rtl">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-black text-[#1C1917]">إعدادات النظام</h1>
+          <p className="mt-1 text-sm text-[#A8A29E]">اضغط على أي قيمة لتعديلها مباشرة</p>
+        </div>
+        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
+          <RefreshCw size={15} />تحديث
+        </button>
+      </div>
+
+      {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
+
+      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
+      : (
+        <div className="grid gap-5 xl:grid-cols-2">
+          {groups.map((group) => (
+            <section key={group} className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+              <h2 className="mb-4 text-sm font-black text-[#B8860B]">{group}</h2>
+              <div className="divide-y divide-[#F0ECE6]">
+                {values.filter((item) => item.config.group === group).map(({ config, row, value }) => (
+                  <div key={config.key} className="grid gap-2 py-3 first:pt-0 last:pb-0 md:grid-cols-[190px_minmax(0,1fr)] md:items-center">
+                    <div className="min-w-0">
+                      <p className="text-sm font-black text-[#1C1917]">{config.label}</p>
+                      <p className="mt-0.5 truncate font-mono text-[11px] text-[#A8A29E]" dir="ltr">{config.key}</p>
+                      {row?.updated_at ? <p className="mt-1 text-[11px] text-[#A8A29E]">{formatDate(row.updated_at)}</p> : null}
+                    </div>
+                    <InlineSetting config={config} value={value} onSave={(next) => patchSetting(config, next)} />
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
