@@ -2,6 +2,7 @@
 /* eslint-disable */
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
 import { getSessionClient } from '@/supabase-server';
 import { WriteReviewForm } from '@/components/product/WriteReviewForm';
@@ -30,6 +31,9 @@ export default async function OrderDetailPage({ params }: Props) {
   // قراءة عامة (service-role) — صفحة تأكيد الطلب يجب أن تعمل للزوار أيضاً
   // (سياسات RLS الحالية على جدول orders لا تسمح بقراءة anon، لذلك نستخدم
   // service-role هنا تحديداً لهذه الصفحة العامة فقط).
+  const locale = await getLocale();
+  const t = await getTranslations('catalog');
+  const isAr = locale === 'ar';
   const admin = createAdminSupabaseClient();
 
   const { data: order } = await admin
@@ -125,7 +129,7 @@ export default async function OrderDetailPage({ params }: Props) {
                 <div key={item.id} className="border-b border-[#F0ECE6] pb-4 last:border-0 last:pb-0 space-y-2">
                   <div className="flex justify-between items-center text-sm">
                     <div>
-                      <p className="font-semibold text-[#1C1917]">{item.product_snapshot?.name_ar ?? '—'}</p>
+                      <p className="font-semibold text-[#1C1917]">{isAr ? (item.product_snapshot?.name_ar ?? '—') : (item.product_snapshot?.name_en || item.product_snapshot?.name_ar || '—')}</p>
                       <p className="text-xs text-[#A8A29E] font-mono">{item.product_snapshot?.sku} × {item.quantity}</p>
                     </div>
                     <p className="font-bold text-[#B8860B]">{fmt(item.total_price_syp)}</p>
@@ -138,7 +142,7 @@ export default async function OrderDetailPage({ params }: Props) {
                       <WriteReviewForm
                         productId={productId}
                         orderNumber={order.order_number}
-                        productNameAr={item.product_snapshot?.name_ar ?? ''}
+                        productNameAr={isAr ? (item.product_snapshot?.name_ar ?? '') : (item.product_snapshot?.name_en || item.product_snapshot?.name_ar || '')}
                       />
                     )
                   )}
