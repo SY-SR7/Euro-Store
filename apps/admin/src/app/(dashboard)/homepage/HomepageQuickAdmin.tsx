@@ -1,0 +1,342 @@
+'use client';
+
+import { Plus, RefreshCw, X } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import type { KeyboardEvent, ReactNode } from 'react';
+
+type HomeSection = {
+  id: string;
+  section_key: string;
+  title_ar: string;
+  title_en: string | null;
+  content?: Record<string, unknown> | null;
+  is_active: boolean;
+  sort_order: number;
+};
+
+const SECTION_OPTIONS = [
+  { value: 'hero', label: 'Hero' },
+  { value: 'featured_products', label: 'منتجات مميزة' },
+  { value: 'categories_grid', label: 'شبكة التصنيفات' },
+  { value: 'promotions', label: 'العروض' },
+  { value: 'loyalty_banner', label: 'الولاء' },
+  { value: 'new_arrivals', label: 'وصل حديثا' },
+];
+
+const inputClass =
+  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+
+async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(url, init);
+  const payload = (await res.json().catch(() => null)) as T | { error?: string } | null;
+  if (!res.ok) {
+    const message =
+      payload && typeof payload === 'object' && 'error' in payload && payload.error
+        ? String(payload.error)
+        : 'request_failed';
+    throw new Error(message);
+  }
+  return payload as T;
+}
+
+function pickArray<T>(payload: unknown): T[] {
+  if (Array.isArray(payload)) return payload as T[];
+  if (payload && typeof payload === 'object') {
+    const record = payload as Record<string, unknown>;
+    for (const key of ['data', 'items', 'sections', 'homepage_sections']) {
+      if (Array.isArray(record[key])) return record[key] as T[];
+    }
+  }
+  return [];
+}
+
+function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
+      <div className="w-full max-w-2xl rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
+          <h2 className="font-black text-[#1C1917]">{title}</h2>
+          <button type="button" title="إغلاق" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+            <X size={17} />
+          </button>
+        </div>
+        <div className="p-5">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="grid gap-1 border-b border-[#F0ECE6] pb-2 last:border-0 last:pb-0 sm:grid-cols-[120px_minmax(0,1fr)]">
+      <span className="text-xs font-bold text-[#8B8172]">{label}</span>
+      <div className="min-w-0">{children}</div>
+    </div>
+  );
+}
+
+function InlineText({
+  value,
+  onSave,
+  dir = 'rtl',
+}: {
+  value?: string | null;
+  onSave: (value: string) => void | Promise<void>;
+  dir?: 'rtl' | 'ltr';
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value ?? '');
+
+  useEffect(() => {
+    if (!editing) setDraft(value ?? '');
+  }, [editing, value]);
+
+  const commit = () => {
+    const next = draft.trim();
+    setEditing(false);
+    if (next !== (value ?? '')) void onSave(next);
+  };
+
+  if (editing) {
+    return (
+      <input
+        autoFocus
+        value={draft}
+        dir={dir}
+        onBlur={commit}
+        onChange={(event) => setDraft(event.target.value)}
+        onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
+          if (event.key === 'Enter') commit();
+          if (event.key === 'Escape') setEditing(false);
+        }}
+        className={inputClass}
+      />
+    );
+  }
+
+  return (
+    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">
+      {value || <span className="text-[#A8A29E]">-</span>}
+    </button>
+  );
+}
+
+function InlineNumber({ value, onSave }: { value: number; onSave: (value: number) => void | Promise<void> }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(String(value));
+
+  useEffect(() => {
+    if (!editing) setDraft(String(value));
+  }, [editing, value]);
+
+  const commit = () => {
+    const next = Number(draft);
+    setEditing(false);
+    if (Number.isFinite(next) && next !== value) void onSave(next);
+  };
+
+  if (editing) {
+    return (
+      <input
+        autoFocus
+        type="number"
+        value={draft}
+        onBlur={commit}
+        onChange={(event) => setDraft(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') commit();
+          if (event.key === 'Escape') setEditing(false);
+        }}
+        className={inputClass}
+      />
+    );
+  }
+
+  return (
+    <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-[#1C1917] transition hover:bg-[#FAF7EF]">
+      {value}
+    </button>
+  );
+}
+
+function OptionPills({ value, options, onSave }: { value: string; options: { value: string; label: string }[]; onSave: (value: string) => void | Promise<void> }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          onClick={() => option.value !== value && void onSave(option.value)}
+          className={`rounded-full border px-3 py-1 text-xs font-black ${option.value === value ? 'border-[#B8860B] bg-[#B8860B] text-white' : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolean) => void | Promise<void> }) {
+  return (
+    <div className="flex gap-2">
+      {[{ v: true, l: 'مرئي', c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: 'مخفي', c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
+        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}>
+          {option.l}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export default function HomepageQuickAdmin() {
+  const [sections, setSections] = useState<HomeSection[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<HomeSection | null>(null);
+  const [msg, setMsg] = useState('');
+  const [showCreate, setShowCreate] = useState(false);
+  const [newForm, setNewForm] = useState({ section_key: 'hero', title_ar: '', title_en: '', sort_order: '0' });
+
+  const load = useCallback(() => {
+    setLoading(true);
+    fetchJson<unknown>('/api/catalog/homepage', { cache: 'no-store' })
+      .then((payload) => setSections(pickArray<HomeSection>(payload)))
+      .catch(() => setSections([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const mergeSection = (id: string, patch: Partial<HomeSection>) => {
+    setSections((current) => current.map((section) => (section.id === id ? { ...section, ...patch } : section)));
+    setSelected((current) => (current?.id === id ? { ...current, ...patch } : current));
+  };
+
+  const patchSection = async (section: HomeSection, patch: Partial<HomeSection>) => {
+    const previous = section;
+    setMsg('');
+    mergeSection(section.id, patch);
+    try {
+      const updated = await fetchJson<HomeSection>(`/api/catalog/homepage/${section.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patch),
+      });
+      mergeSection(section.id, updated);
+      setMsg('تم الحفظ');
+    } catch (error) {
+      mergeSection(previous.id, previous);
+      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+    }
+  };
+
+  const createSection = async () => {
+    if (!newForm.title_ar.trim()) return;
+    await fetchJson<HomeSection>('/api/catalog/homepage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        section_key: newForm.section_key,
+        title_ar: newForm.title_ar.trim(),
+        title_en: newForm.title_en.trim() || newForm.title_ar.trim(),
+        sort_order: Number(newForm.sort_order) || 0,
+        is_active: true,
+        content: {},
+      }),
+    });
+    setNewForm({ section_key: 'hero', title_ar: '', title_en: '', sort_order: '0' });
+    setShowCreate(false);
+    load();
+  };
+
+  const deleteSection = async (section: HomeSection) => {
+    if (!confirm('حذف هذا القسم؟')) return;
+    await fetchJson<{ deleted: boolean }>(`/api/catalog/homepage/${section.id}`, { method: 'DELETE' });
+    setSelected(null);
+    load();
+  };
+
+  return (
+    <div className="space-y-5" dir="rtl">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-black text-[#1C1917]">الواجهة الرئيسية</h1>
+          <p className="mt-1 text-sm text-[#A8A29E]">{sections.length} قسم</p>
+        </div>
+        <div className="flex gap-2">
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
+            <RefreshCw size={15} />تحديث
+          </button>
+          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]">
+            <Plus size={15} />قسم جديد
+          </button>
+        </div>
+      </div>
+
+      {showCreate ? (
+        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+          <div className="grid gap-3 md:grid-cols-4">
+            <select value={newForm.section_key} onChange={(event) => setNewForm((form) => ({ ...form, section_key: event.target.value }))} className={inputClass}>
+              {SECTION_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+            </select>
+            <input value={newForm.title_ar} onChange={(event) => setNewForm((form) => ({ ...form, title_ar: event.target.value }))} placeholder="العنوان العربي" className={inputClass} />
+            <input value={newForm.title_en} onChange={(event) => setNewForm((form) => ({ ...form, title_en: event.target.value }))} placeholder="English title" className={inputClass} dir="ltr" />
+            <input type="number" value={newForm.sort_order} onChange={(event) => setNewForm((form) => ({ ...form, sort_order: event.target.value }))} placeholder="الترتيب" className={inputClass} />
+            <button type="button" onClick={() => void createSection()} disabled={!newForm.title_ar.trim()} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50 md:col-span-4">
+              إضافة
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
+        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
+        : sections.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد أقسام</p>
+        : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="bg-[#F8F6F2]">
+                <tr>{['القسم', 'العنوان', 'الترتيب', 'الحالة'].map((head, index) => <th key={head} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${index === 0 ? 'hidden sm:table-cell' : ''}`}>{head}</th>)}</tr>
+              </thead>
+              <tbody className="divide-y divide-[#F0ECE6]">
+                {[...sections].sort((a, b) => a.sort_order - b.sort_order).map((section) => (
+                  <tr key={section.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => { setSelected(section); setMsg(''); }}>
+                    <td className="hidden px-5 py-3 font-mono text-xs text-[#A8A29E] sm:table-cell">{section.section_key}</td>
+                    <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{section.title_ar}</td>
+                    <td className="px-5 py-3 text-[#57534E]">{section.sort_order}</td>
+                    <td className="px-5 py-3" onClick={(event) => event.stopPropagation()}>
+                      <button type="button" onClick={() => void patchSection(section, { is_active: !section.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${section.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
+                        {section.is_active ? 'مرئي' : 'مخفي'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {selected ? (
+        <Modal title={selected.title_ar} onClose={() => setSelected(null)}>
+          <div className="space-y-4">
+            {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
+            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+              <div className="space-y-2">
+                <Field label="نوع القسم"><OptionPills value={selected.section_key} options={SECTION_OPTIONS} onSave={(section_key) => patchSection(selected, { section_key })} /></Field>
+                <Field label="العنوان العربي"><InlineText value={selected.title_ar} onSave={(title_ar) => patchSection(selected, { title_ar })} /></Field>
+                <Field label="العنوان الإنجليزي"><InlineText value={selected.title_en ?? ''} dir="ltr" onSave={(title_en) => patchSection(selected, { title_en })} /></Field>
+                <Field label="الترتيب"><InlineNumber value={selected.sort_order} onSave={(sort_order) => patchSection(selected, { sort_order })} /></Field>
+                <Field label="الحالة"><ActivePills value={selected.is_active} onSave={(is_active) => patchSection(selected, { is_active })} /></Field>
+              </div>
+            </div>
+            <button type="button" onClick={() => void deleteSection(selected)} className="rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50">
+              حذف القسم
+            </button>
+          </div>
+        </Modal>
+      ) : null}
+    </div>
+  );
+}

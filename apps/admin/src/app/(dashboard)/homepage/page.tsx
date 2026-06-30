@@ -2,6 +2,9 @@
 
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
+import HomepageQuickAdmin from './HomepageQuickAdmin';
+
+export default HomepageQuickAdmin;
 
 interface HomeSection {
   id: string;
@@ -47,7 +50,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
   );
 }
 
-export default function HomepagePage() {
+function LegacyHomepagePage() {
   const [sections, setSections] = useState<HomeSection[]>([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState('');
