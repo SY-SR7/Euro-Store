@@ -7,8 +7,8 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ProductCard } from './catalog-components';
 
-function formatSYP(n: number) {
-  return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
+function formatSYP(n: number, isAr: boolean, t: any) {
+  return Number(n || 0).toLocaleString(isAr ? 'ar-SY' : 'en-US') + ' ' + t('syp', { fallback: 'ل.س' });
 }
 
 type Facet<T> = T & { count: number; selected: boolean };
@@ -145,10 +145,10 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
 
           {/* header */}
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-[#1F1B16] uppercase tracking-wider">الفلاتر</h3>
+            <h3 className="text-sm font-black text-[#1F1B16] uppercase tracking-wider">{t('filters', { fallback: 'الفلاتر' })}</h3>
             {hasActiveFilters && (
               <button onClick={clearAll} className="text-xs text-[#C9A84C] font-bold hover:underline">
-                مسح الكل
+                {t('clearAll', { fallback: 'مسح الكل' })}
               </button>
             )}
           </div>
@@ -158,7 +158,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
             <input
               value={q}
               onChange={e => setQ(e.target.value)}
-              placeholder="ابحث..."
+              placeholder={t('searchPlaceholder', { fallback: 'ابحث...' })}
               className="flex-1 rounded-lg border border-[#E8DCC3] px-3 py-2 text-sm outline-none focus:border-[#C9A84C] bg-white"
             />
             <button type="submit" className="rounded-lg bg-[#C9A84C] px-3 py-2 text-white text-sm font-bold hover:bg-[#B8860B]">
@@ -253,7 +253,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
               <div className="space-y-3">
                 <div className="flex gap-2">
                   <div className="flex-1">
-                    <label className="text-[10px] text-[#A8A29E] font-bold mb-1 block">من</label>
+                    <label className="text-[10px] text-[#A8A29E] font-bold mb-1 block">{t('from', { fallback: 'من' })}</label>
                     <input
                       type="number"
                       value={priceMin ?? ''}
@@ -263,7 +263,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="text-[10px] text-[#A8A29E] font-bold mb-1 block">إلى</label>
+                    <label className="text-[10px] text-[#A8A29E] font-bold mb-1 block">{t('to', { fallback: 'إلى' })}</label>
                     <input
                       type="number"
                       value={priceMax ?? ''}
@@ -274,15 +274,15 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                   </div>
                 </div>
                 <div className="flex justify-between text-[10px] text-[#A8A29E] font-medium">
-                  <span>{formatSYP(facets.priceRange.min)}</span>
-                  <span>{formatSYP(facets.priceRange.max)}</span>
+                  <span>{formatSYP(facets.priceRange.min, isAr, t)}</span>
+                  <span>{formatSYP(facets.priceRange.max, isAr, t)}</span>
                 </div>
                 {(priceMin !== null || priceMax !== null) && (
                   <button
                     onClick={() => { setPriceMin(null); setPriceMax(null); }}
                     className="text-[11px] text-[#C9A84C] hover:underline font-bold"
                   >
-                    مسح السعر
+                    {t('clearPrice', { fallback: 'مسح السعر' })}
                   </button>
                 )}
               </div>
@@ -305,29 +305,29 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                 <line x1="3" y1="12" x2="21" y2="12" />
                 <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
-              {sidebarOpen ? 'إخفاء الفلاتر' : 'إظهار الفلاتر'}
+              {sidebarOpen ? t('hideFilters', { fallback: 'إخفاء الفلاتر' }) : t('showFilters', { fallback: 'إظهار الفلاتر' })}
             </button>
 
             {/* active filter chips */}
             {selectedCategories.length > 0 && !lockedCategorySlug && (
               <FilterChip
-                label={`${selectedCategories.length} تصنيف`}
+                label={`${selectedCategories.length} ${t('categoryCount', { fallback: 'تصنيف' })}`}
                 onRemove={() => setSelectedCategories([])}
               />
             )}
             {selectedBrands.length > 0 && (
-              <FilterChip label={`${selectedBrands.length} ماركة`} onRemove={() => setSelectedBrands([])} />
+              <FilterChip label={`${selectedBrands.length} ${t('brandCount', { fallback: 'ماركة' })}`} onRemove={() => setSelectedBrands([])} />
             )}
             {selectedAttrs.length > 0 && (
-              <FilterChip label={`${selectedAttrs.length} خاصية`} onRemove={() => setSelectedAttrs([])} />
+              <FilterChip label={`${selectedAttrs.length} ${t('attrCount', { fallback: 'خاصية' })}`} onRemove={() => setSelectedAttrs([])} />
             )}
             {(priceMin !== null || priceMax !== null) && (
-              <FilterChip label="نطاق السعر" onRemove={() => { setPriceMin(null); setPriceMax(null); }} />
+              <FilterChip label={t('priceRange', { fallback: 'نطاق السعر' })} onRemove={() => { setPriceMin(null); setPriceMax(null); }} />
             )}
           </div>
 
           <p className="text-sm text-[#6F6658] font-medium">
-            {loading ? 'جارٍ التحميل...' : `${data?.total ?? 0} منتج`}
+            {loading ? t('loading', { fallback: 'جارٍ التحميل...' }) : `${data?.total ?? 0} ${t('productCount', { fallback: 'منتج' })}`}
           </p>
         </div>
 
@@ -340,10 +340,10 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
           </div>
         ) : !data?.products.length ? (
           <div className="rounded-2xl border border-[#E8DCC3] bg-white p-16 text-center">
-            <p className="text-xl text-[#6F6658]">لا توجد منتجات تطابق الفلاتر المحددة</p>
+            <p className="text-xl text-[#6F6658]">{t('noProducts', { fallback: 'لا توجد منتجات تطابق الفلاتر المحددة' })}</p>
             {hasActiveFilters && (
               <button onClick={clearAll} className="mt-4 text-sm text-[#C9A84C] hover:underline font-bold">
-                مسح جميع الفلاتر
+                {t('clearAllFilters', { fallback: 'مسح جميع الفلاتر' })}
               </button>
             )}
           </div>
