@@ -10,6 +10,7 @@ interface Params {
 type PatchBody = {
   is_active?: boolean;
   display_name?: string;
+  email?: string;
 };
 
 export async function PATCH(request: Request, { params }: Params) {
@@ -19,12 +20,21 @@ export async function PATCH(request: Request, { params }: Params) {
     const update: Record<string, unknown> = {};
     if (typeof body.is_active === 'boolean') update.is_active = body.is_active;
     if (typeof body.display_name === 'string') update.full_name = body.display_name;
+    if (typeof body.email === 'string' && body.email.includes('@')) update.email = body.email.trim();
 
     if (Object.keys(update).length === 0) {
       return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
     }
 
     const admin = createSupabaseAdminClientFromEnv();
+
+    if (typeof update.email === 'string') {
+      const { error: authError } = await admin.auth.admin.updateUserById(params.userId, {
+        email: update.email,
+        email_confirm: true,
+      });
+      if (authError) return NextResponse.json({ error: authError.message }, { status: 500 });
+    }
 
     const { data, error } = await admin
       .from('sub_admin_profiles')
