@@ -15,7 +15,6 @@ function formatSYP(n: number) {
 function stockBadge(stock: number | null | undefined, t: any) {
   if (stock == null) return null;
 
-  const t = useTranslations('catalog');
   if (stock <= 0) {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-1 text-[11px] font-bold text-red-700">

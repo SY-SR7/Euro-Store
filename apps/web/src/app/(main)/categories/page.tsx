@@ -1,13 +1,15 @@
 /* eslint-disable */
 // @ts-nocheck
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
 export default async function CategoriesPage(): Promise<JSX.Element> {
   const t = await getTranslations();
+  const locale = await getLocale();
+  const isAr = locale === 'ar';
   const supabase = createServerSupabaseClient();
 
   const { data: categories } = await supabase
@@ -44,7 +46,7 @@ export default async function CategoriesPage(): Promise<JSX.Element> {
                   <span className="text-[#C9A84C] text-xl">✦</span>
                 </div>
                 <p className="text-sm font-medium text-[#1F1B16] group-hover:text-[#C9A84C] transition-colors">
-                  {cat.name_ar}
+                  {isAr ? cat.name_ar : (cat.name_en || cat.name_ar)}
                 </p>
               </Link>
             ))}
