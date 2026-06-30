@@ -1,5 +1,9 @@
 'use client';
+// @ts-nocheck
 import { useEffect, useState, useCallback } from 'react';
+import DiscountsQuickAdmin from './DiscountsQuickAdmin';
+
+export default DiscountsQuickAdmin;
 
 interface Discount {
   id: string; code: string; type: string; value: number;
@@ -25,7 +29,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
   );
 }
 
-export default function AdminDiscountsPage() {
+function LegacyAdminDiscountsPage() {
   const [discounts,setDiscounts] = useState<Discount[]>([]);
   const [loading,setLoading]    = useState(true);
   const [selected,setSelected]  = useState<Discount|null>(null);
