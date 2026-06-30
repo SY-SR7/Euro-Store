@@ -155,7 +155,7 @@ export default function SettingsQuickAdmin() {
       <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-black text-[#1C1917]">إعدادات النظام</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">اضغط على أي قيمة لتعديلها مباشرة</p>
+          <p className="mt-1 text-sm text-[#A8A29E]">القيم العامة</p>
         </div>
         <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
           <RefreshCw size={15} />تحديث

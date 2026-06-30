@@ -120,6 +120,7 @@ function NavLink({
   onNavigate?: () => void;
 }) {
   const active = isActivePath(pathname, item.href);
+  const Icon = item.icon;
 
   return (
     <Link
@@ -132,7 +133,7 @@ function NavLink({
           : 'text-[#57534E] hover:bg-[#F4EFE6] hover:text-[#1C1917]',
       ].join(' ')}
     >
-      <span className="grid w-5 shrink-0 place-items-center text-[13px] leading-none">{item.icon}</span>
+      <span className="grid w-5 shrink-0 place-items-center leading-none"><Icon size={14} /></span>
       <span className="min-w-0 flex-1 truncate">{item.label}</span>
       {active && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white" />}
     </Link>
@@ -165,7 +166,7 @@ function LogoutButton({ compact = false }: { compact?: boolean }) {
         compact ? 'h-10 px-3 text-xs' : 'h-9 w-full px-3 text-[12px]',
       ].join(' ')}
     >
-      <span>⎋</span>
+      <LogOut size={14} />
       <span>{loading ? 'جارٍ الخروج...' : 'تسجيل الخروج'}</span>
     </button>
   );
@@ -211,7 +212,7 @@ function SidebarContent({
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F4EFE6] text-xl text-[#57534E]"
             aria-label="إغلاق القائمة"
           >
-            ×
+            <X size={18} />
           </button>
         )}
       </div>
@@ -265,14 +266,11 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
               className="grid h-10 w-10 place-items-center rounded-xl border border-[#E7DDCC] bg-white text-xl text-[#57534E] shadow-sm transition hover:border-[#B8860B] hover:text-[#B8860B] lg:hidden"
               aria-label="فتح السايدبار"
             >
-              ☰
+              <Menu size={19} />
             </button>
 
             <div className="min-w-0">
               <h1 className="truncate text-base font-black text-[#1C1917]">{title}</h1>
-              <p className="mt-0.5 hidden text-[11px] font-medium text-[#A8A29E] sm:block">
-                نافبار ثابت بالأعلى
-              </p>
             </div>
           </div>
 
@@ -287,7 +285,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
               ].join(' ')}
               aria-label="الإشعارات"
             >
-              🔔
+              <Bell size={18} />
               <span className="absolute -left-1 -top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-500" />
             </Link>
 
