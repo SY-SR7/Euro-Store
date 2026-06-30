@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { Suspense } from 'react';
 import { FilterableProductGrid } from '../../filterable-product-grid';
+import { getTranslations, getLocale } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,14 +16,18 @@ function LoadingGrid() {
   );
 }
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const t = await getTranslations('products');
+  const locale = await getLocale();
+  const isAr = locale === 'ar';
+
   return (
-    <main className="min-h-screen bg-[#FAF7EF] px-4 py-12 text-[#1F1B16]" dir="rtl">
+    <main className="min-h-screen bg-[#FAF7EF] px-4 py-12 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-7xl space-y-8">
         <div>
-          <p className="text-xs font-bold text-[#C9A84C] uppercase tracking-widest">المنتجات</p>
-          <h1 className="mt-2 text-4xl font-black">تشكيلتنا الكاملة</h1>
-          <p className="mt-1 text-sm text-[#6F6658]">اختر من بين مئات المنتجات</p>
+          <p className="text-xs font-bold text-[#C9A84C] uppercase tracking-widest">{t('productsLabel', { fallback: 'المنتجات' })}</p>
+          <h1 className="mt-2 text-4xl font-black">{t('fullCollection', { fallback: 'تشكيلتنا الكاملة' })}</h1>
+          <p className="mt-1 text-sm text-[#6F6658]">{t('chooseFromHundreds', { fallback: 'اختر من بين مئات المنتجات' })}</p>
         </div>
 
         <Suspense fallback={<LoadingGrid />}>
