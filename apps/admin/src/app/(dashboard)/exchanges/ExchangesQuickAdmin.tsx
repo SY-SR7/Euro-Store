@@ -390,14 +390,17 @@ export default function ExchangesQuickAdmin() {
                       <StatusPills value={selected.status} onSave={(status) => patchRequest({ status })} />
                     </Field>
                     <Field label="السبب العربي">
-                      <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
-                        {selected.reason_ar ?? '—'}
-                      </div>
+                      <InlineText
+                        value={selected.reason_ar ?? ''}
+                        onSave={(reason_ar) => patchRequest({ reason_ar })}
+                      />
                     </Field>
                     <Field label="السبب الإنجليزي">
-                      <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]" dir="ltr">
-                        {selected.reason_en ?? '—'}
-                      </div>
+                      <InlineText
+                        value={selected.reason_en ?? ''}
+                        dir="ltr"
+                        onSave={(reason_en) => patchRequest({ reason_en })}
+                      />
                     </Field>
                     <Field label="ملاحظات الإدارة">
                       <InlineText

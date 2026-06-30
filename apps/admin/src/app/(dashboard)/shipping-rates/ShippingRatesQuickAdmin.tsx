@@ -59,6 +59,15 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
+function InlineText({ value, onSave, dir = 'rtl' }: { value?: string | null; onSave: (value: string) => Promise<void> | void; dir?: 'rtl' | 'ltr' }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value ?? '');
+  useEffect(() => { if (!editing) setDraft(value ?? ''); }, [editing, value]);
+  const commit = () => { const next = draft.trim(); setEditing(false); if (next !== (value ?? '')) void onSave(next); };
+  if (editing) return <input autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
+  return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">{value || <span className="text-[#A8A29E]">—</span>}</button>;
+}
+
 function InlineNumber({
   value,
   nullable = false,
@@ -235,6 +244,7 @@ export default function ShippingRatesQuickAdmin() {
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
               <div className="space-y-2">
+                <Field label="المحافظة"><InlineText value={selected.governorate} onSave={(governorate) => patchRate(selected, { governorate })} /></Field>
                 <Field label="سعر الشحن"><InlineNumber value={selected.base_rate_syp} onSave={(base_rate_syp) => patchRate(selected, { base_rate_syp: Number(base_rate_syp ?? 0) })} /></Field>
                 <Field label="شحن مجاني فوق"><InlineNumber value={selected.free_shipping_threshold_syp ?? null} nullable onSave={(free_shipping_threshold_syp) => patchRate(selected, { free_shipping_threshold_syp })} /></Field>
                 <Field label="الحالة"><ActivePills value={selected.is_active} onSave={(is_active) => patchRate(selected, { is_active })} /></Field>

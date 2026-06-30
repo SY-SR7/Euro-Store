@@ -15,6 +15,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   const body = await request.json().catch(() => null) as Record<string, unknown> | null;
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   const update: Record<string, unknown> = {};
+  if (typeof body.governorate === 'string' && body.governorate.trim()) update.governorate = body.governorate.trim();
   if (typeof body.base_rate_syp === 'number') update.base_rate_syp = body.base_rate_syp;
   if (typeof body.is_active === 'boolean') update.is_active = body.is_active;
   if (typeof body.free_shipping_threshold_syp === 'number' || body.free_shipping_threshold_syp === null) update.free_shipping_threshold_syp = body.free_shipping_threshold_syp;
