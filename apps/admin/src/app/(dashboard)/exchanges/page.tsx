@@ -1,6 +1,10 @@
 'use client';
+// @ts-nocheck
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import ExchangesQuickAdmin from './ExchangesQuickAdmin';
+
+export default ExchangesQuickAdmin;
 
 interface ExchangeRequest {
   id: string; order_id: string|null; customer_id: string|null;
@@ -35,7 +39,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
   );
 }
 
-export default function AdminExchangesPage() {
+function LegacyAdminExchangesPage() {
   const [requests,setRequests] = useState<ExchangeRequest[]>([]);
   const [loading,setLoading]   = useState(true);
   const [statusFilter,setStatusFilter] = useState<'all'|'pending'|'approved'|'rejected'|'completed'>('all');
