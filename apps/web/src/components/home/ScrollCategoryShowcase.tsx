@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMotionValue, useSpring, useAnimationFrame } from 'framer-motion';
+import { useLocale, useTranslations } from 'next-intl';
 import { ProductCard } from '@/app/catalog-components';
 import type {
   CatalogBrand,
@@ -331,8 +332,11 @@ function CategorySection({
   brandLookup: Map<string, CatalogBrand>;
 }) {
   const sectionRef = useRef<HTMLElement | null>(null);
+  const locale = useLocale();
+  const t = useTranslations('home');
+  const isAr = locale === 'ar';
 
-  const introTitle = section.introProduct?.name_ar || section.category.name_ar;
+  const introTitle = isAr ? (section.introProduct?.name_ar || section.category.name_ar) : (section.introProduct?.name_en || section.category.name_en || section.category.name_ar);
   const introImage = getProductImage(section.introProduct);
   const hasVideo = Boolean(section.introVideoSrc);
 
@@ -362,16 +366,19 @@ function CategorySection({
               {hasVideo ? 'القسم الأول — فيديو تفاعلي' : 'قسم'}
             </p>
             <h2 className="mt-2 text-4xl font-black text-[#1F1B16] md:text-5xl">
-              {section.category.name_ar}
+              {isAr ? section.category.name_ar : (section.category.name_en || section.category.name_ar)}
             </h2>
-            {section.category.name_en ? (
+            {(!isAr && section.category.name_ar) ? (
+              <p className="mt-2 text-[#6F6658]">{section.category.name_ar}</p>
+            ) : null}
+            {(isAr && section.category.name_en) ? (
               <p className="mt-2 text-[#6F6658]">{section.category.name_en}</p>
             ) : null}
           </div>
 
           {section.products.length === 0 ? (
             <div className="rounded-2xl border border-[#E8DCC3] bg-[#FAF7EF] p-10 text-center text-[#6F6658]">
-              لا توجد منتجات في هذا القسم حالياً
+              {t('noCategoryProducts', { fallback: 'لا توجد منتجات في هذا القسم حالياً' })}
             </div>
           ) : (
             <div className="grid gap-5 sm:grid-cols-2">
@@ -392,7 +399,7 @@ function CategorySection({
               href={`/categories/${section.category.slug}`}
               className="inline-flex rounded-xl border border-[#C9A84C] px-5 py-3 text-sm font-black text-[#C9A84C] transition hover:bg-[#C9A84C] hover:text-[#1F1B16]"
             >
-              عرض كل منتجات {section.category.name_ar}
+              {t('viewAllProducts', { fallback: 'عرض كل منتجات' })} {isAr ? section.category.name_ar : (section.category.name_en || section.category.name_ar)}
             </a>
           </div>
         </div>
