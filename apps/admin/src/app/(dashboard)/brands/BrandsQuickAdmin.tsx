@@ -1,6 +1,7 @@
 'use client';
 
 import { Plus, RefreshCw, Search, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 
@@ -69,10 +70,13 @@ function fallbackSlug(value: string) {
 }
 
 export default function BrandsQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Brand | null>(null);
   const [msg, setMsg] = useState('');
+  const [autoOpenedId, setAutoOpenedId] = useState('');
   const [search, setSearch] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState('');
@@ -87,6 +91,37 @@ export default function BrandsQuickAdmin() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  const openBrand = useCallback((brand: Brand, updateUrl = true) => {
+    setSelected(brand);
+    setMsg('');
+    if (updateUrl) router.replace(`/brands?open=${brand.id}`, { scroll: false });
+  }, [router]);
+
+  const closeBrand = () => {
+    setSelected(null);
+    router.replace('/brands', { scroll: false });
+  };
+
+  useEffect(() => {
+    const brandId = searchParams.get('open');
+    if (!brandId || autoOpenedId === brandId || selected?.id === brandId) return;
+
+    const existing = brands.find((brand) => brand.id === brandId);
+    if (existing) {
+      openBrand(existing, false);
+      setAutoOpenedId(brandId);
+      return;
+    }
+
+    fetchJson<Brand>(`/api/catalog/brands/${brandId}`)
+      .then((brand) => {
+        setBrands((current) => current.some((item) => item.id === brand.id) ? current : [brand, ...current]);
+        openBrand(brand, false);
+        setAutoOpenedId(brandId);
+      })
+      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح الماركة'));
+  }, [autoOpenedId, brands, openBrand, searchParams, selected?.id]);
 
   const mergeBrand = (id: string, patch: Partial<Brand>) => {
     setBrands((current) => current.map((brand) => (brand.id === id ? { ...brand, ...patch } : brand)));
@@ -152,7 +187,7 @@ export default function BrandsQuickAdmin() {
               <thead className="bg-[#F8F6F2]"><tr>{['الاسم','Slug','الحالة'].map((h,i)=><th key={h} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i===1?'hidden sm:table-cell':''}`}>{h}</th>)}</tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {visible.map((brand) => (
-                  <tr key={brand.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => { setSelected(brand); setMsg(''); }}>
+                  <tr key={brand.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openBrand(brand)}>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{brand.name}</td>
                     <td className="hidden px-5 py-3 font-mono text-xs text-[#A8A29E] sm:table-cell">{brand.slug ?? ''}</td>
                     <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
@@ -167,7 +202,7 @@ export default function BrandsQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={selected.name} onClose={() => setSelected(null)}>
+        <Modal title={selected.name} onClose={closeBrand}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">

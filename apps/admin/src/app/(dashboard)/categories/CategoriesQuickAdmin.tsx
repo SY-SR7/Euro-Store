@@ -1,6 +1,7 @@
 'use client';
 
 import { Plus, RefreshCw, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 
@@ -82,10 +83,13 @@ function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolea
 }
 
 export default function CategoriesQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Category | null>(null);
   const [msg, setMsg] = useState('');
+  const [autoOpenedId, setAutoOpenedId] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [newForm, setNewForm] = useState({ name_ar: '', name_en: '', slug: '', sort_order: '0' });
 
@@ -98,6 +102,37 @@ export default function CategoriesQuickAdmin() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  const openCategory = useCallback((category: Category, updateUrl = true) => {
+    setSelected(category);
+    setMsg('');
+    if (updateUrl) router.replace(`/categories?open=${category.id}`, { scroll: false });
+  }, [router]);
+
+  const closeCategory = () => {
+    setSelected(null);
+    router.replace('/categories', { scroll: false });
+  };
+
+  useEffect(() => {
+    const categoryId = searchParams.get('open');
+    if (!categoryId || autoOpenedId === categoryId || selected?.id === categoryId) return;
+
+    const existing = categories.find((category) => category.id === categoryId);
+    if (existing) {
+      openCategory(existing, false);
+      setAutoOpenedId(categoryId);
+      return;
+    }
+
+    fetchJson<Category>(`/api/catalog/categories/${categoryId}`)
+      .then((category) => {
+        setCategories((current) => current.some((item) => item.id === category.id) ? current : [category, ...current]);
+        openCategory(category, false);
+        setAutoOpenedId(categoryId);
+      })
+      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح التصنيف'));
+  }, [autoOpenedId, categories, openCategory, searchParams, selected?.id]);
 
   const mergeCategory = (id: string, patch: Partial<Category>) => {
     setCategories((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
@@ -157,7 +192,7 @@ export default function CategoriesQuickAdmin() {
               <thead className="bg-[#F8F6F2]"><tr>{['الاسم','Slug','الترتيب','الحالة'].map((h,i)=><th key={h} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i===1?'hidden sm:table-cell':''} ${i===2?'hidden md:table-cell':''}`}>{h}</th>)}</tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {[...categories].sort((a,b)=>(a.sort_order??0)-(b.sort_order??0)).map((category) => (
-                  <tr key={category.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => { setSelected(category); setMsg(''); }}>
+                  <tr key={category.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openCategory(category)}>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{category.name_ar ?? ''}</td>
                     <td className="hidden px-5 py-3 font-mono text-xs text-[#A8A29E] sm:table-cell">{category.slug ?? ''}</td>
                     <td className="hidden px-5 py-3 text-[#57534E] md:table-cell">{category.sort_order ?? 0}</td>
@@ -173,7 +208,7 @@ export default function CategoriesQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={selected.name_ar ?? 'قسم'} onClose={() => setSelected(null)}>
+        <Modal title={selected.name_ar ?? 'قسم'} onClose={closeCategory}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
