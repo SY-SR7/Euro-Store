@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
+import { useLocale, useTranslations } from 'next-intl';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -13,6 +14,9 @@ export default function RegisterPage() {
   const [name, setName]       = useState('');
   const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
+  const locale = useLocale();
+  const t = useTranslations('auth');
+  const isAr = locale === 'ar';
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -30,44 +34,44 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#FAFAF8] px-4" dir="rtl">
+    <main className="flex min-h-screen items-center justify-center bg-[#FAFAF8] px-4" dir={isAr ? "rtl" : "ltr"}>
       <div className="w-full max-w-sm">
         <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 shadow-sm">
           <div className="mb-6 text-center">
             <Link href="/" className="text-lg font-black tracking-widest text-[#B8860B]">EURO STORE</Link>
-            <h1 className="mt-2 text-xl font-black text-[#1C1917]">إنشاء حساب جديد</h1>
+            <h1 className="mt-2 text-xl font-black text-[#1C1917]">{t('registerTitle', { fallback: 'إنشاء حساب جديد' })}</h1>
           </div>
 
           {error && <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">الاسم الكامل</label>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('fullName', { fallback: 'الاسم الكامل' })}</label>
               <input type="text" value={name} onChange={e=>setName(e.target.value)} required
                 className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B] placeholder:text-[#A8A29E]"
-                placeholder="الاسم" />
+                placeholder={t('namePlaceholder', { fallback: 'الاسم' })} />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">البريد الإلكتروني</label>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('email', { fallback: 'البريد الإلكتروني' })}</label>
               <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required
                 className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B] placeholder:text-[#A8A29E]"
                 placeholder="you@example.com" dir="ltr" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">كلمة المرور</label>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('password', { fallback: 'كلمة المرور' })}</label>
               <input type="password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={8}
                 className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]"
-                placeholder="8 أحرف على الأقل" dir="ltr" />
+                placeholder={t('passwordPlaceholder', { fallback: '8 أحرف على الأقل' })} dir="ltr" />
             </div>
             <button type="submit" disabled={loading}
               className="w-full rounded-xl bg-[#B8860B] py-3 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
-              {loading ? 'جاري الإنشاء...' : 'إنشاء الحساب'}
+              {loading ? t('creatingAccount', { fallback: 'جاري الإنشاء...' }) : t('createAccount', { fallback: 'إنشاء الحساب' })}
             </button>
           </form>
 
           <p className="mt-5 text-center text-sm text-[#A8A29E]">
-            لديك حساب بالفعل؟{' '}
-            <Link href="/auth/login" className="font-bold text-[#B8860B] hover:underline">تسجيل الدخول</Link>
+            {t('alreadyHaveAccount', { fallback: 'لديك حساب بالفعل؟' })}{' '}
+            <Link href="/auth/login" className="font-bold text-[#B8860B] hover:underline">{t('login', { fallback: 'تسجيل الدخول' })}</Link>
           </p>
         </div>
       </div>
