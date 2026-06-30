@@ -8,8 +8,8 @@ import { Package, Layers3, AlertTriangle, CheckCircle2, XCircle } from 'lucide-r
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
 import { useLocale, useTranslations } from 'next-intl';
 
-function formatSYP(n: number) {
-  return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
+function formatSYP(n: number, isAr: boolean, t: any) {
+  return Number(n || 0).toLocaleString(isAr ? 'ar-SY' : 'en-US') + ' ' + t('syp', { fallback: 'ل.س' });
 }
 
 function stockBadge(stock: number | null | undefined, t: any) {
@@ -112,22 +112,22 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
             {variants != null && (
               <span className="inline-flex items-center gap-1 rounded-full bg-[#FAF7EF] px-2 py-1 font-bold">
                 <Layers3 className="h-3 w-3 text-[#C9A84C]" />
-                {variants} متغير
+                {variants} {t('variant', { fallback: 'متغير' })}
               </span>
             )}
             <span className="inline-flex items-center gap-1 rounded-full bg-[#FAF7EF] px-2 py-1 font-bold">
               <Package className="h-3 w-3 text-[#C9A84C]" />
-              التفاصيل
+              {t('details', { fallback: 'التفاصيل' })}
             </span>
           </div>
 
           {minPrice != null && Number(minPrice) > 0 ? (
             <p className="text-base font-black text-[#C9A84C]">
-              يبدأ من {formatSYP(minPrice)}
+              {t('startsFrom', { fallback: 'يبدأ من' })} {formatSYP(minPrice, isAr, t)}
             </p>
           ) : (
             <p className="text-sm font-bold text-[#A8A29E]">
-              السعر داخل التفاصيل
+              {t('priceInDetails', { fallback: 'السعر داخل التفاصيل' })}
             </p>
           )}
         </div>
