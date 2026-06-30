@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import { Package, Layers3, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
+import { WishlistButton } from '@/components/wishlist/WishlistButton';
 
 function formatSYP(n: number) {
   return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
@@ -58,6 +59,9 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
       className="group flex min-h-full flex-col overflow-hidden rounded-2xl border border-[#E8DCC3] bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C9A84C]/60 hover:shadow-md"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-[#F3EDE3]">
+        <div className="absolute left-2 top-2 z-10">
+          <WishlistButton productId={product.id} size="sm" />
+        </div>
         <div className="absolute left-2 top-2 z-10">
           <WishlistButton productId={product.id} size="sm" />
         </div>

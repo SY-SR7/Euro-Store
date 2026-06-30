@@ -6,6 +6,8 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { createBrowserClient } from '@supabase/ssr';
 import { useCartStore } from '@/lib/cart/cartStore';
+import { WishlistButton } from '@/components/wishlist/WishlistButton';
+import { ReviewsSection } from '@/components/product/ReviewsSection';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import { Layers3, Package, Palette, Ruler, Barcode, Boxes, Info, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 
@@ -37,6 +39,8 @@ export default function ProductPage({ params }: { params: any }) {
   const [added, setAdded] = useState(false);
 
   const addItem = useCartStore((s: any) => s.addItem);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _wishlistProductId = product?.id ?? null;
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -375,21 +379,28 @@ export default function ProductPage({ params }: { params: any }) {
             </div>
           )}
 
-          {selected && selectedStock > 0 ? (
-            <button
-              onClick={handleAddToCart}
-              className={[
-                'w-full rounded-2xl py-4 text-base font-black transition-all',
-                added ? 'bg-green-600 text-white' : 'bg-[#C9A84C] text-[#111] hover:bg-[#D8B95F] active:scale-[0.98]',
-              ].join(' ')}
-            >
-              {added ? '✓ تمت الإضافة إلى السلة' : 'أضف إلى السلة'}
-            </button>
-          ) : (
-            <button disabled className="w-full rounded-2xl bg-[#E8DCC3] py-4 text-base font-black text-[#9CA3AF]">
-              {selected ? 'نفذ المخزون' : 'اختر المتغير أولاً'}
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {selected && selectedStock > 0 ? (
+              <button
+                onClick={handleAddToCart}
+                className={[
+                  'flex-1 rounded-2xl py-4 text-base font-black transition-all',
+                  added ? 'bg-green-600 text-white' : 'bg-[#C9A84C] text-[#111] hover:bg-[#D8B95F] active:scale-[0.98]',
+                ].join(' ')}
+              >
+                {added ? '✓ تمت الإضافة إلى السلة' : 'أضف إلى السلة'}
+              </button>
+            ) : (
+              <button disabled className="flex-1 rounded-2xl bg-[#E8DCC3] py-4 text-base font-black text-[#9CA3AF]">
+                {selected ? 'نفذ المخزون' : 'اختر المتغير أولاً'}
+              </button>
+            )}
+            {product?.id && (
+              <div className="rounded-2xl border border-[#E8DCC3] bg-white p-2">
+                <WishlistButton productId={product.id} />
+              </div>
+            )}
+          </div>
 
           {category && (
             <p className="text-xs text-[#6F6658]">
@@ -401,6 +412,12 @@ export default function ProductPage({ params }: { params: any }) {
           )}
         </div>
       </div>
+
+      {product?.id && (
+        <div className="mx-auto mt-8 max-w-4xl px-4 pb-10">
+          <ReviewsSection productId={product.id} />
+        </div>
+      )}
     </div>
   );
 }
