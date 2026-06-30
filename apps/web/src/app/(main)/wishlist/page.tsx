@@ -99,7 +99,7 @@ export default function WishlistPage() {
                     label={t('productImage', { fallback: 'صورة المنتج' })}
                     sublabel={isAr ? item.name_ar : (item.name_en || item.name_ar)}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  </span>
+                  />
                   <span className={`absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-bold ${
                     item.in_stock ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
                   }`}>
