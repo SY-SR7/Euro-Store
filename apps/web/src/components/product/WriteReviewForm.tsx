@@ -2,6 +2,7 @@
 /* eslint-disable */
 import { useState } from 'react';
 import { Star, Loader2, CheckCircle2 } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface WriteReviewFormProps {
   productId: string;
@@ -17,10 +18,13 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError]     = useState<string | null>(null);
+  const locale = useLocale();
+  const t = useTranslations('catalog');
+  const isAr = locale === 'ar';
 
   async function handleSubmit() {
     if (rating < 1 || rating > 5) {
-      setError('اختر تقييماً من 1 إلى 5 نجوم');
+      setError(t('reviewRatingError', { fallback: 'اختر تقييماً من 1 إلى 5 نجوم' }));
       return;
     }
     setLoading(true);
@@ -38,12 +42,12 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body?.error ?? 'تعذر إرسال التقييم');
+        throw new Error(body?.error ?? t('reviewSubmitError', { fallback: 'تعذر إرسال التقييم' }));
       }
       setSubmitted(true);
       setOpen(false);
     } catch (e: any) {
-      setError(e?.message ?? 'تعذر إرسال التقييم، حاول مرة أخرى');
+      setError(e?.message ?? t('reviewSubmitErrorRetry', { fallback: 'تعذر إرسال التقييم، حاول مرة أخرى' }));
     } finally {
       setLoading(false);
     }
@@ -53,7 +57,7 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
     return (
       <div className="flex items-center gap-2 rounded-xl bg-green-50 px-3 py-2 text-xs font-semibold text-green-700">
         <CheckCircle2 className="h-4 w-4" />
-        تم إرسال تقييمك، سيظهر بعد مراجعة الإدارة
+        {t('reviewSubmittedMsg', { fallback: 'تم إرسال تقييمك، سيظهر بعد مراجعة الإدارة' })}
       </div>
     );
   }
@@ -65,14 +69,14 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
         onClick={() => setOpen(true)}
         className="text-xs font-bold text-[#B8860B] hover:underline"
       >
-        ⭐ اكتب تقييماً لهذا المنتج
+        ⭐ {t('writeReview', { fallback: 'اكتب تقييماً لهذا المنتج' })}
       </button>
     );
   }
 
   return (
-    <div className="rounded-xl border border-[#E5E0D8] bg-[#FAF7EF] p-3 space-y-2" dir="rtl">
-      <p className="text-xs font-bold text-[#1C1917]">تقييمك لـ «{productNameAr}»</p>
+    <div className={`rounded-xl border border-[#E5E0D8] bg-[#FAF7EF] p-3 space-y-2`} dir={isAr ? "rtl" : "ltr"}>
+      <p className="text-xs font-bold text-[#1C1917]">{t('reviewFor', { fallback: 'تقييمك لـ' })} «{productNameAr}»</p>
 
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
@@ -83,7 +87,7 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
             onMouseEnter={() => setHover(n)}
             onMouseLeave={() => setHover(0)}
             className="p-0.5"
-            aria-label={`${n} نجوم`}
+            aria-label={`${n} ${t('stars', { fallback: 'نجوم' })}`}
           >
             <Star
               className={`h-5 w-5 ${
@@ -97,7 +101,7 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
       <textarea
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        placeholder="اكتب تعليقاً (اختياري)..."
+        placeholder={t('writeCommentOptional', { fallback: 'اكتب تعليقاً (اختياري)...' })}
         rows={3}
         className="w-full rounded-lg border border-[#E5E0D8] bg-white p-2 text-xs text-[#1C1917] focus:border-[#B8860B] focus:outline-none"
       />
@@ -112,14 +116,14 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
           className="flex items-center justify-center gap-1.5 rounded-lg bg-[#B8860B] px-4 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#9A7209] disabled:opacity-60"
         >
           {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-          إرسال التقييم
+          {t('submitReview', { fallback: 'إرسال التقييم' })}
         </button>
         <button
           type="button"
           onClick={() => setOpen(false)}
           className="rounded-lg border border-[#E5E0D8] px-4 py-1.5 text-xs font-bold text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]"
         >
-          إلغاء
+          {t('cancel', { fallback: 'إلغاء' })}
         </button>
       </div>
     </div>
