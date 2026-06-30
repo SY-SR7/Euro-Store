@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { ShieldCheck } from 'lucide-react';
 import { verifyTotpAction } from '../actions';
 
 export default async function TotpVerifyPage({ searchParams }: { searchParams: { error?: string } }) {
@@ -10,17 +11,24 @@ export default async function TotpVerifyPage({ searchParams }: { searchParams: {
   const errorMsg = searchParams.error ? (errorMap[searchParams.error] ?? '') : '';
 
   return (
-    <main className="min-h-screen bg-[#FAF7EF] text-[#1F1B16] flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <p className="text-xs text-[#C9A84C] uppercase">EuroStore</p>
-        <h1 className="mt-3 text-3xl font-semibold">{t('verifyTitle')}</h1>
-        {errorMsg && <p className="mt-4 rounded border border-[#E8DCC3] p-4 text-sm text-red-400">{errorMsg}</p>}
+    <main className="flex min-h-screen items-center justify-center bg-[#FAF7EF] px-4 py-10 text-[#1F1B16]" dir="rtl">
+      <div className="w-full max-w-md rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-8 shadow-xl">
+        <div className="mb-6 flex items-center gap-3">
+          <span className="grid h-11 w-11 place-items-center rounded-2xl border border-[#E8DCC3] bg-white text-[#C9A84C]">
+            <ShieldCheck size={20} />
+          </span>
+          <div>
+            <p className="text-xs font-black tracking-[0.28em] text-[#C9A84C]">EUROSTORE</p>
+            <h1 className="mt-1 text-2xl font-black">{t('verifyTitle')}</h1>
+          </div>
+        </div>
+        {errorMsg && <p className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700">{errorMsg}</p>}
         <form action={verifyTotpAction} className="mt-8 flex flex-col gap-4">
           <label className="flex flex-col gap-1 text-sm">
             {t('codeLabel')}
-            <input name="code" type="text" inputMode="numeric" maxLength={6} required className="rounded border border-[#E8DCC3] bg-[#FFFDF8] px-3 py-2 outline-none focus:border-[#C9A84C]" />
+            <input name="code" type="text" inputMode="numeric" maxLength={6} required className="rounded-lg border border-[#E8DCC3] bg-white px-3 py-2 outline-none focus:border-[#C9A84C]" />
           </label>
-          <button type="submit" className="mt-2 rounded-sm bg-[#C9A84C] py-2.5 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors">
+          <button type="submit" className="mt-2 rounded-lg bg-[#C9A84C] py-2.5 text-sm font-black text-[#111] transition-colors hover:bg-[#D8B95F]">
             {t('enterBtn')}
           </button>
         </form>
