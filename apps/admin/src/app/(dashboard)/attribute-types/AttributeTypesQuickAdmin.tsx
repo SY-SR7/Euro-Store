@@ -1,0 +1,405 @@
+'use client';
+
+import { Plus, RefreshCw, X } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import type { KeyboardEvent, ReactNode } from 'react';
+
+type AttributeValue = {
+  id: string;
+  value_ar: string;
+  value_en: string | null;
+  hex_color: string | null;
+  sort_order: number;
+};
+
+type AttributeType = {
+  id: string;
+  name_ar: string;
+  name_en: string;
+  slug: string;
+  attribute_values: AttributeValue[];
+};
+
+const inputClass =
+  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+
+async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(url, init);
+  const payload = (await res.json().catch(() => null)) as T | { error?: string } | null;
+  if (!res.ok) {
+    const message =
+      payload && typeof payload === 'object' && 'error' in payload && payload.error
+        ? String(payload.error)
+        : 'request_failed';
+    throw new Error(message);
+  }
+  return payload as T;
+}
+
+function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
+      <div className="flex max-h-[92vh] w-full max-w-3xl flex-col rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
+          <h2 className="font-black text-[#1C1917]">{title}</h2>
+          <button type="button" title="إغلاق" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+            <X size={17} />
+          </button>
+        </div>
+        <div className="overflow-y-auto p-5">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="grid gap-1 border-b border-[#F0ECE6] pb-2 last:border-0 last:pb-0 sm:grid-cols-[120px_minmax(0,1fr)]">
+      <span className="text-xs font-bold text-[#8B8172]">{label}</span>
+      <div className="min-w-0">{children}</div>
+    </div>
+  );
+}
+
+function InlineText({
+  value,
+  onSave,
+  dir = 'rtl',
+}: {
+  value?: string | null;
+  onSave: (value: string) => void | Promise<void>;
+  dir?: 'rtl' | 'ltr';
+}) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value ?? '');
+
+  useEffect(() => {
+    if (!editing) setDraft(value ?? '');
+  }, [editing, value]);
+
+  const commit = () => {
+    const next = draft.trim();
+    setEditing(false);
+    if (next !== (value ?? '')) void onSave(next);
+  };
+
+  if (editing) {
+    return (
+      <input
+        autoFocus
+        value={draft}
+        dir={dir}
+        onBlur={commit}
+        onChange={(event) => setDraft(event.target.value)}
+        onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
+          if (event.key === 'Enter') commit();
+          if (event.key === 'Escape') setEditing(false);
+        }}
+        className={inputClass}
+      />
+    );
+  }
+
+  return (
+    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">
+      {value || <span className="text-[#A8A29E]">-</span>}
+    </button>
+  );
+}
+
+function InlineNumber({ value, onSave }: { value: number; onSave: (value: number) => void | Promise<void> }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(String(value));
+
+  useEffect(() => {
+    if (!editing) setDraft(String(value));
+  }, [editing, value]);
+
+  const commit = () => {
+    const next = Number(draft);
+    setEditing(false);
+    if (Number.isFinite(next) && next !== value) void onSave(next);
+  };
+
+  if (editing) {
+    return (
+      <input
+        autoFocus
+        type="number"
+        value={draft}
+        onBlur={commit}
+        onChange={(event) => setDraft(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') commit();
+          if (event.key === 'Escape') setEditing(false);
+        }}
+        className={inputClass}
+      />
+    );
+  }
+
+  return (
+    <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-[#1C1917] transition hover:bg-[#FAF7EF]">
+      {value}
+    </button>
+  );
+}
+
+function InlineColor({ value, onSave }: { value?: string | null; onSave: (value: string | null) => void | Promise<void> }) {
+  const color = value && /^#[0-9a-f]{6}$/i.test(value) ? value : '#000000';
+
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        type="color"
+        value={color}
+        onChange={(event) => void onSave(event.target.value)}
+        className="h-9 w-11 cursor-pointer rounded-lg border border-[#E5E0D8] bg-white"
+      />
+      <InlineText value={value ?? ''} dir="ltr" onSave={(next) => onSave(next || null)} />
+    </div>
+  );
+}
+
+function fallbackSlug(value: string) {
+  return value.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
+function ColorDot({ hex }: { hex?: string | null }) {
+  return (
+    <span className="inline-flex h-4 w-4 shrink-0 rounded-full border border-black/15" style={{ backgroundColor: hex || '#FFFFFF' }} />
+  );
+}
+
+export default function AttributeTypesQuickAdmin() {
+  const [types, setTypes] = useState<AttributeType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<AttributeType | null>(null);
+  const [msg, setMsg] = useState('');
+  const [showCreate, setShowCreate] = useState(false);
+  const [newType, setNewType] = useState({ name_ar: '', name_en: '', slug: '' });
+  const [newValue, setNewValue] = useState({ value_ar: '', value_en: '', hex_color: '', sort_order: '0' });
+
+  const load = useCallback(() => {
+    setLoading(true);
+    fetchJson<AttributeType[]>('/api/catalog/attribute-types', { cache: 'no-store' })
+      .then((data) => setTypes(Array.isArray(data) ? data : []))
+      .catch(() => setTypes([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const mergeType = (id: string, patch: Partial<AttributeType>) => {
+    setTypes((current) => current.map((type) => (type.id === id ? { ...type, ...patch } : type)));
+    setSelected((current) => (current?.id === id ? { ...current, ...patch } : current));
+  };
+
+  const mergeValue = (typeId: string, valueId: string, patch: Partial<AttributeValue>) => {
+    setTypes((current) => current.map((type) => {
+      if (type.id !== typeId) return type;
+      return { ...type, attribute_values: type.attribute_values.map((value) => (value.id === valueId ? { ...value, ...patch } : value)) };
+    }));
+    setSelected((current) => {
+      if (current?.id !== typeId) return current;
+      return { ...current, attribute_values: current.attribute_values.map((value) => (value.id === valueId ? { ...value, ...patch } : value)) };
+    });
+  };
+
+  const patchType = async (type: AttributeType, patch: Partial<AttributeType>) => {
+    const previous = type;
+    setMsg('');
+    mergeType(type.id, patch);
+    try {
+      const updated = await fetchJson<AttributeType>(`/api/catalog/attribute-types/${type.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patch),
+      });
+      mergeType(type.id, { ...updated, attribute_values: updated.attribute_values ?? previous.attribute_values });
+      setMsg('تم الحفظ');
+    } catch (error) {
+      mergeType(previous.id, previous);
+      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+    }
+  };
+
+  const patchValue = async (type: AttributeType, value: AttributeValue, patch: Partial<AttributeValue>) => {
+    const previous = value;
+    setMsg('');
+    mergeValue(type.id, value.id, patch);
+    try {
+      const updated = await fetchJson<AttributeValue>(`/api/catalog/attribute-values/${value.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patch),
+      });
+      mergeValue(type.id, value.id, updated);
+      setMsg('تم الحفظ');
+    } catch (error) {
+      mergeValue(type.id, previous.id, previous);
+      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+    }
+  };
+
+  const createType = async () => {
+    if (!newType.name_ar.trim()) return;
+    await fetchJson<AttributeType>('/api/catalog/attribute-types', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name_ar: newType.name_ar.trim(),
+        name_en: newType.name_en.trim() || newType.name_ar.trim(),
+        slug: newType.slug.trim() || fallbackSlug(newType.name_en || newType.name_ar),
+      }),
+    });
+    setNewType({ name_ar: '', name_en: '', slug: '' });
+    setShowCreate(false);
+    load();
+  };
+
+  const createValue = async (type: AttributeType) => {
+    if (!newValue.value_ar.trim()) return;
+    await fetchJson<AttributeValue>('/api/catalog/attribute-values', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        attribute_type_id: type.id,
+        value_ar: newValue.value_ar.trim(),
+        value_en: newValue.value_en.trim() || newValue.value_ar.trim(),
+        hex_color: newValue.hex_color.trim() || null,
+        sort_order: Number(newValue.sort_order) || 0,
+      }),
+    });
+    setNewValue({ value_ar: '', value_en: '', hex_color: '', sort_order: '0' });
+    load();
+  };
+
+  const deleteValue = async (type: AttributeType, value: AttributeValue) => {
+    if (!confirm('حذف هذه القيمة؟')) return;
+    await fetchJson<{ ok: boolean }>(`/api/catalog/attribute-values/${value.id}`, { method: 'DELETE' });
+    mergeType(type.id, { attribute_values: type.attribute_values.filter((item) => item.id !== value.id) });
+  };
+
+  const deleteType = async (type: AttributeType) => {
+    if (!confirm('حذف نوع الصفة كاملًا؟ سيتم حذف قيمه وروابطها من متغيرات المنتجات.')) return;
+    await fetchJson<{ deleted: boolean }>(`/api/catalog/attribute-types/${type.id}`, { method: 'DELETE' });
+    setSelected(null);
+    load();
+  };
+
+  return (
+    <div className="space-y-5" dir="rtl">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-black text-[#1C1917]">صفات المنتجات</h1>
+          <p className="mt-1 text-sm text-[#A8A29E]">{types.length} نوع</p>
+        </div>
+        <div className="flex gap-2">
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
+            <RefreshCw size={15} />تحديث
+          </button>
+          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]">
+            <Plus size={15} />نوع جديد
+          </button>
+        </div>
+      </div>
+
+      {showCreate ? (
+        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+          <div className="grid gap-3 md:grid-cols-4">
+            <input value={newType.name_ar} onChange={(event) => setNewType((form) => ({ ...form, name_ar: event.target.value }))} placeholder="اسم النوع بالعربية" className={inputClass} />
+            <input value={newType.name_en} onChange={(event) => setNewType((form) => ({ ...form, name_en: event.target.value }))} placeholder="English name" className={inputClass} dir="ltr" />
+            <input value={newType.slug} onChange={(event) => setNewType((form) => ({ ...form, slug: event.target.value }))} placeholder="slug" className={inputClass} dir="ltr" />
+            <button type="button" onClick={() => void createType()} disabled={!newType.name_ar.trim()} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50">
+              إضافة
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="grid gap-4 xl:grid-cols-2">
+        {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E] xl:col-span-2">جار التحميل...</p>
+        : types.length === 0 ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E] xl:col-span-2">لا توجد صفات</p>
+        : types.map((type) => (
+          <button key={type.id} type="button" onClick={() => { setSelected(type); setMsg(''); setNewValue({ value_ar: '', value_en: '', hex_color: '', sort_order: '0' }); }} className="rounded-2xl border border-[#E5E0D8] bg-white p-5 text-start shadow-sm transition hover:border-[#B8860B] hover:bg-[#FFFBF0]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-black text-[#1C1917]">{type.name_ar}</h2>
+                <p className="mt-1 font-mono text-xs text-[#A8A29E]" dir="ltr">{type.slug}</p>
+              </div>
+              <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-3 py-1 text-xs font-black text-[#57534E]">{type.attribute_values?.length ?? 0} قيمة</span>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[...(type.attribute_values ?? [])].sort((a, b) => a.sort_order - b.sort_order).slice(0, 8).map((value) => (
+                <span key={value.id} className="inline-flex items-center gap-1.5 rounded-full border border-[#E5E0D8] bg-[#FAF7EF] px-3 py-1 text-xs font-bold text-[#57534E]">
+                  {type.slug === 'color' ? <ColorDot hex={value.hex_color} /> : null}
+                  {value.value_ar}
+                </span>
+              ))}
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {selected ? (
+        <Modal title={selected.name_ar} onClose={() => setSelected(null)}>
+          <div className="space-y-4">
+            {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
+
+            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+              <div className="space-y-2">
+                <Field label="اسم النوع"><InlineText value={selected.name_ar} onSave={(name_ar) => patchType(selected, { name_ar })} /></Field>
+                <Field label="English"><InlineText value={selected.name_en} dir="ltr" onSave={(name_en) => patchType(selected, { name_en })} /></Field>
+                <Field label="الرابط"><InlineText value={selected.slug} dir="ltr" onSave={(slug) => patchType(selected, { slug })} /></Field>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+              <div className="mb-3 flex items-center justify-between">
+                <h3 className="text-sm font-black text-[#1C1917]">القيم</h3>
+                <span className="text-xs font-bold text-[#A8A29E]">{selected.attribute_values?.length ?? 0}</span>
+              </div>
+
+              <div className="space-y-3">
+                {[...(selected.attribute_values ?? [])].sort((a, b) => a.sort_order - b.sort_order).map((value) => (
+                  <div key={value.id} className="grid gap-2 rounded-xl border border-[#F0ECE6] bg-[#FFFCF7] p-3 md:grid-cols-[1fr_1fr_110px_44px]">
+                    <InlineText value={value.value_ar} onSave={(value_ar) => patchValue(selected, value, { value_ar })} />
+                    <InlineText value={value.value_en ?? ''} dir="ltr" onSave={(value_en) => patchValue(selected, value, { value_en })} />
+                    {selected.slug === 'color' ? (
+                      <InlineColor value={value.hex_color} onSave={(hex_color) => patchValue(selected, value, { hex_color })} />
+                    ) : (
+                      <InlineNumber value={value.sort_order} onSave={(sort_order) => patchValue(selected, value, { sort_order })} />
+                    )}
+                    <button type="button" title="حذف" onClick={() => void deleteValue(selected, value)} className="grid h-9 w-9 place-items-center rounded-xl border border-red-200 text-red-600 hover:bg-red-50">
+                      <X size={15} />
+                    </button>
+                  </div>
+                ))}
+
+                <div className="grid gap-2 rounded-xl border border-dashed border-[#D7C7A6] bg-[#FFFBF0] p-3 md:grid-cols-[1fr_1fr_120px_90px]">
+                  <input value={newValue.value_ar} onChange={(event) => setNewValue((form) => ({ ...form, value_ar: event.target.value }))} placeholder="قيمة جديدة" className={inputClass} />
+                  <input value={newValue.value_en} onChange={(event) => setNewValue((form) => ({ ...form, value_en: event.target.value }))} placeholder="English" className={inputClass} dir="ltr" />
+                  {selected.slug === 'color' ? (
+                    <input value={newValue.hex_color} onChange={(event) => setNewValue((form) => ({ ...form, hex_color: event.target.value }))} placeholder="#000000" className={inputClass} dir="ltr" />
+                  ) : (
+                    <input type="number" value={newValue.sort_order} onChange={(event) => setNewValue((form) => ({ ...form, sort_order: event.target.value }))} placeholder="الترتيب" className={inputClass} />
+                  )}
+                  <button type="button" onClick={() => void createValue(selected)} disabled={!newValue.value_ar.trim()} className="rounded-xl bg-[#B8860B] px-4 py-2 text-sm font-bold text-white disabled:opacity-50">
+                    إضافة
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" onClick={() => void deleteType(selected)} className="rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50">
+              حذف نوع الصفة
+            </button>
+          </div>
+        </Modal>
+      ) : null}
+    </div>
+  );
+}

@@ -1,5 +1,8 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
+import AttributeTypesQuickAdmin from './AttributeTypesQuickAdmin';
+
+export default AttributeTypesQuickAdmin;
 
 interface AttributeValue {
   id: string; value_ar: string; value_en: string|null;
@@ -32,7 +35,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
   );
 }
 
-export default function AttributeTypesPage() {
+function LegacyAttributeTypesPage() {
   const [types, setTypes]     = useState<AttributeType[]>([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg]         = useState('');
