@@ -20,7 +20,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     .from('customer_profiles').update({ loyalty_points: newPoints } as never).eq('id', params.id);
   if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 });
 
-  // سجّل في loyalty_transactions
+  // سجّل في loyalty_transactions بدون تعطيل تعديل النقاط إذا فشل السجل الثانوي.
   await admin.from('loyalty_transactions').insert({
     customer_id: params.id,
     points: body.points,
@@ -28,7 +28,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     notes: body.reason ?? 'تعديل يدوي بواسطة الادمن',
     processed_by_id: userId,
     processed_by_role: 'admin',
-  } as never).catch(() => {});
+  } as never);
 
   return NextResponse.json({ loyalty_points: newPoints });
 }

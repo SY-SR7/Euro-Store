@@ -14,6 +14,7 @@ type Product = {
   id: string; name_ar: string; name_en: string;
   slug: string; is_featured: boolean; is_active: boolean;
   category_id?: string | null; brand_id?: string | null; created_at: string;
+  image_url?: string | null;
   minPrice?: number;
 };
 type Category = { id: string; name_ar: string; slug: string; count?: number; selected?: boolean };
