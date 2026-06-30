@@ -1,4 +1,43 @@
+﻿
+---
 
+### Session 046 -- Admin Click-to-Toggle Consistency Pass (Claude via PowerShell)
+**Scope:** apps/admin only (shipping-rates, categories, discounts, products/[id]).
+
+**Problem:** Several admin binary (on/off) fields required opening a modal,
+flipping a switch, then pressing a separate "Save" button -- inconsistent
+with the rest of the panel (brands/customers/sub-admins/homepage/products
+list already toggle instantly on click).
+
+**Fixed:**
+- /shipping-rates: governorate active/inactive badge in the table and the
+  switch inside the detail modal now PATCH /api/shipping-rates/[id]
+  immediately on click (optimistic update + rollback on failure). The price
+  and free-shipping-threshold fields still use the explicit Save button
+  since they are free-text numeric inputs, not binary toggles.
+- /categories: active/inactive badge in the table and in the modal's view
+  mode now toggles instantly via PATCH /api/catalog/categories/[id],
+  matching the pattern used by /brands. Previously this state was only
+  editable after entering "edit mode" and pressing Save.
+- /discounts: the modal's view-mode status badge is now a one-click toggle
+  (the table-row badge already worked this way; the modal view did not).
+- /products/[id]: the "نشط/معطّل" and "مميز/عادي" badges at the top of the
+  product detail page are now clickable and PATCH instantly, instead of
+  only being editable through the full product-edit modal.
+
+**Pattern used everywhere (for future consistency):** optimistic local
+state update -> PATCH the existing API route with only the changed field
+-> roll back + show an error message if the request fails. No new API
+routes were needed; all PATCH endpoints already accepted partial bodies.
+
+**Verification to run locally:**
+- pnpm --filter admin type-check
+- pnpm --filter admin dev -> click each toggled badge on /shipping-rates,
+  /categories, /discounts, and any /products/[id] page; confirm it flips
+  immediately and survives a page refresh.
+
+**Next agent should start with:** the other "Still open" PRD gaps listed
+under Session 045 (wishlist, reviews, search page, dark/light toggle).
 ---
 
 ### Session 045 -- Admin Bug Fixes + Click-to-Edit Consistency (Claude)
