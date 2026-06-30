@@ -37,8 +37,8 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     const { data, error: selErr } = await admin
       .from('product_variants')
-      .select(`id, sku, price_syp, compare_price_syp, stock_quantity, is_active,
-        variant_attributes(attribute_value_id, attribute_values(id, value_ar, value_en, hex_color, attribute_types(name_ar, slug)))`)
+      .select(`id, sku, price_syp, compare_price_syp, stock_quantity, weight_grams, is_active,
+        variant_attributes(attribute_value_id, attribute_values(id, value_ar, value_en, hex_color, attribute_types(id, name_ar, slug)))`)
       .eq('id', params.id)
       .single();
     if (selErr) return NextResponse.json({ error: selErr.message }, { status: 500 });
