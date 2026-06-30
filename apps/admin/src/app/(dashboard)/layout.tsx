@@ -2,7 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState, useEffect } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import {
   Bell,
   ClipboardList,
@@ -36,32 +38,41 @@ type NavItem = {
   group: string;
 };
 
-const NAV_ITEMS: NavItem[] = [
-  { href: '/dashboard', label: 'لوحة التحكم', icon: LayoutDashboard, group: 'الرئيسية' },
-  { href: '/notifications', label: 'الإشعارات', icon: Bell, group: 'الرئيسية' },
+function getNavItems(t: any): NavItem[] {
+  return [
+    { href: '/dashboard', label: t('dashboard', { fallback: 'لوحة التحكم' }), icon: LayoutDashboard, group: t('groupMain', { fallback: 'الرئيسية' }) },
+    { href: '/notifications', label: t('notifications', { fallback: 'الإشعارات' }), icon: Bell, group: t('groupMain', { fallback: 'الرئيسية' }) },
 
-  { href: '/orders', label: 'الطلبات', icon: ShoppingBag, group: 'المبيعات' },
-  { href: '/exchanges', label: 'طلبات الاستبدال', icon: Repeat2, group: 'المبيعات' },
-  { href: '/customers', label: 'العملاء', icon: Users, group: 'المبيعات' },
+    { href: '/orders', label: t('orders', { fallback: 'الطلبات' }), icon: ShoppingBag, group: t('groupSales', { fallback: 'المبيعات' }) },
+    { href: '/exchanges', label: t('exchanges', { fallback: 'طلبات الاستبدال' }), icon: Repeat2, group: t('groupSales', { fallback: 'المبيعات' }) },
+    { href: '/customers', label: t('customers', { fallback: 'العملاء' }), icon: Users, group: t('groupSales', { fallback: 'المبيعات' }) },
 
-  { href: '/products', label: 'المنتجات', icon: Package, group: 'الكتالوج' },
-  { href: '/categories', label: 'التصنيفات', icon: FolderTree, group: 'الكتالوج' },
-  { href: '/brands', label: 'الماركات', icon: Tags, group: 'الكتالوج' },
-  { href: '/homepage', label: 'الواجهة الرئيسية', icon: Home, group: 'الكتالوج' },
-  { href: '/attribute-types', label: 'الصفات (لون/مقاس)', icon: Palette, group: 'الكتالوج' },
+    { href: '/products', label: t('products', { fallback: 'المنتجات' }), icon: Package, group: t('groupCatalog', { fallback: 'الكتالوج' }) },
+    { href: '/categories', label: t('categories', { fallback: 'التصنيفات' }), icon: FolderTree, group: t('groupCatalog', { fallback: 'الكتالوج' }) },
+    { href: '/brands', label: t('brands', { fallback: 'الماركات' }), icon: Tags, group: t('groupCatalog', { fallback: 'الكتالوج' }) },
+    { href: '/homepage', label: t('homepage', { fallback: 'الواجهة الرئيسية' }), icon: Home, group: t('groupCatalog', { fallback: 'الكتالوج' }) },
+    { href: '/attribute-types', label: t('attributeTypes', { fallback: 'الصفات (لون/مقاس)' }), icon: Palette, group: t('groupCatalog', { fallback: 'الكتالوج' }) },
 
-  { href: '/discounts', label: 'الخصومات', icon: Percent, group: 'التجارة' },
-  { href: '/reviews', label: 'تقييمات المنتجات', icon: MessageSquareText, group: 'التجارة' },
-  { href: '/reviews', label: 'تقييمات المنتجات', icon: MessageSquareText, group: 'التجارة' },
-  { href: '/shipping-rates', label: 'أسعار الشحن', icon: Truck, group: 'التجارة' },
-  { href: '/loyalty-settings', label: 'الولاء', icon: Star, group: 'التجارة' },
+    { href: '/discounts', label: t('discounts', { fallback: 'الخصومات' }), icon: Percent, group: t('groupCommerce', { fallback: 'التجارة' }) },
+    { href: '/reviews', label: t('reviews', { fallback: 'تقييمات المنتجات' }), icon: MessageSquareText, group: t('groupCommerce', { fallback: 'التجارة' }) },
+    { href: '/shipping-rates', label: t('shippingRates', { fallback: 'أسعار الشحن' }), icon: Truck, group: t('groupCommerce', { fallback: 'التجارة' }) },
+    { href: '/loyalty-settings', label: t('loyaltySettings', { fallback: 'الولاء' }), icon: Star, group: t('groupCommerce', { fallback: 'التجارة' }) },
 
-  { href: '/sub-admins', label: 'المشرفون', icon: Shield, group: 'النظام' },
-  { href: '/audit-logs', label: 'سجل النشاط', icon: ClipboardList, group: 'النظام' },
-  { href: '/settings', label: 'الإعدادات', icon: Settings, group: 'النظام' },
-];
+    { href: '/sub-admins', label: t('subAdmins', { fallback: 'المشرفون' }), icon: Shield, group: t('groupSystem', { fallback: 'النظام' }) },
+    { href: '/audit-logs', label: t('auditLogs', { fallback: 'سجل النشاط' }), icon: ClipboardList, group: t('groupSystem', { fallback: 'النظام' }) },
+    { href: '/settings', label: t('settings', { fallback: 'الإعدادات' }), icon: Settings, group: t('groupSystem', { fallback: 'النظام' }) },
+  ];
+}
 
-const GROUPS = ['الرئيسية', 'المبيعات', 'الكتالوج', 'التجارة', 'النظام'];
+function getGroups(t: any): string[] {
+  return [
+    t('groupMain', { fallback: 'الرئيسية' }),
+    t('groupSales', { fallback: 'المبيعات' }),
+    t('groupCatalog', { fallback: 'الكتالوج' }),
+    t('groupCommerce', { fallback: 'التجارة' }),
+    t('groupSystem', { fallback: 'النظام' })
+  ];
+}
 
 function isActivePath(pathname: string, href: string) {
   if (href === '/dashboard') return pathname === '/' || pathname === '/dashboard';
@@ -146,6 +157,7 @@ function NavLink({
 
 function LogoutButton({ compact = false }: { compact?: boolean }) {
   const [loading, setLoading] = useState(false);
+  const t = useTranslations('auth');
 
   const handleLogout = async () => {
     setLoading(true);
@@ -171,7 +183,7 @@ function LogoutButton({ compact = false }: { compact?: boolean }) {
       ].join(' ')}
     >
       <LogOut size={14} />
-      <span>{loading ? 'جارٍ الخروج...' : 'تسجيل الخروج'}</span>
+      <span>{loading ? t('loggingOut', { fallback: 'جارٍ الخروج...' }) : t('logout', { fallback: 'تسجيل الخروج' })}</span>
     </button>
   );
 }
@@ -185,12 +197,16 @@ function SidebarContent({
   onNavigate?: () => void;
   mobile?: boolean;
 }) {
+  const t = useTranslations('nav');
+  const navItems = useMemo(() => getNavItems(t), [t]);
+  const groups = useMemo(() => getGroups(t), [t]);
+
   const groupedItems = useMemo(() => {
-    return GROUPS.map((group) => ({
+    return groups.map((group) => ({
       group,
-      items: NAV_ITEMS.filter((item) => item.group === group),
+      items: navItems.filter((item) => item.group === group),
     })).filter((entry) => entry.items.length > 0);
-  }, []);
+  }, [navItems, groups]);
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-[#FBF8F1]">
@@ -205,7 +221,7 @@ function SidebarContent({
           </span>
           <span className="min-w-0">
             <span className="block truncate text-[15px] font-black tracking-tight text-[#1C1917]">EUROSTORE</span>
-            <span className="block truncate text-[10px] font-bold text-[#A8A29E]">لوحة الإدارة</span>
+            <span className="block truncate text-[10px] font-bold text-[#A8A29E]">{t('adminPanel', { fallback: 'لوحة الإدارة' })}</span>
           </span>
         </Link>
 
@@ -254,13 +270,18 @@ function SidebarContent({
 export default function AdminDashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname() || '/dashboard';
   const [mobileOpen, setMobileOpen] = useState(false);
+  const t = useTranslations('nav');
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+
+  const navItems = useMemo(() => getNavItems(t), [t]);
 
   const title = useMemo(() => {
-    return NAV_ITEMS.find((item) => isActivePath(pathname, item.href))?.label ?? 'لوحة الإدارة';
-  }, [pathname]);
+    return navItems.find((item) => isActivePath(pathname, item.href))?.label ?? t('adminPanel', { fallback: 'لوحة الإدارة' });
+  }, [pathname, navItems, t]);
 
   return (
-    <div className="min-h-screen bg-[#F8F6F2] text-[#1C1917]" dir="rtl">
+    <div className="min-h-screen bg-[#F8F6F2] text-[#1C1917]" dir={isAr ? "rtl" : "ltr"}>
       <header className="fixed inset-x-0 top-0 z-[100] h-[64px] border-b border-[#E7DDCC] bg-[#FBF8F1]/95 shadow-sm backdrop-blur-xl">
         <div className="flex h-full items-center justify-between gap-3 px-4 sm:px-5 lg:px-6">
           <div className="flex min-w-0 items-center gap-3">
@@ -293,7 +314,8 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
               <span className="absolute -left-1 -top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-500" />
             </Link>
 
-            <div className="hidden sm:block">
+            <div className="hidden sm:flex items-center gap-2">
+              <LanguageSwitcher />
               <LogoutButton compact />
             </div>
           </div>
