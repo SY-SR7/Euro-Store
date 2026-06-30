@@ -196,12 +196,15 @@ export default function DashboardQuickAdmin() {
           { href: '/discounts', label: 'كود خصم', Icon: Percent },
           { href: '/audit-logs', label: 'سجل النشاط', Icon: ClipboardList },
           { href: '/settings', label: 'الإعدادات', Icon: RefreshCw },
-        ].map((item) => (
-          <Link key={item.href} href={item.href} className="flex items-center gap-3 rounded-lg border border-[#E5E0D8] bg-white p-4 text-sm font-black text-[#1C1917] shadow-sm transition hover:border-[#B8860B] hover:bg-[#FFFBF0]">
-            <item.Icon size={17} className="text-[#B8860B]" />
-            {item.label}
-          </Link>
-        ))}
+        ].map((item) => {
+          const Icon = item.Icon;
+          return (
+            <Link key={item.href} href={item.href} className="flex items-center gap-3 rounded-lg border border-[#E5E0D8] bg-white p-4 text-sm font-black text-[#1C1917] shadow-sm transition hover:border-[#B8860B] hover:bg-[#FFFBF0]">
+              <Icon size={17} className="text-[#B8860B]" />
+              {item.label}
+            </Link>
+          );
+        })}
       </section>
     </div>
   );
