@@ -42,7 +42,7 @@ export default function NewProductPage() {
     });
     if (res.ok) {
       const data = await res.json() as { id?: string };
-      router.push(data.id ? `/products/${data.id}` : '/products');
+      router.push(data.id ? `/products?open=${data.id}` : '/products');
     } else {
       setError('فشل حفظ المنتج');
       setSaving(false);
