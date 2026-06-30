@@ -1,6 +1,4 @@
 'use client';
-// @ts-nocheck
-/* eslint-disable */
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
