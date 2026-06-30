@@ -1,6 +1,6 @@
 ﻿'use client';
 import Link from 'next/link';
-import { Menu, RefreshCw, Search, Star, User, X } from 'lucide-react';
+import { Heart, Menu, RefreshCw, Search, Star, User, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { CartBadge } from '@/components/cart/CartBadge';
@@ -17,6 +17,7 @@ const DESKTOP_LINKS = [
 const MOBILE_LINKS = [
   ...DESKTOP_LINKS,
   { href:'/orders', key:'orders' },
+  { href:'/wishlist', key:'wishlist' },
   { href:'/account', key:'account' },
 ] as const;
 
@@ -53,6 +54,10 @@ export function Header() {
           <Link href="/exchange" aria-label={t('exchange')}
             className="hidden rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B] sm:inline-flex">
             <RefreshCw className="h-4 w-4" />
+          </Link>
+          <Link href="/wishlist" aria-label="المفضلة"
+            className="hidden rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B] sm:inline-flex">
+            <Heart className="h-4 w-4" />
           </Link>
           <Link href="/account" aria-label={t('account')}
             className="rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B]">

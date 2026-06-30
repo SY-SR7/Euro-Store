@@ -7,6 +7,7 @@ import {
   Bell,
   ClipboardList,
   FolderTree,
+  MessageSquareText,
   Home,
   LayoutDashboard,
   LogOut,
@@ -49,6 +50,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/attribute-types', label: 'الصفات (لون/مقاس)', icon: Palette, group: 'الكتالوج' },
 
   { href: '/discounts', label: 'الخصومات', icon: Percent, group: 'التجارة' },
+  { href: '/reviews', label: 'تقييمات المنتجات', icon: MessageSquareText, group: 'التجارة' },
   { href: '/shipping-rates', label: 'أسعار الشحن', icon: Truck, group: 'التجارة' },
   { href: '/loyalty-settings', label: 'الولاء', icon: Star, group: 'التجارة' },
 
