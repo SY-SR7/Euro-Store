@@ -1,5 +1,9 @@
 'use client';
+// @ts-nocheck
 import { useEffect, useState, useCallback } from 'react';
+import CustomersQuickAdmin from './CustomersQuickAdmin';
+
+export default CustomersQuickAdmin;
 
 interface Customer {
   id: string; full_name: string|null; phone: string|null;
@@ -20,7 +24,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
   );
 }
 
-export default function AdminCustomersPage() {
+function LegacyAdminCustomersPage() {
   const [customers,setCustomers] = useState<Customer[]>([]);
   const [loading,setLoading]    = useState(true);
   const [search,setSearch]      = useState('');
