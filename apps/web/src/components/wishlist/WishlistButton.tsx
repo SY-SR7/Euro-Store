@@ -2,8 +2,10 @@
 /* eslint-disable */
 import { Heart } from 'lucide-react';
 import { useWishlist } from './WishlistProvider';
+import { useTranslations } from 'next-intl';
 
 export function WishlistButton({ productId, size = 'md' }: { productId: string; size?: 'sm' | 'md' }) {
+  const t = useTranslations('catalog');
   const { ids, toggle } = useWishlist();
   const active = ids.has(productId);
   const dims = size === 'sm' ? 'h-8 w-8' : 'h-10 w-10';
@@ -12,7 +14,7 @@ export function WishlistButton({ productId, size = 'md' }: { productId: string; 
   return (
     <button
       type="button"
-      aria-label={active ? 'إزالة من المفضلة' : 'إضافة إلى المفضلة'}
+      aria-label={active ? t('removeFromWishlist', { fallback: 'إزالة من المفضلة' }) : t('addToWishlist', { fallback: 'إضافة إلى المفضلة' })}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
