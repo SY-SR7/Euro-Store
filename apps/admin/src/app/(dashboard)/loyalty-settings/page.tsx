@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import LoyaltySettingsQuickAdmin from './LoyaltySettingsQuickAdmin';
+
+export default LoyaltySettingsQuickAdmin;
 
 type LoyaltyKey =
   | 'loyalty_earn_amount_syp'
@@ -130,7 +133,7 @@ function getField(key: LoyaltyKey) {
   return FIELDS.find((field) => field.key === key)!;
 }
 
-export default function AdminLoyaltySettingsPage() {
+function LegacyAdminLoyaltySettingsPage() {
   const [values, setValues] = useState<Record<LoyaltyKey, string>>(DEFAULT_VALUES);
   const [rows, setRows] = useState<SettingRow[]>([]);
   const [loading, setLoading] = useState(true);
