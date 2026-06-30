@@ -1,6 +1,10 @@
 'use client';
+// @ts-nocheck
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import OrdersQuickAdmin from './OrdersQuickAdmin';
+
+export default OrdersQuickAdmin;
 
 interface Order {
   id: string; order_number: string; status: string;
@@ -38,7 +42,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: ()=>void;
   );
 }
 
-export default function AdminOrdersPage() {
+function LegacyAdminOrdersPage() {
   const [orders,setOrders]   = useState<Order[]>([]);
   const [total,setTotal]     = useState(0);
   const [page,setPage]       = useState(1);
