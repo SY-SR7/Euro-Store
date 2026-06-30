@@ -1,6 +1,7 @@
 'use client';
 
 import { RefreshCw, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 
@@ -122,10 +123,13 @@ function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolea
 }
 
 export default function ShippingRatesQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [rates, setRates] = useState<Rate[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Rate | null>(null);
   const [msg, setMsg] = useState('');
+  const [autoOpenedId, setAutoOpenedId] = useState('');
 
   const load = useCallback(() => {
     setLoading(true);
@@ -136,6 +140,37 @@ export default function ShippingRatesQuickAdmin() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  const openRate = useCallback((rate: Rate, updateUrl = true) => {
+    setSelected(rate);
+    setMsg('');
+    if (updateUrl) router.replace(`/shipping-rates?open=${rate.id}`, { scroll: false });
+  }, [router]);
+
+  const closeRate = () => {
+    setSelected(null);
+    router.replace('/shipping-rates', { scroll: false });
+  };
+
+  useEffect(() => {
+    const rateId = searchParams.get('open');
+    if (!rateId || autoOpenedId === rateId || selected?.id === rateId) return;
+
+    const existing = rates.find((rate) => rate.id === rateId);
+    if (existing) {
+      openRate(existing, false);
+      setAutoOpenedId(rateId);
+      return;
+    }
+
+    fetchJson<Rate>(`/api/shipping-rates/${rateId}`)
+      .then((rate) => {
+        setRates((current) => current.some((item) => item.id === rate.id) ? current : [rate, ...current]);
+        openRate(rate, false);
+        setAutoOpenedId(rateId);
+      })
+      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح سعر الشحن'));
+  }, [autoOpenedId, openRate, rates, searchParams, selected?.id]);
 
   const mergeRate = (id: string, patch: Partial<Rate>) => {
     setRates((current) => current.map((rate) => (rate.id === id ? { ...rate, ...patch } : rate)));
@@ -179,7 +214,7 @@ export default function ShippingRatesQuickAdmin() {
               <thead className="bg-[#F8F6F2]"><tr>{['المحافظة','سعر الشحن','مجاني فوق','الحالة'].map((h,i)=><th key={h} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i>=2?'hidden md:table-cell':''}`}>{h}</th>)}</tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {rates.map((rate) => (
-                  <tr key={rate.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => { setSelected(rate); setMsg(''); }}>
+                  <tr key={rate.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openRate(rate)}>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{rate.governorate}</td>
                     <td className="px-5 py-3 font-bold text-[#B8860B]">{money(rate.base_rate_syp)}</td>
                     <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">{money(rate.free_shipping_threshold_syp)}</td>
@@ -195,7 +230,7 @@ export default function ShippingRatesQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={selected.governorate} onClose={() => setSelected(null)}>
+        <Modal title={selected.governorate} onClose={closeRate}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">

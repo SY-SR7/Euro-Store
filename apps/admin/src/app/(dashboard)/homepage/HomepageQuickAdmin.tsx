@@ -1,6 +1,7 @@
 'use client';
 
 import { Plus, RefreshCw, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 
@@ -189,10 +190,13 @@ function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolea
 }
 
 export default function HomepageQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [sections, setSections] = useState<HomeSection[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<HomeSection | null>(null);
   const [msg, setMsg] = useState('');
+  const [autoOpenedId, setAutoOpenedId] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [newForm, setNewForm] = useState({ section_key: 'hero', title_ar: '', title_en: '', sort_order: '0' });
 
@@ -207,6 +211,37 @@ export default function HomepageQuickAdmin() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const openSection = useCallback((section: HomeSection, updateUrl = true) => {
+    setSelected(section);
+    setMsg('');
+    if (updateUrl) router.replace(`/homepage?open=${section.id}`, { scroll: false });
+  }, [router]);
+
+  const closeSection = () => {
+    setSelected(null);
+    router.replace('/homepage', { scroll: false });
+  };
+
+  useEffect(() => {
+    const sectionId = searchParams.get('open');
+    if (!sectionId || autoOpenedId === sectionId || selected?.id === sectionId) return;
+
+    const existing = sections.find((section) => section.id === sectionId);
+    if (existing) {
+      openSection(existing, false);
+      setAutoOpenedId(sectionId);
+      return;
+    }
+
+    fetchJson<HomeSection>(`/api/catalog/homepage/${sectionId}`)
+      .then((section) => {
+        setSections((current) => current.some((item) => item.id === section.id) ? current : [section, ...current]);
+        openSection(section, false);
+        setAutoOpenedId(sectionId);
+      })
+      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح القسم'));
+  }, [autoOpenedId, openSection, searchParams, sections, selected?.id]);
 
   const mergeSection = (id: string, patch: Partial<HomeSection>) => {
     setSections((current) => current.map((section) => (section.id === id ? { ...section, ...patch } : section)));
@@ -253,7 +288,7 @@ export default function HomepageQuickAdmin() {
   const deleteSection = async (section: HomeSection) => {
     if (!confirm('حذف هذا القسم؟')) return;
     await fetchJson<{ deleted: boolean }>(`/api/catalog/homepage/${section.id}`, { method: 'DELETE' });
-    setSelected(null);
+    closeSection();
     load();
   };
 
@@ -301,7 +336,7 @@ export default function HomepageQuickAdmin() {
               </thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {[...sections].sort((a, b) => a.sort_order - b.sort_order).map((section) => (
-                  <tr key={section.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => { setSelected(section); setMsg(''); }}>
+                  <tr key={section.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openSection(section)}>
                     <td className="hidden px-5 py-3 font-mono text-xs text-[#A8A29E] sm:table-cell">{section.section_key}</td>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{section.title_ar}</td>
                     <td className="px-5 py-3 text-[#57534E]">{section.sort_order}</td>
@@ -319,7 +354,7 @@ export default function HomepageQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={selected.title_ar} onClose={() => setSelected(null)}>
+        <Modal title={selected.title_ar} onClose={closeSection}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">

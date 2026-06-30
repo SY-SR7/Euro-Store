@@ -1,6 +1,7 @@
 'use client';
 
 import { Plus, RefreshCw, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 
@@ -172,10 +173,13 @@ function ColorDot({ hex }: { hex?: string | null }) {
 }
 
 export default function AttributeTypesQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [types, setTypes] = useState<AttributeType[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<AttributeType | null>(null);
   const [msg, setMsg] = useState('');
+  const [autoOpenedId, setAutoOpenedId] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [newType, setNewType] = useState({ name_ar: '', name_en: '', slug: '' });
   const [newValue, setNewValue] = useState({ value_ar: '', value_en: '', hex_color: '', sort_order: '0' });
@@ -191,6 +195,38 @@ export default function AttributeTypesQuickAdmin() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const openType = useCallback((type: AttributeType, updateUrl = true) => {
+    setSelected(type);
+    setMsg('');
+    setNewValue({ value_ar: '', value_en: '', hex_color: '', sort_order: '0' });
+    if (updateUrl) router.replace(`/attribute-types?open=${type.id}`, { scroll: false });
+  }, [router]);
+
+  const closeType = () => {
+    setSelected(null);
+    router.replace('/attribute-types', { scroll: false });
+  };
+
+  useEffect(() => {
+    const typeId = searchParams.get('open');
+    if (!typeId || autoOpenedId === typeId || selected?.id === typeId) return;
+
+    const existing = types.find((type) => type.id === typeId);
+    if (existing) {
+      openType(existing, false);
+      setAutoOpenedId(typeId);
+      return;
+    }
+
+    fetchJson<AttributeType>(`/api/catalog/attribute-types/${typeId}`)
+      .then((type) => {
+        setTypes((current) => current.some((item) => item.id === type.id) ? current : [type, ...current]);
+        openType(type, false);
+        setAutoOpenedId(typeId);
+      })
+      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح نوع الصفة'));
+  }, [autoOpenedId, openType, searchParams, selected?.id, types]);
 
   const mergeType = (id: string, patch: Partial<AttributeType>) => {
     setTypes((current) => current.map((type) => (type.id === id ? { ...type, ...patch } : type)));
@@ -262,7 +298,7 @@ export default function AttributeTypesQuickAdmin() {
 
   const createValue = async (type: AttributeType) => {
     if (!newValue.value_ar.trim()) return;
-    await fetchJson<AttributeValue>('/api/catalog/attribute-values', {
+    const created = await fetchJson<AttributeValue>('/api/catalog/attribute-values', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -274,7 +310,7 @@ export default function AttributeTypesQuickAdmin() {
       }),
     });
     setNewValue({ value_ar: '', value_en: '', hex_color: '', sort_order: '0' });
-    load();
+    mergeType(type.id, { attribute_values: [...(type.attribute_values ?? []), created] });
   };
 
   const deleteValue = async (type: AttributeType, value: AttributeValue) => {
@@ -286,7 +322,7 @@ export default function AttributeTypesQuickAdmin() {
   const deleteType = async (type: AttributeType) => {
     if (!confirm('حذف نوع الصفة كاملًا؟ سيتم حذف قيمه وروابطها من متغيرات المنتجات.')) return;
     await fetchJson<{ deleted: boolean }>(`/api/catalog/attribute-types/${type.id}`, { method: 'DELETE' });
-    setSelected(null);
+    closeType();
     load();
   };
 
@@ -324,7 +360,7 @@ export default function AttributeTypesQuickAdmin() {
         {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E] xl:col-span-2">جار التحميل...</p>
         : types.length === 0 ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E] xl:col-span-2">لا توجد صفات</p>
         : types.map((type) => (
-          <button key={type.id} type="button" onClick={() => { setSelected(type); setMsg(''); setNewValue({ value_ar: '', value_en: '', hex_color: '', sort_order: '0' }); }} className="rounded-2xl border border-[#E5E0D8] bg-white p-5 text-start shadow-sm transition hover:border-[#B8860B] hover:bg-[#FFFBF0]">
+          <button key={type.id} type="button" onClick={() => openType(type)} className="rounded-2xl border border-[#E5E0D8] bg-white p-5 text-start shadow-sm transition hover:border-[#B8860B] hover:bg-[#FFFBF0]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-lg font-black text-[#1C1917]">{type.name_ar}</h2>
@@ -345,7 +381,7 @@ export default function AttributeTypesQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={selected.name_ar} onClose={() => setSelected(null)}>
+        <Modal title={selected.name_ar} onClose={closeType}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 

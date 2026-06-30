@@ -1,6 +1,7 @@
 'use client';
 
 import { Plus, RefreshCw, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { FormEvent, KeyboardEvent, ReactNode } from 'react';
 
@@ -129,9 +130,12 @@ function formatDate(value: string) {
 }
 
 export default function SubAdminsQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [subAdmins, setSubAdmins] = useState<SubAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<SubAdmin | null>(null);
+  const [autoOpenedId, setAutoOpenedId] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ email: '', password: '', display_name: '' });
   const [creating, setCreating] = useState(false);
@@ -148,6 +152,37 @@ export default function SubAdminsQuickAdmin() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const openSubAdmin = useCallback((subAdmin: SubAdmin, updateUrl = true) => {
+    setSelected(subAdmin);
+    setMsg('');
+    if (updateUrl) router.replace(`/sub-admins?open=${subAdmin.user_id}`, { scroll: false });
+  }, [router]);
+
+  const closeSubAdmin = () => {
+    setSelected(null);
+    router.replace('/sub-admins', { scroll: false });
+  };
+
+  useEffect(() => {
+    const subAdminId = searchParams.get('open');
+    if (!subAdminId || autoOpenedId === subAdminId || selected?.user_id === subAdminId) return;
+
+    const existing = subAdmins.find((item) => item.user_id === subAdminId);
+    if (existing) {
+      openSubAdmin(existing, false);
+      setAutoOpenedId(subAdminId);
+      return;
+    }
+
+    fetchJson<SubAdmin>(`/api/sub-admins/${subAdminId}`)
+      .then((subAdmin) => {
+        setSubAdmins((current) => current.some((item) => item.user_id === subAdmin.user_id) ? current : [subAdmin, ...current]);
+        openSubAdmin(subAdmin, false);
+        setAutoOpenedId(subAdminId);
+      })
+      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح المشرف'));
+  }, [autoOpenedId, openSubAdmin, searchParams, selected?.user_id, subAdmins]);
 
   const mergeSubAdmin = (id: string, patch: Partial<SubAdmin>) => {
     setSubAdmins((current) => current.map((item) => (item.user_id === id ? { ...item, ...patch } : item)));
@@ -239,7 +274,7 @@ export default function SubAdminsQuickAdmin() {
               </thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {subAdmins.map((item) => (
-                  <tr key={item.user_id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => { setSelected(item); setMsg(''); }}>
+                  <tr key={item.user_id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openSubAdmin(item)}>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{item.display_name || '-'}</td>
                     <td className="px-5 py-3 font-mono text-xs text-[#57534E]" dir="ltr">{item.email}</td>
                     <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">{formatDate(item.created_at)}</td>
@@ -257,7 +292,7 @@ export default function SubAdminsQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={selected.display_name || selected.email} onClose={() => setSelected(null)}>
+        <Modal title={selected.display_name || selected.email} onClose={closeSubAdmin}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
