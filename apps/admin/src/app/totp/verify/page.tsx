@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { ShieldCheck } from 'lucide-react';
 import { verifyTotpAction } from '../actions';
 
@@ -10,8 +10,11 @@ export default async function TotpVerifyPage({ searchParams }: { searchParams: {
   };
   const errorMsg = searchParams.error ? (errorMap[searchParams.error] ?? '') : '';
 
+  const locale = await getLocale();
+  const isAr = locale === 'ar';
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#FAF7EF] px-4 py-10 text-[#1F1B16]" dir="rtl">
+    <main className="flex min-h-screen items-center justify-center bg-[#FAF7EF] px-4 py-10 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
       <div className="w-full max-w-md rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-8 shadow-xl">
         <div className="mb-6 flex items-center gap-3">
           <span className="grid h-11 w-11 place-items-center rounded-2xl border border-[#E8DCC3] bg-white text-[#C9A84C]">
