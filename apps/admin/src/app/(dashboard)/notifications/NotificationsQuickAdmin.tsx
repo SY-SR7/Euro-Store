@@ -264,7 +264,7 @@ function buildDiscountNotifications(rows: Record<string, unknown>[]): Notificati
       title: expired ? 'كود منتهي' : usedUp ? 'كود مستنفد' : 'كود معطل',
       description: code,
       createdAt: validUntil || new Date().toISOString(),
-      actionHref: '/discounts',
+      actionHref: `/discounts?open=${id}`,
       actionLabel: 'فتح الخصومات',
       badge: expired ? 'منتهي' : usedUp ? 'مستنفد' : 'معطل',
       meta: [

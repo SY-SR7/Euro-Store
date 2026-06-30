@@ -1,6 +1,7 @@
 'use client';
 
 import { Plus, RefreshCw, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 
@@ -123,10 +124,13 @@ function formatDate(value?: string | null) {
 }
 
 export default function DiscountsQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Discount | null>(null);
   const [msg, setMsg] = useState('');
+  const [autoOpenedId, setAutoOpenedId] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [newForm, setNewForm] = useState({ code: '', type: 'percentage', value: '', min_order_syp: '', valid_from: '', valid_until: '', max_uses: '' });
 
@@ -139,6 +143,37 @@ export default function DiscountsQuickAdmin() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  const openDiscount = useCallback((discount: Discount, updateUrl = true) => {
+    setSelected(discount);
+    setMsg('');
+    if (updateUrl) router.replace(`/discounts?open=${discount.id}`, { scroll: false });
+  }, [router]);
+
+  const closeDiscount = () => {
+    setSelected(null);
+    router.replace('/discounts', { scroll: false });
+  };
+
+  useEffect(() => {
+    const discountId = searchParams.get('open');
+    if (!discountId || autoOpenedId === discountId || selected?.id === discountId) return;
+
+    const existing = discounts.find((discount) => discount.id === discountId);
+    if (existing) {
+      openDiscount(existing, false);
+      setAutoOpenedId(discountId);
+      return;
+    }
+
+    fetchJson<Discount>(`/api/discounts/${discountId}`)
+      .then((discount) => {
+        setDiscounts((current) => current.some((item) => item.id === discount.id) ? current : [discount, ...current]);
+        openDiscount(discount, false);
+        setAutoOpenedId(discountId);
+      })
+      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح الكود'));
+  }, [autoOpenedId, discounts, openDiscount, searchParams, selected?.id]);
 
   const mergeDiscount = (id: string, patch: Partial<Discount>) => {
     setDiscounts((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
@@ -221,7 +256,7 @@ export default function DiscountsQuickAdmin() {
               <thead className="bg-[#F8F6F2]"><tr>{['الكود','النوع','القيمة','الاستخدامات','الحالة'].map((h,i)=><th key={h} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i>=3?'hidden md:table-cell':''}`}>{h}</th>)}</tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {discounts.map((discount) => (
-                  <tr key={discount.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => { setSelected(discount); setMsg(''); }}>
+                  <tr key={discount.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openDiscount(discount)}>
                     <td className="px-5 py-3 font-mono font-bold text-[#1C1917] group-hover:text-[#B8860B]">{discount.code}</td>
                     <td className="px-5 py-3 text-[#57534E]">{discount.type === 'percentage' ? 'نسبة' : 'ثابت'}</td>
                     <td className="px-5 py-3 font-bold text-[#B8860B]">{discount.type === 'percentage' ? `${discount.value}%` : money(discount.value)}</td>
@@ -238,7 +273,7 @@ export default function DiscountsQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={`كود: ${selected.code}`} onClose={() => setSelected(null)}>
+        <Modal title={`كود: ${selected.code}`} onClose={closeDiscount}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
