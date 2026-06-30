@@ -1,6 +1,7 @@
 'use client';
 
 import { RefreshCw, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 
@@ -193,12 +194,15 @@ function StatusPills({
 }
 
 export default function ExchangesQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [requests, setRequests] = useState<ExchangeRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'completed'>('all');
   const [selected, setSelected] = useState<ExchangeRequest | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [msg, setMsg] = useState('');
+  const [autoOpenedId, setAutoOpenedId] = useState('');
 
   const load = useCallback(() => {
     setLoading(true);
@@ -214,10 +218,11 @@ export default function ExchangesQuickAdmin() {
     load();
   }, [load]);
 
-  const open = async (request: ExchangeRequest) => {
+  const open = useCallback(async (request: ExchangeRequest, updateUrl = true) => {
     setSelected(request);
     setMsg('');
     setDetailLoading(true);
+    if (updateUrl) router.replace(`/exchanges?open=${request.id}`, { scroll: false });
     try {
       const detail = await fetchJson<ExchangeRequest>(`/api/exchanges/${request.id}`);
       setSelected(detail);
@@ -226,7 +231,31 @@ export default function ExchangesQuickAdmin() {
     } finally {
       setDetailLoading(false);
     }
+  }, [router]);
+
+  const close = () => {
+    setSelected(null);
+    router.replace('/exchanges', { scroll: false });
   };
+
+  useEffect(() => {
+    const requestId = searchParams.get('open');
+    if (!requestId || autoOpenedId === requestId || selected?.id === requestId) return;
+
+    const existing = requests.find((request) => request.id === requestId);
+    void open(existing ?? {
+      id: requestId,
+      order_id: null,
+      customer_id: null,
+      status: 'pending',
+      reason_ar: null,
+      reason_en: null,
+      notes: null,
+      customer_images: [],
+      created_at: new Date().toISOString(),
+    }, false);
+    setAutoOpenedId(requestId);
+  }, [autoOpenedId, open, requests, searchParams, selected?.id]);
 
   const mergeRequest = (id: string, patch: Partial<ExchangeRequest>) => {
     setRequests((current) => current.map((request) => (request.id === id ? { ...request, ...patch } : request)));

@@ -1,6 +1,7 @@
 'use client';
 
 import { RefreshCw, Search, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 
@@ -277,6 +278,8 @@ function ChoicePills({
 }
 
 export default function OrdersQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [orders, setOrders] = useState<Order[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -286,6 +289,7 @@ export default function OrdersQuickAdmin() {
   const [selected, setSelected] = useState<Order | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [msg, setMsg] = useState('');
+  const [autoOpenedId, setAutoOpenedId] = useState('');
 
   const load = useCallback(() => {
     setLoading(true);
@@ -305,10 +309,11 @@ export default function OrdersQuickAdmin() {
     load();
   }, [load]);
 
-  const open = async (order: Order) => {
+  const open = useCallback(async (order: Order, updateUrl = true) => {
     setSelected(order);
     setMsg('');
     setDetailLoading(true);
+    if (updateUrl) router.replace(`/orders?open=${order.id}`, { scroll: false });
     try {
       const detail = await fetchJson<Order>(`/api/orders/${order.id}`);
       setSelected(detail);
@@ -317,7 +322,28 @@ export default function OrdersQuickAdmin() {
     } finally {
       setDetailLoading(false);
     }
+  }, [router]);
+
+  const close = () => {
+    setSelected(null);
+    router.replace('/orders', { scroll: false });
   };
+
+  useEffect(() => {
+    const orderId = searchParams.get('open');
+    if (!orderId || autoOpenedId === orderId || selected?.id === orderId) return;
+
+    const existing = orders.find((order) => order.id === orderId);
+    void open(existing ?? {
+      id: orderId,
+      order_number: orderId.slice(0, 8),
+      status: 'pending',
+      total_syp: 0,
+      created_at: new Date().toISOString(),
+      address_snapshot: null,
+    }, false);
+    setAutoOpenedId(orderId);
+  }, [autoOpenedId, open, orders, searchParams, selected?.id]);
 
   const mergeOrder = (orderId: string, patch: Partial<Order>) => {
     setOrders((current) => current.map((item) => (item.id === orderId ? { ...item, ...patch } : item)));
@@ -485,7 +511,7 @@ export default function OrdersQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={`طلب #${selected.order_number}`} onClose={() => setSelected(null)}>
+        <Modal title={`طلب #${selected.order_number}`} onClose={close}>
           {detailLoading ? (
             <div className="h-64 rounded-2xl bg-[#F1E8DA] animate-pulse" />
           ) : (
