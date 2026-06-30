@@ -3,36 +3,58 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ReactNode, useMemo, useState } from 'react';
+import {
+  Bell,
+  ClipboardList,
+  FolderTree,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Package,
+  Palette,
+  Percent,
+  Repeat2,
+  Settings,
+  Shield,
+  ShoppingBag,
+  Star,
+  Tags,
+  Truck,
+  Users,
+  X,
+  type LucideIcon,
+} from 'lucide-react';
 import AdminActivityProvider from '../components/AdminActivityProvider';
 
 type NavItem = {
   href: string;
   label: string;
-  icon: string;
+  icon: LucideIcon;
   group: string;
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { href: '/dashboard', label: 'لوحة التحكم', icon: '▦', group: 'الرئيسية' },
-  { href: '/notifications', label: 'الإشعارات', icon: '🔔', group: 'الرئيسية' },
+  { href: '/dashboard', label: 'لوحة التحكم', icon: LayoutDashboard, group: 'الرئيسية' },
+  { href: '/notifications', label: 'الإشعارات', icon: Bell, group: 'الرئيسية' },
 
-  { href: '/orders', label: 'الطلبات', icon: '🛒', group: 'المبيعات' },
-  { href: '/exchanges', label: 'طلبات الاستبدال', icon: '↔', group: 'المبيعات' },
-  { href: '/customers', label: 'العملاء', icon: '👤', group: 'المبيعات' },
+  { href: '/orders', label: 'الطلبات', icon: ShoppingBag, group: 'المبيعات' },
+  { href: '/exchanges', label: 'طلبات الاستبدال', icon: Repeat2, group: 'المبيعات' },
+  { href: '/customers', label: 'العملاء', icon: Users, group: 'المبيعات' },
 
-  { href: '/products', label: 'المنتجات', icon: '📦', group: 'الكتالوج' },
-  { href: '/categories', label: 'التصنيفات', icon: '🗂', group: 'الكتالوج' },
-  { href: '/brands', label: 'الماركات', icon: '🏷', group: 'الكتالوج' },
-  { href: '/homepage', label: 'الواجهة الرئيسية', icon: '🏠', group: 'الكتالوج' },
-  { href: '/attribute-types', label: 'الصفات (لون/مقاس)', icon: '🎨', group: 'الكتالوج' },
+  { href: '/products', label: 'المنتجات', icon: Package, group: 'الكتالوج' },
+  { href: '/categories', label: 'التصنيفات', icon: FolderTree, group: 'الكتالوج' },
+  { href: '/brands', label: 'الماركات', icon: Tags, group: 'الكتالوج' },
+  { href: '/homepage', label: 'الواجهة الرئيسية', icon: Home, group: 'الكتالوج' },
+  { href: '/attribute-types', label: 'الصفات (لون/مقاس)', icon: Palette, group: 'الكتالوج' },
 
-  { href: '/discounts', label: 'الخصومات', icon: '%', group: 'التجارة' },
-  { href: '/shipping-rates', label: 'أسعار الشحن', icon: '🚚', group: 'التجارة' },
-  { href: '/loyalty-settings', label: 'الولاء', icon: '★', group: 'التجارة' },
+  { href: '/discounts', label: 'الخصومات', icon: Percent, group: 'التجارة' },
+  { href: '/shipping-rates', label: 'أسعار الشحن', icon: Truck, group: 'التجارة' },
+  { href: '/loyalty-settings', label: 'الولاء', icon: Star, group: 'التجارة' },
 
-  { href: '/sub-admins', label: 'المشرفون', icon: '🛡', group: 'النظام' },
-  { href: '/audit-logs', label: 'سجل النشاط', icon: '🧾', group: 'النظام' },
-  { href: '/settings', label: 'الإعدادات', icon: '⚙', group: 'النظام' },
+  { href: '/sub-admins', label: 'المشرفون', icon: Shield, group: 'النظام' },
+  { href: '/audit-logs', label: 'سجل النشاط', icon: ClipboardList, group: 'النظام' },
+  { href: '/settings', label: 'الإعدادات', icon: Settings, group: 'النظام' },
 ];
 
 const GROUPS = ['الرئيسية', 'المبيعات', 'الكتالوج', 'التجارة', 'النظام'];
