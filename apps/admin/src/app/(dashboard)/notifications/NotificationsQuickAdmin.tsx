@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { AlertTriangle, Bell, CheckCircle2, ClipboardList, Percent, RefreshCw, Search, ShoppingBag, Undo2, Users, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
@@ -357,11 +358,14 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
 }
 
 export default function NotificationsQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [items, setItems] = useState<NotificationItem[]>([]);
   const [readIds, setReadIds] = useState<string[]>([]);
   const [tab, setTab] = useState<TabKey>('all');
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<NotificationItem | null>(null);
+  const [autoOpenedId, setAutoOpenedId] = useState('');
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState('');
 
@@ -448,10 +452,27 @@ export default function NotificationsQuickAdmin() {
     });
   }, [items, query, tab, unread]);
 
-  const openItem = (item: NotificationItem) => {
+  const openItem = useCallback((item: NotificationItem, updateUrl = true) => {
     if (!readIds.includes(item.id)) saveRead([item.id, ...readIds]);
     setSelected(item);
+    if (updateUrl) router.replace(`/notifications?open=${encodeURIComponent(item.id)}`, { scroll: false });
+  }, [readIds, router, saveRead]);
+
+  const closeItem = () => {
+    setSelected(null);
+    router.replace('/notifications', { scroll: false });
   };
+
+  useEffect(() => {
+    const itemId = searchParams.get('open');
+    if (!itemId || autoOpenedId === itemId || selected?.id === itemId) return;
+
+    const existing = items.find((item) => item.id === itemId);
+    if (existing) {
+      openItem(existing, false);
+      setAutoOpenedId(itemId);
+    }
+  }, [autoOpenedId, items, openItem, searchParams, selected?.id]);
 
   const markAllRead = () => saveRead(items.map((item) => item.id));
   const resetRead = () => saveRead([]);
@@ -551,7 +572,7 @@ export default function NotificationsQuickAdmin() {
       </section>
 
       {selected ? (
-        <Modal title={selected.title} onClose={() => setSelected(null)}>
+        <Modal title={selected.title} onClose={closeItem}>
           <div className="space-y-4">
             <div className="rounded-lg border border-[#E5E0D8] bg-white p-4">
               <div className="flex items-center gap-2">
@@ -580,7 +601,7 @@ export default function NotificationsQuickAdmin() {
                   {selected.actionLabel ?? 'فتح'}
                 </Link>
               ) : null}
-              <button type="button" onClick={() => setSelected(null)} className="rounded-lg border border-[#E5E0D8] px-4 py-3 text-sm font-bold text-[#57534E] hover:border-[#B8860B]">
+              <button type="button" onClick={closeItem} className="rounded-lg border border-[#E5E0D8] px-4 py-3 text-sm font-bold text-[#57534E] hover:border-[#B8860B]">
                 إغلاق
               </button>
             </div>
