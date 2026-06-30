@@ -1,9 +1,11 @@
-﻿'use client';
+'use client';
 import { useRouter } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import { LogOut } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export function LogoutButton() {
+  const t = useTranslations('auth');
   const router = useRouter();
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,7 +25,7 @@ export function LogoutButton() {
     <button onClick={handleLogout}
       className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-200 bg-white py-3 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors shadow-sm">
       <LogOut className="h-4 w-4" />
-      تسجيل الخروج
+      {t('logout', { fallback: 'تسجيل الخروج' })}
     </button>
   );
 }

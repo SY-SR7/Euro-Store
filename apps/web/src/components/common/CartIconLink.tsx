@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/lib/cart/cartStore';
+import { useTranslations } from 'next-intl';
 
 export function CartIconLink({ floating = false }: { floating?: boolean }) {
+  const t = useTranslations('nav');
   const items = useCartStore((s: any) => s.items ?? s.cart ?? s.cartItems ?? []);
 
   const count = Array.isArray(items)
@@ -14,8 +16,8 @@ export function CartIconLink({ floating = false }: { floating?: boolean }) {
   return (
     <Link
       href="/cart"
-      aria-label="السلة"
-      title="السلة"
+      aria-label={t('cart', { fallback: 'السلة' })}
+      title={t('cart', { fallback: 'السلة' })}
       data-euro-cart-icon="true"
       className={[
         'relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E8DCC3] bg-white text-[#6F6658] shadow-sm transition-all hover:border-[#C9A84C] hover:text-[#C9A84C] hover:shadow-md',

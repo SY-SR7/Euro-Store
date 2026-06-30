@@ -13,6 +13,7 @@ import {
   Gift,
   Truck,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 type Kind =
   | 'product'
@@ -41,19 +42,7 @@ const kindMap: Record<Kind, any> = {
   default: ImageIcon,
 };
 
-const textMap: Record<Kind, string> = {
-  product: 'صورة المنتج',
-  category: 'صورة التصنيف',
-  brand: 'العلامة التجارية',
-  banner: 'Euro Store',
-  avatar: 'الحساب',
-  cart: 'السلة',
-  order: 'الطلب',
-  exchange: 'الاستبدال',
-  loyalty: 'الولاء',
-  empty: 'لا توجد صورة',
-  default: 'صورة',
-};
+// Removed textMap as we will use translations
 
 export function ImageWithFallback({
   src,
@@ -76,12 +65,13 @@ export function ImageWithFallback({
 }) {
   const [failed, setFailed] = useState(false);
   const Icon = useMemo(() => kindMap[kind] ?? ImageIcon, [kind]);
+  const t = useTranslations('common.imageFallback');
 
   if (!src || failed) {
     return (
       <div
         role="img"
-        aria-label={alt || label || textMap[kind] || 'صورة'}
+        aria-label={alt || label || t(kind, { fallback: 'صورة' })}
         className={[
           'flex h-full w-full flex-col items-center justify-center gap-2 rounded-inherit border border-[#E8DCC3]/70 bg-gradient-to-br from-[#FAF7EF] via-white to-[#F3EDE3] p-4 text-center text-[#C9A84C]',
           fallbackClassName,
@@ -92,7 +82,7 @@ export function ImageWithFallback({
           <Icon className="h-7 w-7" />
         </div>
         <div className="space-y-0.5">
-          <p className="text-xs font-black text-[#6F6658]">{label || textMap[kind] || 'صورة'}</p>
+          <p className="text-xs font-black text-[#6F6658]">{label || t(kind, { fallback: 'صورة' })}</p>
           {sublabel && <p className="line-clamp-2 text-[11px] text-[#A8A29E]">{sublabel}</p>}
         </div>
       </div>
