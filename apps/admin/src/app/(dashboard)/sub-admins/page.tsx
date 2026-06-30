@@ -1,6 +1,9 @@
 'use client';
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
+import SubAdminsQuickAdmin from './SubAdminsQuickAdmin';
+
+export default SubAdminsQuickAdmin;
 
 interface SubAdmin {
   user_id: string; display_name: string|null; email: string;
@@ -28,7 +31,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
   );
 }
 
-export default function AdminSubAdminsPage() {
+function LegacyAdminSubAdminsPage() {
   const [subAdmins, setSubAdmins] = useState<SubAdmin[]>([]);
   const [loading, setLoading]     = useState(true);
   const [showForm, setShowForm]   = useState(false);
