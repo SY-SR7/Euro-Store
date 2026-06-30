@@ -1,4 +1,4 @@
-﻿{
+{
     "catalog":  {
                     "addToCart":  "أضف إلى السلة",
                     "categories":  "التصنيفات",
@@ -15,7 +15,11 @@
                     "allProducts":  "كل المنتجات",
                     "allCategoriesLink":  "كل التصنيفات",
                     "categoryTag":  "تصنيف",
-                    "noCategoryProducts":  "لا توجد منتجات في هذا التصنيف حالياً"
+                    "noCategoryProducts":  "لا توجد منتجات في هذا التصنيف حالياً",
+                    "new": "جديد",
+                    "sale": "خصم",
+                    "noImage": "لا توجد صورة",
+                    "viewProduct": "عرض"
                 },
     "home":  {
                  "categoriesTitle":  "تسوق حسب التصنيف",

@@ -1,4 +1,4 @@
-﻿{
+{
     "catalog":  {
                     "addToCart":  "Add to cart",
                     "categories":  "Categories",
@@ -15,7 +15,11 @@
                     "allProducts":  "All products",
                     "allCategoriesLink":  "All categories",
                     "categoryTag":  "Category",
-                    "noCategoryProducts":  "No products in this category yet"
+                    "noCategoryProducts":  "No products found in this category currently",
+                    "new": "New",
+                    "sale": "Sale",
+                    "noImage": "No image",
+                    "viewProduct": "View"
                 },
     "home":  {
                  "categoriesTitle":  "Shop by category",
