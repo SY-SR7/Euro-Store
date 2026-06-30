@@ -1,6 +1,7 @@
 'use client';
 
 import { RefreshCw, Search, X } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 
@@ -214,11 +215,14 @@ function StatusPills({
 }
 
 export default function CustomersQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Customer | null>(null);
   const [msg, setMsg] = useState('');
+  const [autoOpenedId, setAutoOpenedId] = useState('');
 
   const load = useCallback(() => {
     setLoading(true);
@@ -233,6 +237,37 @@ export default function CustomersQuickAdmin() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const openCustomer = useCallback((customer: Customer, updateUrl = true) => {
+    setSelected(customer);
+    setMsg('');
+    if (updateUrl) router.replace(`/customers?open=${customer.id}`, { scroll: false });
+  }, [router]);
+
+  const closeCustomer = () => {
+    setSelected(null);
+    router.replace('/customers', { scroll: false });
+  };
+
+  useEffect(() => {
+    const customerId = searchParams.get('open');
+    if (!customerId || autoOpenedId === customerId || selected?.id === customerId) return;
+
+    const existing = customers.find((customer) => customer.id === customerId);
+    if (existing) {
+      openCustomer(existing, false);
+      setAutoOpenedId(customerId);
+      return;
+    }
+
+    fetchJson<Customer>(`/api/customers/${customerId}`)
+      .then((customer) => {
+        setCustomers((current) => current.some((item) => item.id === customer.id) ? current : [customer, ...current]);
+        openCustomer(customer, false);
+        setAutoOpenedId(customerId);
+      })
+      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح العميل'));
+  }, [autoOpenedId, customers, openCustomer, searchParams, selected?.id]);
 
   const mergeCustomer = (id: string, patch: Partial<Customer>) => {
     setCustomers((current) => current.map((customer) => (customer.id === id ? { ...customer, ...patch } : customer)));
@@ -336,10 +371,7 @@ export default function CustomersQuickAdmin() {
                   <tr
                     key={customer.id}
                     className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]"
-                    onClick={() => {
-                      setSelected(customer);
-                      setMsg('');
-                    }}
+                    onClick={() => openCustomer(customer)}
                   >
                     <td className="px-5 py-3 font-semibold text-[#1C1917] transition-colors group-hover:text-[#B8860B]">
                       {customer.full_name ?? '—'}
@@ -375,7 +407,7 @@ export default function CustomersQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={selected.full_name ?? 'عميل'} onClose={() => setSelected(null)}>
+        <Modal title={selected.full_name ?? 'عميل'} onClose={closeCustomer}>
           <div className="space-y-4">
             {msg ? (
               <div
