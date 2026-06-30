@@ -16,7 +16,7 @@ export async function GET(request: Request) {
 
     let query = supabase
       .from('orders')
-      .select('id, order_number, status, total_syp, created_at, address_snapshot', { count: 'exact' })
+      .select('id, order_number, status, payment_status, payment_method, total_syp, created_at, address_snapshot, notes', { count: 'exact' })
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
