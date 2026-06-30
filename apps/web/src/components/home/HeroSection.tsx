@@ -3,6 +3,7 @@
 import { useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 // ─── Easing curves ─────────────────────────────────────────────────────────
 const smooth    = [0.22, 1, 0.36, 1] as const;
@@ -35,6 +36,7 @@ const scaleIn = {
 export function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const prefersReduced = useReducedMotion();
+  const t = useTranslations('home.hero');
 
   return (
     <section
@@ -76,7 +78,7 @@ export function HeroSection() {
           className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-5 opacity-90"
           style={{ color: '#C9A84C' }}
         >
-          مجموعة ٢٠٢٥
+          {t('collection', { fallback: 'مجموعة ٢٠٢٥' })}
         </motion.p>
 
         {/* Main headline — word by word reveal */}
@@ -96,7 +98,7 @@ export function HeroSection() {
             visible: { transition: { staggerChildren: prefersReduced ? 0 : 0.1, delayChildren: 0.3 } },
           }}
         >
-          {['يُرتدى', 'بأناقة،', 'يُعاش', 'بثقة'].map((word, i) => (
+          {(t.raw('words') || ['يُرتدى', 'بأناقة،', 'يُعاش', 'بثقة']).map((word: string, i: number) => (
             <motion.span
               key={i}
               variants={{
@@ -119,7 +121,7 @@ export function HeroSection() {
           className="text-base md:text-xl max-w-xl leading-relaxed mb-10 font-light"
           style={{ color: '#E2E2E2', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}
         >
-          أزياء أوروبية راقية — من المصانع الأوروبية مباشرةً إلى يديك
+          {t('subtitle', { fallback: 'أزياء أوروبية راقية — من المصانع الأوروبية مباشرةً إلى يديك' })}
         </motion.p>
 
         {/* CTA buttons */}
@@ -141,8 +143,8 @@ export function HeroSection() {
               className="inline-flex items-center gap-2 px-10 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-full shadow-2xl"
               style={{ background: 'linear-gradient(to right, #C9A84C, #A67C2E)', color: '#000' }}
             >
-              تسوق الآن
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rotate-180">
+              {t('shopNow', { fallback: 'تسوق الآن' })}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rtl:rotate-180">
                 <path d="M8 3L3 8L8 13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </Link>
@@ -159,7 +161,7 @@ export function HeroSection() {
               className="inline-flex items-center gap-2 border px-10 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-300 rounded-full"
               style={{ borderColor: 'rgba(255,255,255,0.4)', color: '#FFFFFF', backgroundColor: 'rgba(255,255,255,0.05)' }}
             >
-              استكشف الأقسام
+              {t('explore', { fallback: 'استكشف الأقسام' })}
             </Link>
           </motion.div>
         </motion.div>
@@ -174,9 +176,9 @@ export function HeroSection() {
         >
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent opacity-50" />
           {[
-            { num: '+500', label: 'منتج حصري' },
-            { num: '+10k', label: 'زبون راضٍ' },
-            { num: '٤', label: 'أقسام متنوعة' },
+            { num: '+500', label: t('stats.exclusive', { fallback: 'منتج حصري' }) },
+            { num: '+10k', label: t('stats.customers', { fallback: 'زبون راضٍ' }) },
+            { num: t('stats.categoriesNum', { fallback: '٤' }), label: t('stats.categories', { fallback: 'أقسام متنوعة' }) },
           ].map(({ num, label }) => (
             <div key={label} className="flex flex-col items-center gap-1">
               <span className="text-3xl md:text-4xl font-black" style={{ color: '#C9A84C', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.5))' }}>
@@ -195,7 +197,7 @@ export function HeroSection() {
         transition={{ delay: 2, duration: 0.8 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
       >
-        <span className="text-[10px] uppercase tracking-[0.25em]" style={{ color: 'rgba(255,255,255,0.4)' }}>مرر للأسفل</span>
+        <span className="text-[10px] uppercase tracking-[0.25em]" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('scrollDown', { fallback: 'مرر للأسفل' })}</span>
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
