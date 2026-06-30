@@ -10,6 +10,7 @@ import {
   X,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 
@@ -528,6 +529,8 @@ function getVariantLabel(variant: ProductVariant) {
 }
 
 export default function ProductQuickAdmin() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [filterData, setFilterData] = useState<FilterData | null>(null);
   const [loading, setLoading] = useState(true);
   const [notice, setNotice] = useState('');
@@ -541,6 +544,7 @@ export default function ProductQuickAdmin() {
   const [attrTypes, setAttrTypes] = useState<AttrType[]>([]);
   const [modalLoading, setModalLoading] = useState(false);
   const [savingKey, setSavingKey] = useState('');
+  const [autoOpenedId, setAutoOpenedId] = useState('');
 
   const [showAddVariant, setShowAddVariant] = useState(false);
   const [newVariant, setNewVariant] = useState({
@@ -647,7 +651,7 @@ export default function ProductQuickAdmin() {
     setStatus('all');
   };
 
-  const openProduct = (product: Product) => {
+  const openProduct = useCallback((product: Product, updateUrl = true) => {
     setSelected(product);
     setProductDetails(null);
     setVariants([]);
@@ -655,8 +659,9 @@ export default function ProductQuickAdmin() {
     setShowAddVariant(false);
     setNewImageUrl('');
     setNotice('');
+    if (updateUrl) router.replace(`/products?open=${product.id}`, { scroll: false });
     void loadProductBundle(product.id);
-  };
+  }, [loadProductBundle, router]);
 
   const closeProduct = () => {
     setSelected(null);
@@ -665,7 +670,24 @@ export default function ProductQuickAdmin() {
     setImages([]);
     setShowAddVariant(false);
     setNewImageUrl('');
+    router.replace('/products', { scroll: false });
   };
+
+  useEffect(() => {
+    const productId = searchParams.get('open');
+    if (!productId || autoOpenedId === productId || selected?.id === productId) return;
+
+    const existing = filterData?.products.find((product) => product.id === productId);
+    openProduct(existing ?? {
+      id: productId,
+      name_ar: 'جار تحميل المنتج...',
+      name_en: '',
+      slug: '',
+      is_active: false,
+      is_featured: false,
+    }, false);
+    setAutoOpenedId(productId);
+  }, [autoOpenedId, filterData?.products, openProduct, searchParams, selected?.id]);
 
   const updateListProduct = (productId: string, patch: Partial<Product>) => {
     setFilterData((current) =>
