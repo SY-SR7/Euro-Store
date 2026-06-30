@@ -366,7 +366,7 @@ export default function ExchangesQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={`طلب استبدال #${selected.id.slice(0, 8)}`} onClose={() => setSelected(null)}>
+        <Modal title={`طلب استبدال #${selected.id.slice(0, 8)}`} onClose={close}>
           {detailLoading ? (
             <div className="h-56 rounded-2xl bg-[#F1E8DA] animate-pulse" />
           ) : (

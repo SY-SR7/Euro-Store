@@ -280,7 +280,7 @@ function buildOrderNotifications(rows: Record<string, unknown>[]): NotificationI
       title = 'طلب ملغى يحتاج مراجعة';
     }
 
-    const actionHref = id ? `/orders/${id}` : '/orders';
+    const actionHref = id ? `/orders?open=${id}` : '/orders';
 
     return {
       id: `order:${id}:${status}`,
@@ -343,7 +343,7 @@ function buildExchangeNotifications(rows: Record<string, unknown>[]): Notificati
       title,
       description: `${customerName}${orderId ? ` — طلب مرتبط: ${orderId}` : ''} — ${reason}`,
       createdAt,
-      actionHref: id ? `/exchanges/${id}` : '/exchanges',
+      actionHref: id ? `/exchanges?open=${id}` : '/exchanges',
       actionLabel: 'فتح التبديل',
       badge: EXCHANGE_STATUS_AR[status] ?? status,
       meta: [
