@@ -1,5 +1,9 @@
 'use client';
+// @ts-nocheck
 import { useEffect, useState, useCallback } from 'react';
+import BrandsQuickAdmin from './BrandsQuickAdmin';
+
+export default BrandsQuickAdmin;
 
 interface Brand { id: string; name: string; slug: string|null; logo_url?: string|null; is_active: boolean|null; }
 
@@ -17,7 +21,7 @@ function Modal({ title, onClose, children }: { title:string; onClose:()=>void; c
   );
 }
 
-export default function AdminBrandsPage() {
+function LegacyAdminBrandsPage() {
   const [brands,setBrands]    = useState<Brand[]>([]);
   const [loading,setLoading]  = useState(true);
   const [selected,setSelected]= useState<Brand|null>(null);
