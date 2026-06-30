@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import Link from 'next/link';
 import { Heart, Menu, RefreshCw, Search, Star, User, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -55,7 +55,7 @@ export function Header() {
             className="hidden rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B] sm:inline-flex">
             <RefreshCw className="h-4 w-4" />
           </Link>
-          <Link href="/wishlist" aria-label="المفضلة"
+          <Link href="/wishlist" aria-label={t('wishlist')}
             className="hidden rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B] sm:inline-flex">
             <Heart className="h-4 w-4" />
           </Link>
