@@ -13,6 +13,28 @@ type PatchBody = {
   email?: string;
 };
 
+function mapProfile(profile: { id: string; full_name: string | null; email: string; is_active: boolean; created_at: string }) {
+  return {
+    user_id: profile.id,
+    display_name: profile.full_name,
+    email: profile.email,
+    is_active: profile.is_active,
+    created_at: profile.created_at,
+  };
+}
+
+export async function GET(_request: Request, { params }: Params) {
+  const admin = createSupabaseAdminClientFromEnv();
+  const { data, error } = await admin
+    .from('sub_admin_profiles')
+    .select('id, full_name, email, is_active, created_at')
+    .eq('id', params.userId)
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 404 });
+  return NextResponse.json(mapProfile(data));
+}
+
 export async function PATCH(request: Request, { params }: Params) {
   try {
     const body = (await request.json()) as PatchBody;
@@ -47,13 +69,7 @@ export async function PATCH(request: Request, { params }: Params) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({
-      user_id: data.id,
-      display_name: data.full_name,
-      email: data.email,
-      is_active: data.is_active,
-      created_at: data.created_at
-    });
+    return NextResponse.json(mapProfile(data));
   } catch (error) {
     const message = error instanceof Error ? error.message : 'server_error';
     return NextResponse.json({ error: message }, { status: 500 });

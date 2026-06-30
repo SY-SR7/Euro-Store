@@ -23,8 +23,8 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   if (typeof body.is_active === 'boolean') update.is_active = body.is_active;
   if (typeof body.min_order_syp === 'number' || body.min_order_syp === null) update.min_order_syp = body.min_order_syp;
   if (typeof body.max_uses === 'number' || body.max_uses === null) update.max_uses = body.max_uses;
-  if (typeof body.valid_from === 'string') update.valid_from = body.valid_from;
-  if (typeof body.valid_until === 'string') update.valid_until = body.valid_until;
+  if (typeof body.valid_from === 'string' || body.valid_from === null) update.valid_from = body.valid_from;
+  if (typeof body.valid_until === 'string' || body.valid_until === null) update.valid_until = body.valid_until;
   if (Object.keys(update).length === 0) return NextResponse.json({ error: 'No valid fields' }, { status: 400 });
   const { data, error } = await admin.from('discount_codes').update(update as never).eq('id', params.id).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
