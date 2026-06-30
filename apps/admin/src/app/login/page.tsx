@@ -3,6 +3,8 @@
 import { FormEvent, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 function safeNext(value: string | null) {
   if (!value) return '/';
@@ -20,6 +22,9 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const t = useTranslations('auth');
+  const locale = useLocale();
+  const isAr = locale === 'ar';
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,7 +34,7 @@ export default function LoginPage() {
     const cleanEmail = email.trim();
 
     if (!cleanEmail || !password) {
-      setError('أدخل البريد الإلكتروني وكلمة المرور');
+      setError(t('errors.missingCredentials', { fallback: 'أدخل البريد الإلكتروني وكلمة المرور' }));
       return;
     }
 
@@ -55,7 +60,7 @@ export default function LoginPage() {
       const payload = await res.json().catch(() => null) as { error?: string } | null;
 
       if (!res.ok) {
-        setError(payload?.error || 'فشل تسجيل الدخول');
+        setError(payload?.error || t('errors.loginFailed', { fallback: 'فشل تسجيل الدخول' }));
         setLoading(false);
         return;
       }
@@ -63,9 +68,9 @@ export default function LoginPage() {
       window.location.assign(next);
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') {
-        setError('انتهت مهلة تسجيل الدخول. تحقق من اتصال Supabase ثم حاول مرة أخرى.');
+        setError(t('errors.timeout', { fallback: 'انتهت مهلة تسجيل الدخول. تحقق من اتصال Supabase ثم حاول مرة أخرى.' }));
       } else {
-        setError(err instanceof Error ? err.message : 'تعذر تسجيل الدخول');
+        setError(err instanceof Error ? err.message : t('errors.cannotLogin', { fallback: 'تعذر تسجيل الدخول' }));
       }
 
       setLoading(false);
@@ -75,11 +80,14 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#FAF7EF] px-4 py-10" dir="rtl">
+    <main className="flex min-h-screen items-center justify-center bg-[#FAF7EF] px-4 py-10 relative" dir={isAr ? "rtl" : "ltr"}>
+      <div className="absolute top-4 end-4">
+        <LanguageSwitcher />
+      </div>
       <section className="w-full max-w-md rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-8 shadow-xl">
         <div className="mb-8 text-center">
           <p className="text-sm font-black tracking-[0.35em] text-[#C9A84C]">EURO STORE</p>
-          <h1 className="mt-4 text-3xl font-black text-[#1F1B16]">تسجيل دخول الأدمن</h1>
+          <h1 className="mt-4 text-3xl font-black text-[#1F1B16]">{t('adminLogin', { fallback: 'تسجيل دخول الإدارة' })}</h1>
         </div>
 
         <form onSubmit={handleSubmit} method="post" className="space-y-5">
@@ -90,7 +98,7 @@ export default function LoginPage() {
           )}
 
           <label className="block space-y-2">
-            <span className="text-sm font-black text-[#1F1B16]">البريد الإلكتروني</span>
+            <span className="text-sm font-black text-[#1F1B16]">{t('email', { fallback: 'البريد الإلكتروني' })}</span>
             <input
               type="email"
               autoComplete="email"
@@ -104,7 +112,7 @@ export default function LoginPage() {
           </label>
 
           <label className="block space-y-2">
-            <span className="text-sm font-black text-[#1F1B16]">كلمة المرور</span>
+            <span className="text-sm font-black text-[#1F1B16]">{t('password', { fallback: 'كلمة المرور' })}</span>
             <div className="flex overflow-hidden rounded-2xl border border-[#E8DCC3] bg-white focus-within:border-[#C9A84C]">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -119,8 +127,8 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((current) => !current)}
-                className="grid w-12 place-items-center border-r border-[#E8DCC3] text-[#6F6658] transition hover:text-[#C9A84C]"
-                title={showPassword ? 'إخفاء' : 'إظهار'}
+                className={`grid w-12 place-items-center ${isAr ? "border-r" : "border-l"} border-[#E8DCC3] text-[#6F6658] transition hover:text-[#C9A84C]`}
+                title={showPassword ? t('hide', { fallback: 'إخفاء' }) : t('show', { fallback: 'إظهار' })}
               >
                 {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
@@ -133,7 +141,7 @@ export default function LoginPage() {
             className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#C9A84C] px-5 py-3 text-sm font-black text-[#1F1B16] transition hover:bg-[#D8B95F] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <LogIn size={17} />
-            {loading ? 'جار تسجيل الدخول...' : 'دخول'}
+            {loading ? t('loggingIn', { fallback: 'جار تسجيل الدخول...' }) : t('loginBtn', { fallback: 'دخول' })}
           </button>
         </form>
       </section>
