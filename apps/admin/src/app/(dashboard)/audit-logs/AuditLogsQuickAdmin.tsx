@@ -4,6 +4,7 @@ import { AlertTriangle, CheckCircle2, Eye, Pencil, RefreshCw, Search, Trash2, Un
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type ActivityLog = {
   id: string;
@@ -70,11 +71,11 @@ function pretty(value: unknown): string {
   }
 }
 
-function formatDate(value?: string) {
+function formatDate(value: string | undefined, locale: string) {
   if (!value) return '-';
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return new Intl.DateTimeFormat('ar-SY', { dateStyle: 'medium', timeStyle: 'short' }).format(date);
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' }).format(date);
 }
 
 function actionKind(action?: string): FilterKey {
@@ -105,13 +106,13 @@ function ActionIcon({ action }: { action?: string }) {
   return <Pencil className={className} />;
 }
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+function Modal({ title, onClose, children, closeTitle }: { title: string; onClose: () => void; children: ReactNode; closeTitle?: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="flex max-h-[92vh] w-full max-w-4xl flex-col rounded-lg border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" title="إغلاق" onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -157,6 +158,12 @@ function contains(log: ActivityLog, query: string) {
 export default function AuditLogsQuickAdmin() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+  const formatLoc = isAr ? 'ar-SY' : 'en-US';
+  const t = useTranslations('adminAuditLogs');
+  const tCommon = useTranslations('common');
+
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<ActivityLog | null>(null);
@@ -171,9 +178,9 @@ export default function AuditLogsQuickAdmin() {
     setMsg('');
     fetchJson<unknown>('/api/audit-logs?limit=500', { cache: 'no-store' })
       .then((payload) => setLogs(pickLogs(payload)))
-      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر تحميل السجل'))
+      .catch((error) => setMsg(error instanceof Error ? error.message : t('failedToLoad')))
       .finally(() => setLoading(false));
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     load();
@@ -217,48 +224,48 @@ export default function AuditLogsQuickAdmin() {
         headers: { 'Content-Type': 'application/json' },
       });
       if (!payload.ok) {
-        setMsg(payload.error || 'فشل التراجع');
+        setMsg(payload.error || t('failedToUndo'));
       } else {
-        setMsg('تم التراجع');
+        setMsg(t('undoneSuccess'));
         load();
       }
     } catch (error) {
-      setMsg(error instanceof Error ? error.message : 'فشل التراجع');
+      setMsg(error instanceof Error ? error.message : t('failedToUndo'));
     } finally {
       setUndoingId('');
     }
   }
 
   const filters: { key: FilterKey; label: string }[] = [
-    { key: 'all', label: 'الكل' },
-    { key: 'create', label: 'إنشاء' },
-    { key: 'update', label: 'تعديل' },
-    { key: 'delete', label: 'حذف' },
-    { key: 'status', label: 'حالة' },
-    { key: 'undo', label: 'تراجع' },
+    { key: 'all', label: t('filterAll') },
+    { key: 'create', label: t('filterCreate') },
+    { key: 'update', label: t('filterUpdate') },
+    { key: 'delete', label: t('filterDelete') },
+    { key: 'status', label: t('filterStatus') },
+    { key: 'undo', label: t('filterUndo') },
   ];
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">سجل النشاط</h1>
-          <p className="mt-1 text-sm text-[#8B8172]">{stats.total.toLocaleString('ar-SY')} حركة</p>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('title')}</h1>
+          <p className="mt-1 text-sm text-[#8B8172]">{t('countLogs', { count: stats.total })}</p>
         </div>
         <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#B8860B]">
-          <RefreshCw size={16} /> تحديث
+          <RefreshCw size={16} /> {tCommon('refresh')}
         </button>
       </section>
 
       <section className="grid gap-3 md:grid-cols-3">
         {[
-          ['إجمالي', stats.total],
-          ['قابل للتراجع', stats.undoable],
-          ['أخطاء', stats.errors],
+          [t('statsTotal'), stats.total],
+          [t('statsUndoable'), stats.undoable],
+          [t('statsErrors'), stats.errors],
         ].map(([label, value]) => (
-          <div key={label} className="rounded-lg border border-[#E5E0D8] bg-white p-4 shadow-sm">
+          <div key={String(label)} className="rounded-lg border border-[#E5E0D8] bg-white p-4 shadow-sm">
             <p className="text-xs font-black text-[#8B8172]">{label}</p>
-            <p className="mt-2 text-2xl font-black text-[#1C1917]">{Number(value).toLocaleString('ar-SY')}</p>
+            <p className="mt-2 text-2xl font-black text-[#1C1917]" dir="ltr">{Number(value).toLocaleString(formatLoc)}</p>
           </div>
         ))}
       </section>
@@ -273,34 +280,34 @@ export default function AuditLogsQuickAdmin() {
             ))}
           </div>
           <div className="flex overflow-hidden rounded-lg border border-[#E5E0D8] bg-[#FAFAF8] focus-within:border-[#B8860B] xl:w-96">
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="بحث..." className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm outline-none" />
-            <span className="grid w-10 place-items-center border-r border-[#E5E0D8] text-[#8B8172]"><Search size={16} /></span>
+            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('searchPlaceholder')} className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm outline-none" dir={isAr ? "rtl" : "ltr"} />
+            <span className={`grid w-10 place-items-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-[#8B8172]`}><Search size={16} /></span>
           </div>
         </div>
       </section>
 
-      {msg ? <div className={`rounded-lg border px-4 py-3 text-sm font-bold ${msg === 'تم التراجع' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
+      {msg ? <div className={`rounded-lg border px-4 py-3 text-sm font-bold ${msg === t('undoneSuccess') ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 
       <section className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
-        : filtered.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد حركات</p>
+        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading')}</p>
+        : filtered.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noLogs')}</p>
         : (
           <div className="divide-y divide-[#F0ECE6]">
             {filtered.map((log) => {
               const canUndo = log.undo?.possible === true && !log.undone_at;
               return (
-                <button key={log.id} type="button" onClick={() => openLog(log)} className="grid w-full gap-3 p-4 text-right transition hover:bg-[#FFFBF0] lg:grid-cols-[44px_minmax(0,1fr)_auto] lg:items-center">
+                <button key={log.id} type="button" onClick={() => openLog(log)} className={`grid w-full gap-3 p-4 ${isAr ? "text-right" : "text-left"} transition hover:bg-[#FFFBF0] lg:grid-cols-[44px_minmax(0,1fr)_auto] lg:items-center`}>
                   <span className={`grid h-10 w-10 place-items-center rounded-lg border ${actionStyle(log.action)}`}><ActionIcon action={log.action} /></span>
                   <span className="min-w-0">
                     <span className="flex flex-wrap items-center gap-2">
-                      <span className="font-black text-[#1C1917]">{log.action_ar || log.action || 'حركة'}</span>
-                      <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-2 py-1 text-[11px] font-bold text-[#57534E]">{log.entity_label || log.entity_type || 'system'}</span>
-                      {canUndo ? <span className="rounded-full border border-blue-200 bg-blue-50 px-2 py-1 text-[11px] font-bold text-blue-700">تراجع</span> : null}
+                      <span className="font-black text-[#1C1917]">{isAr ? log.action_ar : (log.action_ar || log.action || t('defaultAction'))}</span>
+                      <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-2 py-1 text-[11px] font-bold text-[#57534E]">{log.entity_label || log.entity_type || t('defaultEntity')}</span>
+                      {canUndo ? <span className="rounded-full border border-blue-200 bg-blue-50 px-2 py-1 text-[11px] font-bold text-blue-700">{t('badgeUndo')}</span> : null}
                     </span>
                     <span className="mt-1 block truncate text-sm text-[#57534E]">{log.summary || log.path || log.entity_id || '-'}</span>
-                    <span className="mt-1 block text-xs text-[#A8A29E]" dir="ltr">{log.admin_email || 'unknown-admin@local'}</span>
+                    <span className="mt-1 block text-xs text-[#A8A29E]" dir="ltr">{log.admin_email || t('defaultAdmin')}</span>
                   </span>
-                  <span className="text-xs font-bold text-[#8B8172]">{formatDate(log.created_at)}</span>
+                  <span className="text-xs font-bold text-[#8B8172]">{formatDate(log.created_at, formatLoc)}</span>
                 </button>
               );
             })}
@@ -309,36 +316,36 @@ export default function AuditLogsQuickAdmin() {
       </section>
 
       {selected ? (
-        <Modal title={selected.action_ar || selected.action || 'حركة'} onClose={close}>
+        <Modal title={isAr ? (selected.action_ar || t('defaultAction')) : (selected.action || selected.action_ar || t('defaultAction'))} onClose={close} closeTitle={tCommon('close')}>
           <div className="space-y-4">
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
               {[
-                ['المشرف', selected.admin_email || 'unknown-admin@local'],
-                ['القسم', selected.entity_label || selected.entity_type || '-'],
-                ['المعرف', selected.entity_id || '-'],
-                ['الوقت', formatDate(selected.created_at)],
-                ['المسار', selected.path || '-'],
-                ['الطريقة', selected.method || 'UI'],
-                ['النتيجة', String(selected.status_code ?? '-')],
-                ['IP', selected.ip || '-'],
+                [t('detailAdmin'), selected.admin_email || t('defaultAdmin')],
+                [t('detailSection'), selected.entity_label || selected.entity_type || '-'],
+                [t('detailId'), selected.entity_id || '-'],
+                [t('detailTime'), formatDate(selected.created_at, formatLoc)],
+                [t('detailPath'), selected.path || '-'],
+                [t('detailMethod'), selected.method || t('methodUi')],
+                [t('detailResult'), String(selected.status_code ?? '-')],
+                [t('detailIp'), selected.ip || '-'],
               ].map(([label, value]) => (
-                <div key={label} className="rounded-lg border border-[#E5E0D8] bg-white p-3">
+                <div key={String(label)} className="rounded-lg border border-[#E5E0D8] bg-white p-3">
                   <p className="text-xs font-bold text-[#8B8172]">{label}</p>
-                  <p className="mt-1 break-words text-sm font-black text-[#1C1917]" dir="auto">{value}</p>
+                  <p className={`mt-1 break-words text-sm font-black text-[#1C1917] ${label === t('detailPath') || label === t('detailMethod') || label === t('detailIp') || label === t('detailId') ? "text-left" : ""}`} dir="auto">{value}</p>
                 </div>
               ))}
             </div>
 
             <div className="grid gap-3 xl:grid-cols-3">
-              <JsonBlock title="الطلب" value={selected.request_body} />
-              <JsonBlock title="قبل" value={selected.old_values} />
-              <JsonBlock title="بعد" value={selected.new_values} />
+              <JsonBlock title={t('jsonRequest')} value={selected.request_body} />
+              <JsonBlock title={t('jsonBefore')} value={selected.old_values} />
+              <JsonBlock title={t('jsonAfter')} value={selected.new_values} />
             </div>
 
             <div className="flex flex-col gap-3 rounded-lg border border-[#E5E0D8] bg-white p-4 md:flex-row md:items-center md:justify-between">
               <div className="flex items-center gap-2 text-sm font-bold text-[#57534E]">
                 <Eye size={16} />
-                {selected.undone_at ? `تم التراجع: ${formatDate(selected.undone_at)}` : selected.undo?.reason || 'لا يوجد تراجع تلقائي'}
+                {selected.undone_at ? t('undoneAt', { date: formatDate(selected.undone_at, formatLoc) }) : selected.undo?.reason || t('noAutoUndo')}
               </div>
               <button
                 type="button"
@@ -347,7 +354,7 @@ export default function AuditLogsQuickAdmin() {
                 className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#B8860B] px-4 py-2 text-sm font-black text-white hover:bg-[#9A7209] disabled:cursor-not-allowed disabled:bg-[#E5E0D8] disabled:text-[#A8A29E]"
               >
                 <Undo2 size={16} />
-                {undoingId === selected.id ? 'جار التراجع...' : selected.undone_at ? 'تم التراجع' : 'تراجع'}
+                {undoingId === selected.id ? t('undoing') : selected.undone_at ? t('undone') : t('undoBtn')}
               </button>
             </div>
           </div>
