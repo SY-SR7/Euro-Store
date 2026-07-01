@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, LayoutGrid, ShoppingBag, Heart, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { motion } from 'framer-motion';
 
 export function MobileBottomNav() {
   const pathname = usePathname();
@@ -25,22 +26,27 @@ export function MobileBottomNav() {
         const Icon = item.icon;
         
         return (
-          <Link
+          <motion.div
             key={item.key}
-            href={item.href}
-            className={`flex h-full w-full flex-col items-center justify-center gap-1 transition-all duration-200 ${
-              isActive ? 'text-primary' : 'text-text-secondary hover:text-text-secondary'
-            }`}
+            whileTap={{ scale: 0.85 }}
+            className="flex-1"
           >
-            <div className={`relative flex items-center justify-center rounded-full p-1.5 transition-all duration-200 ${
-              isActive ? 'bg-primary/15 ring-1 ring-primary/30' : ''
-            }`}>
-              <Icon className="h-[22px] w-[22px]" strokeWidth={isActive ? 2.5 : 2} />
-            </div>
-            <span className={`text-[10px] ${isActive ? 'font-bold' : 'font-medium'}`}>
-              {item.label}
-            </span>
-          </Link>
+            <Link
+              href={item.href}
+              className={`flex h-full w-full flex-col items-center justify-center gap-1 transition-colors duration-200 ${
+                isActive ? 'text-primary' : 'text-text-secondary hover:text-text-secondary'
+              }`}
+            >
+              <div className={`relative flex items-center justify-center rounded-full p-1.5 transition-colors duration-200 ${
+                isActive ? 'bg-primary/15 ring-1 ring-primary/30 shadow-sm' : ''
+              }`}>
+                <Icon className="h-[22px] w-[22px]" strokeWidth={isActive ? 2.5 : 2} />
+              </div>
+              <span className={`text-[10px] ${isActive ? 'font-bold' : 'font-medium'}`}>
+                {item.label}
+              </span>
+            </Link>
+          </motion.div>
         );
       })}
     </nav>
