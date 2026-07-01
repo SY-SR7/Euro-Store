@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import ProductsQuickAdmin from './ProductsQuickAdmin';
+import ProductQuickAdmin from './ProductQuickAdmin';
 
 export async function generateMetadata() {
   const t = await getTranslations('nav');
@@ -7,5 +7,5 @@ export async function generateMetadata() {
 }
 
 export default function ProductsPage() {
-  return <ProductsQuickAdmin />;
+  return <ProductQuickAdmin />;
 }
