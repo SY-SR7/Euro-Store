@@ -23,6 +23,8 @@ import { SmoothScroller } from '../components/layout/SmoothScroller';
 
 import { CustomCursor } from '../components/layout/CustomCursor';
 
+import { PageTransitionProvider } from '../components/layout/PageTransitionProvider';
+
 export default async function RootLayout({
   children
 }: Readonly<{
@@ -34,11 +36,13 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning className="overflow-x-hidden w-full">
-      <body className="min-h-screen bg-background text-text-primary antialiased overflow-x-hidden w-full">
+      <body className="min-h-screen bg-background text-text-primary antialiased overflow-x-hidden w-full flex flex-col">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SmoothScroller>
             <CustomCursor />
-            {children}
+            <PageTransitionProvider>
+              {children}
+            </PageTransitionProvider>
           </SmoothScroller>
         </NextIntlClientProvider>
       </body>

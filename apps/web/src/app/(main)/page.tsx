@@ -1,5 +1,6 @@
 import { CinematicShowcaseSection, type StoryBeat } from '@/components/home/CinematicShowcaseSection';
 import { HeroSection } from '@/components/home/HeroSection';
+import { BentoFeatures } from '@/components/home/BentoFeatures';
 import { getLocale, getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
@@ -47,6 +48,9 @@ export default async function HomePage() {
     <main className="bg-[#0C0C0C] text-[#E2E2E2]" dir={isAr ? "rtl" : "ltr"}>
       {/* 0. HERO — Full-screen autoplay video with animated content */}
       <HeroSection />
+
+      {/* 0.5 Bento Features */}
+      <BentoFeatures />
 
       {/* 1. SHOES (scroll-driven cinematic sequence) */}
       <CinematicShowcaseSection
