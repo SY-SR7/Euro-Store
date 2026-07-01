@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { useCartStore } from '../../store/cartStore';
+import { router } from 'expo-router';
 
 export default function CartScreen() {
   const { items, removeItem, updateQuantity, totalPrice } = useCartStore();
@@ -48,11 +49,14 @@ export default function CartScreen() {
       {items.length > 0 && (
         <View className='p-6 bg-background-secondary border-t border-border'>
           <View className='flex-row justify-between mb-4'>
-            <Text className='text-text-primary text-lg font-bold'>??????? ?????:</Text>
-            <Text className='text-primary text-xl font-bold'>{totalPrice().toLocaleString('ar-SY')} ?.?</Text>
+            <Text className='text-text-primary text-lg font-bold'>المجموع الكلي:</Text>
+            <Text className='text-primary text-xl font-bold'>{totalPrice().toLocaleString('ar-SY')} ل.س</Text>
           </View>
-          <TouchableOpacity className='bg-primary py-4 rounded-xl'>
-            <Text className='text-[#0F0F0F] font-bold text-center text-lg'>?????? ?????</Text>
+          <TouchableOpacity 
+            className='bg-primary py-4 rounded-xl'
+            onPress={() => router.push('/checkout')}
+          >
+            <Text className='text-[#0F0F0F] font-bold text-center text-lg'>متابعة الدفع</Text>
           </TouchableOpacity>
         </View>
       )}
