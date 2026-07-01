@@ -282,28 +282,36 @@ export default function HomepageQuickAdmin() {
 
   const createSection = async () => {
     if (!newForm.title_ar.trim()) return;
-    await fetchJson<HomeSection>('/api/catalog/homepage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        section_key: newForm.section_key,
-        title_ar: newForm.title_ar.trim(),
-        title_en: newForm.title_en.trim() || newForm.title_ar.trim(),
-        sort_order: Number(newForm.sort_order) || 0,
-        is_active: true,
-        content: {},
-      }),
-    });
-    setNewForm({ section_key: 'hero', title_ar: '', title_en: '', sort_order: '0' });
-    setShowCreate(false);
-    load();
+    try {
+      await fetchJson<HomeSection>('/api/catalog/homepage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          section_key: newForm.section_key,
+          title_ar: newForm.title_ar.trim(),
+          title_en: newForm.title_en.trim() || newForm.title_ar.trim(),
+          sort_order: Number(newForm.sort_order) || 0,
+          is_active: true,
+          content: {},
+        }),
+      });
+      setNewForm({ section_key: 'hero', title_ar: '', title_en: '', sort_order: '0' });
+      setShowCreate(false);
+      load();
+    } catch (error) {
+      setMsg(error instanceof Error ? error.message : tCommon('saveFailed', { fallback: 'فشل الحفظ' }));
+    }
   };
 
   const deleteSection = async (section: HomeSection) => {
     if (!confirm(t('confirmDelete', { fallback: 'حذف هذا القسم؟' }))) return;
-    await fetchJson<{ deleted: boolean }>(`/api/catalog/homepage/${section.id}`, { method: 'DELETE' });
-    closeSection();
-    load();
+    try {
+      await fetchJson<{ deleted: boolean }>(`/api/catalog/homepage/${section.id}`, { method: 'DELETE' });
+      closeSection();
+      load();
+    } catch (error) {
+      setMsg(error instanceof Error ? error.message : 'فشل الحذف');
+    }
   };
 
   return (
