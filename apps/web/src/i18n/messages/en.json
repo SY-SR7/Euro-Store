@@ -45,7 +45,10 @@
     "only": "Only",
     "productImage": "Product Image",
     "variant": "Variant",
-    "priceInDetails": "Price in details"
+    "priceInDetails": "Price in details",
+    "wishlist": "Wishlist",
+    "loginToViewWishlist": "Login to view wishlist",
+    "login": "Login"
   },
   "home": {
     "categoriesTitle": "Shop by category",
@@ -77,13 +80,115 @@
     },
     "shoes": {
       "beat5": {
-        "title": "Walk with confidence",
-        "subtitle": "Shoes designed for ultimate comfort and modern style",
-        "CTA": "Shop Shoes"
+        "title": "New Collection 5",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "CTA": "Shop Shoes",
+        "cta": "Shop Now"
+      },
+      "beat1": {
+        "title": "New Collection 1",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat2": {
+        "title": "New Collection 2",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat3": {
+        "title": "New Collection 3",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat4": {
+        "title": "New Collection 4",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
       }
     },
     "noCategoryProducts": "No products in this category currently.",
-    "viewAllProducts": "View all products"
+    "viewAllProducts": "View all products",
+    "men": {
+      "beat1": {
+        "title": "New Collection 1",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat2": {
+        "title": "New Collection 2",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat3": {
+        "title": "New Collection 3",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat4": {
+        "title": "New Collection 4",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat5": {
+        "title": "New Collection 5",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      }
+    },
+    "women": {
+      "beat1": {
+        "title": "New Collection 1",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat2": {
+        "title": "New Collection 2",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat3": {
+        "title": "New Collection 3",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat4": {
+        "title": "New Collection 4",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat5": {
+        "title": "New Collection 5",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      }
+    },
+    "kids": {
+      "beat1": {
+        "title": "New Collection 1",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat2": {
+        "title": "New Collection 2",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat3": {
+        "title": "New Collection 3",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat4": {
+        "title": "New Collection 4",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      },
+      "beat5": {
+        "title": "New Collection 5",
+        "subtitle": "Discover the latest modern designs tailored to your taste",
+        "cta": "Shop Now"
+      }
+    }
   },
   "faq": {
     "title": "FAQ"
@@ -118,10 +223,10 @@
   "euroStore": "Euro Store",
   "auth": {
     "logout": "Log out",
-    "login": "Log in",
+    "login": "Login",
     "password": "Password",
     "alreadyHaveAccount": "Already have an account?",
-    "createAccount": "Create account",
+    "createAccount": "Create Account",
     "continueBtn": "Continue",
     "customerLogin": "Customer login",
     "adminLogin": "Admin login",
@@ -132,13 +237,20 @@
       "registered": "Account created successfully",
       "loginFailed": "Login failed"
     },
-    "fullName": "Full name",
+    "fullName": "Full Name",
     "createNewAccount": "Create new account",
     "langEn": "English",
-    "email": "Email",
+    "email": "Email Address",
     "registerBtn": "Register",
     "loginBtn": "Log in",
-    "phone": "Phone"
+    "phone": "Phone",
+    "loginTitle": "Login",
+    "loggingIn": "Logging in...",
+    "noAccount": "No account?",
+    "registerTitle": "Create New Account",
+    "namePlaceholder": "Full Name...",
+    "passwordPlaceholder": "Password...",
+    "creatingAccount": "Creating Account..."
   },
   "englishShort": "EN",
   "helpSection": "Help",
@@ -289,21 +401,21 @@
     "payment": "Payment",
     "shipping": "Shipping",
     "deliveryInfo": "Delivery information",
-    "orderSummary": "Order summary",
+    "orderSummary": "Order Summary",
     "success": "Order created successfully",
     "placeOrder": "Place order",
     "shippingInfo": "Shipping information",
     "customerInfo": "Customer information",
-    "fullName": "Full name",
-    "phone": "Phone number",
+    "fullName": "Full Name",
+    "phone": "Phone Number",
     "governorate": "Governorate",
     "address": "Detailed address",
-    "notes": "Additional notes",
+    "notes": "Additional Notes",
     "notesHint": "Optional",
-    "discountCode": "Discount code",
+    "discountCode": "Discount Code",
     "applyCode": "Apply",
-    "confirmOrder": "Complete order",
-    "freeShipping": "Free shipping",
+    "confirmOrder": "Confirm Order",
+    "freeShipping": "Free Shipping",
     "selectGov": "Select Governorate",
     "invalidCode": "Invalid discount code",
     "codeExpired": "Discount code has expired",
@@ -312,8 +424,8 @@
     "minOrderNotMet": "Order does not meet minimum amount for this code",
     "orderFailed": "Failed to place order, please try again",
     "removeCode": "Remove",
-    "codeApplied": "Code applied",
-    "usePoints": "Use my loyalty points for a discount",
+    "codeApplied": "Discount Applied",
+    "usePoints": "Use Loyalty Points",
     "yourPoints": "Your points:",
     "pointsWorth": "worth",
     "loyaltyDiscount": "Loyalty discount",
@@ -321,7 +433,41 @@
     "successTitle": "Order confirmed!",
     "successMsg": "Your order number:",
     "backHome": "Back to Home",
-    "itemCount": "Item count"
+    "itemCount": "Item count",
+    "errors": {
+      "invalidCode": "Invalid discount code",
+      "codeExpired": "Discount code expired",
+      "codeMaxed": "Discount code usage limit reached",
+      "codeInactive": "Discount code is inactive",
+      "minOrderNotMet": "Minimum order amount not met",
+      "generic": "An unexpected error occurred",
+      "selectGov": "Please select a governorate",
+      "createFailed": "Failed to create order, please try again later"
+    },
+    "emptyCart": "Empty Cart",
+    "emptyCartMsg": "Your cart is currently empty.",
+    "browseProducts": "Browse Products",
+    "backToCart": "Back to Cart",
+    "contactInfo": "Contact Information",
+    "fullNamePlaceholder": "Full Name",
+    "deliveryAddress": "Delivery Address",
+    "calcShipping": "Calculating shipping...",
+    "shippingFee": "Shipping Fee:",
+    "detailedAddress": "Detailed Address",
+    "addressPlaceholder": "City, Region, Street...",
+    "optional": "(Optional)",
+    "notesPlaceholder": "Additional order notes...",
+    "remove": "Remove",
+    "apply": "Apply",
+    "equalsTo": "equals to",
+    "willDeduct": "will be deducted from total",
+    "processing": "Processing...",
+    "productWord": "Product",
+    "qty": "Qty",
+    "free": "Free",
+    "codeDiscount": "Code Discount",
+    "pointsDiscount": "Points Discount",
+    "contactConfirmMsg": "You will be contacted to confirm the order"
   },
   "inStock": "In stock",
   "rightsReserved": "All rights reserved",
@@ -343,7 +489,8 @@
     "login": "Login",
     "home": "Home",
     "loginToTrack": "Login to track and submit exchange requests.",
-    "noRequests": "No previous exchange requests."
+    "noRequests": "No previous exchange requests.",
+    "loginRequired": "Login Required"
   },
   "admin": {
     "products": "Product management",

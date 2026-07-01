@@ -10,7 +10,6 @@ import {
   ClipboardList,
   FolderTree,
   MessageSquareText,
-  MessageSquareText,
   Home,
   LayoutDashboard,
   LogOut,
