@@ -4,6 +4,7 @@ import { RefreshCw, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type ExchangeRequest = {
   id: string;
@@ -20,12 +21,7 @@ type ExchangeRequest = {
 };
 
 const STATUS_OPTIONS = ['pending', 'approved', 'rejected', 'completed'] as const;
-const STATUS_AR: Record<string, string> = {
-  pending: 'قيد الانتظار',
-  approved: 'تمت الموافقة',
-  rejected: 'مرفوض',
-  completed: 'مكتمل',
-};
+
 const STATUS_COLOR: Record<string, string> = {
   pending: 'bg-amber-50 text-amber-700 border-amber-200',
   approved: 'bg-blue-50 text-blue-700 border-blue-200',
@@ -49,7 +45,7 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   return payload as T;
 }
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+function Modal({ title, onClose, children, closeTitle }: { title: string; onClose: () => void; children: ReactNode; closeTitle?: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div
@@ -60,7 +56,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
           <h2 className="font-black text-[#1C1917]">{title}</h2>
           <button
             type="button"
-            title="إغلاق"
+            title={closeTitle || "Close"}
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]"
           >
@@ -166,10 +162,19 @@ function InlineText({
 function StatusPills({
   value,
   onSave,
+  t,
 }: {
   value: string;
   onSave: (value: string) => Promise<void> | void;
+  t: any;
 }) {
+  const STATUS_AR: Record<string, string> = {
+    pending: t('statusPending', { fallback: 'قيد الانتظار' }),
+    approved: t('statusApproved', { fallback: 'تمت الموافقة' }),
+    rejected: t('statusRejected', { fallback: 'مرفوض' }),
+    completed: t('statusCompleted', { fallback: 'مكتمل' }),
+  };
+
   return (
     <div className="flex flex-wrap gap-2">
       {STATUS_OPTIONS.map((status) => {
@@ -196,6 +201,11 @@ function StatusPills({
 export default function ExchangesQuickAdmin() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+  const t = useTranslations('adminExchanges');
+  const tCommon = useTranslations('common');
+
   const [requests, setRequests] = useState<ExchangeRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'completed'>('all');
@@ -203,6 +213,13 @@ export default function ExchangesQuickAdmin() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [msg, setMsg] = useState('');
   const [autoOpenedId, setAutoOpenedId] = useState('');
+
+  const STATUS_AR: Record<string, string> = {
+    pending: t('statusPending', { fallback: 'قيد الانتظار' }),
+    approved: t('statusApproved', { fallback: 'تمت الموافقة' }),
+    rejected: t('statusRejected', { fallback: 'مرفوض' }),
+    completed: t('statusCompleted', { fallback: 'مكتمل' }),
+  };
 
   const load = useCallback(() => {
     setLoading(true);
@@ -227,11 +244,11 @@ export default function ExchangesQuickAdmin() {
       const detail = await fetchJson<ExchangeRequest>(`/api/exchanges/${request.id}`);
       setSelected(detail);
     } catch (error) {
-      setMsg(error instanceof Error ? error.message : 'تعذر تحميل التفاصيل');
+      setMsg(error instanceof Error ? error.message : t('failedToLoadDetails', { fallback: 'تعذر تحميل التفاصيل' }));
     } finally {
       setDetailLoading(false);
     }
-  }, [router]);
+  }, [router, t]);
 
   const close = () => {
     setSelected(null);
@@ -274,19 +291,19 @@ export default function ExchangesQuickAdmin() {
         body: JSON.stringify(patch),
       });
       mergeRequest(selected.id, updated);
-      setMsg('تم الحفظ');
+      setMsg(tCommon('saved', { fallback: 'تم الحفظ' }));
     } catch (error) {
       mergeRequest(previous.id, previous);
-      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+      setMsg(error instanceof Error ? error.message : tCommon('saveFailed', { fallback: 'فشل الحفظ' }));
     }
   };
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">طلبات الاستبدال</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{requests.length} طلب</p>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('exchangesTitle', { fallback: 'طلبات الاستبدال' })}</h1>
+          <p className="mt-1 text-sm text-[#A8A29E]">{t('exchangesCount', { count: requests.length, fallback: `${requests.length} طلب` })}</p>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
           <button
@@ -295,7 +312,7 @@ export default function ExchangesQuickAdmin() {
             className="inline-flex items-center gap-2 rounded-full border border-[#E5E0D8] px-3 py-1.5 text-xs font-bold text-[#57534E] hover:border-[#B8860B]"
           >
             <RefreshCw size={13} />
-            تحديث
+            {tCommon('refresh', { fallback: 'تحديث' })}
           </button>
           {(['all', 'pending', 'approved', 'rejected', 'completed'] as const).map((status) => (
             <button
@@ -308,7 +325,7 @@ export default function ExchangesQuickAdmin() {
                   : 'border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B]'
               }`}
             >
-              {status === 'all' ? 'الكل' : STATUS_AR[status]}
+              {status === 'all' ? t('all', { fallback: 'الكل' }) : STATUS_AR[status]}
             </button>
           ))}
         </div>
@@ -316,18 +333,18 @@ export default function ExchangesQuickAdmin() {
 
       <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
         {loading ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
+          <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
         ) : requests.length === 0 ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد طلبات استبدال</p>
+          <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noExchanges', { fallback: 'لا توجد طلبات استبدال' })}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]">
                 <tr>
-                  {['الرقم', 'السبب', 'الحالة', 'تاريخ الطلب'].map((heading, index) => (
+                  {[t('id', { fallback: 'الرقم' }), t('reason', { fallback: 'السبب' }), t('status', { fallback: 'الحالة' }), t('requestDate', { fallback: 'تاريخ الطلب' })].map((heading, index) => (
                     <th
                       key={heading}
-                      className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${
+                      className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${
                         index === 3 ? 'hidden md:table-cell' : ''
                       }`}
                     >
@@ -347,7 +364,7 @@ export default function ExchangesQuickAdmin() {
                       {request.id.slice(0, 8)}
                     </td>
                     <td className="max-w-xs truncate px-5 py-3 text-[#57534E]">
-                      {request.reason_ar ?? request.reason_en ?? '—'}
+                      {locale === 'ar' ? (request.reason_ar ?? request.reason_en ?? '—') : (request.reason_en ?? request.reason_ar ?? '—')}
                     </td>
                     <td className="px-5 py-3">
                       <span className={`rounded-full border px-3 py-1 text-xs font-bold ${STATUS_COLOR[request.status] ?? 'bg-gray-50 text-gray-600 border-gray-200'}`}>
@@ -355,7 +372,7 @@ export default function ExchangesQuickAdmin() {
                       </span>
                     </td>
                     <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">
-                      {new Date(request.created_at).toLocaleDateString('ar-SY')}
+                      {new Date(request.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
                     </td>
                   </tr>
                 ))}
@@ -366,7 +383,7 @@ export default function ExchangesQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={`طلب استبدال #${selected.id.slice(0, 8)}`} onClose={close}>
+        <Modal title={t('exchangeRequestHeader', { id: selected.id.slice(0, 8), fallback: `طلب استبدال #${selected.id.slice(0, 8)}` })} onClose={close} closeTitle={tCommon('close', { fallback: 'إغلاق' })}>
           {detailLoading ? (
             <div className="h-56 rounded-2xl bg-[#F1E8DA] animate-pulse" />
           ) : (
@@ -374,7 +391,7 @@ export default function ExchangesQuickAdmin() {
               {msg ? (
                 <div
                   className={`rounded-xl border px-4 py-2 text-sm font-bold ${
-                    msg === 'تم الحفظ'
+                    msg === tCommon('saved', { fallback: 'تم الحفظ' })
                       ? 'border-green-200 bg-green-50 text-green-700'
                       : 'border-red-200 bg-red-50 text-red-700'
                   }`}
@@ -386,54 +403,56 @@ export default function ExchangesQuickAdmin() {
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
                 <section className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
                   <div className="space-y-2">
-                    <Field label="الحالة">
-                      <StatusPills value={selected.status} onSave={(status) => patchRequest({ status })} />
+                    <Field label={t('status', { fallback: 'الحالة' })}>
+                      <StatusPills value={selected.status} onSave={(status) => patchRequest({ status })} t={t} />
                     </Field>
-                    <Field label="السبب العربي">
+                    <Field label={t('reasonAr', { fallback: 'السبب العربي' })}>
                       <InlineText
                         value={selected.reason_ar ?? ''}
+                        dir={isAr ? "rtl" : "ltr"}
                         onSave={(reason_ar) => patchRequest({ reason_ar })}
                       />
                     </Field>
-                    <Field label="السبب الإنجليزي">
+                    <Field label={t('reasonEn', { fallback: 'السبب الإنجليزي' })}>
                       <InlineText
                         value={selected.reason_en ?? ''}
                         dir="ltr"
                         onSave={(reason_en) => patchRequest({ reason_en })}
                       />
                     </Field>
-                    <Field label="ملاحظات الإدارة">
+                    <Field label={t('adminNotes', { fallback: 'ملاحظات الإدارة' })}>
                       <InlineText
                         value={selected.notes ?? ''}
+                        dir={isAr ? "rtl" : "ltr"}
                         onSave={(notes) => patchRequest({ notes })}
                       />
                     </Field>
-                    <Field label="رقم الطلب">
+                    <Field label={t('orderId', { fallback: 'رقم الطلب' })}>
                       <div className="min-h-9 rounded-xl px-3 py-2 text-xs font-mono font-semibold text-[#1C1917]">
                         {selected.order_id ?? '—'}
                       </div>
                     </Field>
-                    <Field label="تاريخ الطلب">
+                    <Field label={t('requestDate', { fallback: 'تاريخ الطلب' })}>
                       <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
-                        {new Date(selected.created_at).toLocaleDateString('ar-SY')}
+                        {new Date(selected.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
                       </div>
                     </Field>
                   </div>
                 </section>
 
                 <section className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
-                  <h3 className="mb-3 text-sm font-black text-[#1C1917]">صور العميل</h3>
+                  <h3 className="mb-3 text-sm font-black text-[#1C1917]">{t('customerImages', { fallback: 'صور العميل' })}</h3>
                   {selected.customer_images && selected.customer_images.length > 0 ? (
                     <div className="grid grid-cols-2 gap-2">
                       {selected.customer_images.map((url, index) => (
                         <a key={`${url}-${index}`} href={url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-xl border border-[#E5E0D8]">
-                          <img src={url} alt={`صورة ${index + 1}`} className="aspect-square w-full object-cover" />
+                          <img src={url} alt={t('imageFallback', { index: index + 1, fallback: `صورة ${index + 1}` })} className="aspect-square w-full object-cover" />
                         </a>
                       ))}
                     </div>
                   ) : (
                     <p className="rounded-xl border border-dashed border-[#E5E0D8] p-8 text-center text-sm font-bold text-[#8B8172]">
-                      لا توجد صور
+                      {t('noImages', { fallback: 'لا توجد صور' })}
                     </p>
                   )}
                 </section>
