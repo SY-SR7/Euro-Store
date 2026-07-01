@@ -6,6 +6,7 @@ import { CopyReferralButton } from '@/components/loyalty/CopyReferralButton';
 import { getTranslations, getLocale } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 async function getLoyaltyData() {
   const { client, user } = await getSessionClient();
