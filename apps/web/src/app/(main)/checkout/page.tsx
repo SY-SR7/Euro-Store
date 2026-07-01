@@ -61,9 +61,11 @@ export default function CheckoutPage() {
   // Loyalty
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
   const [usePoints,     setUsePoints]     = useState(false);
+  // Canonical keys from system_settings: loyalty_point_value_syp, loyalty_max_redemption_pct
   const [loyaltySettings, setLoyaltySettings] = useState({
-    redeem_points_per_syp: 100,
-    max_redeem_percent: 30,
+    point_value_syp: 10,     // 1 point = 10 SYP
+    max_redeem_pct: 30,      // max % of order payable by points
+    min_redeem_pts: 100,     // minimum points to enable redemption
   });
 
   const subtotal = getSubtotal(items);
@@ -86,7 +88,13 @@ export default function CheckoutPage() {
       .catch(() => {});
     fetch('/api/loyalty/settings')
       .then(r => r.ok ? r.json() : null)
-      .then((d: any) => { if (d) setLoyaltySettings({ redeem_points_per_syp: d.redeem_points_per_syp ?? 100, max_redeem_percent: d.max_redeem_percent ?? 30 }); })
+      .then((d: any) => {
+        if (d) setLoyaltySettings({
+          point_value_syp: d.loyalty_point_value_syp ?? 10,
+          max_redeem_pct: d.loyalty_max_redemption_pct ?? 30,
+          min_redeem_pts: d.loyalty_min_redemption_pts ?? 100,
+        });
+      })
       .catch(() => {});
   }, []);
 
@@ -97,10 +105,12 @@ export default function CheckoutPage() {
   })();
 
   const discountSyp = discount?.discount_amount ?? 0;
-  const POINT_VAL   = loyaltySettings.redeem_points_per_syp > 0 ? 1 / loyaltySettings.redeem_points_per_syp : 0;
-  const MAX_PCT     = loyaltySettings.max_redeem_percent / 100;
+  // 1 point = point_value_syp SYP
+  const POINT_VAL   = loyaltySettings.point_value_syp || 10;
+  const MAX_PCT     = loyaltySettings.max_redeem_pct / 100;
+  const MIN_PTS     = loyaltySettings.min_redeem_pts || 100;
   const loyaltyDiscountSyp = (() => {
-    if (!usePoints || loyaltyPoints === 0) return 0;
+    if (!usePoints || loyaltyPoints < MIN_PTS) return 0;
     const maxByPct = Math.floor(subtotal * MAX_PCT);
     const maxByPts = Math.floor(loyaltyPoints * POINT_VAL);
     return Math.min(maxByPct, maxByPts);
