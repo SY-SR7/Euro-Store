@@ -4,7 +4,14 @@ import { createServerClient } from '@supabase/ssr';
 type ClientOptions = Parameters<typeof createClient>[2];
 
 const clientOptions: ClientOptions = {
-  auth: { persistSession: false, autoRefreshToken: false }
+  auth: { persistSession: false, autoRefreshToken: false },
+  global: {
+    // Disable Next.js data cache so Supabase data is always fresh.
+    // Without this, even force-dynamic pages may serve stale data
+    // because Next.js caches individual fetch() calls independently.
+    fetch: (url, options) =>
+      fetch(url, { ...options, cache: 'no-store' }),
+  },
 };
 
 function envValue(name: string, fallback?: string): string {
