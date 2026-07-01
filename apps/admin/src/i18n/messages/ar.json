@@ -484,5 +484,28 @@
     "failedToOpenCode": "تعذر فتح الكود",
     "percentage": "نسبة",
     "fixed": "ثابت"
+  },
+  "adminExchanges": {
+    "exchangesTitle": "طلبات الاستبدال",
+    "exchangesCount": "{count} طلب",
+    "all": "الكل",
+    "noExchanges": "لا توجد طلبات استبدال",
+    "id": "الرقم",
+    "reason": "السبب",
+    "status": "الحالة",
+    "requestDate": "تاريخ الطلب",
+    "exchangeRequestHeader": "طلب استبدال #{id}",
+    "statusPending": "قيد الانتظار",
+    "statusApproved": "تمت الموافقة",
+    "statusRejected": "مرفوض",
+    "statusCompleted": "مكتمل",
+    "reasonAr": "السبب العربي",
+    "reasonEn": "السبب الإنجليزي",
+    "adminNotes": "ملاحظات الإدارة",
+    "orderId": "رقم الطلب",
+    "customerImages": "صور العميل",
+    "noImages": "لا توجد صور",
+    "imageFallback": "صورة {index}",
+    "failedToLoadDetails": "تعذر تحميل التفاصيل"
   }
 }

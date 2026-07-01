@@ -484,5 +484,28 @@
     "failedToOpenCode": "Failed to open code",
     "percentage": "Percentage",
     "fixed": "Fixed"
+  },
+  "adminExchanges": {
+    "exchangesTitle": "Exchange Requests",
+    "exchangesCount": "{count} requests",
+    "all": "All",
+    "noExchanges": "No exchange requests found",
+    "id": "ID",
+    "reason": "Reason",
+    "status": "Status",
+    "requestDate": "Request Date",
+    "exchangeRequestHeader": "Exchange Request #{id}",
+    "statusPending": "Pending",
+    "statusApproved": "Approved",
+    "statusRejected": "Rejected",
+    "statusCompleted": "Completed",
+    "reasonAr": "Reason (Arabic)",
+    "reasonEn": "Reason (English)",
+    "adminNotes": "Admin Notes",
+    "orderId": "Order ID",
+    "customerImages": "Customer Images",
+    "noImages": "No images",
+    "imageFallback": "Image {index}",
+    "failedToLoadDetails": "Failed to load details"
   }
 }
