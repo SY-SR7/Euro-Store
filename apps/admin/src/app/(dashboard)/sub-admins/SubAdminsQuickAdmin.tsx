@@ -4,6 +4,7 @@ import { Plus, RefreshCw, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { FormEvent, KeyboardEvent, ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type SubAdmin = {
   user_id: string;
@@ -40,13 +41,13 @@ function pickArray<T>(payload: unknown): T[] {
   return [];
 }
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+function Modal({ title, onClose, children, closeTitle }: { title: string; onClose: () => void; children: ReactNode; closeTitle?: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="w-full max-w-2xl rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" title="إغلاق" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -111,10 +112,10 @@ function InlineText({
   );
 }
 
-function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolean) => void | Promise<void> }) {
+function ActivePills({ value, onSave, labelActive, labelDisabled }: { value: boolean; onSave: (value: boolean) => void | Promise<void>; labelActive: string; labelDisabled: string }) {
   return (
     <div className="flex gap-2">
-      {[{ v: true, l: 'نشط', c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: 'معطل', c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
+      {[{ v: true, l: labelActive, c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: labelDisabled, c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
         <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}>
           {option.l}
         </button>
@@ -123,15 +124,22 @@ function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolea
   );
 }
 
-function formatDate(value: string) {
+function formatDate(value: string, locale: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '-';
-  return new Intl.DateTimeFormat('ar-SY', { dateStyle: 'medium' }).format(date);
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(date);
 }
 
 export default function SubAdminsQuickAdmin() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+  const t = useTranslations('adminSubAdmins');
+  const tCommon = useTranslations('common');
+
+  const formatLoc = isAr ? 'ar-SY' : 'en-US';
+
   const [subAdmins, setSubAdmins] = useState<SubAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<SubAdmin | null>(null);
@@ -181,8 +189,8 @@ export default function SubAdminsQuickAdmin() {
         openSubAdmin(subAdmin, false);
         setAutoOpenedId(subAdminId);
       })
-      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح المشرف'));
-  }, [autoOpenedId, openSubAdmin, searchParams, selected?.user_id, subAdmins]);
+      .catch((error) => setMsg(error instanceof Error ? error.message : t('failedToLoadAdmin')));
+  }, [autoOpenedId, openSubAdmin, searchParams, selected?.user_id, subAdmins, t]);
 
   const mergeSubAdmin = (id: string, patch: Partial<SubAdmin>) => {
     setSubAdmins((current) => current.map((item) => (item.user_id === id ? { ...item, ...patch } : item)));
@@ -204,10 +212,10 @@ export default function SubAdminsQuickAdmin() {
         }),
       });
       mergeSubAdmin(subAdmin.user_id, updated);
-      setMsg('تم الحفظ');
+      setMsg(tCommon('saved'));
     } catch (error) {
       mergeSubAdmin(previous.user_id, previous);
-      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+      setMsg(error instanceof Error ? error.message : tCommon('saveFailed'));
     }
   };
 
@@ -224,63 +232,63 @@ export default function SubAdminsQuickAdmin() {
       });
       setForm({ email: '', password: '', display_name: '' });
       setShowCreate(false);
-      setMsg('تم إنشاء الحساب');
+      setMsg(t('createdSuccessfully'));
       load();
     } catch (error) {
-      setMsg(error instanceof Error ? error.message : 'فشل الإنشاء');
+      setMsg(error instanceof Error ? error.message : t('creationFailed'));
     } finally {
       setCreating(false);
     }
   };
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">المشرفون</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{subAdmins.length} حساب</p>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('title')}</h1>
+          <p className="mt-1 text-sm text-[#A8A29E]">{t('countAccounts', { count: subAdmins.length })}</p>
         </div>
         <div className="flex gap-2">
           <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
-            <RefreshCw size={15} />تحديث
+            <RefreshCw size={15} />{tCommon('refresh')}
           </button>
           <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]">
-            <Plus size={15} />مشرف جديد
+            <Plus size={15} />{t('newSubAdmin')}
           </button>
         </div>
       </div>
 
-      {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' || msg === 'تم إنشاء الحساب' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
+      {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved') || msg === t('createdSuccessfully') ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 
       {showCreate ? (
         <form onSubmit={(event) => void createSubAdmin(event)} className="grid gap-3 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm md:grid-cols-3">
-          <input value={form.display_name} onChange={(event) => setForm((current) => ({ ...current, display_name: event.target.value }))} placeholder="الاسم" className={inputClass} />
-          <input value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} placeholder="email@example.com" type="email" dir="ltr" className={inputClass} />
-          <input value={form.password} onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))} placeholder="كلمة المرور" type="password" dir="ltr" className={inputClass} />
+          <input value={form.display_name} onChange={(event) => setForm((current) => ({ ...current, display_name: event.target.value }))} placeholder={t('formName')} className={inputClass} dir={isAr ? "rtl" : "ltr"} />
+          <input value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} placeholder={t('formEmail')} type="email" dir="ltr" className={inputClass} />
+          <input value={form.password} onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))} placeholder={t('formPassword')} type="password" dir="ltr" className={inputClass} />
           <button type="submit" disabled={creating || !form.email.trim() || form.password.length < 8} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50 md:col-span-3">
-            {creating ? 'جار الإنشاء...' : 'إنشاء'}
+            {creating ? t('formCreating') : t('formCreate')}
           </button>
         </form>
       ) : null}
 
       <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
-        : subAdmins.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد حسابات</p>
+        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading')}</p>
+        : subAdmins.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noAccounts')}</p>
         : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]">
-                <tr>{['الاسم', 'البريد', 'التاريخ', 'الحالة'].map((head, index) => <th key={head} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${index === 2 ? 'hidden md:table-cell' : ''}`}>{head}</th>)}</tr>
+                <tr>{[t('tableHeaderName'), t('tableHeaderEmail'), t('tableHeaderDate'), t('tableHeaderStatus')].map((head, index) => <th key={head} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${index === 2 ? 'hidden md:table-cell' : ''}`}>{head}</th>)}</tr>
               </thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {subAdmins.map((item) => (
                   <tr key={item.user_id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openSubAdmin(item)}>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{item.display_name || '-'}</td>
                     <td className="px-5 py-3 font-mono text-xs text-[#57534E]" dir="ltr">{item.email}</td>
-                    <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">{formatDate(item.created_at)}</td>
+                    <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">{formatDate(item.created_at, formatLoc)}</td>
                     <td className="px-5 py-3" onClick={(event) => event.stopPropagation()}>
                       <button type="button" onClick={() => void patchSubAdmin(item, { is_active: !item.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${item.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
-                        {item.is_active ? 'نشط' : 'معطل'}
+                        {item.is_active ? t('statusActive') : t('statusDisabled')}
                       </button>
                     </td>
                   </tr>
@@ -292,15 +300,15 @@ export default function SubAdminsQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={selected.display_name || selected.email} onClose={closeSubAdmin}>
+        <Modal title={selected.display_name || selected.email} onClose={closeSubAdmin} closeTitle={tCommon('close')}>
           <div className="space-y-4">
-            {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
+            {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved') ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
               <div className="space-y-2">
-                <Field label="الاسم"><InlineText value={selected.display_name ?? ''} onSave={(display_name) => patchSubAdmin(selected, { display_name })} /></Field>
-                <Field label="البريد"><InlineText value={selected.email} dir="ltr" onSave={(email) => patchSubAdmin(selected, { email })} /></Field>
-                <Field label="الحالة"><ActivePills value={selected.is_active} onSave={(is_active) => patchSubAdmin(selected, { is_active })} /></Field>
-                <Field label="تاريخ الإنشاء"><span className="block px-3 py-2 text-sm font-semibold text-[#1C1917]">{formatDate(selected.created_at)}</span></Field>
+                <Field label={t('fieldName')}><InlineText value={selected.display_name ?? ''} dir={isAr ? "rtl" : "ltr"} onSave={(display_name) => patchSubAdmin(selected, { display_name })} /></Field>
+                <Field label={t('fieldEmail')}><InlineText value={selected.email} dir="ltr" onSave={(email) => patchSubAdmin(selected, { email })} /></Field>
+                <Field label={t('fieldStatus')}><ActivePills value={selected.is_active} labelActive={t('statusActive')} labelDisabled={t('statusDisabled')} onSave={(is_active) => patchSubAdmin(selected, { is_active })} /></Field>
+                <Field label={t('fieldCreatedAt')}><span className="block px-3 py-2 text-sm font-semibold text-[#1C1917]">{formatDate(selected.created_at, formatLoc)}</span></Field>
               </div>
             </div>
           </div>
