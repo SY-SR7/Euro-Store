@@ -75,12 +75,14 @@ export function Header() {
             <Heart className="h-4 w-4" />
           </Link>
           <Link href="/account" aria-label={t('account')}
-            className={`rounded-full p-2.5 transition-all duration-200 hover:bg-[#FACC15]/20 hover:text-[#B8860B] ${
+            className={`hidden md:inline-flex rounded-full p-2.5 transition-all duration-200 hover:bg-[#FACC15]/20 hover:text-[#B8860B] ${
               pathname.startsWith('/account') ? 'bg-[#FACC15]/15 text-[#B8860B] ring-1 ring-[#B8860B]/30 shadow-sm' : 'text-[#57534E]'
             }`}>
             <User className="h-4 w-4" />
           </Link>
-          <CartBadge />
+          <div className="hidden md:block">
+            <CartBadge />
+          </div>
           <LanguageSwitcher />
           <button onClick={() => setOpen(v => !v)}
             className="rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] md:hidden">
