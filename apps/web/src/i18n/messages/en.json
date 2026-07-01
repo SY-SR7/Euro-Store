@@ -324,5 +324,35 @@
     "title": "Loyalty program",
     "learnDesc": "Earn points with every order and unlock exclusive rewards"
   },
-  "exchangePolicy": "Exchange policy"
+  "exchangePolicy": "Exchange policy",
+  "productDetails": {
+    "loading": "Loading...",
+    "notFoundTitle": "Product Not Found",
+    "notFoundImage": "Product image not found",
+    "backToProducts": "Back to Products",
+    "home": "Home",
+    "products": "Products",
+    "productImage": "Product Image",
+    "image": "Image",
+    "variant": "Variant",
+    "totalStock": "Total Stock",
+    "selectedVariant": "Selected Variant",
+    "color": "Color",
+    "colorLabel": "Color",
+    "size": "Size",
+    "sizeLabel": "Size",
+    "stock": "Stock",
+    "pieces": "pcs",
+    "extraDetails": "Additional Details",
+    "noVariants": "No variants available currently",
+    "chooseVariant": "Choose a suitable variant",
+    "outOfStockShort": "Out",
+    "outOfStockLong": "Out of Stock",
+    "lowStock": "Low Stock",
+    "available": "Available",
+    "addedToCart": "✓ Added to Cart",
+    "addToCart": "Add to Cart",
+    "chooseVariantFirst": "Choose variant first",
+    "category": "Category:"
+  }
 }

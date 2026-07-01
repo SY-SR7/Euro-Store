@@ -324,5 +324,35 @@
     "title": "برنامج الولاء",
     "learnDesc": "اكسب نقاطاً مع كل طلب واستفد من مكافآت حصرية"
   },
-  "exchangePolicy": "سياسة الاستبدال"
+  "exchangePolicy": "سياسة الاستبدال",
+  "productDetails": {
+    "loading": "جاري التحميل...",
+    "notFoundTitle": "المنتج غير موجود",
+    "notFoundImage": "صورة المنتج غير موجود",
+    "backToProducts": "عودة للمنتجات",
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "productImage": "صورة المنتج",
+    "image": "صورة",
+    "variant": "متغير",
+    "totalStock": "المخزون الكلي",
+    "selectedVariant": "المتغير المحدد",
+    "color": "اللون",
+    "colorLabel": "لون",
+    "size": "المقاس",
+    "sizeLabel": "مقاس",
+    "stock": "المخزون",
+    "pieces": "قطعة",
+    "extraDetails": "تفاصيل إضافية",
+    "noVariants": "لا توجد متغيرات متاحة حالياً",
+    "chooseVariant": "اختر المتغير المناسب",
+    "outOfStockShort": "نفذ",
+    "outOfStockLong": "نفذ المخزون",
+    "lowStock": "كمية قليلة",
+    "available": "متوفر",
+    "addedToCart": "✓ تمت الإضافة إلى السلة",
+    "addToCart": "أضف إلى السلة",
+    "chooseVariantFirst": "اختر المتغير أولاً",
+    "category": "التصنيف:"
+  }
 }
