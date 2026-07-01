@@ -45,6 +45,13 @@ The `EuroStore_PRD.md` is the only authoritative specification. If anything in t
 
 The project is a Turborepo monorepo. Shared code lives in `packages/`. Never duplicate logic between apps. Every package has a single responsibility.
 
+### 2.5 Mobile-First & Responsive Excellence
+
+**The entire project (Web, Admin, Partner, and Helper apps) is PRIMARILY targeted for mobile devices.** Desktop and horizontal screens are secondary.
+- **Mobile-First CSS:** Every UI component MUST be styled for mobile first, then scaled up using Tailwind breakpoints (`md:`, `lg:`).
+- **Zero Horizontal Overflow:** Horizontal scrolling on mobile is strictly prohibited. Always handle grids, tables, and long text to wrap or stack gracefully.
+- **Touch Targets:** Buttons, inputs, and navigations must be thumb-friendly. Avoid annoying auto-zoom on iOS inputs by handling viewport correctly.
+
 ---
 
 ## 3. Architecture Overview
