@@ -420,18 +420,25 @@ export default function OrdersQuickAdmin() {
 
       <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
         {loading ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
+          <p className="p-10 text-center text-sm text-[#A8A29E]">{t('loading', { fallback: 'جار التحميل...' })}</p>
         ) : orders.length === 0 ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد طلبات</p>
+          <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noOrders', { fallback: 'لا توجد طلبات' })}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]">
                 <tr>
-                  {['رقم الطلب', 'العميل', 'الحالة', 'الدفع', 'المجموع', 'التاريخ'].map((heading, index) => (
+                  {[
+                    t('tableOrderNumber', { fallback: 'رقم الطلب' }),
+                    t('tableCustomer', { fallback: 'العميل' }),
+                    t('tableStatus', { fallback: 'الحالة' }),
+                    t('tablePayment', { fallback: 'الدفع' }),
+                    t('tableTotal', { fallback: 'المجموع' }),
+                    t('tableDate', { fallback: 'التاريخ' })
+                  ].map((heading, index) => (
                     <th
                       key={heading}
-                      className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${
+                      className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${
                         index >= 4 ? 'hidden md:table-cell' : ''
                       }`}
                     >
@@ -453,17 +460,17 @@ export default function OrdersQuickAdmin() {
                     <td className="px-5 py-3 text-[#57534E]">{order.address_snapshot?.full_name ?? '—'}</td>
                     <td className="px-5 py-3">
                       <span className={`rounded-full border px-3 py-1 text-xs font-bold ${STATUS_COLOR[order.status] ?? 'bg-gray-100 text-gray-500 border-gray-200'}`}>
-                        {STATUS_AR[order.status] ?? order.status}
+                        {t(`status.${order.status}`)}
                       </span>
                     </td>
                     <td className="px-5 py-3">
                       <span className={`rounded-full border px-3 py-1 text-xs font-bold ${PAYMENT_COLOR[order.payment_status ?? 'pending'] ?? PAYMENT_COLOR.pending}`}>
-                        {PAYMENT_STATUS_AR[order.payment_status ?? 'pending']}
+                        {t(`paymentStatus.${order.payment_status ?? 'pending'}`)}
                       </span>
                     </td>
                     <td className="hidden px-5 py-3 font-bold text-[#B8860B] md:table-cell">{money(order.total_syp)}</td>
                     <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">
-                      {new Date(order.created_at).toLocaleDateString('ar-SY')}
+                      {new Date(order.created_at).toLocaleDateString(isAr ? 'ar-SY' : 'en-US')}
                     </td>
                   </tr>
                 ))}
@@ -477,16 +484,16 @@ export default function OrdersQuickAdmin() {
                   disabled={page === 1}
                   className="rounded-lg border border-[#E5E0D8] px-3 py-1.5 text-xs font-bold disabled:opacity-40"
                 >
-                  السابق
+                  {tCommon('previous', { fallback: 'السابق' })}
                 </button>
-                <span className="text-xs text-[#A8A29E]">صفحة {page} من {Math.ceil(total / 25)}</span>
+                <span className="text-xs text-[#A8A29E]">{tCommon('page', { fallback: 'صفحة' })} {page} {tCommon('of', { fallback: 'من' })} {Math.ceil(total / 25)}</span>
                 <button
                   type="button"
                   onClick={() => setPage((current) => current + 1)}
                   disabled={page * 25 >= total}
                   className="rounded-lg border border-[#E5E0D8] px-3 py-1.5 text-xs font-bold disabled:opacity-40"
                 >
-                  التالي
+                  {tCommon('next', { fallback: 'التالي' })}
                 </button>
               </div>
             ) : null}
@@ -495,7 +502,7 @@ export default function OrdersQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={`طلب #${selected.order_number}`} onClose={close}>
+        <Modal title={`${t('orderModalTitle', { fallback: 'طلب #' })}${selected.order_number}`} onClose={close}>
           {detailLoading ? (
             <div className="h-64 rounded-2xl bg-[#F1E8DA] animate-pulse" />
           ) : (
@@ -503,7 +510,7 @@ export default function OrdersQuickAdmin() {
               {msg ? (
                 <div
                   className={`rounded-xl border px-4 py-2 text-sm font-bold ${
-                    msg === 'تم الحفظ'
+                    msg === t('savedSuccessfully', { fallback: 'تم الحفظ' })
                       ? 'border-green-200 bg-green-50 text-green-700'
                       : 'border-red-200 bg-red-50 text-red-700'
                   }`}
@@ -513,75 +520,95 @@ export default function OrdersQuickAdmin() {
               ) : null}
 
               <div className="grid gap-4 lg:grid-cols-2">
-                <Section title="حالة الطلب">
+                <Section title={t('orderStatusTitle', { fallback: 'حالة الطلب' })}>
                   <div className="space-y-3">
-                    <Field label="الحالة">
+                    <Field label={t('tableStatus', { fallback: 'الحالة' })}>
                       <ChoicePills
                         value={selected.status}
-                        labels={STATUS_AR}
+                        labels={{
+                          pending: t('status.pending'),
+                          confirmed: t('status.confirmed'),
+                          processing: t('status.processing'),
+                          shipped: t('status.shipped'),
+                          delivered: t('status.delivered'),
+                          cancelled: t('status.cancelled'),
+                        }}
                         colors={STATUS_COLOR}
                         options={allowedStatusOptions}
                         onSave={(value) => patchOrder({ status: value })}
                       />
                     </Field>
-                    <Field label="حالة الدفع">
+                    <Field label={t('paymentStatusTitle', { fallback: 'حالة الدفع' })}>
                       <ChoicePills
                         value={selected.payment_status ?? 'pending'}
-                        labels={PAYMENT_STATUS_AR}
+                        labels={{
+                          pending: t('paymentStatus.pending'),
+                          paid: t('paymentStatus.paid'),
+                          failed: t('paymentStatus.failed'),
+                          refunded: t('paymentStatus.refunded'),
+                        }}
                         colors={PAYMENT_COLOR}
                         options={['pending', 'paid', 'failed', 'refunded']}
                         onSave={(value) => patchOrder({ payment_status: value })}
                       />
                     </Field>
-                    <Field label="طريقة الدفع">
+                    <Field label={t('paymentMethodTitle', { fallback: 'طريقة الدفع' })}>
                       <ChoicePills
                         value={selected.payment_method ?? 'cash_on_delivery'}
-                        labels={PAYMENT_METHOD_AR}
+                        labels={{
+                          cash_on_delivery: t('paymentMethod.cash_on_delivery'),
+                          sham_cash: t('paymentMethod.sham_cash'),
+                        }}
                         options={['cash_on_delivery', 'sham_cash']}
                         onSave={(value) => patchOrder({ payment_method: value })}
                       />
                     </Field>
-                    <Field label="ملاحظات الإدارة">
+                    <Field label={t('adminNotes', { fallback: 'ملاحظات الإدارة' })}>
                       <InlineText
                         value={selected.notes ?? ''}
                         multiline
+                        dir={isAr ? "rtl" : "ltr"}
                         onSave={(value) => patchOrder({ notes: value })}
                       />
                     </Field>
                   </div>
                 </Section>
 
-                <Section title="بيانات التوصيل">
+                <Section title={t('shippingDetails', { fallback: 'بيانات التوصيل' })}>
                   <div className="space-y-2">
-                    <Field label="الاسم">
+                    <Field label={t('addressName', { fallback: 'الاسم' })}>
                       <InlineText
                         value={selectedAddress.full_name ?? ''}
+                        dir={isAr ? "rtl" : "ltr"}
                         onSave={(value) => patchOrder({ address_snapshot: { full_name: value } })}
                       />
                     </Field>
-                    <Field label="الهاتف">
+                    <Field label={t('addressPhone', { fallback: 'الهاتف' })}>
                       <InlineText
                         value={selectedAddress.phone ?? ''}
                         dir="ltr"
                         onSave={(value) => patchOrder({ address_snapshot: { phone: value } })}
                       />
                     </Field>
-                    <Field label="المحافظة">
+                    <Field label={t('addressGov', { fallback: 'المحافظة' })}>
                       <InlineText
                         value={selectedAddress.governorate ?? ''}
+                        dir={isAr ? "rtl" : "ltr"}
                         onSave={(value) => patchOrder({ address_snapshot: { governorate: value } })}
                       />
                     </Field>
-                    <Field label="المدينة">
+                    <Field label={t('addressCity', { fallback: 'المدينة' })}>
                       <InlineText
                         value={selectedAddress.city ?? ''}
+                        dir={isAr ? "rtl" : "ltr"}
                         onSave={(value) => patchOrder({ address_snapshot: { city: value } })}
                       />
                     </Field>
-                    <Field label="الشارع">
+                    <Field label={t('addressStreet', { fallback: 'الشارع' })}>
                       <InlineText
                         value={selectedAddress.street ?? selectedAddress.address ?? ''}
                         multiline
+                        dir={isAr ? "rtl" : "ltr"}
                         onSave={(value) => patchOrder({ address_snapshot: { street: value, address: value } })}
                       />
                     </Field>
@@ -591,30 +618,36 @@ export default function OrdersQuickAdmin() {
 
               <div className="grid gap-3 sm:grid-cols-4">
                 <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
-                  <p className="text-xs font-bold text-[#8B8172]">الجزئي</p>
+                  <p className="text-xs font-bold text-[#8B8172]">{t('subtotal', { fallback: 'الجزئي' })}</p>
                   <p className="mt-1 font-black text-[#1C1917]">{money(selected.subtotal_syp)}</p>
                 </div>
                 <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
-                  <p className="text-xs font-bold text-[#8B8172]">الخصم</p>
+                  <p className="text-xs font-bold text-[#8B8172]">{t('discount', { fallback: 'الخصم' })}</p>
                   <p className="mt-1 font-black text-red-600">{money((selected.discount_syp ?? 0) + (selected.loyalty_discount_syp ?? 0))}</p>
                 </div>
                 <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
-                  <p className="text-xs font-bold text-[#8B8172]">الشحن</p>
+                  <p className="text-xs font-bold text-[#8B8172]">{t('shippingCost', { fallback: 'الشحن' })}</p>
                   <p className="mt-1 font-black text-[#1C1917]">{money(selected.shipping_syp)}</p>
                 </div>
                 <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
-                  <p className="text-xs font-bold text-[#8B8172]">الإجمالي</p>
+                  <p className="text-xs font-bold text-[#8B8172]">{t('totalAmount', { fallback: 'الإجمالي' })}</p>
                   <p className="mt-1 font-black text-[#B8860B]">{money(selected.total_syp)}</p>
                 </div>
               </div>
 
-              <Section title={`المنتجات (${selected.order_items?.length ?? 0})`}>
+              <Section title={`${t('productsList', { fallback: 'المنتجات' })} (${selected.order_items?.length ?? 0})`}>
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">
                     <thead className="bg-[#F8F6F2]">
                       <tr>
-                        {['المنتج', 'SKU', 'الكمية', 'السعر', 'الإجمالي'].map((heading) => (
-                          <th key={heading} className="px-4 py-3 text-right text-xs font-black text-[#A8A29E]">
+                        {[
+                          t('tableProduct', { fallback: 'المنتج' }),
+                          t('tableSKU', { fallback: 'SKU' }),
+                          t('tableQuantity', { fallback: 'الكمية' }),
+                          t('tablePrice', { fallback: 'السعر' }),
+                          t('tableTotal', { fallback: 'الإجمالي' })
+                        ].map((heading) => (
+                          <th key={heading} className={`px-4 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E]`}>
                             {heading}
                           </th>
                         ))}
@@ -624,7 +657,7 @@ export default function OrdersQuickAdmin() {
                       {(selected.order_items ?? []).map((item) => (
                         <tr key={item.id}>
                           <td className="px-4 py-3 font-semibold text-[#1C1917]">
-                            {item.product_snapshot?.name_ar ?? '—'}
+                            {isAr ? (item.product_snapshot?.name_ar ?? '—') : (item.product_snapshot?.name_en || item.product_snapshot?.name_ar || '—')}
                           </td>
                           <td className="px-4 py-3 font-mono text-xs text-[#57534E]">{item.product_snapshot?.sku ?? '—'}</td>
                           <td className="px-4 py-3 text-[#57534E]">{item.quantity}</td>
