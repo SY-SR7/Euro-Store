@@ -331,7 +331,7 @@ export default function ReviewsQuickAdmin() {
           ))}
         </div>
       ) : reviews.length === 0 ? (
-        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 md:p-10 text-center text-sm text-text-muted">
           {t('noReviews', { fallback: 'لا توجد تقييمات في هذا القسم' })}
         </div>
       ) : (

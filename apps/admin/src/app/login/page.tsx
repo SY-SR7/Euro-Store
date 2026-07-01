@@ -80,7 +80,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 relative" dir={isAr ? "rtl" : "ltr"}>
+    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-6 md:py-10 relative" dir={isAr ? "rtl" : "ltr"}>
       <div className="absolute top-4 end-4">
         <LanguageSwitcher />
       </div>

@@ -191,8 +191,8 @@ export default function BrandsQuickAdmin() {
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
-        : visible.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noBrands', { fallback: 'لا توجد ماركات' })}</p>
+        {loading ? <p className="p-4 md:p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+        : visible.length === 0 ? <p className="p-4 md:p-10 text-center text-sm text-text-muted">{t('noBrands', { fallback: 'لا توجد ماركات' })}</p>
         : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">

@@ -11,7 +11,7 @@ export default async function TotpSetupPage({ searchParams }: { searchParams: { 
   const isAr = locale === 'ar';
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
+    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-6 md:py-10 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
       <div className="w-full max-w-md rounded-3xl border border-border bg-background-card p-8 shadow-xl">
         <div className="mb-6 flex items-center gap-3">
           <span className="grid h-11 w-11 place-items-center rounded-2xl border border-border bg-background-card text-primary">

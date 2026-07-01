@@ -556,8 +556,8 @@ export default function NotificationsQuickAdmin() {
       </section>
 
       <section className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-background-card shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
-        : visible.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noNotifications')}</p>
+        {loading ? <p className="p-4 md:p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+        : visible.length === 0 ? <p className="p-4 md:p-10 text-center text-sm text-text-muted">{t('noNotifications')}</p>
         : (
           <div className="divide-y divide-[#F0ECE6]">
             {visible.map((item) => {

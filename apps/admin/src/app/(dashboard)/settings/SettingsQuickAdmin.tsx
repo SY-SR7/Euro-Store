@@ -185,7 +185,7 @@ export default function SettingsQuickAdmin() {
 
       {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved', { fallback: 'تم الحفظ' }) ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 
-      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 md:p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
       : (
         <div className="grid gap-5 xl:grid-cols-2">
           {groups.map((groupKey) => (

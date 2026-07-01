@@ -26,7 +26,7 @@ export default function CheckoutSuccessPage() {
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-4" dir={isAr ? "rtl" : "ltr"}>
-      <div className="max-w-md w-full rounded-3xl border border-black/5 bg-background-card p-10 text-center shadow-xl">
+      <div className="max-w-md w-full rounded-3xl border border-black/5 bg-background-card p-4 md:p-10 text-center shadow-xl">
         {/* Success icon */}
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
           <svg className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

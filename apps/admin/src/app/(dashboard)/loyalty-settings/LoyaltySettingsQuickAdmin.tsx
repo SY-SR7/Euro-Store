@@ -243,7 +243,7 @@ export default function LoyaltySettingsQuickAdmin() {
         </div>
       </section>
 
-      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 md:p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
       : (
         <section className="rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
           <div className="grid gap-3 xl:grid-cols-2">

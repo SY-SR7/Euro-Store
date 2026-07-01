@@ -344,7 +344,7 @@ function CategorySection({
     <section
       ref={sectionRef}
       id={`section-${section.category.slug}`}
-      className="relative min-h-[240vh] border-t border-border py-10 md:py-16"
+      className="relative min-h-[240vh] border-t border-border py-6 md:py-10 md:py-16"
     >
       <div className="sticky top-20 z-10 grid min-h-[calc(100vh-5rem)] items-start gap-6 lg:top-24 lg:grid-cols-[0.92fr_1.08fr] lg:gap-10">
         <div className="h-[52vh] min-h-[360px] lg:h-[62vh] lg:min-h-[430px]">
@@ -377,7 +377,7 @@ function CategorySection({
           </div>
 
           {section.products.length === 0 ? (
-            <div className="rounded-2xl border border-border bg-background p-10 text-center text-[#6F6658]">
+            <div className="rounded-2xl border border-border bg-background p-4 md:p-10 text-center text-[#6F6658]">
               {t('noCategoryProducts')}
             </div>
           ) : (

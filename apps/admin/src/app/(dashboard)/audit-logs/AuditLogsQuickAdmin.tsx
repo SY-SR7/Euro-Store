@@ -295,8 +295,8 @@ export default function AuditLogsQuickAdmin() {
       {msg ? <div className={`rounded-lg border px-4 py-3 text-sm font-bold ${msg === t('undoneSuccess') ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 
       <section className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-background-card shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
-        : filtered.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noLogs')}</p>
+        {loading ? <p className="p-4 md:p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+        : filtered.length === 0 ? <p className="p-4 md:p-10 text-center text-sm text-text-muted">{t('noLogs')}</p>
         : (
           <div className="divide-y divide-[#F0ECE6]">
             {filtered.map((log) => {

@@ -135,7 +135,7 @@ export function HeroSection() {
           >
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 px-10 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-full shadow-xl"
+              className="inline-flex items-center gap-2 px-4 md:px-10 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-full shadow-xl"
               style={{ background: 'linear-gradient(to right, #E8D28A, #C9A84C)', color: '#000' }}
             >
               {t('shopNow')}
@@ -153,7 +153,7 @@ export function HeroSection() {
           >
             <Link
               href="/categories"
-              className="inline-flex items-center gap-2 border px-10 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-300 rounded-full bg-black/20 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 border px-4 md:px-10 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-300 rounded-full bg-black/20 backdrop-blur-sm"
               style={{ borderColor: 'rgba(232, 210, 138, 0.4)', color: '#FFFFFF' }}
             >
               {t('explore')}

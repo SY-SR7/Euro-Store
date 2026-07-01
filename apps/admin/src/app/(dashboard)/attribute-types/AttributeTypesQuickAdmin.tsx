@@ -368,8 +368,8 @@ export default function AttributeTypesQuickAdmin() {
       ) : null}
 
       <div className="grid gap-4 xl:grid-cols-2">
-        {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted xl:col-span-2">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
-        : types.length === 0 ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted xl:col-span-2">{t('noAttributes', { fallback: 'لا توجد صفات' })}</p>
+        {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 md:p-10 text-center text-sm text-text-muted xl:col-span-2">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+        : types.length === 0 ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 md:p-10 text-center text-sm text-text-muted xl:col-span-2">{t('noAttributes', { fallback: 'لا توجد صفات' })}</p>
         : types.map((type) => (
           <button key={type.id} type="button" onClick={() => openType(type)} className={`rounded-2xl border border-[#E5E0D8] bg-background-card p-5 ${isAr ? "text-right" : "text-left"} shadow-sm transition hover:border-primary hover:bg-[#FFFBF0]`}>
             <div className="flex items-start justify-between gap-4">

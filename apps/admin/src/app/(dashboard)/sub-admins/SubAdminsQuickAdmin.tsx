@@ -278,8 +278,8 @@ export default function SubAdminsQuickAdmin() {
       ) : null}
 
       <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
-        : subAdmins.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noAccounts')}</p>
+        {loading ? <p className="p-4 md:p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+        : subAdmins.length === 0 ? <p className="p-4 md:p-10 text-center text-sm text-text-muted">{t('noAccounts')}</p>
         : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
