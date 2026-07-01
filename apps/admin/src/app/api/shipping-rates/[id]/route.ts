@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-server';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(_request: Request, { params }: { params: { id: string } }) {
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.from('shipping_rates').select('*').eq('id', params.id).single();

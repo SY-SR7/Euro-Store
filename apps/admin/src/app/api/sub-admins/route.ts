@@ -1,5 +1,8 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
   const supabase = createSupabaseAdminClientFromEnv();
