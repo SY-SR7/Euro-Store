@@ -300,6 +300,22 @@ export default function AuditLogsQuickAdmin() {
         : (
           <div className="divide-y divide-[#F0ECE6]">
             {filtered.map((log) => {
+              const ENTITY_MAP: Record<string, string> = {
+                'catalog/products': 'المنتجات',
+                'catalog/variants': 'متغيرات المنتجات',
+                'catalog/categories': 'التصنيفات',
+                'catalog/brands': 'العلامات التجارية',
+                'catalog/homepage': 'الواجهة الرئيسية',
+                'orders': 'الطلبات',
+                'customers': 'العملاء',
+                'discounts': 'الخصومات',
+                'exchanges': 'الاستبدال والترجيع',
+                'settings': 'الإعدادات',
+                'loyalty_settings': 'إعدادات الولاء'
+              };
+              const mappedEntity = log.entity_type ? ENTITY_MAP[log.entity_type] : undefined;
+              const finalEntityLabel = log.entity_label || mappedEntity || log.entity_type || t('defaultEntity');
+              
               const canUndo = log.undo?.possible === true && !log.undone_at;
               return (
                 <button key={log.id} type="button" onClick={() => openLog(log)} className={`grid w-full gap-3 p-4 ${isAr ? "text-right" : "text-left"} transition hover:bg-[#FFFBF0] lg:grid-cols-[44px_minmax(0,1fr)_auto] lg:items-center`}>
@@ -307,7 +323,7 @@ export default function AuditLogsQuickAdmin() {
                   <span className="min-w-0">
                     <span className="flex flex-wrap items-center gap-2">
                       <span className="font-black text-[#1C1917]">{isAr ? log.action_ar : (log.action_ar || log.action || t('defaultAction'))}</span>
-                      <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-2 py-1 text-[11px] font-bold text-[#57534E]">{log.entity_label || log.entity_type || t('defaultEntity')}</span>
+                      <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-2 py-1 text-[11px] font-bold text-[#57534E]">{finalEntityLabel}</span>
                       {canUndo ? <span className="rounded-full border border-blue-200 bg-blue-50 px-2 py-1 text-[11px] font-bold text-blue-700">{t('badgeUndo')}</span> : null}
                     </span>
                     <span className="mt-1 block truncate text-sm text-[#57534E]">{log.summary || log.path || log.entity_id || '-'}</span>
@@ -327,7 +343,19 @@ export default function AuditLogsQuickAdmin() {
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
               {[
                 [t('detailAdmin'), selected.admin_email || t('defaultAdmin')],
-                [t('detailSection'), selected.entity_label || selected.entity_type || '-'],
+                [t('detailSection'), selected.entity_label || (selected.entity_type ? ({
+                  'catalog/products': 'المنتجات',
+                  'catalog/variants': 'متغيرات المنتجات',
+                  'catalog/categories': 'التصنيفات',
+                  'catalog/brands': 'العلامات التجارية',
+                  'catalog/homepage': 'الواجهة الرئيسية',
+                  'orders': 'الطلبات',
+                  'customers': 'العملاء',
+                  'discounts': 'الخصومات',
+                  'exchanges': 'الاستبدال والترجيع',
+                  'settings': 'الإعدادات',
+                  'loyalty_settings': 'إعدادات الولاء'
+                }[selected.entity_type]) : null) || selected.entity_type || '-'],
                 [t('detailId'), selected.entity_id || '-'],
                 [t('detailTime'), formatDate(selected.created_at, formatLoc)],
                 [t('detailPath'), selected.path || '-'],
