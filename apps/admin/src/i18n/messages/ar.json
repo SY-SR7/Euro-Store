@@ -182,7 +182,8 @@
     "emptyField": "—",
     "savedSuccessfully": "تم الحفظ بنجاح",
     "clear": "مسح",
-    "filters": "تصفية"
+    "filters": "تصفية",
+    "items": "{count} عنصر"
   },
   "productCount": "عدد المنتجات",
   "categories": {
@@ -370,7 +371,13 @@
     "add": "إضافة",
     "uncategorized": "غير مصنف",
     "unbranded": "بدون علامة تجارية",
-    "media": "الوسائط (صور وفيديوهات)"
+    "media": "الوسائط (صور وفيديوهات)",
+    "sectionKeyHero": "القسم الرئيسي (Hero)",
+    "sectionKeyFeatured": "منتجات مميزة",
+    "sectionKeyCategories": "شبكة التصنيفات",
+    "sectionKeyPromotions": "العروض",
+    "sectionKeyLoyalty": "برنامج الولاء",
+    "sectionKeyNewArrivals": "وصل حديثا"
   },
   "newArrivals": "وصل حديثاً",
   "cart": {

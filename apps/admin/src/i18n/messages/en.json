@@ -182,7 +182,8 @@
     "emptyField": "—",
     "savedSuccessfully": "Saved successfully",
     "clear": "Clear",
-    "filters": "Filters"
+    "filters": "Filters",
+    "items": "{count} items"
   },
   "productCount": "Product count",
   "categories": {
@@ -370,7 +371,13 @@
     "add": "Add",
     "uncategorized": "Uncategorized",
     "unbranded": "No brand",
-    "media": "Media (Images & Videos)"
+    "media": "Media (Images & Videos)",
+    "sectionKeyHero": "Hero Section",
+    "sectionKeyFeatured": "Featured Products",
+    "sectionKeyCategories": "Categories Grid",
+    "sectionKeyPromotions": "Promotions",
+    "sectionKeyLoyalty": "Loyalty Program",
+    "sectionKeyNewArrivals": "New Arrivals"
   },
   "newArrivals": "New arrivals",
   "cart": {
