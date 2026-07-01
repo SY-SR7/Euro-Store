@@ -459,5 +459,30 @@
     "registrationDate": "تاريخ التسجيل",
     "referralCode": "كود الإحالة",
     "customerFallback": "عميل"
+  },
+  "adminDiscounts": {
+    "discountsTitle": "الخصومات",
+    "discountsCount": "{count} كود خصم",
+    "newDiscount": "كود جديد",
+    "code": "الكود",
+    "type": "النوع",
+    "typePercentage": "نسبة %",
+    "typeFixed": "مبلغ ثابت",
+    "value": "القيمة",
+    "minOrder": "الحد الأدنى",
+    "validFrom": "صالح من",
+    "validUntil": "صالح حتى",
+    "maxUses": "أقصى استخدام",
+    "createBtn": "إنشاء",
+    "noDiscounts": "لا توجد أكواد خصم",
+    "statusActive": "نشط",
+    "statusInactive": "معطّل",
+    "uses": "الاستخدامات",
+    "status": "الحالة",
+    "discountCodeHeader": "كود: {code}",
+    "dateRange": "النطاق",
+    "failedToOpenCode": "تعذر فتح الكود",
+    "percentage": "نسبة",
+    "fixed": "ثابت"
   }
 }

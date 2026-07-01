@@ -459,5 +459,30 @@
     "registrationDate": "Registration Date",
     "referralCode": "Referral Code",
     "customerFallback": "Customer"
+  },
+  "adminDiscounts": {
+    "discountsTitle": "Discounts",
+    "discountsCount": "{count} discount codes",
+    "newDiscount": "New Code",
+    "code": "Code",
+    "type": "Type",
+    "typePercentage": "Percentage %",
+    "typeFixed": "Fixed Amount",
+    "value": "Value",
+    "minOrder": "Min Order",
+    "validFrom": "Valid From",
+    "validUntil": "Valid Until",
+    "maxUses": "Max Uses",
+    "createBtn": "Create",
+    "noDiscounts": "No discount codes found",
+    "statusActive": "Active",
+    "statusInactive": "Disabled",
+    "uses": "Uses",
+    "status": "Status",
+    "discountCodeHeader": "Code: {code}",
+    "dateRange": "Range",
+    "failedToOpenCode": "Failed to open code",
+    "percentage": "Percentage",
+    "fixed": "Fixed"
   }
 }
