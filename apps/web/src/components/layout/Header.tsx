@@ -11,12 +11,12 @@ const DESKTOP_LINKS = [
   { href:'/', key:'home' },
   { href:'/products', key:'products' },
   { href:'/categories', key:'categories' },
-  { href:'/loyalty', key:'loyalty' },
-  { href:'/exchange', key:'exchange' },
 ] as const;
 
 const MOBILE_LINKS = [
   ...DESKTOP_LINKS,
+  { href:'/loyalty', key:'loyalty' },
+  { href:'/exchange', key:'exchange' },
   { href:'/orders', key:'orders' },
   { href:'/wishlist', key:'wishlist' },
   { href:'/account', key:'account' },
