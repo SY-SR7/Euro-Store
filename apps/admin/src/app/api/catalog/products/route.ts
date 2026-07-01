@@ -14,6 +14,8 @@ const createProductSchema = z.object({
   brand_id:       z.string().uuid().optional(),
   is_featured:    z.boolean().default(false),
   is_active:      z.boolean().default(true),
+  base_price_syp: z.number().nonnegative(),
+  sku:            z.string().optional(),
   media:          z.array(z.object({
     type: z.enum(['image', 'video']),
     url: z.string().url(),
@@ -48,7 +50,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'invalid_input', details: parsed.error.flatten() }, { status: 400 });
     }
 
-    const { media, ...productData } = parsed.data;
+    const { media, base_price_syp, sku, ...productData } = parsed.data;
 
     // Find primary image URL
     const primaryImage = media?.find(m => m.type === 'image' && m.isPrimary)?.url 
@@ -64,6 +66,17 @@ export async function POST(request: Request) {
       .select('id, name_ar, name_en, slug')
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    // Create the default variant so the product shows up on the frontend
+    const { error: variantError } = await admin
+      .from('product_variants')
+      .insert({
+        product_id: data.id,
+        price_syp: base_price_syp,
+        sku: sku || data.slug,
+        is_active: true,
+      } as never);
+    if (variantError) console.error('Failed to create default variant:', variantError);
 
     if (media && media.length > 0) {
       const images = media.filter(m => m.type === 'image').map((m, index) => ({

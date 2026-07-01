@@ -61,6 +61,8 @@ export default function ProductNewQuickAdmin() {
     brand_id: '',
     is_active: true,
     is_featured: false,
+    base_price_syp: '',
+    sku: '',
   });
   const [files, setFiles] = useState<File[]>([]);
   const [primaryFile, setPrimaryFile] = useState<File | null>(null);
@@ -164,6 +166,14 @@ export default function ProductNewQuickAdmin() {
             <label className="grid gap-1 md:col-span-2">
               <span className="text-xs font-black text-[#8B8172]">{t('productSlug', { fallback: 'رابط المنتج' })}</span>
               <input value={form.slug} onChange={(event) => setForm((current) => ({ ...current, slug: slugify(event.target.value) }))} className={inputClass} dir="ltr" />
+            </label>
+            <label className="grid gap-1">
+              <span className="text-xs font-black text-[#8B8172]">{t('priceSyp', { fallback: 'السعر الأساسي (ل.س)' })}</span>
+              <input type="number" min="0" required value={form.base_price_syp} onChange={(event) => setForm((current) => ({ ...current, base_price_syp: event.target.value }))} className={inputClass} dir="ltr" />
+            </label>
+            <label className="grid gap-1">
+              <span className="text-xs font-black text-[#8B8172]">{t('sku', { fallback: 'رمز SKU للنسخة الأساسية' })}</span>
+              <input value={form.sku} onChange={(event) => setForm((current) => ({ ...current, sku: event.target.value }))} className={inputClass} dir="ltr" />
             </label>
             <label className="grid gap-1">
               <span className="text-xs font-black text-[#8B8172]">{t('descriptionAr', { fallback: 'الوصف العربي' })}</span>
