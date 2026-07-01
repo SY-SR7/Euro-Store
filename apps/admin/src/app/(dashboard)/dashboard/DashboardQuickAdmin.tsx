@@ -136,7 +136,7 @@ export default function DashboardQuickAdmin() {
           <Link href="/notifications" className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-text-secondary hover:border-primary">
             <Bell size={16} /> {t('notificationsBtn')}
           </Link>
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-primary">
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-primary">
             <RefreshCw size={16} /> {tCommon('refresh')}
           </button>
         </div>

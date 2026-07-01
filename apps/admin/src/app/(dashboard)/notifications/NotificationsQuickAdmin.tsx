@@ -510,7 +510,7 @@ export default function NotificationsQuickAdmin() {
           <button type="button" onClick={markAllRead} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-text-secondary hover:border-primary">
             <CheckCircle2 size={16} /> {t('markAllRead')}
           </button>
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-primary">
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-primary">
             <RefreshCw size={16} /> {tCommon('refresh')}
           </button>
         </div>
@@ -581,7 +581,7 @@ export default function NotificationsQuickAdmin() {
                       {read ? t('btnUnread') : t('btnRead')}
                     </button>
                     {item.actionHref ? (
-                      <Link href={item.actionHref} onClick={() => !read && saveRead([item.id, ...readIds])} className="rounded-lg bg-[#1C1917] px-3 py-2 text-xs font-black text-text-primary hover:bg-primary">
+                      <Link href={item.actionHref} onClick={() => !read && saveRead([item.id, ...readIds])} className="rounded-lg bg-[#1C1917] px-3 py-2 text-xs font-black text-white hover:bg-primary">
                         {item.actionLabel ?? t('openBtn')}
                       </Link>
                     ) : null}

@@ -179,7 +179,7 @@ export default function CategoriesQuickAdmin() {
         <div><h1 className="text-2xl font-black text-text-primary">{t('categoriesTitle', { fallback: 'إدارة التصنيفات' })}</h1><p className="mt-1 text-sm text-text-muted">{categories.length} {tCommon('items', { fallback: 'عنصر' })}</p></div>
         <div className="flex gap-2">
           <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary"><RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}</button>
-          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-[#2D2926]"><Plus size={15} />{t('newCategory', { fallback: 'تصنيف جديد' })}</button>
+          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]"><Plus size={15} />{t('newCategory', { fallback: 'تصنيف جديد' })}</button>
         </div>
       </div>
 

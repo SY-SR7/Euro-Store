@@ -325,7 +325,7 @@ export default function HomepageQuickAdmin() {
           <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary">
             <RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}
           </button>
-          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-[#2D2926]">
+          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]">
             <Plus size={15} />{t('newSection', { fallback: 'قسم جديد' })}
           </button>
         </div>

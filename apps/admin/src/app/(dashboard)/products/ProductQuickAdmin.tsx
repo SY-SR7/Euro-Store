@@ -1127,7 +1127,7 @@ export default function ProductQuickAdmin() {
             </form>
             <Link
               href="/products/new"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#1C1917] px-4 text-sm font-black text-text-primary transition hover:bg-[#2D2926]"
+              className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#1C1917] px-4 text-sm font-black text-white transition hover:bg-[#2D2926]"
             >
               <Plus size={16} />
               {t('newProduct', { fallback: 'منتج جديد' })}
@@ -1356,7 +1356,7 @@ export default function ProductQuickAdmin() {
                   <button
                     type="button"
                     onClick={() => setShowAddVariant((current) => !current)}
-                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-text-primary hover:bg-[#2D2926]"
+                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926]"
                   >
                     <Plus size={14} />
                     {t('addVariant', { fallback: 'خيار' })}
@@ -1556,7 +1556,7 @@ export default function ProductQuickAdmin() {
                     type="button"
                     onClick={addImage}
                     disabled={savingKey === 'image:new' || !newImageUrl.trim()}
-                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-text-primary hover:bg-[#2D2926] disabled:opacity-50"
+                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926] disabled:opacity-50"
                   >
                     <ImagePlus size={14} />
                     {tCommon('add', { fallback: 'إضافة' })}
