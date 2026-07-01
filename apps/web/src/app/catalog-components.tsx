@@ -9,7 +9,7 @@ import { WishlistButton } from '@/components/wishlist/WishlistButton';
 import { useLocale, useTranslations } from 'next-intl';
 
 function formatSYP(n: number, isAr: boolean, t: any) {
-  return Number(n || 0).toLocaleString(isAr ? 'ar-SY' : 'en-US') + ' ' + t('syp', { fallback: 'ل.س' });
+  return Number(n || 0).toLocaleString(isAr ? 'ar-SY' : 'en-US') + ' ' + t('syp');
 }
 
 function stockBadge(stock: number | null | undefined, t: any) {
@@ -18,7 +18,7 @@ function stockBadge(stock: number | null | undefined, t: any) {
   if (stock <= 0) {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-1 text-[11px] font-bold text-red-700">
-        <XCircle className="h-3 w-3" /> {t('outOfStock', { fallback: 'نفذ' })}
+        <XCircle className="h-3 w-3" /> {t('outOfStock')}
       </span>
     );
   }
@@ -26,14 +26,14 @@ function stockBadge(stock: number | null | undefined, t: any) {
   if (stock <= 5) {
     return (
       <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-1 text-[11px] font-bold text-amber-700">
-        <AlertTriangle className="h-3 w-3" /> {stock} {t('only', { fallback: 'فقط' })}
+        <AlertTriangle className="h-3 w-3" /> {stock} {t('only')}
       </span>
     );
   }
 
   return (
     <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-[11px] font-bold text-green-700">
-      <CheckCircle2 className="h-3 w-3" /> {t('inStock', { fallback: 'متوفر' })}
+      <CheckCircle2 className="h-3 w-3" /> {t('inStock')}
     </span>
   );
 }
@@ -74,14 +74,14 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
           src={product.image_url || product.image || product.thumbnail_url}
           alt={productName || 'product'}
           kind="product"
-          label={t('productImage', { fallback: 'صورة المنتج' })}
+          label={t('productImage')}
           sublabel={productName}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
 
         {product.is_featured && (
           <span className="absolute right-2 top-2 rounded-full bg-[#C9A84C] px-2 py-0.5 text-[10px] font-black text-white shadow">
-            {t('featured', { fallback: 'مميز ⭐' })}
+            {t('featured')}
           </span>
         )}
 
@@ -112,22 +112,22 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
             {variants != null && (
               <span className="inline-flex items-center gap-1 rounded-full bg-[#FAF7EF] px-2 py-1 font-bold">
                 <Layers3 className="h-3 w-3 text-[#C9A84C]" />
-                {variants} {t('variant', { fallback: 'متغير' })}
+                {variants} {t('variant')}
               </span>
             )}
             <span className="inline-flex items-center gap-1 rounded-full bg-[#FAF7EF] px-2 py-1 font-bold">
               <Package className="h-3 w-3 text-[#C9A84C]" />
-              {t('details', { fallback: 'التفاصيل' })}
+              {t('details')}
             </span>
           </div>
 
           {minPrice != null && Number(minPrice) > 0 ? (
             <p className="text-base font-black text-[#C9A84C]">
-              {t('startsFrom', { fallback: 'يبدأ من' })} {formatSYP(minPrice, isAr, t)}
+              {t('startsFrom')} {formatSYP(minPrice, isAr, t)}
             </p>
           ) : (
             <p className="text-sm font-bold text-[#A8A29E]">
-              {t('priceInDetails', { fallback: 'السعر داخل التفاصيل' })}
+              {t('priceInDetails')}
             </p>
           )}
         </div>

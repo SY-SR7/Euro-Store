@@ -14,7 +14,7 @@ export function WishlistButton({ productId, size = 'md' }: { productId: string; 
   return (
     <button
       type="button"
-      aria-label={active ? t('removeFromWishlist', { fallback: 'إزالة من المفضلة' }) : t('addToWishlist', { fallback: 'إضافة إلى المفضلة' })}
+      aria-label={active ? t('removeFromWishlist') : t('addToWishlist')}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();

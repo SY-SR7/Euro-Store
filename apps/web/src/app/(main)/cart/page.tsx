@@ -20,11 +20,11 @@ export default function CartPage() {
       <main className="min-h-screen bg-[#FAFAF8] px-4 py-20" dir={isAr ? "rtl" : "ltr"}>
         <div className="mx-auto max-w-xl text-center space-y-6">
           <div className="text-5xl">🛒</div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('emptyCart', { fallback: 'السلة فارغة' })}</h1>
-          <p className="text-[#A8A29E]">{t('addProducts', { fallback: 'أضف بعض المنتجات المميزة إلى سلتك' })}</p>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('emptyCart')}</h1>
+          <p className="text-[#A8A29E]">{t('addProducts')}</p>
           <Link href="/products"
             className="inline-block rounded-2xl bg-[#B8860B] px-8 py-3 font-bold text-white hover:bg-[#9A7209] transition-colors">
-            {t('browseProducts', { fallback: 'تصفح المنتجات' })}
+            {t('browseProducts')}
           </Link>
         </div>
       </main>
@@ -39,9 +39,9 @@ export default function CartPage() {
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="mb-8 flex items-center gap-3">
-          <Link href="/products" className="text-sm text-[#B8860B] hover:underline">{isAr ? '←' : '→'} {t('continueShopping', { fallback: 'متابعة التسوق' })}</Link>
+          <Link href="/products" className="text-sm text-[#B8860B] hover:underline">{isAr ? '←' : '→'} {t('continueShopping')}</Link>
           <span className="text-[#D1CBC1]">/</span>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('shoppingCart', { fallback: 'سلة التسوق' })}</h1>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('shoppingCart')}</h1>
           <span className="rounded-full bg-[#B8860B]/10 px-2.5 py-0.5 text-xs font-bold text-[#B8860B]">{itemCount}</span>
         </div>
 
@@ -78,7 +78,7 @@ export default function CartPage() {
                   </button>
                   <button onClick={() => removeItem(item.variantId)}
                     className="mr-1 text-xs font-semibold text-red-500 hover:text-red-700 transition-colors px-2 py-1">
-                    {t('remove', { fallback: 'حذف' })}
+                    {t('remove')}
                   </button>
                 </div>
 
@@ -93,28 +93,28 @@ export default function CartPage() {
           {/* Summary */}
           <div className="h-fit sticky top-6 space-y-3">
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
-              <h2 className="mb-4 font-black text-[#1C1917]">{t('orderSummary', { fallback: 'ملخص الطلب' })}</h2>
+              <h2 className="mb-4 font-black text-[#1C1917]">{t('orderSummary')}</h2>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between text-[#57534E]">
-                  <span>{t('itemsCount', { fallback: 'عدد القطع' })}</span>
+                  <span>{t('itemsCount')}</span>
                   <span>{itemCount}</span>
                 </div>
                 <div className="flex justify-between border-t border-[#F0ECE6] pt-3 text-base font-black text-[#1C1917]">
-                  <span>{t('total', { fallback: 'الإجمالي' })}</span>
+                  <span>{t('total')}</span>
                   <span className="text-[#B8860B]">{fmt(total, locale)}</span>
                 </div>
               </div>
               <Link href="/checkout"
                 className="mt-5 block w-full rounded-2xl bg-[#B8860B] py-3.5 text-center text-base font-black text-white hover:bg-[#9A7209] transition-colors active:scale-[0.98]">
-                {t('checkout', { fallback: 'إتمام الطلب' })}
+                {t('checkout')}
               </Link>
               <Link href="/products"
                 className="mt-3 block w-full rounded-2xl border border-[#E5E0D8] py-3 text-center text-sm font-semibold text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B] transition-colors">
-                {t('continueShopping', { fallback: 'متابعة التسوق' })}
+                {t('continueShopping')}
               </Link>
             </div>
             <div className="rounded-2xl border border-[#E5E0D8] bg-[#FFF8ED] p-3 text-center text-xs text-[#57534E]">
-              {t('contactConfirmMsg', { fallback: 'سيتم التواصل معك هاتفياً لتأكيد الطلب' })}
+              {t('contactConfirmMsg')}
             </div>
           </div>
         </div>

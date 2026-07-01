@@ -5,8 +5,8 @@ import './globals.css';
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('common');
   return {
-    title: t('appName', { fallback: 'EuroStore — يورو ستور' }),
-    description: t('appDescription', { fallback: 'EuroStore Customer Storefront' }),
+    title: t('appName'),
+    description: t('appDescription'),
   };
 }
 

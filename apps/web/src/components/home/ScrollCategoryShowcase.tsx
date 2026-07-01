@@ -378,7 +378,7 @@ function CategorySection({
 
           {section.products.length === 0 ? (
             <div className="rounded-2xl border border-[#E8DCC3] bg-[#FAF7EF] p-10 text-center text-[#6F6658]">
-              {t('noCategoryProducts', { fallback: 'لا توجد منتجات في هذا القسم حالياً' })}
+              {t('noCategoryProducts')}
             </div>
           ) : (
             <div className="grid gap-5 sm:grid-cols-2">
@@ -399,7 +399,7 @@ function CategorySection({
               href={`/categories/${section.category.slug}`}
               className="inline-flex rounded-xl border border-[#C9A84C] px-5 py-3 text-sm font-black text-[#C9A84C] transition hover:bg-[#C9A84C] hover:text-[#1F1B16]"
             >
-              {t('viewAllProducts', { fallback: 'عرض كل منتجات' })} {isAr ? section.category.name_ar : (section.category.name_en || section.category.name_ar)}
+              {t('viewAllProducts')} {isAr ? section.category.name_ar : (section.category.name_en || section.category.name_ar)}
             </a>
           </div>
         </div>

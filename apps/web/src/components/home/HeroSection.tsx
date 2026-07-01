@@ -70,7 +70,7 @@ export function HeroSection() {
           className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-5 opacity-90 drop-shadow-md"
           style={{ color: '#E8D28A' }}
         >
-          {t('collection', { fallback: 'مجموعة ٢٠٢٥' })}
+          {t('collection')}
         </motion.p>
 
         {/* Main headline — word by word reveal */}
@@ -110,7 +110,7 @@ export function HeroSection() {
           className="text-base md:text-xl max-w-xl leading-relaxed mb-10 font-medium"
           style={{ color: '#E2E2E2', textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}
         >
-          {t('subtitle', { fallback: 'أزياء أوروبية راقية — من المصانع الأوروبية مباشرةً إلى يديك' })}
+          {t('subtitle')}
         </motion.p>
 
         {/* CTA buttons */}
@@ -132,7 +132,7 @@ export function HeroSection() {
               className="inline-flex items-center gap-2 px-10 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-full shadow-xl"
               style={{ background: 'linear-gradient(to right, #E8D28A, #C9A84C)', color: '#000' }}
             >
-              {t('shopNow', { fallback: 'تسوق الآن' })}
+              {t('shopNow')}
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rtl:rotate-180">
                 <path d="M8 3L3 8L8 13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -150,7 +150,7 @@ export function HeroSection() {
               className="inline-flex items-center gap-2 border px-10 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-300 rounded-full bg-black/20 backdrop-blur-sm"
               style={{ borderColor: 'rgba(232, 210, 138, 0.4)', color: '#FFFFFF' }}
             >
-              {t('explore', { fallback: 'استكشف الأقسام' })}
+              {t('explore')}
             </Link>
           </motion.div>
         </motion.div>
@@ -165,9 +165,9 @@ export function HeroSection() {
         >
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent opacity-50" />
           {[
-            { num: '+500', label: t('stats.exclusive', { fallback: 'منتج حصري' }) },
-            { num: '+10k', label: t('stats.customers', { fallback: 'زبون راضٍ' }) },
-            { num: t('stats.categoriesNum', { fallback: '٤' }), label: t('stats.categories', { fallback: 'أقسام متنوعة' }) },
+            { num: '+500', label: t('stats.exclusive') },
+            { num: '+10k', label: t('stats.customers') },
+            { num: t('stats.categoriesNum'), label: t('stats.categories') },
           ].map(({ num, label }) => (
             <div key={label} className="flex flex-col items-center gap-1">
               <span className="text-3xl md:text-4xl font-black" style={{ color: '#E8D28A', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.8))' }}>
@@ -186,7 +186,7 @@ export function HeroSection() {
         transition={{ delay: 2, duration: 0.8 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none drop-shadow-lg"
       >
-        <span className="text-[10px] font-bold uppercase tracking-[0.25em]" style={{ color: 'rgba(255,255,255,0.8)' }}>{t('scrollDown', { fallback: 'مرر للأسفل' })}</span>
+        <span className="text-[10px] font-bold uppercase tracking-[0.25em]" style={{ color: 'rgba(255,255,255,0.8)' }}>{t('scrollDown')}</span>
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}

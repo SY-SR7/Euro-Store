@@ -34,28 +34,28 @@ export default function CheckoutSuccessPage() {
           </svg>
         </div>
 
-        <h1 className="text-2xl font-black text-[#171411]">{t('successTitle', { fallback: 'تم إرسال طلبك!' })}</h1>
-        <p className="mt-2 text-[#6F6658] text-sm">{t('successThanks', { fallback: 'شكراً لك على طلبك من Euro Store' })}</p>
+        <h1 className="text-2xl font-black text-[#171411]">{t('successTitle')}</h1>
+        <p className="mt-2 text-[#6F6658] text-sm">{t('successThanks')}</p>
 
         {orderNumber && (
           <div className="mt-6 rounded-2xl bg-[#F8F5EF] p-4">
-            <p className="text-xs text-[#6F6658]">{t('orderNumberLabel', { fallback: 'رقم الطلب' })}</p>
+            <p className="text-xs text-[#6F6658]">{t('orderNumberLabel')}</p>
             <p className="mt-1 font-mono text-xl font-black text-[#C9A84C]">{orderNumber}</p>
           </div>
         )}
 
         <p className="mt-6 text-sm text-[#6F6658]">
-          {t('contactConfirmMsgSuccess', { fallback: 'سيتم التواصل معك قريباً لتأكيد الطلب وترتيب التسليم.' })}
+          {t('contactConfirmMsgSuccess')}
         </p>
 
         <div className="mt-8 flex flex-col gap-3">
           <Link href="/orders"
             className="rounded-2xl bg-[#C9A84C] py-3 text-sm font-black text-[#111] hover:bg-[#D8B95F] transition-colors block">
-            {t('viewOrders', { fallback: 'عرض طلباتي' })}
+            {t('viewOrders')}
           </Link>
           <Link href="/products"
             className="rounded-2xl border border-black/10 py-3 text-sm font-semibold text-[#3C352C] hover:border-[#C9A84C] transition-colors block">
-            {t('continueShoppingSuccess', { fallback: 'متابعة التسوق' })}
+            {t('continueShoppingSuccess')}
           </Link>
         </div>
 

@@ -52,18 +52,18 @@ export function ReviewsSection({ productId }: { productId: string }) {
   return (
     <section className={`rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm`} dir={isAr ? "rtl" : "ltr"}>
       <div className="flex items-center justify-between">
-        <h2 className="font-black text-[#1C1917]">{t('customerReviews', { fallback: 'تقييمات العملاء' })}</h2>
+        <h2 className="font-black text-[#1C1917]">{t('customerReviews')}</h2>
         {count > 0 && (
           <div className="flex items-center gap-2">
             <Stars rating={average} />
             <span className="text-sm font-bold text-[#1C1917]">{average}</span>
-            <span className="text-xs text-[#A8A29E]">({count} {t('reviewWord', { fallback: 'تقييم' })})</span>
+            <span className="text-xs text-[#A8A29E]">({count} {t('reviewWord')})</span>
           </div>
         )}
       </div>
 
       {count === 0 ? (
-        <p className="mt-4 text-sm text-[#A8A29E]">{t('noReviews', { fallback: 'لا توجد تقييمات لهذا المنتج بعد.' })}</p>
+        <p className="mt-4 text-sm text-[#A8A29E]">{t('noReviews')}</p>
       ) : (
         <div className="mt-4 space-y-4 divide-y divide-[#F0ECE6]">
           {reviews.map((r) => (

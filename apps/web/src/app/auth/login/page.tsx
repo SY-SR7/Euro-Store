@@ -35,33 +35,33 @@ export default function LoginPage() {
         <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 shadow-sm">
           <div className="mb-6 text-center">
             <Link href="/" className="text-lg font-black tracking-widest text-[#B8860B]">EURO STORE</Link>
-            <h1 className="mt-2 text-xl font-black text-[#1C1917]">{t('loginTitle', { fallback: 'تسجيل الدخول' })}</h1>
+            <h1 className="mt-2 text-xl font-black text-[#1C1917]">{t('loginTitle')}</h1>
           </div>
 
           {error && <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('email', { fallback: 'البريد الإلكتروني' })}</label>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('email')}</label>
               <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required
                 className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B] placeholder:text-[#A8A29E]"
                 placeholder="you@example.com" dir="ltr" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('password', { fallback: 'كلمة المرور' })}</label>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('password')}</label>
               <input type="password" value={password} onChange={e=>setPassword(e.target.value)} required
                 className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]"
                 placeholder="••••••••" dir="ltr" />
             </div>
             <button type="submit" disabled={loading}
               className="w-full rounded-xl bg-[#B8860B] py-3 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
-              {loading ? t('loggingIn', { fallback: 'جاري الدخول...' }) : t('login', { fallback: 'دخول' })}
+              {loading ? t('loggingIn') : t('login')}
             </button>
           </form>
 
           <p className="mt-5 text-center text-sm text-[#A8A29E]">
-            {t('noAccount', { fallback: 'ليس لديك حساب؟' })}{' '}
-            <Link href="/auth/register" className="font-bold text-[#B8860B] hover:underline">{t('createAccount', { fallback: 'إنشاء حساب' })}</Link>
+            {t('noAccount')}{' '}
+            <Link href="/auth/register" className="font-bold text-[#B8860B] hover:underline">{t('createAccount')}</Link>
           </p>
         </div>
       </div>

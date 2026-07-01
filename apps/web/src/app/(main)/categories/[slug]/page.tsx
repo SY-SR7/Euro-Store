@@ -37,11 +37,11 @@ export default async function CategoryPage({ params }: { params: { slug: string 
     <main className={`min-h-screen bg-[#FAF7EF] px-6 py-12 text-[#1F1B16]`} dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-7xl space-y-10">
         <Link href="/categories" className="text-sm font-bold text-[#C9A84C] hover:underline">
-          {isAr ? '←' : '→'} {t('allCategoriesLink', { fallback: 'كل التصنيفات' })}
+          {isAr ? '←' : '→'} {t('allCategoriesLink')}
         </Link>
 
         <section className={`border-b border-[#E8DCC3] pb-10 ${isAr ? 'text-right' : 'text-left'}`}>
-          <p className="text-sm font-bold text-[#C9A84C]">{t('categoryTag', { fallback: 'تصنيف' })}</p>
+          <p className="text-sm font-bold text-[#C9A84C]">{t('categoryTag')}</p>
           <h1 className="mt-3 text-6xl font-black">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</h1>
           {(!isAr && category.name_ar) && (
             <p className="mt-3 text-lg text-[#6F6658]" dir="rtl">{category.name_ar}</p>
@@ -52,7 +52,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
         </section>
 
         <section>
-          <h2 className="mb-8 text-2xl font-black">{t('allProducts', { fallback: 'كل المنتجات' })}</h2>
+          <h2 className="mb-8 text-2xl font-black">{t('allProducts')}</h2>
           <Suspense fallback={<LoadingGrid />}>
             <FilterableProductGrid lockedCategorySlug={category.slug} />
           </Suspense>

@@ -77,16 +77,16 @@ export default async function OrderDetailPage({ params }: Props) {
         {/* Success banner */}
         <div className="rounded-3xl border border-green-200 bg-green-50 p-8 text-center shadow-sm">
           <div className="mb-4 text-5xl">✅</div>
-          <h1 className="text-2xl font-black text-green-800">{t('confirmedTitle', { fallback: 'تم تأكيد طلبك!' })}</h1>
+          <h1 className="text-2xl font-black text-green-800">{t('confirmedTitle')}</h1>
           <p className="mt-2 text-sm text-green-700">
-            {t('orderNumber', { fallback: 'رقم طلبك:' })} <span className="font-mono font-black text-lg text-[#B8860B]">#{order.order_number}</span>
+            {t('orderNumber')} <span className="font-mono font-black text-lg text-[#B8860B]">#{order.order_number}</span>
           </p>
-          <p className="mt-2 text-xs text-green-600">{t('contactConfirmMsg', { fallback: 'سيتم التواصل معك هاتفياً لتأكيد الطلب والتحقق من العنوان' })}</p>
+          <p className="mt-2 text-xs text-green-600">{t('contactConfirmMsg')}</p>
         </div>
 
         {/* Status */}
         <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-white px-5 py-4 shadow-sm">
-          <span className="text-sm font-bold text-[#57534E]">{t('orderStatus', { fallback: 'حالة الطلب' })}</span>
+          <span className="text-sm font-bold text-[#57534E]">{t('orderStatus')}</span>
           <span className={`rounded-full border px-4 py-1 text-xs font-bold ${STATUS_COLOR[order.status] ?? 'bg-stone-100 text-stone-500 border-stone-200'}`}>
             {t(`status.${order.status}`, { fallback: STATUS_LABEL[order.status] ?? order.status })}
           </span>
@@ -95,12 +95,12 @@ export default async function OrderDetailPage({ params }: Props) {
         {/* Delivery info */}
         {snapshot && (
           <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm space-y-3">
-            <h2 className="font-black text-[#1C1917]">{t('deliveryInfo', { fallback: 'معلومات التوصيل' })}</h2>
+            <h2 className="font-black text-[#1C1917]">{t('deliveryInfo')}</h2>
             <div className="grid grid-cols-2 gap-3 text-sm">
               {[
-                [t('name', { fallback: 'الاسم' }), snapshot.full_name],
-                [t('phone', { fallback: 'الهاتف' }), snapshot.phone],
-                [t('governorate', { fallback: 'المحافظة' }), snapshot.governorate],
+                [t('name'), snapshot.full_name],
+                [t('phone'), snapshot.phone],
+                [t('governorate'), snapshot.governorate],
               ].map(([k, v]) => v && (
                 <div key={k}>
                   <span className="text-xs text-[#A8A29E]">{k}</span>
@@ -109,7 +109,7 @@ export default async function OrderDetailPage({ params }: Props) {
               ))}
               {snapshot.address && (
                 <div className="col-span-2">
-                  <span className="text-xs text-[#A8A29E]">{t('address', { fallback: 'العنوان' })}</span>
+                  <span className="text-xs text-[#A8A29E]">{t('address')}</span>
                   <p className="font-semibold text-[#1C1917]">{snapshot.address}</p>
                 </div>
               )}
@@ -138,7 +138,7 @@ export default async function OrderDetailPage({ params }: Props) {
 
                   {isOwner && order.status === 'completed' && productId && (
                     alreadyReviewed ? (
-                      <p className="text-xs font-semibold text-green-700">✓ {tCat('reviewSubmitted', { fallback: 'تم إرسال تقييمك لهذا المنتج' })}</p>
+                      <p className="text-xs font-semibold text-green-700">✓ {tCat('reviewSubmitted')}</p>
                     ) : (
                       <WriteReviewForm
                         productId={productId}
@@ -152,7 +152,7 @@ export default async function OrderDetailPage({ params }: Props) {
             })}
           </div>
           <div className="flex justify-between border-t border-[#E5E0D8] pt-4 text-base font-black text-[#1C1917]">
-            <span>{t('total', { fallback: 'الإجمالي' })}</span>
+            <span>{t('total')}</span>
             <span className="text-[#B8860B]">{fmt(order.total_syp, locale)}</span>
           </div>
         </div>
@@ -161,11 +161,11 @@ export default async function OrderDetailPage({ params }: Props) {
         <div className="flex gap-3">
           <Link href="/orders"
             className="flex-1 rounded-2xl border border-[#E5E0D8] py-3 text-center text-sm font-bold text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B] transition-colors">
-            {t('myOrders', { fallback: 'طلباتي' })}
+            {t('myOrders')}
           </Link>
           <Link href="/products"
             className="flex-1 rounded-2xl bg-[#B8860B] py-3 text-center text-sm font-bold text-white hover:bg-[#9A7209] transition-colors">
-            {t('continueShopping', { fallback: 'متابعة التسوق' })}
+            {t('continueShopping')}
           </Link>
         </div>
       </div>

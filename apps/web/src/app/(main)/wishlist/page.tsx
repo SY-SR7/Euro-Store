@@ -55,7 +55,7 @@ export default function WishlistPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center gap-3">
           <Heart className="h-6 w-6 fill-[#C9A84C] text-[#C9A84C]" />
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('wishlist', { fallback: 'المفضلة' })}</h1>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('wishlist')}</h1>
         </div>
 
         {loading && (
@@ -68,20 +68,20 @@ export default function WishlistPage() {
 
         {!loading && !authenticated && (
           <div className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center shadow-sm">
-            <p className="text-[#57534E]">{t('loginToViewWishlist', { fallback: 'سجّل الدخول لعرض قائمة المفضلة الخاصة بك' })}</p>
+            <p className="text-[#57534E]">{t('loginToViewWishlist')}</p>
             <Link href="/auth/login?next=/wishlist"
               className="mt-4 inline-block rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#9A7209] transition-colors">
-              {t('login', { fallback: 'تسجيل الدخول' })}
+              {t('login')}
             </Link>
           </div>
         )}
 
         {!loading && authenticated && items.length === 0 && (
           <div className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center shadow-sm">
-            <p className="text-[#A8A29E]">{t('emptyWishlist', { fallback: 'لا توجد منتجات في المفضلة بعد' })}</p>
+            <p className="text-[#A8A29E]">{t('emptyWishlist')}</p>
             <Link href="/products"
               className="mt-4 inline-block rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#9A7209] transition-colors">
-              {t('browseProducts', { fallback: 'تصفح المنتجات' })}
+              {t('browseProducts')}
             </Link>
           </div>
         )}
@@ -96,7 +96,7 @@ export default function WishlistPage() {
                     src={item.image_url}
                     alt={isAr ? item.name_ar : (item.name_en || item.name_ar)}
                     kind="product"
-                    label={t('productImage', { fallback: 'صورة المنتج' })}
+                    label={t('productImage')}
                     sublabel={isAr ? item.name_ar : (item.name_en || item.name_ar)}
                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   />
@@ -104,7 +104,7 @@ export default function WishlistPage() {
                     item.in_stock ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
                   }`}>
                     {item.in_stock ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
-                    {item.in_stock ? t('inStock', { fallback: 'متوفر' }) : t('outOfStock', { fallback: 'نفذ من المخزون' })}
+                    {item.in_stock ? t('inStock') : t('outOfStock')}
                   </span>
                 </Link>
                 <div className="flex flex-1 flex-col gap-2 p-4">
@@ -117,7 +117,7 @@ export default function WishlistPage() {
                     onClick={() => remove(item.product_id)}
                     className="rounded-xl border border-[#E5E0D8] py-2 text-xs font-bold text-[#57534E] transition-colors hover:border-red-300 hover:text-red-600"
                   >
-                    {t('removeFromWishlist', { fallback: 'إزالة من المفضلة' })}
+                    {t('removeFromWishlist')}
                   </button>
                 </div>
               </div>

@@ -8,7 +8,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { ProductCard } from './catalog-components';
 
 function formatSYP(n: number, isAr: boolean, t: any) {
-  return Number(n || 0).toLocaleString(isAr ? 'ar-SY' : 'en-US') + ' ' + t('syp', { fallback: 'ل.س' });
+  return Number(n || 0).toLocaleString(isAr ? 'ar-SY' : 'en-US') + ' ' + t('syp');
 }
 
 type Facet<T> = T & { count: number; selected: boolean };
@@ -145,10 +145,10 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
 
           {/* header */}
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black text-[#1F1B16] uppercase tracking-wider">{t('filters', { fallback: 'الفلاتر' })}</h3>
+            <h3 className="text-sm font-black text-[#1F1B16] uppercase tracking-wider">{t('filters')}</h3>
             {hasActiveFilters && (
               <button onClick={clearAll} className="text-xs text-[#C9A84C] font-bold hover:underline">
-                {t('clearAll', { fallback: 'مسح الكل' })}
+                {t('clearAll')}
               </button>
             )}
           </div>
@@ -158,7 +158,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
             <input
               value={q}
               onChange={e => setQ(e.target.value)}
-              placeholder={t('searchPlaceholder', { fallback: 'ابحث...' })}
+              placeholder={t('searchPlaceholder')}
               className="flex-1 rounded-lg border border-[#E8DCC3] px-3 py-2 text-sm outline-none focus:border-[#C9A84C] bg-white"
             />
             <button type="submit" className="rounded-lg bg-[#C9A84C] px-3 py-2 text-white text-sm font-bold hover:bg-[#B8860B]">
@@ -174,12 +174,12 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
               onChange={e => setFeaturedOnly(e.target.checked)}
               className="accent-[#C9A84C]"
             />
-            <span className="text-sm font-bold text-[#1F1B16]">⭐ {t('featuredOnly', { fallback: 'المنتجات المميزة' })}</span>
+            <span className="text-sm font-bold text-[#1F1B16]">⭐ {t('featuredOnly')}</span>
           </label>
 
           {/* categories (only shown if not locked) */}
           {!lockedCategorySlug && facets && facets.categories.length > 0 && (
-            <FilterSection title={t('categories', { fallback: 'التصنيفات' })}>
+            <FilterSection title={t('categories')}>
               {facets.categories.map(cat => (
                 <CheckItem
                   key={cat.id}
@@ -194,7 +194,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
 
           {/* brands */}
           {facets && facets.brands.length > 0 && (
-            <FilterSection title={t('brands', { fallback: 'العلامات التجارية' })}>
+            <FilterSection title={t('brands')}>
               {facets.brands.map(b => (
                 <CheckItem
                   key={b.id}
@@ -249,11 +249,11 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
 
           {/* price range */}
           {facets && facets.priceRange.max > 0 && (
-            <FilterSection title={t('priceRange', { fallback: 'نطاق السعر' })}>
+            <FilterSection title={t('priceRange')}>
               <div className="space-y-3">
                 <div className="flex gap-2">
                   <div className="flex-1">
-                    <label className="text-[10px] text-[#A8A29E] font-bold mb-1 block">{t('from', { fallback: 'من' })}</label>
+                    <label className="text-[10px] text-[#A8A29E] font-bold mb-1 block">{t('from')}</label>
                     <input
                       type="number"
                       value={priceMin ?? ''}
@@ -263,7 +263,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                     />
                   </div>
                   <div className="flex-1">
-                    <label className="text-[10px] text-[#A8A29E] font-bold mb-1 block">{t('to', { fallback: 'إلى' })}</label>
+                    <label className="text-[10px] text-[#A8A29E] font-bold mb-1 block">{t('to')}</label>
                     <input
                       type="number"
                       value={priceMax ?? ''}
@@ -282,7 +282,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                     onClick={() => { setPriceMin(null); setPriceMax(null); }}
                     className="text-[11px] text-[#C9A84C] hover:underline font-bold"
                   >
-                    {t('clearPrice', { fallback: 'مسح السعر' })}
+                    {t('clearPrice')}
                   </button>
                 )}
               </div>
@@ -305,29 +305,29 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                 <line x1="3" y1="12" x2="21" y2="12" />
                 <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
-              {sidebarOpen ? t('hideFilters', { fallback: 'إخفاء الفلاتر' }) : t('showFilters', { fallback: 'إظهار الفلاتر' })}
+              {sidebarOpen ? t('hideFilters') : t('showFilters')}
             </button>
 
             {/* active filter chips */}
             {selectedCategories.length > 0 && !lockedCategorySlug && (
               <FilterChip
-                label={`${selectedCategories.length} ${t('categoryCount', { fallback: 'تصنيف' })}`}
+                label={`${selectedCategories.length} ${t('categoryCount')}`}
                 onRemove={() => setSelectedCategories([])}
               />
             )}
             {selectedBrands.length > 0 && (
-              <FilterChip label={`${selectedBrands.length} ${t('brandCount', { fallback: 'ماركة' })}`} onRemove={() => setSelectedBrands([])} />
+              <FilterChip label={`${selectedBrands.length} ${t('brandCount')}`} onRemove={() => setSelectedBrands([])} />
             )}
             {selectedAttrs.length > 0 && (
-              <FilterChip label={`${selectedAttrs.length} ${t('attrCount', { fallback: 'خاصية' })}`} onRemove={() => setSelectedAttrs([])} />
+              <FilterChip label={`${selectedAttrs.length} ${t('attrCount')}`} onRemove={() => setSelectedAttrs([])} />
             )}
             {(priceMin !== null || priceMax !== null) && (
-              <FilterChip label={t('priceRange', { fallback: 'نطاق السعر' })} onRemove={() => { setPriceMin(null); setPriceMax(null); }} />
+              <FilterChip label={t('priceRange')} onRemove={() => { setPriceMin(null); setPriceMax(null); }} />
             )}
           </div>
 
           <p className="text-sm text-[#6F6658] font-medium">
-            {loading ? t('loading', { fallback: 'جارٍ التحميل...' }) : `${data?.total ?? 0} ${t('productCount', { fallback: 'منتج' })}`}
+            {loading ? t('loading') : `${data?.total ?? 0} ${t('productCount')}`}
           </p>
         </div>
 
@@ -340,10 +340,10 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
           </div>
         ) : !data?.products.length ? (
           <div className="rounded-2xl border border-[#E8DCC3] bg-white p-16 text-center">
-            <p className="text-xl text-[#6F6658]">{t('noProducts', { fallback: 'لا توجد منتجات تطابق الفلاتر المحددة' })}</p>
+            <p className="text-xl text-[#6F6658]">{t('noProducts')}</p>
             {hasActiveFilters && (
               <button onClick={clearAll} className="mt-4 text-sm text-[#C9A84C] hover:underline font-bold">
-                {t('clearAllFilters', { fallback: 'مسح جميع الفلاتر' })}
+                {t('clearAllFilters')}
               </button>
             )}
           </div>

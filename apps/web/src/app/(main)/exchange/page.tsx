@@ -36,31 +36,31 @@ export default async function ExchangeIndexPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <Link href="/" className="text-sm text-[#B8860B] hover:underline">{t('home', { fallback: 'الرئيسية' })}</Link>
-            <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('title', { fallback: 'طلبات الاستبدال' })}</h1>
+            <Link href="/" className="text-sm text-[#B8860B] hover:underline">{t('home')}</Link>
+            <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('title')}</h1>
           </div>
           <Link href="/exchange/new"
             className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
-            + {t('newRequest', { fallback: 'طلب جديد' })}
+            + {t('newRequest')}
           </Link>
         </div>
 
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
           <p className="text-sm text-amber-800 leading-6">
-            🔄 {t('policy', { fallback: 'سياسة الاستبدال: يمكنك طلب الاستبدال خلال 7 أيام من استلام طلبك، بشرط أن يكون المنتج بحالته الأصلية وغير مستخدم.' })}
+            🔄 {t('policy')}
           </p>
         </div>
 
         {!user ? (
           <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 text-center shadow-sm">
-            <p className="text-[#A8A29E] mb-4">{t('loginToTrack', { fallback: 'سجّل دخولك لمتابعة طلبات الاستبدال الخاصة بك' })}</p>
+            <p className="text-[#A8A29E] mb-4">{t('loginToTrack')}</p>
             <Link href="/auth/login" className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
-              {t('login', { fallback: 'تسجيل الدخول' })}
+              {t('login')}
             </Link>
           </div>
         ) : requests.length === 0 ? (
           <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 text-center shadow-sm">
-            <p className="text-[#A8A29E]">{t('noRequests', { fallback: 'لا توجد طلبات استبدال حتى الآن' })}</p>
+            <p className="text-[#A8A29E]">{t('noRequests')}</p>
           </div>
         ) : (
           <div className="rounded-2xl border border-[#E7E3DC] bg-white shadow-sm">

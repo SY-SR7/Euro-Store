@@ -42,8 +42,8 @@ export default function NewExchangePage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!orderId) { setError(t('errors.selectOrderFirst', { fallback: 'اختر طلباً أولاً' })); return; }
-    if (!reason.trim()) { setError(t('errors.writeReason', { fallback: 'يرجى كتابة سبب الاستبدال' })); return; }
+    if (!orderId) { setError(t('errors.selectOrderFirst')); return; }
+    if (!reason.trim()) { setError(t('errors.writeReason')); return; }
     setError(''); setSuccess(''); setSubmitting(true);
     try {
       const res = await fetch('/api/exchange/request', {
@@ -57,12 +57,12 @@ export default function NewExchangePage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error ?? t('errors.generic', { fallback: 'خطأ غير متوقع' })); }
+      if (!res.ok) { setError(data.error ?? t('errors.generic')); }
       else {
-        setSuccess(`${t('successMsg', { fallback: 'تم إنشاء طلب الاستبدال بنجاح! رقم الطلب:' })} ${data.id ?? ''}`);
+        setSuccess(`${t('successMsg')} ${data.id ?? ''}`);
         setOrderId(''); setReason('');
       }
-    } catch { setError(t('errors.network', { fallback: 'تعذّر الاتصال بالخادم' })); }
+    } catch { setError(t('errors.network')); }
     finally { setSubmitting(false); }
   }
 
@@ -70,8 +70,8 @@ export default function NewExchangePage() {
     return (
       <main className="min-h-screen bg-[#FAF7EF] px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
         <div className="mx-auto max-w-lg text-center space-y-4">
-          <p className="text-lg font-bold text-[#1F1B16]">{t('loginRequired', { fallback: 'يجب تسجيل الدخول أولاً' })}</p>
-          <Link href="/auth/login" className="inline-block rounded-xl bg-[#C9A84C] px-6 py-3 text-sm font-bold text-white">{t('login', { fallback: 'تسجيل الدخول' })}</Link>
+          <p className="text-lg font-bold text-[#1F1B16]">{t('loginRequired')}</p>
+          <Link href="/auth/login" className="inline-block rounded-xl bg-[#C9A84C] px-6 py-3 text-sm font-bold text-white">{t('login')}</Link>
         </div>
       </main>
     );
@@ -81,47 +81,47 @@ export default function NewExchangePage() {
     <main className="min-h-screen bg-[#FAF7EF] px-6 py-12 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-lg space-y-6">
         <div>
-          <Link href="/exchange" className="text-xs text-[#C9A84C] hover:underline">{isAr ? '←' : '→'} {t('title', { fallback: 'طلبات الاستبدال' })}</Link>
-          <h1 className="mt-3 text-2xl font-black text-[#1F1B16]">{t('newRequest', { fallback: 'طلب استبدال جديد' })}</h1>
-          <p className="mt-1 text-sm text-[#6F6658]">{t('policy', { fallback: 'يمكنك طلب الاستبدال خلال 7 أيام من استلام طلبك' })}</p>
+          <Link href="/exchange" className="text-xs text-[#C9A84C] hover:underline">{isAr ? '←' : '→'} {t('title')}</Link>
+          <h1 className="mt-3 text-2xl font-black text-[#1F1B16]">{t('newRequest')}</h1>
+          <p className="mt-1 text-sm text-[#6F6658]">{t('policy')}</p>
         </div>
 
         {error   && <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
         {success && <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">{success}</div>}
 
         {loadingOrders ? (
-          <div className="rounded-2xl border border-[#E8DCC3] bg-white p-8 text-center text-sm text-[#A8A29E]">{t('loadingOrders', { fallback: 'جاري تحميل طلباتك...' })}</div>
+          <div className="rounded-2xl border border-[#E8DCC3] bg-white p-8 text-center text-sm text-[#A8A29E]">{t('loadingOrders')}</div>
         ) : orders.length === 0 ? (
           <div className="rounded-2xl border border-[#E8DCC3] bg-white p-8 text-center space-y-3">
-            <p className="text-[#6F6658]">{t('noEligibleOrders', { fallback: 'لا توجد طلبات مؤهلة للاستبدال' })}</p>
+            <p className="text-[#6F6658]">{t('noEligibleOrders')}</p>
             <p className="text-xs text-[#A8A29E]">{t('eligibilityNote', { fallback: 'يجب أن يكون الطلب في حالة "تم التسليم" حتى تتمكن من طلب الاستبدال' })}</p>
-            <Link href="/products" className="inline-block rounded-xl bg-[#C9A84C] px-5 py-2 text-sm font-bold text-white">{t('shopNow', { fallback: 'تسوق الآن' })}</Link>
+            <Link href="/products" className="inline-block rounded-xl bg-[#C9A84C] px-5 py-2 text-sm font-bold text-white">{t('shopNow')}</Link>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-[#E8DCC3] bg-white p-6 shadow-sm">
             <div>
-              <label className="mb-2 block text-sm font-bold text-[#1F1B16]">{t('chooseOrder', { fallback: 'اختر الطلب' })}</label>
+              <label className="mb-2 block text-sm font-bold text-[#1F1B16]">{t('chooseOrder')}</label>
               <select value={orderId} onChange={e => setOrderId(e.target.value)} required
                 className="w-full rounded-xl border border-[#E8DCC3] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1F1B16] outline-none focus:border-[#C9A84C]">
-                <option value="">— {t('selectOrder', { fallback: 'اختر طلباً' })} —</option>
+                <option value="">— {t('selectOrder')} —</option>
                 {orders.map((o: any) => (
                   <option key={o.id} value={o.id}>
-                    #{o.order_number} — {Number(o.total_syp).toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US')} {t('syp', { fallback: 'ل.س' })} — {new Date(o.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
+                    #{o.order_number} — {Number(o.total_syp).toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US')} {t('syp')} — {new Date(o.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
                   </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-bold text-[#1F1B16]">{t('exchangeReason', { fallback: 'سبب الاستبدال' })}</label>
+              <label className="mb-2 block text-sm font-bold text-[#1F1B16]">{t('exchangeReason')}</label>
               <textarea value={reason} onChange={e => setReason(e.target.value)} required rows={4}
-                placeholder={t('reasonPlaceholder', { fallback: 'اشرح سبب طلب الاستبدال بالتفصيل...' })}
+                placeholder={t('reasonPlaceholder')}
                 className="w-full resize-none rounded-xl border border-[#E8DCC3] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1F1B16] outline-none focus:border-[#C9A84C] placeholder:text-[#A8A29E]" />
             </div>
 
             <button type="submit" disabled={submitting || !orderId}
               className="w-full rounded-xl bg-[#C9A84C] py-3 text-sm font-black text-white hover:bg-[#B8860B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-              {submitting ? t('sending', { fallback: 'جاري الإرسال...' }) : t('sendExchangeRequest', { fallback: 'إرسال طلب الاستبدال' })}
+              {submitting ? t('sending') : t('sendExchangeRequest')}
             </button>
           </form>
         )}

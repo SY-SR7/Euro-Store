@@ -21,7 +21,7 @@ export default function ContactPage() {
         </nav>
 
         <h1 className="text-2xl font-semibold mb-2">{t('footer.contact')}</h1>
-        <p className="text-[#6F6658] text-sm mb-10">{t('contact.subtitle', { fallback: 'نحن هنا للمساعدة — تواصل معنا وسنرد في أقرب وقت' })}</p>
+        <p className="text-[#6F6658] text-sm mb-10">{t('contact.subtitle')}</p>
 
         <div className="mb-8 grid gap-4 sm:grid-cols-2">
           <a
@@ -32,8 +32,8 @@ export default function ContactPage() {
           >
             <span className="text-2xl"></span>
             <div>
-              <p className="text-sm font-medium text-[#1F1B16]">{t('contact.whatsapp', { fallback: 'واتساب' })}</p>
-              <p className="text-xs text-[#6F6658]">{t('contact.directContact', { fallback: 'تواصل مباشر' })}</p>
+              <p className="text-sm font-medium text-[#1F1B16]">{t('contact.whatsapp')}</p>
+              <p className="text-xs text-[#6F6658]">{t('contact.directContact')}</p>
             </div>
           </a>
           <a
@@ -42,7 +42,7 @@ export default function ContactPage() {
           >
             <span className="text-2xl"></span>
             <div>
-              <p className="text-sm font-medium text-[#1F1B16]">{t('contact.email', { fallback: 'البريد الإلكتروني' })}</p>
+              <p className="text-sm font-medium text-[#1F1B16]">{t('contact.email')}</p>
               <p className="text-xs text-[#6F6658]">support@eurostore.com</p>
             </div>
           </a>
@@ -50,8 +50,8 @@ export default function ContactPage() {
 
         {sent ? (
           <div className="rounded-md border border-green-800 bg-green-900/10 p-6 text-center">
-            <p className="text-green-400 font-medium">✓ {t('contact.sentSuccess', { fallback: 'تم إرسال رسالتك بنجاح!' })}</p>
-            <p className="mt-2 text-sm text-[#6F6658]">{t('contact.willContactSoon', { fallback: 'سنتواصل معك في أقرب وقت ممكن' })}</p>
+            <p className="text-green-400 font-medium">✓ {t('contact.sentSuccess')}</p>
+            <p className="mt-2 text-sm text-[#6F6658]">{t('contact.willContactSoon')}</p>
           </div>
         ) : (
           <form
@@ -59,11 +59,11 @@ export default function ContactPage() {
             onSubmit={(e) => { e.preventDefault(); setSent(true); }}
           >
             <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#6F6658]">{t('contact.name', { fallback: 'الاسم' })}</span>
+              <span className="text-[#6F6658]">{t('contact.name')}</span>
               <input
                 name="name" required
                 className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-2.5 text-sm text-[#1F1B16] placeholder:text-[#8B8172] focus:border-[#C9A84C] focus:outline-none"
-                placeholder={t('contact.namePlaceholder', { fallback: 'اسمك الكريم' })}
+                placeholder={t('contact.namePlaceholder')}
               />
             </label>
             <label className="flex flex-col gap-1.5 text-sm">
@@ -75,11 +75,11 @@ export default function ContactPage() {
               />
             </label>
             <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-[#6F6658]">{t('contact.message', { fallback: 'الرسالة' })}</span>
+              <span className="text-[#6F6658]">{t('contact.message')}</span>
               <textarea
                 name="message" required rows={5}
                 className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-2.5 text-sm text-[#1F1B16] placeholder:text-[#8B8172] focus:border-[#C9A84C] focus:outline-none resize-none"
-                placeholder={t('contact.messagePlaceholder', { fallback: 'كيف يمكننا مساعدتك؟' })}
+                placeholder={t('contact.messagePlaceholder')}
               />
             </label>
             <button

@@ -119,24 +119,24 @@ export default function CheckoutPage() {
       const data = await res.json();
       if (!res.ok) {
         const errMap: Record<string, string> = {
-          invalid_code: t('errors.invalidCode', { fallback: 'كود غير صالح' }), code_expired: t('errors.codeExpired', { fallback: 'الكود منتهي الصلاحية' }),
-          code_maxed: t('errors.codeMaxed', { fallback: 'الكود استُنفد' }), code_inactive: t('errors.codeInactive', { fallback: 'الكود غير نشط' }),
-          min_order_not_met: t('errors.minOrderNotMet', { fallback: 'الطلب أقل من الحد الأدنى للكود' }),
+          invalid_code: t('errors.invalidCode'), code_expired: t('errors.codeExpired'),
+          code_maxed: t('errors.codeMaxed'), code_inactive: t('errors.codeInactive'),
+          min_order_not_met: t('errors.minOrderNotMet'),
         };
-        setCodeError(errMap[data.error] ?? t('errors.invalidCode', { fallback: 'كود غير صالح' }));
+        setCodeError(errMap[data.error] ?? t('errors.invalidCode'));
         setDiscount(null);
       } else {
         setDiscount(data);
         setCodeError('');
       }
-    } catch { setCodeError(t('errors.generic', { fallback: 'حدث خطأ، يرجى المحاولة مرة أخرى' })); }
+    } catch { setCodeError(t('errors.generic')); }
     finally { setApplyingCode(false); }
   }, [codeInput, subtotal, t]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (items.length === 0) { setFormError(tCart('emptyCart', { fallback: 'السلة فارغة' })); return; }
-    if (!governorate) { setFormError(t('errors.selectGov', { fallback: 'الرجاء اختيار المحافظة' })); return; }
+    if (items.length === 0) { setFormError(tCart('emptyCart')); return; }
+    if (!governorate) { setFormError(t('errors.selectGov')); return; }
     setSubmitting(true); setFormError('');
 
     const d = Object.fromEntries(new FormData(e.currentTarget as HTMLFormElement));
@@ -167,11 +167,11 @@ export default function CheckoutPage() {
         router.push(`/orders/${body.order_number}`);
       } else {
         const err = await res.json().catch(() => null);
-        setFormError(err?.error ?? t('errors.createFailed', { fallback: 'فشل إنشاء الطلب، يرجى المحاولة مرة أخرى' }));
+        setFormError(err?.error ?? t('errors.createFailed'));
         setSubmitting(false);
       }
     } catch {
-      setFormError(t('errors.generic', { fallback: 'حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى' }));
+      setFormError(t('errors.generic'));
       setSubmitting(false);
     }
   }
@@ -181,11 +181,11 @@ export default function CheckoutPage() {
       <main className="min-h-screen bg-[#FAFAF8] px-6 py-20" dir={isAr ? "rtl" : "ltr"}>
         <div className="mx-auto max-w-xl text-center space-y-6">
           <div className="text-5xl">🛒</div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{tCart('emptyCart', { fallback: 'السلة فارغة' })}</h1>
-          <p className="text-[#A8A29E]">{t('emptyCartMsg', { fallback: 'أضف منتجات للسلة قبل المتابعة للدفع' })}</p>
+          <h1 className="text-2xl font-black text-[#1C1917]">{tCart('emptyCart')}</h1>
+          <p className="text-[#A8A29E]">{t('emptyCartMsg')}</p>
           <Link href="/products"
             className="inline-block rounded-2xl bg-[#B8860B] px-8 py-3 font-bold text-white hover:bg-[#9A7209] transition-colors">
-            {tCart('browseProducts', { fallback: 'تصفح المنتجات' })}
+            {tCart('browseProducts')}
           </Link>
         </div>
       </main>
@@ -199,9 +199,9 @@ export default function CheckoutPage() {
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="mb-8 flex items-center gap-3">
-          <Link href="/cart" className="text-sm text-[#B8860B] hover:underline">{isAr ? '←' : '→'} {t('backToCart', { fallback: 'السلة' })}</Link>
+          <Link href="/cart" className="text-sm text-[#B8860B] hover:underline">{isAr ? '←' : '→'} {t('backToCart')}</Link>
           <span className="text-[#D1CBC1]">/</span>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('title', { fallback: 'إتمام الطلب' })}</h1>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('title')}</h1>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
@@ -216,14 +216,14 @@ export default function CheckoutPage() {
 
             {/* Personal info */}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 space-y-4 shadow-sm">
-              <h2 className="font-black text-[#1C1917]">{t('contactInfo', { fallback: 'معلومات التواصل' })}</h2>
+              <h2 className="font-black text-[#1C1917]">{t('contactInfo')}</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold text-[#57534E]">{t('fullName', { fallback: 'الاسم الكامل *' })}</label>
-                  <input name="full_name" required minLength={2} className={inp} placeholder={t('fullNamePlaceholder', { fallback: 'أحمد محمد' })} />
+                  <label className="mb-1.5 block text-xs font-bold text-[#57534E]">{t('fullName')}</label>
+                  <input name="full_name" required minLength={2} className={inp} placeholder={t('fullNamePlaceholder')} />
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold text-[#57534E]">{t('phone', { fallback: 'رقم الهاتف *' })}</label>
+                  <label className="mb-1.5 block text-xs font-bold text-[#57534E]">{t('phone')}</label>
                   <input name="phone" required type="tel" minLength={7} className={inp} placeholder="09xxxxxxxx" dir="ltr" />
                 </div>
               </div>
@@ -231,48 +231,48 @@ export default function CheckoutPage() {
 
             {/* Delivery */}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 space-y-4 shadow-sm">
-              <h2 className="font-black text-[#1C1917]">{t('deliveryAddress', { fallback: 'عنوان التوصيل' })}</h2>
+              <h2 className="font-black text-[#1C1917]">{t('deliveryAddress')}</h2>
               <div>
-                <label className="mb-1.5 block text-xs font-bold text-[#57534E]">{t('governorate', { fallback: 'المحافظة *' })}</label>
+                <label className="mb-1.5 block text-xs font-bold text-[#57534E]">{t('governorate')}</label>
                 <select name="governorate" required className={inp} value={governorate}
                   onChange={e => setGovernorate((e.target as any).value)}>
-                  <option value="">{t('selectGov', { fallback: 'اختر المحافظة' })}</option>
+                  <option value="">{t('selectGov')}</option>
                   {GOVS.map(g => <option key={g.id} value={g.id}>{isAr ? g.ar : g.id}</option>)}
                 </select>
                 {/* Shipping cost indicator */}
                 {governorate && (
                   <p className="mt-1.5 text-xs text-[#A8A29E]">
-                    {loadingShip ? t('calcShipping', { fallback: 'جاري حساب الشحن...' }) :
-                     shippingSyp === 0 ? t('freeShipping', { fallback: '✓ شحن مجاني لهذه المنطقة' }) :
-                     `${t('shippingFee', { fallback: 'رسوم الشحن:' })} ${fmt(shippingSyp, locale)}`}
+                    {loadingShip ? t('calcShipping') :
+                     shippingSyp === 0 ? t('freeShipping') :
+                     `${t('shippingFee')} ${fmt(shippingSyp, locale)}`}
                   </p>
                 )}
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-bold text-[#57534E]">{t('detailedAddress', { fallback: 'العنوان التفصيلي *' })}</label>
+                <label className="mb-1.5 block text-xs font-bold text-[#57534E]">{t('detailedAddress')}</label>
                 <textarea name="address" required minLength={5} rows={3}
-                  className={`${inp} resize-none`} placeholder={t('addressPlaceholder', { fallback: 'الحي، الشارع، رقم المبنى...' })} />
+                  className={`${inp} resize-none`} placeholder={t('addressPlaceholder')} />
               </div>
               <div>
                 <label className="mb-1.5 block text-xs font-bold text-[#57534E]">
-                  {t('notes', { fallback: 'ملاحظات' })} <span className="font-normal text-[#A8A29E]">({t('optional', { fallback: 'اختياري' })})</span>
+                  {t('notes')} <span className="font-normal text-[#A8A29E]">({t('optional')})</span>
                 </label>
                 <textarea name="notes" rows={2} className={`${inp} resize-none`}
-                  placeholder={t('notesPlaceholder', { fallback: 'أي تعليمات خاصة للتوصيل...' })} />
+                  placeholder={t('notesPlaceholder')} />
               </div>
             </div>
 
             {/* Discount code */}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 space-y-3 shadow-sm">
-              <h2 className="font-black text-[#1C1917]">{t('discountCode', { fallback: 'كود الخصم' })}</h2>
+              <h2 className="font-black text-[#1C1917]">{t('discountCode')}</h2>
               {discount ? (
                 <div className="flex items-center justify-between rounded-xl border border-green-200 bg-green-50 px-4 py-3">
                   <span className="text-sm font-bold text-green-700">
-                    ✓ {t('codeApplied', { fallback: 'تم تطبيق الكود — خصم' })} {discount.type === 'percentage' ? `${discount.value}%` : fmt(discount.discount_amount, locale)}
+                    ✓ {t('codeApplied')} {discount.type === 'percentage' ? `${discount.value}%` : fmt(discount.discount_amount, locale)}
                   </span>
                   <button type="button" onClick={() => { setDiscount(null); setCodeInput(''); setCodeError(''); }}
                     className={`text-xs font-bold text-red-500 hover:underline ${isAr ? 'mr-3' : 'ml-3'}`}>
-                    {t('remove', { fallback: 'إزالة' })}
+                    {t('remove')}
                   </button>
                 </div>
               ) : (
@@ -283,7 +283,7 @@ export default function CheckoutPage() {
                   <button type="button" onClick={() => void applyCode()}
                     disabled={applyingCode || !codeInput.trim()}
                     className="rounded-xl border-2 border-[#B8860B] px-5 py-2 text-sm font-bold text-[#B8860B] hover:bg-[#B8860B] hover:text-white transition-all disabled:opacity-40">
-                    {applyingCode ? '...' : t('apply', { fallback: 'تطبيق' })}
+                    {applyingCode ? '...' : t('apply')}
                   </button>
                 </div>
               )}
@@ -298,12 +298,12 @@ export default function CheckoutPage() {
                     onChange={e => setUsePoints((e.target as HTMLInputElement).checked)}
                     className="mt-0.5 h-4 w-4 accent-[#B8860B]" />
                   <div className="space-y-0.5">
-                    <p className="text-sm font-bold text-[#1C1917]">{t('usePoints', { fallback: 'استخدام نقاطي للحصول على خصم' })}</p>
+                    <p className="text-sm font-bold text-[#1C1917]">{t('usePoints')}</p>
                     <p className="text-xs text-[#A8A29E]">
-                      {t('youHavePoints', { points: loyaltyPoints.toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US'), fallback: `لديك ${loyaltyPoints} نقطة` })} · {t('equalsTo', { fallback: 'تساوي' })} {fmt(loyaltyPoints * POINT_VAL, locale)}
+                      {t('youHavePoints', { points: loyaltyPoints.toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US'), fallback: `لديك ${loyaltyPoints} نقطة` })} · {t('equalsTo')} {fmt(loyaltyPoints * POINT_VAL, locale)}
                     </p>
                     {usePoints && loyaltyDiscountSyp > 0 && (
-                      <p className="text-xs font-bold text-[#B8860B]">{t('willDeduct', { fallback: 'سيتم خصم' })} {fmt(loyaltyDiscountSyp, locale)}</p>
+                      <p className="text-xs font-bold text-[#B8860B]">{t('willDeduct')} {fmt(loyaltyDiscountSyp, locale)}</p>
                     )}
                   </div>
                 </label>
@@ -312,14 +312,14 @@ export default function CheckoutPage() {
 
             <button type="submit" disabled={submitting}
               className="w-full rounded-2xl bg-[#B8860B] py-4 text-base font-black text-white hover:bg-[#9A7209] transition-colors disabled:opacity-50 active:scale-[0.98]">
-              {submitting ? t('processing', { fallback: 'جاري معالجة الطلب...' }) : t('confirmOrder', { fallback: 'تأكيد الطلب' })}
+              {submitting ? t('processing') : t('confirmOrder')}
             </button>
           </form>
 
           {/* ── Right: Summary ── */}
           <div className="h-fit sticky top-6 space-y-4">
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
-              <h2 className="mb-4 font-black text-[#1C1917]">{tCart('orderSummary', { fallback: 'ملخص الطلب' })} ({items.length} {tCart('productWord', { fallback: 'منتج' })})</h2>
+              <h2 className="mb-4 font-black text-[#1C1917]">{tCart('orderSummary')} ({items.length} {tCart('productWord')})</h2>
               <div className="space-y-3">
                 {items.map((i: any) => (
                   <div key={i.variantId} className="flex items-center gap-3">
@@ -329,7 +329,7 @@ export default function CheckoutPage() {
                     )}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-[#1C1917] truncate">{isAr ? i.nameAr : (i.nameEn || i.nameAr)}</p>
-                      <p className="text-xs text-[#A8A29E]">{i.sku} · {tCart('qty', { fallback: 'الكمية' })}: {i.quantity}</p>
+                      <p className="text-xs text-[#A8A29E]">{i.sku} · {tCart('qty')}: {i.quantity}</p>
                     </div>
                     <span className="text-sm font-bold text-[#B8860B] shrink-0">
                       {fmt(i.priceSyp * i.quantity, locale)}
@@ -340,39 +340,39 @@ export default function CheckoutPage() {
 
               <div className="mt-5 space-y-2 border-t border-[#F0ECE6] pt-4 text-sm">
                 <div className="flex justify-between text-[#57534E]">
-                  <span>{t('subtotal', { fallback: 'المجموع الفرعي' })}</span>
+                  <span>{t('subtotal')}</span>
                   <span>{fmt(subtotal, locale)}</span>
                 </div>
                 <div className="flex justify-between text-[#57534E]">
-                  <span>{t('shipping', { fallback: 'الشحن' })}</span>
+                  <span>{t('shipping')}</span>
                   <span>
                     {!governorate ? <span className="text-[#A8A29E]">—</span> :
                      loadingShip ? '...' :
-                     shippingSyp === 0 ? <span className="text-green-600 font-bold">{t('free', { fallback: 'مجاني' })}</span> :
+                     shippingSyp === 0 ? <span className="text-green-600 font-bold">{t('free')}</span> :
                      fmt(shippingSyp, locale)}
                   </span>
                 </div>
                 {discountSyp > 0 && (
                   <div className="flex justify-between text-green-600 font-semibold">
-                    <span>{t('codeDiscount', { fallback: 'خصم الكود' })}</span>
+                    <span>{t('codeDiscount')}</span>
                     <span>- {fmt(discountSyp, locale)}</span>
                   </div>
                 )}
                 {loyaltyDiscountSyp > 0 && (
                   <div className="flex justify-between text-[#B8860B] font-semibold">
-                    <span>{t('pointsDiscount', { fallback: 'خصم النقاط' })}</span>
+                    <span>{t('pointsDiscount')}</span>
                     <span>- {fmt(loyaltyDiscountSyp, locale)}</span>
                   </div>
                 )}
                 <div className="flex justify-between border-t border-[#F0ECE6] pt-3 text-base font-black text-[#1C1917]">
-                  <span>{tCart('total', { fallback: 'الإجمالي' })}</span>
+                  <span>{tCart('total')}</span>
                   <span className="text-[#B8860B]">{fmt(totalSyp, locale)}</span>
                 </div>
               </div>
             </div>
 
             <div className="rounded-2xl border border-[#E5E0D8] bg-[#FFF8ED] p-4 text-center text-xs text-[#57534E]">
-              {tCart('contactConfirmMsg', { fallback: 'سيتم التواصل معك هاتفياً لتأكيد الطلب والتحقق من العنوان' })}
+              {tCart('contactConfirmMsg')}
             </div>
           </div>
         </div>

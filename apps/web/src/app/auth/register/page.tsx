@@ -39,39 +39,39 @@ export default function RegisterPage() {
         <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 shadow-sm">
           <div className="mb-6 text-center">
             <Link href="/" className="text-lg font-black tracking-widest text-[#B8860B]">EURO STORE</Link>
-            <h1 className="mt-2 text-xl font-black text-[#1C1917]">{t('registerTitle', { fallback: 'إنشاء حساب جديد' })}</h1>
+            <h1 className="mt-2 text-xl font-black text-[#1C1917]">{t('registerTitle')}</h1>
           </div>
 
           {error && <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('fullName', { fallback: 'الاسم الكامل' })}</label>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('fullName')}</label>
               <input type="text" value={name} onChange={e=>setName(e.target.value)} required
                 className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B] placeholder:text-[#A8A29E]"
-                placeholder={t('namePlaceholder', { fallback: 'الاسم' })} />
+                placeholder={t('namePlaceholder')} />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('email', { fallback: 'البريد الإلكتروني' })}</label>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('email')}</label>
               <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required
                 className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B] placeholder:text-[#A8A29E]"
                 placeholder="you@example.com" dir="ltr" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('password', { fallback: 'كلمة المرور' })}</label>
+              <label className="mb-1.5 block text-sm font-semibold text-[#1C1917]">{t('password')}</label>
               <input type="password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={8}
                 className="w-full rounded-xl border border-[#E7E3DC] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]"
-                placeholder={t('passwordPlaceholder', { fallback: '8 أحرف على الأقل' })} dir="ltr" />
+                placeholder={t('passwordPlaceholder')} dir="ltr" />
             </div>
             <button type="submit" disabled={loading}
               className="w-full rounded-xl bg-[#B8860B] py-3 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] disabled:opacity-50 transition-colors">
-              {loading ? t('creatingAccount', { fallback: 'جاري الإنشاء...' }) : t('createAccount', { fallback: 'إنشاء الحساب' })}
+              {loading ? t('creatingAccount') : t('createAccount')}
             </button>
           </form>
 
           <p className="mt-5 text-center text-sm text-[#A8A29E]">
-            {t('alreadyHaveAccount', { fallback: 'لديك حساب بالفعل؟' })}{' '}
-            <Link href="/auth/login" className="font-bold text-[#B8860B] hover:underline">{t('login', { fallback: 'تسجيل الدخول' })}</Link>
+            {t('alreadyHaveAccount')}{' '}
+            <Link href="/auth/login" className="font-bold text-[#B8860B] hover:underline">{t('login')}</Link>
           </p>
         </div>
       </div>

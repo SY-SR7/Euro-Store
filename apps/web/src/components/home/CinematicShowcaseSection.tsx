@@ -251,7 +251,7 @@ export function CinematicShowcaseSection({
           style={{ opacity: scrollHintOpacity }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="text-white/40 text-[10px] uppercase tracking-[0.25em]">{t('scrollDown', { fallback: 'مرر للأسفل' })}</span>
+          <span className="text-white/40 text-[10px] uppercase tracking-[0.25em]">{t('scrollDown')}</span>
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
