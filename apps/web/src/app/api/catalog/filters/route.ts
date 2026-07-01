@@ -90,8 +90,8 @@ export async function GET(req: NextRequest) {
     let productsQuery = supabase
       .from('products')
       .select(`
-        id, name_ar, name_en, slug, description_ar, image_url,
-        category_id, brand_id, is_featured, is_active,
+        id, name_ar, name_en, slug, description_ar, category_id, brand_id, is_featured, is_active,
+        product_images(url, is_primary),
         product_variants!inner(
           id, price_syp, compare_price_syp, stock_quantity, is_active,
           variant_attributes(
@@ -130,13 +130,16 @@ export async function GET(req: NextRequest) {
         }
       }
 
+      const images = Array.isArray(p.product_images) ? p.product_images : [];
+      const primaryImage = images.find((i: any) => i.is_primary) || images[0];
+
       products.push({
         id:           p.id,
         name_ar:      p.name_ar,
         name_en:      p.name_en,
         slug:         p.slug,
         description_ar: p.description_ar ?? '',
-        image_url:    p.image_url ?? '',
+        image_url:    primaryImage?.url ?? '',
         category_id:  p.category_id,
         brand_id:     p.brand_id,
         is_featured:  p.is_featured,
