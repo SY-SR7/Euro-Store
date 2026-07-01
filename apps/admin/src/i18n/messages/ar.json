@@ -608,5 +608,29 @@
     "emptyField": "—",
     "freeShippingAbove": "شحن مجاني فوق",
     "unitSyp": "ل.س"
+  },
+  "adminSubAdmins": {
+    "title": "المشرفون",
+    "countAccounts": "{count} حساب",
+    "newSubAdmin": "مشرف جديد",
+    "failedToLoadAdmin": "تعذر فتح المشرف",
+    "createdSuccessfully": "تم إنشاء الحساب",
+    "creationFailed": "فشل الإنشاء",
+    "formName": "الاسم",
+    "formEmail": "email@example.com",
+    "formPassword": "كلمة المرور",
+    "formCreating": "جار الإنشاء...",
+    "formCreate": "إنشاء",
+    "noAccounts": "لا توجد حسابات",
+    "tableHeaderName": "الاسم",
+    "tableHeaderEmail": "البريد",
+    "tableHeaderDate": "التاريخ",
+    "tableHeaderStatus": "الحالة",
+    "statusActive": "نشط",
+    "statusDisabled": "معطل",
+    "fieldName": "الاسم",
+    "fieldEmail": "البريد",
+    "fieldStatus": "الحالة",
+    "fieldCreatedAt": "تاريخ الإنشاء"
   }
 }

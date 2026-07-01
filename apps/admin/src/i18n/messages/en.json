@@ -608,5 +608,29 @@
     "emptyField": "—",
     "freeShippingAbove": "Free Shipping Above",
     "unitSyp": "SYP"
+  },
+  "adminSubAdmins": {
+    "title": "Sub-Admins",
+    "countAccounts": "{count} accounts",
+    "newSubAdmin": "New Sub-Admin",
+    "failedToLoadAdmin": "Failed to load sub-admin",
+    "createdSuccessfully": "Account created successfully",
+    "creationFailed": "Failed to create",
+    "formName": "Name",
+    "formEmail": "email@example.com",
+    "formPassword": "Password",
+    "formCreating": "Creating...",
+    "formCreate": "Create",
+    "noAccounts": "No accounts found",
+    "tableHeaderName": "Name",
+    "tableHeaderEmail": "Email",
+    "tableHeaderDate": "Date",
+    "tableHeaderStatus": "Status",
+    "statusActive": "Active",
+    "statusDisabled": "Disabled",
+    "fieldName": "Name",
+    "fieldEmail": "Email",
+    "fieldStatus": "Status",
+    "fieldCreatedAt": "Created At"
   }
 }
