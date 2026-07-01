@@ -1,7 +1,8 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 interface ExchangeRequest {
   id         : string;
@@ -57,7 +58,7 @@ export default function HelperExchangePage() {
             <div key={ex.id} className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="font-mono text-xs text-[#9CA3AF]">{ex.id.slice(0, 8)}…</p>
+                  <p className="font-mono text-xs text-[#9CA3AF]">طلب: <Link href={`/orders/${ex.order_id}`} className="hover:underline hover:text-primary text-primary">#{ex.order_id}</Link> | {ex.id.slice(0, 8)}…</p>
                   <p className="mt-1 text-sm text-[#D6D3C7]">{ex.reason}</p>
                   <p className="mt-1 text-xs text-[#6B7280]">{new Date(ex.created_at).toLocaleDateString('ar-SY')}</p>
                 </div>
