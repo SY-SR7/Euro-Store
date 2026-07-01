@@ -5,6 +5,7 @@ import { ArrowRight, Check, PackagePlus, RefreshCw } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type Category = { id: string; name_ar: string; name_en?: string | null };
 type Brand = { id: string; name: string };
@@ -55,6 +56,10 @@ export default function ProductNewQuickAdmin() {
     is_active: true,
     is_featured: false,
   });
+  const t = useTranslations('adminCatalog');
+  const tCommon = useTranslations('common');
+  const locale = useLocale();
+  const isAr = locale === 'ar';
 
   useEffect(() => {
     Promise.all([
@@ -91,23 +96,23 @@ export default function ProductNewQuickAdmin() {
       });
       router.push(product.id ? `/products?open=${product.id}` : '/products');
     } catch (error) {
-      setMsg(error instanceof Error ? error.message : 'فشل إنشاء المنتج');
+      setMsg(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل الحفظ' }));
     } finally {
       setSaving(false);
     }
   }
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
           <Link href="/products" className="inline-flex items-center gap-2 text-xs font-black text-[#B8860B]">
-            <ArrowRight size={14} /> المنتجات
+            <ArrowRight size={14} className={isAr ? "" : "rotate-180"} /> {t('productsTitle', { fallback: 'المنتجات' })}
           </Link>
-          <h1 className="mt-2 text-2xl font-black text-[#1C1917]">منتج جديد</h1>
+          <h1 className="mt-2 text-2xl font-black text-[#1C1917]">{t('newProduct', { fallback: 'منتج جديد' })}</h1>
         </div>
         <button type="button" onClick={() => router.refresh()} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#57534E] hover:border-[#B8860B]">
-          <RefreshCw size={16} /> تحديث
+          <RefreshCw size={16} /> {tCommon('refresh', { fallback: 'تحديث' })}
         </button>
       </section>
 
@@ -117,23 +122,23 @@ export default function ProductNewQuickAdmin() {
         <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
           <div className="grid gap-4 md:grid-cols-2">
             <label className="grid gap-1">
-              <span className="text-xs font-black text-[#8B8172]">الاسم العربي</span>
-              <input value={form.name_ar} onChange={(event) => setForm((current) => ({ ...current, name_ar: event.target.value }))} className={inputClass} />
+              <span className="text-xs font-black text-[#8B8172]">{t('productNameAr', { fallback: 'الاسم العربي' })}</span>
+              <input value={form.name_ar} onChange={(event) => setForm((current) => ({ ...current, name_ar: event.target.value }))} className={inputClass} dir={isAr ? "rtl" : "ltr"} />
             </label>
             <label className="grid gap-1">
-              <span className="text-xs font-black text-[#8B8172]">English name</span>
+              <span className="text-xs font-black text-[#8B8172]">{t('productNameEn', { fallback: 'الاسم بالإنجليزية' })}</span>
               <input value={form.name_en} onChange={(event) => setForm((current) => ({ ...current, name_en: event.target.value, slug: current.slug || slugify(event.target.value) }))} className={inputClass} dir="ltr" />
             </label>
             <label className="grid gap-1 md:col-span-2">
-              <span className="text-xs font-black text-[#8B8172]">Slug</span>
+              <span className="text-xs font-black text-[#8B8172]">{t('productSlug', { fallback: 'رابط المنتج' })}</span>
               <input value={form.slug} onChange={(event) => setForm((current) => ({ ...current, slug: slugify(event.target.value) }))} className={inputClass} dir="ltr" />
             </label>
             <label className="grid gap-1">
-              <span className="text-xs font-black text-[#8B8172]">الوصف العربي</span>
-              <textarea value={form.description_ar} onChange={(event) => setForm((current) => ({ ...current, description_ar: event.target.value }))} rows={7} className={inputClass} />
+              <span className="text-xs font-black text-[#8B8172]">{t('descriptionAr', { fallback: 'الوصف العربي' })}</span>
+              <textarea value={form.description_ar} onChange={(event) => setForm((current) => ({ ...current, description_ar: event.target.value }))} rows={7} className={inputClass} dir={isAr ? "rtl" : "ltr"} />
             </label>
             <label className="grid gap-1">
-              <span className="text-xs font-black text-[#8B8172]">English description</span>
+              <span className="text-xs font-black text-[#8B8172]">{t('descriptionEn', { fallback: 'الوصف بالإنجليزية' })}</span>
               <textarea value={form.description_en} onChange={(event) => setForm((current) => ({ ...current, description_en: event.target.value }))} rows={7} className={inputClass} dir="ltr" />
             </label>
           </div>
@@ -143,16 +148,16 @@ export default function ProductNewQuickAdmin() {
           <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
             <div className="grid gap-4">
               <label className="grid gap-1">
-                <span className="text-xs font-black text-[#8B8172]">التصنيف</span>
-                <select value={form.category_id} onChange={(event) => setForm((current) => ({ ...current, category_id: event.target.value }))} className={inputClass}>
-                  <option value="">بدون تصنيف</option>
-                  {categories.map((category) => <option key={category.id} value={category.id}>{category.name_ar}</option>)}
+                <span className="text-xs font-black text-[#8B8172]">{t('category', { fallback: 'التصنيف' })}</span>
+                <select value={form.category_id} onChange={(event) => setForm((current) => ({ ...current, category_id: event.target.value }))} className={inputClass} dir={isAr ? "rtl" : "ltr"}>
+                  <option value="">{t('uncategorized', { fallback: 'بدون تصنيف' })}</option>
+                  {categories.map((category) => <option key={category.id} value={category.id}>{isAr ? category.name_ar : (category.name_en || category.name_ar)}</option>)}
                 </select>
               </label>
               <label className="grid gap-1">
-                <span className="text-xs font-black text-[#8B8172]">الماركة</span>
-                <select value={form.brand_id} onChange={(event) => setForm((current) => ({ ...current, brand_id: event.target.value }))} className={inputClass}>
-                  <option value="">بدون ماركة</option>
+                <span className="text-xs font-black text-[#8B8172]">{t('brand', { fallback: 'الماركة' })}</span>
+                <select value={form.brand_id} onChange={(event) => setForm((current) => ({ ...current, brand_id: event.target.value }))} className={inputClass} dir={isAr ? "rtl" : "ltr"}>
+                  <option value="">{t('unbranded', { fallback: 'بدون ماركة' })}</option>
                   {brands.map((brand) => <option key={brand.id} value={brand.id}>{brand.name}</option>)}
                 </select>
               </label>
@@ -161,14 +166,14 @@ export default function ProductNewQuickAdmin() {
 
           <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
             <div className="flex flex-wrap gap-2">
-              <TogglePill active={form.is_active} label="نشط" onClick={() => setForm((current) => ({ ...current, is_active: !current.is_active }))} />
-              <TogglePill active={form.is_featured} label="مميز" onClick={() => setForm((current) => ({ ...current, is_featured: !current.is_featured }))} />
+              <TogglePill active={form.is_active} label={t('active', { fallback: 'نشط' })} onClick={() => setForm((current) => ({ ...current, is_active: !current.is_active }))} />
+              <TogglePill active={form.is_featured} label={t('featured', { fallback: 'مميز' })} onClick={() => setForm((current) => ({ ...current, is_featured: !current.is_featured }))} />
             </div>
           </section>
 
           <button type="submit" disabled={!ready || saving} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#B8860B] px-5 py-3 text-sm font-black text-white hover:bg-[#9A7209] disabled:cursor-not-allowed disabled:opacity-50">
             <PackagePlus size={17} />
-            {saving ? 'جار الإنشاء...' : 'إنشاء المنتج'}
+            {saving ? tCommon('saving', { fallback: 'جار الحفظ...' }) : t('createProductBtn', { fallback: 'إنشاء المنتج' })}
           </button>
         </aside>
       </form>
