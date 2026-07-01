@@ -9,7 +9,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   return (
     <WishlistProvider>
       <Header />
-      <main className="min-h-screen bg-[#FAFAF8] text-[#1C1917] pb-20 md:pb-0">
+      <main className="min-h-screen bg-background text-text-primary pb-20 md:pb-0">
         {children}
       </main>
       <Footer />

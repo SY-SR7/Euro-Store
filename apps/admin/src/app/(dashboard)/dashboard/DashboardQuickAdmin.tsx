@@ -127,16 +127,16 @@ export default function DashboardQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
+      <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-background-card p-5 shadow-sm md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('title')}</h1>
+          <h1 className="text-2xl font-black text-text-primary">{t('title')}</h1>
           <p className="mt-1 text-sm text-[#8B8172]">{loading ? t('loadingStatus') : t('readyStatus')}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href="/notifications" className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#57534E] hover:border-[#B8860B]">
+          <Link href="/notifications" className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-text-secondary hover:border-primary">
             <Bell size={16} /> {t('notificationsBtn')}
           </Link>
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#B8860B]">
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-primary">
             <RefreshCw size={16} /> {tCommon('refresh')}
           </button>
         </div>
@@ -148,30 +148,30 @@ export default function DashboardQuickAdmin() {
         {cards.map((card) => {
           const Icon = card.icon;
           return (
-            <Link key={card.label} href={card.href} className="rounded-lg border border-[#E5E0D8] bg-white p-4 shadow-sm transition hover:border-[#B8860B] hover:bg-[#FFFBF0]">
+            <Link key={card.label} href={card.href} className="rounded-lg border border-[#E5E0D8] bg-background-card p-4 shadow-sm transition hover:border-primary hover:bg-[#FFFBF0]">
               <div className="flex items-center justify-between">
-                <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#F8F6F2] text-[#B8860B]"><Icon size={18} /></span>
+                <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#F8F6F2] text-primary"><Icon size={18} /></span>
                 <span className="text-xs font-bold text-[#8B8172]">{t('openBtn')}</span>
               </div>
-              <p className="mt-4 text-2xl font-black text-[#1C1917]" dir="ltr">{loading ? '...' : card.value}</p>
-              <p className="mt-1 text-sm font-bold text-[#57534E]">{card.label}</p>
+              <p className="mt-4 text-2xl font-black text-text-primary" dir="ltr">{loading ? '...' : card.value}</p>
+              <p className="mt-1 text-sm font-bold text-text-secondary">{card.label}</p>
             </Link>
           );
         })}
       </section>
 
       <section className="grid gap-5 xl:grid-cols-2">
-        <div className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-white shadow-sm">
+        <div className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-background-card shadow-sm">
           <div className="flex items-center justify-between border-b border-[#F0ECE6] px-4 py-3">
-            <h2 className="font-black text-[#1C1917]">{t('latestOrders')}</h2>
-            <Link href="/orders" className="text-xs font-black text-[#B8860B]">{t('allLink')}</Link>
+            <h2 className="font-black text-text-primary">{t('latestOrders')}</h2>
+            <Link href="/orders" className="text-xs font-black text-primary">{t('allLink')}</Link>
           </div>
           <div className="divide-y divide-[#F0ECE6]">
-            {orders.length === 0 ? <p className="p-5 text-center text-sm text-[#A8A29E]">{t('noOrders')}</p> : orders.map((order) => (
+            {orders.length === 0 ? <p className="p-5 text-center text-sm text-text-muted">{t('noOrders')}</p> : orders.map((order) => (
               <Link key={order.id} href={`/orders?open=${order.id}`} className="grid gap-1 p-4 transition hover:bg-[#FFFBF0]">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="font-black text-[#1C1917]">#{order.order_number}</span>
-                  <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-3 py-1 text-xs font-bold text-[#57534E]">{getStatusLabel(order.status, orderStatusMap)}</span>
+                  <span className="font-black text-text-primary">#{order.order_number}</span>
+                  <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-3 py-1 text-xs font-bold text-text-secondary">{getStatusLabel(order.status, orderStatusMap)}</span>
                 </div>
                 <div className="flex flex-wrap gap-2 text-xs text-[#8B8172]">
                   <span>{order.address_snapshot?.full_name || t('unspecifiedCustomer')}</span>
@@ -183,16 +183,16 @@ export default function DashboardQuickAdmin() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-white shadow-sm">
+        <div className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-background-card shadow-sm">
           <div className="flex items-center justify-between border-b border-[#F0ECE6] px-4 py-3">
-            <h2 className="font-black text-[#1C1917]">{t('pendingExchangesTitle')}</h2>
-            <Link href="/exchanges" className="text-xs font-black text-[#B8860B]">{t('allLink')}</Link>
+            <h2 className="font-black text-text-primary">{t('pendingExchangesTitle')}</h2>
+            <Link href="/exchanges" className="text-xs font-black text-primary">{t('allLink')}</Link>
           </div>
           <div className="divide-y divide-[#F0ECE6]">
-            {exchanges.length === 0 ? <p className="p-5 text-center text-sm text-[#A8A29E]">{t('noPendingExchanges')}</p> : exchanges.map((request) => (
+            {exchanges.length === 0 ? <p className="p-5 text-center text-sm text-text-muted">{t('noPendingExchanges')}</p> : exchanges.map((request) => (
               <Link key={request.id} href={`/exchanges?open=${request.id}`} className="grid gap-1 p-4 transition hover:bg-[#FFFBF0]">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="font-mono text-sm font-black text-[#1C1917]" dir="ltr">#{request.id.slice(0, 8)}</span>
+                  <span className="font-mono text-sm font-black text-text-primary" dir="ltr">#{request.id.slice(0, 8)}</span>
                   <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">{getStatusLabel(request.status, orderStatusMap)}</span>
                 </div>
                 <div className="flex flex-wrap gap-2 text-xs text-[#8B8172]">
@@ -214,8 +214,8 @@ export default function DashboardQuickAdmin() {
         ].map((item) => {
           const Icon = item.Icon;
           return (
-            <Link key={item.href} href={item.href} className="flex items-center gap-3 rounded-lg border border-[#E5E0D8] bg-white p-4 text-sm font-black text-[#1C1917] shadow-sm transition hover:border-[#B8860B] hover:bg-[#FFFBF0]">
-              <Icon size={17} className="text-[#B8860B]" />
+            <Link key={item.href} href={item.href} className="flex items-center gap-3 rounded-lg border border-[#E5E0D8] bg-background-card p-4 text-sm font-black text-text-primary shadow-sm transition hover:border-primary hover:bg-[#FFFBF0]">
+              <Icon size={17} className="text-primary" />
               {item.label}
             </Link>
           );

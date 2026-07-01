@@ -80,13 +80,13 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#FAF7EF] px-4 py-10 relative" dir={isAr ? "rtl" : "ltr"}>
+    <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 relative" dir={isAr ? "rtl" : "ltr"}>
       <div className="absolute top-4 end-4">
         <LanguageSwitcher />
       </div>
-      <section className="w-full max-w-md rounded-3xl border border-[#E8DCC3] bg-[#FFFDF8] p-8 shadow-xl">
+      <section className="w-full max-w-md rounded-3xl border border-border bg-background-card p-8 shadow-xl">
         <div className="mb-8 text-center">
-          <p className="text-sm font-black tracking-[0.35em] text-[#C9A84C]">EURO STORE</p>
+          <p className="text-sm font-black tracking-[0.35em] text-primary">EURO STORE</p>
           <h1 className="mt-4 text-3xl font-black text-[#1F1B16]">{t('adminLogin', { fallback: 'تسجيل دخول الإدارة' })}</h1>
         </div>
 
@@ -104,7 +104,7 @@ export default function LoginPage() {
               autoComplete="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-2xl border border-[#E8DCC3] bg-white px-4 py-3 text-left text-[#1F1B16] outline-none transition focus:border-[#C9A84C]"
+              className="w-full rounded-2xl border border-border bg-background-card px-4 py-3 text-left text-[#1F1B16] outline-none transition focus:border-primary"
               placeholder="admin@example.com"
               dir="ltr"
               required
@@ -113,7 +113,7 @@ export default function LoginPage() {
 
           <label className="block space-y-2">
             <span className="text-sm font-black text-[#1F1B16]">{t('password', { fallback: 'كلمة المرور' })}</span>
-            <div className="flex overflow-hidden rounded-2xl border border-[#E8DCC3] bg-white focus-within:border-[#C9A84C]">
+            <div className="flex overflow-hidden rounded-2xl border border-border bg-background-card focus-within:border-primary">
               <input
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
@@ -127,7 +127,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((current) => !current)}
-                className={`grid w-12 place-items-center ${isAr ? "border-r" : "border-l"} border-[#E8DCC3] text-[#6F6658] transition hover:text-[#C9A84C]`}
+                className={`grid w-12 place-items-center ${isAr ? "border-r" : "border-l"} border-border text-[#6F6658] transition hover:text-primary`}
                 title={showPassword ? t('hide', { fallback: 'إخفاء' }) : t('show', { fallback: 'إظهار' })}
               >
                 {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
@@ -138,7 +138,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#C9A84C] px-5 py-3 text-sm font-black text-[#1F1B16] transition hover:bg-[#D8B95F] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-black text-[#1F1B16] transition hover:bg-[#D8B95F] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <LogIn size={17} />
             {loading ? t('loggingIn', { fallback: 'جار تسجيل الدخول...' }) : t('loginBtn', { fallback: 'دخول' })}

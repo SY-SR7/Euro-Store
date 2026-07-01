@@ -20,7 +20,7 @@ export function LanguageSwitcher() {
     <button
       type="button"
       onClick={() => setLocale(nextLocale)}
-      className="inline-flex h-8 items-center justify-center rounded-lg border border-transparent px-3 text-xs font-bold text-[#6F6658] transition-colors hover:bg-black/5 hover:text-[#1F1B16] dark:hover:bg-white/10 dark:hover:text-white"
+      className="inline-flex h-8 items-center justify-center rounded-lg border border-transparent px-3 text-xs font-bold text-[#6F6658] transition-colors hover:bg-black/5 hover:text-[#1F1B16] dark:hover:bg-background-card/10 dark:hover:text-text-primary"
       aria-label={label}
     >
       {label}

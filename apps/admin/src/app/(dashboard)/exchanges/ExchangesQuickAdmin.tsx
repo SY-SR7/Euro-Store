@@ -30,7 +30,7 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -58,13 +58,13 @@ function Modal({ title, onClose, children, closeTitle }: { title: string; onClos
         className="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
           <button
             type="button"
             title={closeTitle || "Close"}
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]"
           >
             <X size={17} />
           </button>
@@ -158,9 +158,9 @@ function InlineText({
       type="button"
       onClick={() => setEditing(true)}
       dir={dir}
-      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]"
+      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background"
     >
-      {value?.trim() ? value : <span className="text-[#A8A29E]">—</span>}
+      {value?.trim() ? value : <span className="text-text-muted">—</span>}
     </button>
   );
 }
@@ -193,7 +193,7 @@ function StatusPills({
               if (!active) void onSave(status);
             }}
             className={`rounded-full border px-3 py-1 text-xs font-black transition ${
-              active ? STATUS_COLOR[status] : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'
+              active ? STATUS_COLOR[status] : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'
             }`}
           >
             {STATUS_AR[status]}
@@ -306,16 +306,16 @@ export default function ExchangesQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('exchangesTitle', { fallback: 'طلبات الاستبدال' })}</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{t('exchangesCount', { count: requests.length, fallback: `${requests.length} طلب` })}</p>
+          <h1 className="text-2xl font-black text-text-primary">{t('exchangesTitle', { fallback: 'طلبات الاستبدال' })}</h1>
+          <p className="mt-1 text-sm text-text-muted">{t('exchangesCount', { count: requests.length, fallback: `${requests.length} طلب` })}</p>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
           <button
             type="button"
             onClick={load}
-            className="inline-flex items-center gap-2 rounded-full border border-[#E5E0D8] px-3 py-1.5 text-xs font-bold text-[#57534E] hover:border-[#B8860B]"
+            className="inline-flex items-center gap-2 rounded-full border border-[#E5E0D8] px-3 py-1.5 text-xs font-bold text-text-secondary hover:border-primary"
           >
             <RefreshCw size={13} />
             {tCommon('refresh', { fallback: 'تحديث' })}
@@ -327,8 +327,8 @@ export default function ExchangesQuickAdmin() {
               onClick={() => setStatusFilter(status)}
               className={`rounded-full border px-3 py-1.5 text-xs font-bold transition-colors ${
                 statusFilter === status
-                  ? 'border-[#B8860B] bg-[#B8860B] text-white'
-                  : 'border-[#E5E0D8] text-[#57534E] hover:border-[#B8860B]'
+                  ? 'border-primary bg-primary text-text-primary'
+                  : 'border-[#E5E0D8] text-text-secondary hover:border-primary'
               }`}
             >
               {status === 'all' ? t('all', { fallback: 'الكل' }) : STATUS_AR[status]}
@@ -337,11 +337,11 @@ export default function ExchangesQuickAdmin() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
         {loading ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+          <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
         ) : requests.length === 0 ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noExchanges', { fallback: 'لا توجد طلبات استبدال' })}</p>
+          <p className="p-10 text-center text-sm text-text-muted">{t('noExchanges', { fallback: 'لا توجد طلبات استبدال' })}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
@@ -350,7 +350,7 @@ export default function ExchangesQuickAdmin() {
                   {[t('id', { fallback: 'الرقم' }), t('reason', { fallback: 'السبب' }), t('status', { fallback: 'الحالة' }), t('requestDate', { fallback: 'تاريخ الطلب' })].map((heading, index) => (
                     <th
                       key={heading}
-                      className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${
+                      className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-text-muted ${
                         index === 3 ? 'hidden md:table-cell' : ''
                       }`}
                     >
@@ -366,10 +366,10 @@ export default function ExchangesQuickAdmin() {
                     className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]"
                     onClick={() => void open(request)}
                   >
-                    <td className="px-5 py-3 font-mono text-xs font-semibold text-[#1C1917] group-hover:text-[#B8860B]">
+                    <td className="px-5 py-3 font-mono text-xs font-semibold text-text-primary group-hover:text-primary">
                       {request.id.slice(0, 8)}
                     </td>
-                    <td className="max-w-xs truncate px-5 py-3 text-[#57534E]">
+                    <td className="max-w-xs truncate px-5 py-3 text-text-secondary">
                       {locale === 'ar' ? (request.reason_ar ?? request.reason_en ?? '—') : (request.reason_en ?? request.reason_ar ?? '—')}
                     </td>
                     <td className="px-5 py-3">
@@ -377,7 +377,7 @@ export default function ExchangesQuickAdmin() {
                         {STATUS_AR[request.status] ?? request.status}
                       </span>
                     </td>
-                    <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">
+                    <td className="hidden px-5 py-3 text-xs text-text-muted md:table-cell">
                       {new Date(request.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
                     </td>
                   </tr>
@@ -407,7 +407,7 @@ export default function ExchangesQuickAdmin() {
               ) : null}
 
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
-                <section className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+                <section className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
                   <div className="space-y-2">
                     <Field label={t('status', { fallback: 'الحالة' })}>
                       <StatusPills value={selected.status} onSave={(status) => patchRequest({ status })} t={t} />
@@ -434,20 +434,20 @@ export default function ExchangesQuickAdmin() {
                       />
                     </Field>
                     <Field label={t('orderId', { fallback: 'رقم الطلب' })}>
-                      <div className="min-h-9 rounded-xl px-3 py-2 text-xs font-mono font-semibold text-[#1C1917]">
+                      <div className="min-h-9 rounded-xl px-3 py-2 text-xs font-mono font-semibold text-text-primary">
                         {selected.order_id ?? '—'}
                       </div>
                     </Field>
                     <Field label={t('requestDate', { fallback: 'تاريخ الطلب' })}>
-                      <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
+                      <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-text-primary">
                         {new Date(selected.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
                       </div>
                     </Field>
                   </div>
                 </section>
 
-                <section className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
-                  <h3 className="mb-3 text-sm font-black text-[#1C1917]">{t('customerImages', { fallback: 'صور العميل' })}</h3>
+                <section className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
+                  <h3 className="mb-3 text-sm font-black text-text-primary">{t('customerImages', { fallback: 'صور العميل' })}</h3>
                   {selected.customer_images && selected.customer_images.length > 0 ? (
                     <div className="grid grid-cols-2 gap-2">
                       {selected.customer_images.map((url, index) => (

@@ -9,7 +9,7 @@ import { useLocale, useTranslations } from 'next-intl';
 type Brand = { id: string; name: string; slug: string | null; logo_url?: string | null; is_active: boolean | null };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -34,9 +34,9 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="w-full max-w-2xl rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]"><X size={17} /></button>
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
+          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]"><X size={17} /></button>
         </div>
         <div className="p-5">{children}</div>
       </div>
@@ -59,7 +59,7 @@ function InlineText({ value, onSave, dir = 'rtl' }: { value?: string | null; onS
   useEffect(() => { if (!editing) setDraft(value ?? ''); }, [editing, value]);
   const commit = () => { const next = draft.trim(); setEditing(false); if (next !== (value ?? '')) void onSave(next); };
   if (editing) return <input autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
-  return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">{value || <span className="text-[#A8A29E]">—</span>}</button>;
+  return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">{value || <span className="text-text-muted">—</span>}</button>;
 }
 
 function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolean) => void | Promise<void> }) {
@@ -67,7 +67,7 @@ function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolea
   return (
     <div className="flex gap-2">
       {[{ v: true, l: t('active', { fallback: 'مفعّل' }), c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: t('inactive', { fallback: 'غير مفعّل' }), c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
-        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}>{option.l}</button>
+        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'}`}>{option.l}</button>
       ))}
     </div>
   );
@@ -167,41 +167,41 @@ export default function BrandsQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-        <div><h1 className="text-2xl font-black text-[#1C1917]">{t('brandsTitle', { fallback: 'إدارة العلامات التجارية' })}</h1><p className="mt-1 text-sm text-[#A8A29E]">{brands.length} {tCommon('items', { fallback: 'عنصر' })}</p></div>
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div><h1 className="text-2xl font-black text-text-primary">{t('brandsTitle', { fallback: 'إدارة العلامات التجارية' })}</h1><p className="mt-1 text-sm text-text-muted">{brands.length} {tCommon('items', { fallback: 'عنصر' })}</p></div>
         <div className="flex gap-2">
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"><RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}</button>
-          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]"><Plus size={15} />{t('newBrand', { fallback: 'علامة تجارية جديدة' })}</button>
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary"><RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}</button>
+          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-[#2D2926]"><Plus size={15} />{t('newBrand', { fallback: 'علامة تجارية جديدة' })}</button>
         </div>
       </div>
 
       {showCreate ? (
-        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row">
             <input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder={t('brandName', { fallback: 'الاسم' })} className={`${inputClass} flex-1`} dir={isAr ? "rtl" : "ltr"} />
             <input value={newSlug} onChange={(e) => setNewSlug(e.target.value)} placeholder={t('brandSlug', { fallback: 'رابط العلامة' })} className={`${inputClass} flex-1`} dir="ltr" />
-            <button type="button" onClick={() => void createBrand()} disabled={!newName.trim()} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50">{t('saveBrand', { fallback: 'إضافة' })}</button>
+            <button type="button" onClick={() => void createBrand()} disabled={!newName.trim()} className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-text-primary disabled:opacity-50">{t('saveBrand', { fallback: 'إضافة' })}</button>
           </div>
         </div>
       ) : null}
 
-      <div className="flex overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm focus-within:border-[#B8860B]">
+      <div className="flex overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm focus-within:border-primary">
         <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={tCommon('searchPlaceholder', { fallback: 'بحث...' })} className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm outline-none" />
         <div className={`flex w-12 items-center justify-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-[#8B8172]`}><Search size={17} /></div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
-        : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noBrands', { fallback: 'لا توجد ماركات' })}</p>
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
+        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+        : visible.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noBrands', { fallback: 'لا توجد ماركات' })}</p>
         : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
-              <thead className="bg-[#F8F6F2]"><tr>{[t('brandName', { fallback: 'الاسم' }),'Slug',t('status', { fallback: 'الحالة' })].map((h,i)=><th key={h} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${i===1?'hidden sm:table-cell':''}`}>{h}</th>)}</tr></thead>
+              <thead className="bg-[#F8F6F2]"><tr>{[t('brandName', { fallback: 'الاسم' }),'Slug',t('status', { fallback: 'الحالة' })].map((h,i)=><th key={h} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-text-muted ${i===1?'hidden sm:table-cell':''}`}>{h}</th>)}</tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {visible.map((brand) => (
                   <tr key={brand.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openBrand(brand)}>
-                    <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{brand.name}</td>
-                    <td className="hidden px-5 py-3 font-mono text-xs text-[#A8A29E] sm:table-cell">{brand.slug ?? ''}</td>
+                    <td className="px-5 py-3 font-semibold text-text-primary group-hover:text-primary">{brand.name}</td>
+                    <td className="hidden px-5 py-3 font-mono text-xs text-text-muted sm:table-cell">{brand.slug ?? ''}</td>
                     <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                       <button type="button" onClick={() => void patchBrand(brand, { is_active: !brand.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${brand.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{brand.is_active ? t('active', { fallback: 'مفعّل' }) : t('inactive', { fallback: 'غير مفعّل' })}</button>
                     </td>
@@ -217,7 +217,7 @@ export default function BrandsQuickAdmin() {
         <Modal title={selected.name} onClose={closeBrand}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === t('saveSuccess', { fallback: 'تم الحفظ بنجاح' }) ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
-            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
               <div className="space-y-2">
                 <Field label={t('brandName', { fallback: 'الاسم' })}><InlineText value={selected.name} dir={isAr ? "rtl" : "ltr"} onSave={(name) => patchBrand(selected, { name })} /></Field>
                 <Field label={t('brandSlug', { fallback: 'رابط العلامة' })}><InlineText value={selected.slug ?? ''} dir="ltr" onSave={(slug) => patchBrand(selected, { slug })} /></Field>

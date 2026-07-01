@@ -20,13 +20,13 @@ export function CartIconLink({ floating = false }: { floating?: boolean }) {
       title={t('cart')}
       data-euro-cart-icon="true"
       className={[
-        'relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E8DCC3] bg-white text-[#6F6658] shadow-sm transition-all hover:border-[#C9A84C] hover:text-[#C9A84C] hover:shadow-md',
-        floating ? 'h-12 w-12 border-[#C9A84C]/40 bg-white/95 shadow-lg backdrop-blur' : '',
+        'relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background-card text-[#6F6658] shadow-sm transition-all hover:border-primary hover:text-primary hover:shadow-md',
+        floating ? 'h-12 w-12 border-primary/40 bg-background-card/95 shadow-lg backdrop-blur' : '',
       ].join(' ')}
     >
       <ShoppingBag className="h-5 w-5" />
       {count > 0 && (
-        <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#C9A84C] px-1 text-[10px] font-black leading-none text-[#111] shadow">
+        <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-black leading-none text-text-primary shadow">
           {count > 99 ? '99+' : count}
         </span>
       )}

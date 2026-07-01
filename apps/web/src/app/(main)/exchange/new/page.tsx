@@ -68,20 +68,20 @@ export default function NewExchangePage() {
 
   if (!user && !loadingOrders) {
     return (
-      <main className="min-h-screen bg-[#FAF7EF] px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
+      <main className="min-h-screen bg-background px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
         <div className="mx-auto max-w-lg text-center space-y-4">
           <p className="text-lg font-bold text-[#1F1B16]">{t('loginRequired')}</p>
-          <Link href="/auth/login" className="inline-block rounded-xl bg-[#C9A84C] px-6 py-3 text-sm font-bold text-white">{t('login')}</Link>
+          <Link href="/auth/login" className="inline-block rounded-xl bg-primary px-6 py-3 text-sm font-bold text-text-primary">{t('login')}</Link>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#FAF7EF] px-6 py-12 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
+    <main className="min-h-screen bg-background px-6 py-12 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-lg space-y-6">
         <div>
-          <Link href="/exchange" className="text-xs text-[#C9A84C] hover:underline">{isAr ? '←' : '→'} {t('title')}</Link>
+          <Link href="/exchange" className="text-xs text-primary hover:underline">{isAr ? '←' : '→'} {t('title')}</Link>
           <h1 className="mt-3 text-2xl font-black text-[#1F1B16]">{t('newRequest')}</h1>
           <p className="mt-1 text-sm text-[#6F6658]">{t('policy')}</p>
         </div>
@@ -90,19 +90,19 @@ export default function NewExchangePage() {
         {success && <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">{success}</div>}
 
         {loadingOrders ? (
-          <div className="rounded-2xl border border-[#E8DCC3] bg-white p-8 text-center text-sm text-[#A8A29E]">{t('loadingOrders')}</div>
+          <div className="rounded-2xl border border-border bg-background-card p-8 text-center text-sm text-text-muted">{t('loadingOrders')}</div>
         ) : orders.length === 0 ? (
-          <div className="rounded-2xl border border-[#E8DCC3] bg-white p-8 text-center space-y-3">
+          <div className="rounded-2xl border border-border bg-background-card p-8 text-center space-y-3">
             <p className="text-[#6F6658]">{t('noEligibleOrders')}</p>
-            <p className="text-xs text-[#A8A29E]">{t('eligibilityNote', { fallback: 'يجب أن يكون الطلب في حالة "تم التسليم" حتى تتمكن من طلب الاستبدال' })}</p>
-            <Link href="/products" className="inline-block rounded-xl bg-[#C9A84C] px-5 py-2 text-sm font-bold text-white">{t('shopNow')}</Link>
+            <p className="text-xs text-text-muted">{t('eligibilityNote', { fallback: 'يجب أن يكون الطلب في حالة "تم التسليم" حتى تتمكن من طلب الاستبدال' })}</p>
+            <Link href="/products" className="inline-block rounded-xl bg-primary px-5 py-2 text-sm font-bold text-text-primary">{t('shopNow')}</Link>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-[#E8DCC3] bg-white p-6 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-border bg-background-card p-6 shadow-sm">
             <div>
               <label className="mb-2 block text-sm font-bold text-[#1F1B16]">{t('chooseOrder')}</label>
               <select value={orderId} onChange={e => setOrderId(e.target.value)} required
-                className="w-full rounded-xl border border-[#E8DCC3] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1F1B16] outline-none focus:border-[#C9A84C]">
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-[#1F1B16] outline-none focus:border-primary">
                 <option value="">— {t('selectOrder')} —</option>
                 {orders.map((o: any) => (
                   <option key={o.id} value={o.id}>
@@ -116,11 +116,11 @@ export default function NewExchangePage() {
               <label className="mb-2 block text-sm font-bold text-[#1F1B16]">{t('exchangeReason')}</label>
               <textarea value={reason} onChange={e => setReason(e.target.value)} required rows={4}
                 placeholder={t('reasonPlaceholder')}
-                className="w-full resize-none rounded-xl border border-[#E8DCC3] bg-[#FAFAF8] px-4 py-3 text-sm text-[#1F1B16] outline-none focus:border-[#C9A84C] placeholder:text-[#A8A29E]" />
+                className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm text-[#1F1B16] outline-none focus:border-primary placeholder:text-text-muted" />
             </div>
 
             <button type="submit" disabled={submitting || !orderId}
-              className="w-full rounded-xl bg-[#C9A84C] py-3 text-sm font-black text-white hover:bg-[#B8860B] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              className="w-full rounded-xl bg-primary py-3 text-sm font-black text-text-primary hover:bg-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {submitting ? t('sending') : t('sendExchangeRequest')}
             </button>
           </form>

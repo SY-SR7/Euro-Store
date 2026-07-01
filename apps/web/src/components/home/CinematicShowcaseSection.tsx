@@ -76,13 +76,13 @@ function ScrollBeat({
         className="relative z-10 mx-8 mb-12 md:mx-14 md:mb-16 text-right max-w-xs md:max-w-sm mr-auto px-6 py-5"
       >
         {/* Pre-Title Label */}
-        <p className={`text-[10px] font-bold tracking-[0.25em] uppercase mb-2 ${isLightBg ? 'text-black opacity-60' : 'text-[#C9A84C] opacity-80'}`}>
+        <p className={`text-[10px] font-bold tracking-[0.25em] uppercase mb-2 ${isLightBg ? 'text-text-primary opacity-60' : 'text-primary opacity-80'}`}>
           EUROSTORE
         </p>
 
         {/* Title */}
         <motion.h2
-          className={`text-2xl md:text-3xl lg:text-4xl font-black leading-tight ${isLightBg ? 'text-black' : 'text-white'}`}
+          className={`text-2xl md:text-3xl lg:text-4xl font-black leading-tight ${isLightBg ? 'text-text-primary' : 'text-text-primary'}`}
           style={{
             filter: isLightBg ? 'none' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.5))'
           }}
@@ -101,8 +101,8 @@ function ScrollBeat({
             href={beat.ctaHref}
             className={`pointer-events-auto mt-6 inline-flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors duration-300 rounded-lg ${
               isLightBg 
-                ? 'bg-black text-white hover:bg-black/80' 
-                : 'bg-white text-black hover:bg-gray-200'
+                ? 'bg-black text-text-primary hover:bg-black/80' 
+                : 'bg-background-card text-text-primary hover:bg-gray-200'
             }`}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
@@ -234,15 +234,15 @@ export function CinematicShowcaseSection({
         ))}
 
         {/* Brand mark */}
-        <div className="absolute top-8 right-8 text-white text-xs font-bold tracking-[0.3em] uppercase opacity-50 select-none">
+        <div className="absolute top-8 right-8 text-text-primary text-xs font-bold tracking-[0.3em] uppercase opacity-50 select-none">
           EUROSTORE
         </div>
 
         {/* Timeline progress bar */}
-        <div className="absolute bottom-0 inset-x-0 h-[2px] bg-white/10">
+        <div className="absolute bottom-0 inset-x-0 h-[2px] bg-background-card/10">
           <motion.div
             style={{ scaleX: barScaleX, transformOrigin: 'left' }}
-            className="h-full bg-[#C9A84C] will-change-transform"
+            className="h-full bg-primary will-change-transform"
           />
         </div>
 
@@ -251,7 +251,7 @@ export function CinematicShowcaseSection({
           style={{ opacity: scrollHintOpacity }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="text-white/40 text-[10px] uppercase tracking-[0.25em]">{t('scrollDown')}</span>
+          <span className="text-text-primary/40 text-[10px] uppercase tracking-[0.25em]">{t('scrollDown')}</span>
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}

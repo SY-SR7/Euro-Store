@@ -33,10 +33,10 @@ export default async function ContactPage() {
   const { contact_whatsapp, contact_email } = await getContactSettings();
 
   return (
-    <main className="min-h-screen bg-[#FAF7EF] text-[#1F1B16] px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
+    <main className="min-h-screen bg-background text-[#1F1B16] px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-lg">
         <nav className="mb-8">
-          <Link href="/" className="text-[#C9A84C] text-sm hover:underline">
+          <Link href="/" className="text-primary text-sm hover:underline">
             {t('common.appName')}
           </Link>
         </nav>
@@ -49,7 +49,7 @@ export default async function ContactPage() {
             href={`https://wa.me/${contact_whatsapp}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-4 hover:border-green-700/50 transition-colors"
+            className="flex items-center gap-3 rounded-md border border-border bg-background-card p-4 hover:border-green-700/50 transition-colors"
           >
             <span className="text-2xl">📱</span>
             <div>
@@ -59,7 +59,7 @@ export default async function ContactPage() {
           </a>
           <a
             href={`mailto:${contact_email}`}
-            className="flex items-center gap-3 rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-4 hover:border-[#C9A84C]/50 transition-colors"
+            className="flex items-center gap-3 rounded-md border border-border bg-background-card p-4 hover:border-primary/50 transition-colors"
           >
             <span className="text-2xl">✉️</span>
             <div>

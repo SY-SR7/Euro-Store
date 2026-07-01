@@ -37,7 +37,7 @@ const FIELDS: FieldConfig[] = [
 ];
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -129,8 +129,8 @@ function InlineNumber({
   }
 
   return (
-    <button type="button" onClick={() => setEditing(true)} className="flex min-h-11 w-full items-center justify-between rounded-xl px-3 py-2 text-start transition hover:bg-[#FAF7EF]">
-      <span className="font-mono text-lg font-black text-[#1C1917]" dir="ltr">{formatNumber(toNumber(value), locale)}</span>
+    <button type="button" onClick={() => setEditing(true)} className="flex min-h-11 w-full items-center justify-between rounded-xl px-3 py-2 text-start transition hover:bg-background">
+      <span className="font-mono text-lg font-black text-text-primary" dir="ltr">{formatNumber(toNumber(value), locale)}</span>
       <span className="text-xs font-black text-[#8B8172]">{unitLabel}</span>
     </button>
   );
@@ -212,12 +212,12 @@ export default function LoyaltySettingsQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('loyaltyTitle', { fallback: 'الولاء' })}</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{t('loyaltyDesc', { fallback: 'القيم المهمة فقط، وكل قيمة تتعدل من مكانها' })}</p>
+          <h1 className="text-2xl font-black text-text-primary">{t('loyaltyTitle', { fallback: 'الولاء' })}</h1>
+          <p className="mt-1 text-sm text-text-muted">{t('loyaltyDesc', { fallback: 'القيم المهمة فقط، وكل قيمة تتعدل من مكانها' })}</p>
         </div>
-        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
+        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary">
           <RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}
         </button>
       </div>
@@ -225,35 +225,35 @@ export default function LoyaltySettingsQuickAdmin() {
       {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved', { fallback: 'تم الحفظ' }) ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 
       <section className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
           <p className="text-xs font-black text-[#8B8172]">{t('earn', { fallback: 'الكسب' })}</p>
-          <p className="mt-2 text-sm font-black text-[#1C1917]">{t('every', { amount: formatSyp(numbers.earnAmount, formatLoc), points: formatNumber(numbers.earnPoints, formatLoc) })}</p>
+          <p className="mt-2 text-sm font-black text-text-primary">{t('every', { amount: formatSyp(numbers.earnAmount, formatLoc), points: formatNumber(numbers.earnPoints, formatLoc) })}</p>
         </div>
-        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
           <p className="text-xs font-black text-[#8B8172]">{t('redeem', { fallback: 'الاستبدال' })}</p>
-          <p className="mt-2 text-sm font-black text-[#1C1917]">{t('redeemLabel', { points: formatNumber(numbers.redeemPointsPerSyp, formatLoc), amount: `1 ${t('unitSyp')}` })}</p>
+          <p className="mt-2 text-sm font-black text-text-primary">{t('redeemLabel', { points: formatNumber(numbers.redeemPointsPerSyp, formatLoc), amount: `1 ${t('unitSyp')}` })}</p>
         </div>
-        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
           <p className="text-xs font-black text-[#8B8172]">{t('order50k', { fallback: 'طلب 50,000' })}</p>
-          <p className="mt-2 text-sm font-black text-[#1C1917]">{formatNumber(numbers.exampleEarned, formatLoc)} {t('unitPoints')} / {formatSyp(numbers.appliedDiscount, formatLoc)}</p>
+          <p className="mt-2 text-sm font-black text-text-primary">{formatNumber(numbers.exampleEarned, formatLoc)} {t('unitPoints')} / {formatSyp(numbers.appliedDiscount, formatLoc)}</p>
         </div>
-        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
           <p className="text-xs font-black text-[#8B8172]">{t('referral', { fallback: 'الإحالة' })}</p>
-          <p className="mt-2 text-sm font-black text-[#1C1917]">{formatNumber(numbers.referralBonus, formatLoc)} {t('unitPoints')}</p>
+          <p className="mt-2 text-sm font-black text-text-primary">{formatNumber(numbers.referralBonus, formatLoc)} {t('unitPoints')}</p>
         </div>
       </section>
 
-      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
       : (
-        <section className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+        <section className="rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
           <div className="grid gap-3 xl:grid-cols-2">
             {FIELDS.map((field) => (
               <div key={field.key} className="rounded-xl border border-[#F0ECE6] bg-[#FFFCF7] p-4">
                 <div className="mb-2 flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-black text-[#1C1917]">{t(field.labelKey)}</p>
+                    <p className="text-sm font-black text-text-primary">{t(field.labelKey)}</p>
                   </div>
-                  <span className="rounded-full border border-[#E5E0D8] bg-white px-2 py-1 text-[11px] font-black text-[#8B8172]">{t(field.unitKey)}</span>
+                  <span className="rounded-full border border-[#E5E0D8] bg-background-card px-2 py-1 text-[11px] font-black text-[#8B8172]">{t(field.unitKey)}</span>
                 </div>
                 <InlineNumber field={field} value={values[field.key]} unitLabel={t(field.unitKey)} locale={formatLoc} onSave={(value) => patchField(field, value)} />
               </div>

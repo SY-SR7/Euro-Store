@@ -42,7 +42,7 @@ export function ContactForm({
         <span className="text-[#6F6658]">{t_name}</span>
         <input
           name="name" required
-          className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-2.5 text-sm text-[#1F1B16] placeholder:text-[#8B8172] focus:border-[#C9A84C] focus:outline-none"
+          className="rounded-md border border-border bg-background-card px-4 py-2.5 text-sm text-[#1F1B16] placeholder:text-[#8B8172] focus:border-primary focus:outline-none"
           placeholder={t_namePlaceholder}
         />
       </label>
@@ -50,7 +50,7 @@ export function ContactForm({
         <span className="text-[#6F6658]">{t_email}</span>
         <input
           name="email" type="email" required
-          className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-2.5 text-sm text-[#1F1B16] placeholder:text-[#8B8172] focus:border-[#C9A84C] focus:outline-none"
+          className="rounded-md border border-border bg-background-card px-4 py-2.5 text-sm text-[#1F1B16] placeholder:text-[#8B8172] focus:border-primary focus:outline-none"
           placeholder="email@example.com"
         />
       </label>
@@ -58,13 +58,13 @@ export function ContactForm({
         <span className="text-[#6F6658]">{t_message}</span>
         <textarea
           name="message" required rows={5}
-          className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] px-4 py-2.5 text-sm text-[#1F1B16] placeholder:text-[#8B8172] focus:border-[#C9A84C] focus:outline-none resize-none"
+          className="rounded-md border border-border bg-background-card px-4 py-2.5 text-sm text-[#1F1B16] placeholder:text-[#8B8172] focus:border-primary focus:outline-none resize-none"
           placeholder={t_messagePlaceholder}
         />
       </label>
       <button
         type="submit"
-        className="rounded-sm bg-[#C9A84C] py-2.5 text-sm font-semibold text-[#111] hover:bg-[#D8B95F] transition-colors"
+        className="rounded-sm bg-primary py-2.5 text-sm font-semibold text-text-primary hover:bg-[#D8B95F] transition-colors"
       >
         {t_submit}
       </button>

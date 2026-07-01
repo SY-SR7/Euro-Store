@@ -19,7 +19,7 @@ export function MobileBottomNav() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-[#E7E3DC] bg-white/95 pb-safe backdrop-blur-xl shadow-[0_-4px_15px_rgba(0,0,0,0.04)] md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 flex h-16 items-center justify-around border-t border-border bg-background-card/95 pb-safe backdrop-blur-xl shadow-[0_-4px_15px_rgba(0,0,0,0.04)] md:hidden">
       {navItems.map((item) => {
         const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
         const Icon = item.icon;
@@ -29,11 +29,11 @@ export function MobileBottomNav() {
             key={item.key}
             href={item.href}
             className={`flex h-full w-full flex-col items-center justify-center gap-1 transition-all duration-200 ${
-              isActive ? 'text-[#B8860B]' : 'text-[#857F7A] hover:text-[#57534E]'
+              isActive ? 'text-primary' : 'text-text-secondary hover:text-text-secondary'
             }`}
           >
             <div className={`relative flex items-center justify-center rounded-full p-1.5 transition-all duration-200 ${
-              isActive ? 'bg-[#FACC15]/15 ring-1 ring-[#B8860B]/30' : ''
+              isActive ? 'bg-primary/15 ring-1 ring-primary/30' : ''
             }`}>
               <Icon className="h-[22px] w-[22px]" strokeWidth={isActive ? 2.5 : 2} />
             </div>

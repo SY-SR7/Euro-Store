@@ -23,7 +23,7 @@ type AttributeType = {
 };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -48,9 +48,9 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="flex max-h-[92vh] w-full max-w-3xl flex-col rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
+          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -109,8 +109,8 @@ function InlineText({
   }
 
   return (
-    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">
-      {value || <span className="text-[#A8A29E]">-</span>}
+    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">
+      {value || <span className="text-text-muted">-</span>}
     </button>
   );
 }
@@ -147,7 +147,7 @@ function InlineNumber({ value, onSave }: { value: number; onSave: (value: number
   }
 
   return (
-    <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-[#1C1917] transition hover:bg-[#FAF7EF]">
+    <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-text-primary transition hover:bg-background">
       {value}
     </button>
   );
@@ -162,7 +162,7 @@ function InlineColor({ value, onSave }: { value?: string | null; onSave: (value:
         type="color"
         value={color}
         onChange={(event) => void onSave(event.target.value)}
-        className="h-9 w-11 cursor-pointer rounded-lg border border-[#E5E0D8] bg-white"
+        className="h-9 w-11 cursor-pointer rounded-lg border border-[#E5E0D8] bg-background-card"
       />
       <InlineText value={value ?? ''} dir="ltr" onSave={(next) => onSave(next || null)} />
     </div>
@@ -339,28 +339,28 @@ export default function AttributeTypesQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('attributeTypesTitle', { fallback: 'صفات المنتجات' })}</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{types.length} {tCommon('items', { fallback: 'عنصر' })}</p>
+          <h1 className="text-2xl font-black text-text-primary">{t('attributeTypesTitle', { fallback: 'صفات المنتجات' })}</h1>
+          <p className="mt-1 text-sm text-text-muted">{types.length} {tCommon('items', { fallback: 'عنصر' })}</p>
         </div>
         <div className="flex gap-2">
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary">
             <RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}
           </button>
-          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]">
+          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-[#2D2926]">
             <Plus size={15} />{t('newAttributeType', { fallback: 'نوع جديد' })}
           </button>
         </div>
       </div>
 
       {showCreate ? (
-        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
           <div className="grid gap-3 md:grid-cols-4">
             <input value={newType.name_ar} onChange={(event) => setNewType((form) => ({ ...form, name_ar: event.target.value }))} placeholder={t('attributeNameAr', { fallback: 'اسم النوع بالعربية' })} className={inputClass} dir={isAr ? "rtl" : "ltr"} />
             <input value={newType.name_en} onChange={(event) => setNewType((form) => ({ ...form, name_en: event.target.value }))} placeholder={t('attributeNameEn', { fallback: 'اسم النوع بالإنجليزية' })} className={inputClass} dir="ltr" />
             <input value={newType.slug} onChange={(event) => setNewType((form) => ({ ...form, slug: event.target.value }))} placeholder={t('attributeSlug', { fallback: 'رابط الصفة' })} className={inputClass} dir="ltr" />
-            <button type="button" onClick={() => void createType()} disabled={!newType.name_ar.trim()} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50">
+            <button type="button" onClick={() => void createType()} disabled={!newType.name_ar.trim()} className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-text-primary disabled:opacity-50">
               {t('saveAttribute', { fallback: 'إضافة' })}
             </button>
           </div>
@@ -368,20 +368,20 @@ export default function AttributeTypesQuickAdmin() {
       ) : null}
 
       <div className="grid gap-4 xl:grid-cols-2">
-        {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E] xl:col-span-2">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
-        : types.length === 0 ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E] xl:col-span-2">{t('noAttributes', { fallback: 'لا توجد صفات' })}</p>
+        {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted xl:col-span-2">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+        : types.length === 0 ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted xl:col-span-2">{t('noAttributes', { fallback: 'لا توجد صفات' })}</p>
         : types.map((type) => (
-          <button key={type.id} type="button" onClick={() => openType(type)} className={`rounded-2xl border border-[#E5E0D8] bg-white p-5 ${isAr ? "text-right" : "text-left"} shadow-sm transition hover:border-[#B8860B] hover:bg-[#FFFBF0]`}>
+          <button key={type.id} type="button" onClick={() => openType(type)} className={`rounded-2xl border border-[#E5E0D8] bg-background-card p-5 ${isAr ? "text-right" : "text-left"} shadow-sm transition hover:border-primary hover:bg-[#FFFBF0]`}>
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-lg font-black text-[#1C1917]">{isAr ? type.name_ar : (type.name_en || type.name_ar)}</h2>
-                <p className="mt-1 font-mono text-xs text-[#A8A29E]" dir="ltr">{type.slug}</p>
+                <h2 className="text-lg font-black text-text-primary">{isAr ? type.name_ar : (type.name_en || type.name_ar)}</h2>
+                <p className="mt-1 font-mono text-xs text-text-muted" dir="ltr">{type.slug}</p>
               </div>
-              <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-3 py-1 text-xs font-black text-[#57534E]">{type.attribute_values?.length ?? 0} {tCommon('items', { fallback: 'قيمة' })}</span>
+              <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-3 py-1 text-xs font-black text-text-secondary">{type.attribute_values?.length ?? 0} {tCommon('items', { fallback: 'قيمة' })}</span>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {[...(type.attribute_values ?? [])].sort((a, b) => a.sort_order - b.sort_order).slice(0, 8).map((value) => (
-                <span key={value.id} className="inline-flex items-center gap-1.5 rounded-full border border-[#E5E0D8] bg-[#FAF7EF] px-3 py-1 text-xs font-bold text-[#57534E]">
+                <span key={value.id} className="inline-flex items-center gap-1.5 rounded-full border border-[#E5E0D8] bg-background px-3 py-1 text-xs font-bold text-text-secondary">
                   {type.slug === 'color' ? <ColorDot hex={value.hex_color} /> : null}
                   {isAr ? value.value_ar : (value.value_en || value.value_ar)}
                 </span>
@@ -396,7 +396,7 @@ export default function AttributeTypesQuickAdmin() {
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === t('saveSuccess', { fallback: 'تم الحفظ بنجاح' }) ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 
-            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
               <div className="space-y-2">
                 <Field label={t('attributeNameAr', { fallback: 'الاسم بالعربية' })}><InlineText value={selected.name_ar} dir={isAr ? "rtl" : "ltr"} onSave={(name_ar) => patchType(selected, { name_ar })} /></Field>
                 <Field label={t('attributeNameEn', { fallback: 'الاسم بالإنجليزية' })}><InlineText value={selected.name_en} dir="ltr" onSave={(name_en) => patchType(selected, { name_en })} /></Field>
@@ -404,10 +404,10 @@ export default function AttributeTypesQuickAdmin() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-sm font-black text-[#1C1917]">{t('attributeValues', { fallback: 'القيم' })}</h3>
-                <span className="text-xs font-bold text-[#A8A29E]">{selected.attribute_values?.length ?? 0}</span>
+                <h3 className="text-sm font-black text-text-primary">{t('attributeValues', { fallback: 'القيم' })}</h3>
+                <span className="text-xs font-bold text-text-muted">{selected.attribute_values?.length ?? 0}</span>
               </div>
 
               <div className="space-y-3">
@@ -434,7 +434,7 @@ export default function AttributeTypesQuickAdmin() {
                   ) : (
                     <input type="number" value={newValue.sort_order} onChange={(event) => setNewValue((form) => ({ ...form, sort_order: event.target.value }))} placeholder={t('position', { fallback: 'الترتيب' })} className={inputClass} />
                   )}
-                  <button type="button" onClick={() => void createValue(selected)} disabled={!newValue.value_ar.trim()} className="rounded-xl bg-[#B8860B] px-4 py-2 text-sm font-bold text-white disabled:opacity-50">
+                  <button type="button" onClick={() => void createValue(selected)} disabled={!newValue.value_ar.trim()} className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-text-primary disabled:opacity-50">
                     {t('addValue', { fallback: 'إضافة' })}
                   </button>
                 </div>

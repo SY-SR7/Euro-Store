@@ -14,14 +14,14 @@ export function ReferralCard({ referralCode }: ReferralCardProps) {
   }
 
   return (
-    <div className="rounded-md border border-[#E8DCC3] bg-[#FFFDF8] p-6">
-      <h3 className="text-[#C9A84C] font-serif text-2xl mb-2">{t('referralTitle')}</h3>
+    <div className="rounded-md border border-border bg-background-card p-6">
+      <h3 className="text-primary font-serif text-2xl mb-2">{t('referralTitle')}</h3>
       <p className="text-sm text-[#6F6658] mb-4">{t('referralDescription')}</p>
       <div className="flex items-center gap-2">
         <span className="font-mono text-[#1F1B16] bg-[#1C1C1C] px-3 py-2 rounded text-sm flex-1">{referralCode}</span>
-        <button onClick={copy} title={t('copyCode')} className="p-2 text-[#C9A84C] hover:text-[#D8B95F] transition-colors"></button>
+        <button onClick={copy} title={t('copyCode')} className="p-2 text-primary hover:text-[#D8B95F] transition-colors"></button>
       </div>
-      <button onClick={share} className="mt-4 flex items-center gap-2 text-sm text-[#C9A84C] hover:text-[#D8B95F] transition-colors">
+      <button onClick={share} className="mt-4 flex items-center gap-2 text-sm text-primary hover:text-[#D8B95F] transition-colors">
         <span>{t('share')}</span>
       </button>
     </div>

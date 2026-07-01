@@ -73,17 +73,17 @@ export function ImageWithFallback({
         role="img"
         aria-label={alt || label || t(kind, { fallback: 'صورة' })}
         className={[
-          'flex h-full w-full flex-col items-center justify-center gap-2 rounded-inherit border border-[#E8DCC3]/70 bg-gradient-to-br from-[#FAF7EF] via-white to-[#F3EDE3] p-4 text-center text-[#C9A84C]',
+          'flex h-full w-full flex-col items-center justify-center gap-2 rounded-inherit border border-border/70 bg-gradient-to-br from-[#FAF7EF] via-white to-[#F3EDE3] p-4 text-center text-primary',
           fallbackClassName,
           className,
         ].join(' ')}
       >
-        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#C9A84C]/30 bg-white/70 shadow-sm">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-primary/30 bg-background-card/70 shadow-sm">
           <Icon className="h-7 w-7" />
         </div>
         <div className="space-y-0.5">
           <p className="text-xs font-black text-[#6F6658]">{label || t(kind, { fallback: 'صورة' })}</p>
-          {sublabel && <p className="line-clamp-2 text-[11px] text-[#A8A29E]">{sublabel}</p>}
+          {sublabel && <p className="line-clamp-2 text-[11px] text-text-muted">{sublabel}</p>}
         </div>
       </div>
     );

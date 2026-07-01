@@ -44,7 +44,7 @@ export default function PartnerExchangePage() {
         <div className="flex flex-col gap-4">
           <label className="text-sm text-[#9CA3AF]">{t('partner.pasteToken')}</label>
           <textarea
-            className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-xs font-mono text-[#E2E2E2] h-32 resize-none focus:border-[#C9A84C] focus:outline-none"
+            className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-xs font-mono text-[#E2E2E2] h-32 resize-none focus:border-primary focus:outline-none"
             value={token}
             onChange={(e) => setToken((e.target as HTMLInputElement).value)}
             placeholder={t('partner.tokenPlaceholder')}
@@ -52,7 +52,7 @@ export default function PartnerExchangePage() {
           <button
             onClick={handleRedeem}
             disabled={loading || !token.trim()}
-            className="rounded-md bg-[#C9A84C] px-6 py-2.5 font-semibold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors disabled:opacity-50"
+            className="rounded-md bg-primary px-6 py-2.5 font-semibold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors disabled:opacity-50"
           >
             {loading ? t('common.loading') : t('partner.redeemExchange')}
           </button>

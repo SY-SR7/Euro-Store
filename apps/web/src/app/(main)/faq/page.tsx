@@ -17,10 +17,10 @@ export default async function FaqPage(): Promise<JSX.Element> {
     { q: t('faq.q6'), a: t('faq.a6') },
   ];
   return (
-    <main className="min-h-screen bg-[#FAF7EF] text-[#1F1B16] px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
+    <main className="min-h-screen bg-background text-[#1F1B16] px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-2xl">
         <nav className="mb-8">
-          <Link href="/" className="text-[#C9A84C] text-sm hover:underline">
+          <Link href="/" className="text-primary text-sm hover:underline">
              {t('common.appName')}
           </Link>
         </nav>
@@ -32,11 +32,11 @@ export default async function FaqPage(): Promise<JSX.Element> {
           {FAQ_ITEMS.map((item, i) => (
             <details
               key={i}
-              className="group rounded-md border border-[#E8DCC3] bg-[#FFFDF8] open:border-[#C9A84C]/30"
+              className="group rounded-md border border-border bg-background-card open:border-primary/30"
             >
               <summary className="flex cursor-pointer items-center justify-between px-5 py-4 text-sm font-medium text-[#1F1B16] marker:hidden list-none">
                 {item.q}
-                <span className="text-[#C9A84C] text-lg transition-transform group-open:rotate-45">+</span>
+                <span className="text-primary text-lg transition-transform group-open:rotate-45">+</span>
               </summary>
               <p className="px-5 pb-5 text-sm leading-7 text-[#6F6658]">{item.a}</p>
             </details>
@@ -47,7 +47,7 @@ export default async function FaqPage(): Promise<JSX.Element> {
           <p className="text-sm text-[#6F6658] mb-4">{t('faq.anotherQuestion')}</p>
           <Link
             href="/contact"
-            className="inline-block rounded-sm border border-[#C9A84C] px-6 py-2.5 text-sm text-[#C9A84C] hover:bg-[#C9A84C] hover:text-[#111] transition-colors"
+            className="inline-block rounded-sm border border-primary px-6 py-2.5 text-sm text-primary hover:bg-primary hover:text-text-primary transition-colors"
           >
             {t('footer.contact')}
           </Link>

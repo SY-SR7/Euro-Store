@@ -44,7 +44,7 @@ export default function HelperDashboardPage() {
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[#E2E2E2]">{t('helper.orderQueue')}</h1>
-        <button onClick={() => void load()} className="rounded border border-[#2E2E2E] px-4 py-2 text-sm text-[#E2E2E2] hover:border-[#C9A84C]">
+        <button onClick={() => void load()} className="rounded border border-[#2E2E2E] px-4 py-2 text-sm text-[#E2E2E2] hover:border-primary">
           â†» {t('common.refresh')}
         </button>
       </div>
@@ -59,7 +59,7 @@ export default function HelperDashboardPage() {
             <div key={o.id} className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
-                  <p className="font-mono text-[#C9A84C] font-bold">#{o.order_number}</p>
+                  <p className="font-mono text-primary font-bold">#{o.order_number}</p>
                   <p className="text-[#E2E2E2] mt-1">{o.address_snapshot.full_name} â€” {o.address_snapshot.phone}</p>
                   <p className="text-sm text-[#9CA3AF]">{o.address_snapshot.governorate} â€” {o.address_snapshot.address}</p>
                   <p className="text-sm text-[#9CA3AF] mt-1">{formatSYP(Math.round(o.total_syp))}</p>
@@ -71,7 +71,7 @@ export default function HelperDashboardPage() {
                     <button
                       onClick={() => void advance(o.id, o.status)}
                       disabled={updating === o.id}
-                      className="rounded bg-[#C9A84C] px-4 py-2 text-sm font-medium text-[#111] hover:bg-[#b8943e] disabled:opacity-50"
+                      className="rounded bg-primary px-4 py-2 text-sm font-medium text-text-primary hover:bg-[#b8943e] disabled:opacity-50"
                     >
                       {updating === o.id ? '...' : o.status === 'confirmed' ? t('helper.markProcessing') : t('helper.markShipped')}
                     </button>

@@ -51,11 +51,11 @@ export default function WishlistPage() {
   }
 
   return (
-    <main className={`min-h-screen bg-[#FAFAF8] px-4 py-10`} dir={isAr ? "rtl" : "ltr"}>
+    <main className={`min-h-screen bg-background px-4 py-10`} dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center gap-3">
-          <Heart className="h-6 w-6 fill-[#C9A84C] text-[#C9A84C]" />
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('wishlist')}</h1>
+          <Heart className="h-6 w-6 fill-[#C9A84C] text-primary" />
+          <h1 className="text-2xl font-black text-text-primary">{t('wishlist')}</h1>
         </div>
 
         {loading && (
@@ -67,20 +67,20 @@ export default function WishlistPage() {
         )}
 
         {!loading && !authenticated && (
-          <div className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center shadow-sm">
-            <p className="text-[#57534E]">{t('loginToViewWishlist')}</p>
+          <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center shadow-sm">
+            <p className="text-text-secondary">{t('loginToViewWishlist')}</p>
             <Link href="/auth/login?next=/wishlist"
-              className="mt-4 inline-block rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#9A7209] transition-colors">
+              className="mt-4 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-text-primary hover:bg-[#9A7209] transition-colors">
               {t('login')}
             </Link>
           </div>
         )}
 
         {!loading && authenticated && items.length === 0 && (
-          <div className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center shadow-sm">
-            <p className="text-[#A8A29E]">{t('emptyWishlist')}</p>
+          <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center shadow-sm">
+            <p className="text-text-muted">{t('emptyWishlist')}</p>
             <Link href="/products"
-              className="mt-4 inline-block rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-bold text-white hover:bg-[#9A7209] transition-colors">
+              className="mt-4 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-text-primary hover:bg-[#9A7209] transition-colors">
               {t('browseProducts')}
             </Link>
           </div>
@@ -90,7 +90,7 @@ export default function WishlistPage() {
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {items.map((item) => (
               <div key={item.wishlist_id}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-[#E8DCC3] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+                className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-background-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
                 <Link href={item.slug ? `/products/${item.slug}` : '#'} className="relative aspect-[4/3] overflow-hidden bg-[#F3EDE3]">
                   <ImageWithFallback
                     src={item.image_url}
@@ -111,11 +111,11 @@ export default function WishlistPage() {
                   <Link href={item.slug ? `/products/${item.slug}` : '#'}>
                     <p className="line-clamp-2 font-black leading-tight text-[#1F1B16]">{isAr ? item.name_ar : (item.name_en || item.name_ar)}</p>
                   </Link>
-                  <p className="mt-auto font-bold text-[#B8860B]">{fmt(item.min_price_syp)}</p>
+                  <p className="mt-auto font-bold text-primary">{fmt(item.min_price_syp)}</p>
                   <button
                     type="button"
                     onClick={() => remove(item.product_id)}
-                    className="rounded-xl border border-[#E5E0D8] py-2 text-xs font-bold text-[#57534E] transition-colors hover:border-red-300 hover:text-red-600"
+                    className="rounded-xl border border-[#E5E0D8] py-2 text-xs font-bold text-text-secondary transition-colors hover:border-red-300 hover:text-red-600"
                   >
                     {t('removeFromWishlist')}
                   </button>

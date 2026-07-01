@@ -17,7 +17,7 @@ type HomeSection = {
 };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -53,9 +53,9 @@ function Modal({ title, onClose, children, closeTitle }: { title: string; onClos
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="w-full max-w-2xl rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -116,8 +116,8 @@ function InlineText({
   }
 
   return (
-    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">
-      {value || <span className="text-[#A8A29E]">{fallbackText}</span>}
+    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">
+      {value || <span className="text-text-muted">{fallbackText}</span>}
     </button>
   );
 }
@@ -154,7 +154,7 @@ function InlineNumber({ value, onSave }: { value: number; onSave: (value: number
   }
 
   return (
-    <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-[#1C1917] transition hover:bg-[#FAF7EF]">
+    <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-text-primary transition hover:bg-background">
       {value}
     </button>
   );
@@ -168,7 +168,7 @@ function OptionPills({ value, options, onSave }: { value: string; options: { val
           key={option.value}
           type="button"
           onClick={() => option.value !== value && void onSave(option.value)}
-          className={`rounded-full border px-3 py-1 text-xs font-black ${option.value === value ? 'border-[#B8860B] bg-[#B8860B] text-white' : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}
+          className={`rounded-full border px-3 py-1 text-xs font-black ${option.value === value ? 'border-primary bg-primary text-text-primary' : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'}`}
         >
           {option.label}
         </button>
@@ -181,7 +181,7 @@ function ActivePills({ value, onSave, labelVisible, labelHidden }: { value: bool
   return (
     <div className="flex gap-2">
       {[{ v: true, l: labelVisible, c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: labelHidden, c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
-        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}>
+        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'}`}>
           {option.l}
         </button>
       ))}
@@ -316,23 +316,23 @@ export default function HomepageQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('homepageTitle', { fallback: 'الواجهة الرئيسية' })}</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{t('sectionsCount', { count: sections.length, fallback: `${sections.length} قسم` })}</p>
+          <h1 className="text-2xl font-black text-text-primary">{t('homepageTitle', { fallback: 'الواجهة الرئيسية' })}</h1>
+          <p className="mt-1 text-sm text-text-muted">{t('sectionsCount', { count: sections.length, fallback: `${sections.length} قسم` })}</p>
         </div>
         <div className="flex gap-2">
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary">
             <RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}
           </button>
-          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]">
+          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-[#2D2926]">
             <Plus size={15} />{t('newSection', { fallback: 'قسم جديد' })}
           </button>
         </div>
       </div>
 
       {showCreate ? (
-        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
           <div className="grid gap-3 md:grid-cols-4">
             <select value={newForm.section_key} onChange={(event) => setNewForm((form) => ({ ...form, section_key: event.target.value }))} className={inputClass} dir={isAr ? "rtl" : "ltr"}>
               {SECTION_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
@@ -340,28 +340,28 @@ export default function HomepageQuickAdmin() {
             <input value={newForm.title_ar} onChange={(event) => setNewForm((form) => ({ ...form, title_ar: event.target.value }))} placeholder={t('titleAr', { fallback: 'العنوان العربي' })} className={inputClass} dir="rtl" />
             <input value={newForm.title_en} onChange={(event) => setNewForm((form) => ({ ...form, title_en: event.target.value }))} placeholder={t('titleEn', { fallback: 'العنوان الإنجليزي' })} className={inputClass} dir="ltr" />
             <input type="number" value={newForm.sort_order} onChange={(event) => setNewForm((form) => ({ ...form, sort_order: event.target.value }))} placeholder={t('sortOrder', { fallback: 'الترتيب' })} className={inputClass} />
-            <button type="button" onClick={() => void createSection()} disabled={!newForm.title_ar.trim()} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50 md:col-span-4">
+            <button type="button" onClick={() => void createSection()} disabled={!newForm.title_ar.trim()} className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-text-primary disabled:opacity-50 md:col-span-4">
               {t('addBtn', { fallback: 'إضافة' })}
             </button>
           </div>
         </div>
       ) : null}
 
-      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
-        : sections.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noSections', { fallback: 'لا توجد أقسام' })}</p>
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
+        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+        : sections.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noSections', { fallback: 'لا توجد أقسام' })}</p>
         : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]">
-                <tr>{[t('section', { fallback: 'القسم' }), t('title', { fallback: 'العنوان' }), t('sortOrder', { fallback: 'الترتيب' }), t('status', { fallback: 'الحالة' })].map((head, index) => <th key={head} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${index === 0 ? 'hidden sm:table-cell' : ''}`}>{head}</th>)}</tr>
+                <tr>{[t('section', { fallback: 'القسم' }), t('title', { fallback: 'العنوان' }), t('sortOrder', { fallback: 'الترتيب' }), t('status', { fallback: 'الحالة' })].map((head, index) => <th key={head} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-text-muted ${index === 0 ? 'hidden sm:table-cell' : ''}`}>{head}</th>)}</tr>
               </thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {[...sections].sort((a, b) => a.sort_order - b.sort_order).map((section) => (
                   <tr key={section.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openSection(section)}>
-                    <td className="hidden px-5 py-3 font-mono text-xs text-[#A8A29E] sm:table-cell">{SECTION_OPTIONS.find(o => o.value === section.section_key)?.label || section.section_key}</td>
-                    <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{locale === 'ar' ? section.title_ar : (section.title_en || section.title_ar)}</td>
-                    <td className="px-5 py-3 text-[#57534E]">{section.sort_order}</td>
+                    <td className="hidden px-5 py-3 font-mono text-xs text-text-muted sm:table-cell">{SECTION_OPTIONS.find(o => o.value === section.section_key)?.label || section.section_key}</td>
+                    <td className="px-5 py-3 font-semibold text-text-primary group-hover:text-primary">{locale === 'ar' ? section.title_ar : (section.title_en || section.title_ar)}</td>
+                    <td className="px-5 py-3 text-text-secondary">{section.sort_order}</td>
                     <td className="px-5 py-3" onClick={(event) => event.stopPropagation()}>
                       <button type="button" onClick={() => void patchSection(section, { is_active: !section.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${section.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
                         {section.is_active ? t('statusVisible', { fallback: 'مرئي' }) : t('statusHidden', { fallback: 'مخفي' })}
@@ -379,7 +379,7 @@ export default function HomepageQuickAdmin() {
         <Modal title={locale === 'ar' ? selected.title_ar : (selected.title_en || selected.title_ar)} onClose={closeSection} closeTitle={tCommon('close', { fallback: 'إغلاق' })}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved', { fallback: 'تم الحفظ' }) ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
-            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
               <div className="space-y-2">
                 <Field label={t('sectionType', { fallback: 'نوع القسم' })}><OptionPills value={selected.section_key} options={SECTION_OPTIONS} onSave={(section_key) => patchSection(selected, { section_key })} /></Field>
                 <Field label={t('titleAr', { fallback: 'العنوان العربي' })}><InlineText value={selected.title_ar} dir="rtl" onSave={(title_ar) => patchSection(selected, { title_ar })} /></Field>

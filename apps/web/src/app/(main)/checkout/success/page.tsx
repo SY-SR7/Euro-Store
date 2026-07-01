@@ -26,7 +26,7 @@ export default function CheckoutSuccessPage() {
 
   return (
     <div className="flex min-h-[70vh] items-center justify-center px-4" dir={isAr ? "rtl" : "ltr"}>
-      <div className="max-w-md w-full rounded-3xl border border-black/5 bg-white p-10 text-center shadow-xl">
+      <div className="max-w-md w-full rounded-3xl border border-black/5 bg-background-card p-10 text-center shadow-xl">
         {/* Success icon */}
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
           <svg className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,7 +40,7 @@ export default function CheckoutSuccessPage() {
         {orderNumber && (
           <div className="mt-6 rounded-2xl bg-[#F8F5EF] p-4">
             <p className="text-xs text-[#6F6658]">{t('orderNumberLabel')}</p>
-            <p className="mt-1 font-mono text-xl font-black text-[#C9A84C]">{orderNumber}</p>
+            <p className="mt-1 font-mono text-xl font-black text-primary">{orderNumber}</p>
           </div>
         )}
 
@@ -50,11 +50,11 @@ export default function CheckoutSuccessPage() {
 
         <div className="mt-8 flex flex-col gap-3">
           <Link href="/orders"
-            className="rounded-2xl bg-[#C9A84C] py-3 text-sm font-black text-[#111] hover:bg-[#D8B95F] transition-colors block">
+            className="rounded-2xl bg-primary py-3 text-sm font-black text-text-primary hover:bg-[#D8B95F] transition-colors block">
             {t('viewOrders')}
           </Link>
           <Link href="/products"
-            className="rounded-2xl border border-black/10 py-3 text-sm font-semibold text-[#3C352C] hover:border-[#C9A84C] transition-colors block">
+            className="rounded-2xl border border-border py-3 text-sm font-semibold text-[#3C352C] hover:border-primary transition-colors block">
             {t('continueShoppingSuccess')}
           </Link>
         </div>

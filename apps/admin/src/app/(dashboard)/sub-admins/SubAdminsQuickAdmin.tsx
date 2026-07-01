@@ -15,7 +15,7 @@ type SubAdmin = {
 };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -51,9 +51,9 @@ function Modal({ title, onClose, children, closeTitle }: { title: string; onClos
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="w-full max-w-2xl rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -112,8 +112,8 @@ function InlineText({
   }
 
   return (
-    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">
-      {value || <span className="text-[#A8A29E]">-</span>}
+    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">
+      {value || <span className="text-text-muted">-</span>}
     </button>
   );
 }
@@ -122,7 +122,7 @@ function ActivePills({ value, onSave, labelActive, labelDisabled }: { value: boo
   return (
     <div className="flex gap-2">
       {[{ v: true, l: labelActive, c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: labelDisabled, c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
-        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}>
+        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'}`}>
           {option.l}
         </button>
       ))}
@@ -249,16 +249,16 @@ export default function SubAdminsQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('title')}</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{t('countAccounts', { count: subAdmins.length })}</p>
+          <h1 className="text-2xl font-black text-text-primary">{t('title')}</h1>
+          <p className="mt-1 text-sm text-text-muted">{t('countAccounts', { count: subAdmins.length })}</p>
         </div>
         <div className="flex gap-2">
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary">
             <RefreshCw size={15} />{tCommon('refresh')}
           </button>
-          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]">
+          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-[#2D2926]">
             <Plus size={15} />{t('newSubAdmin')}
           </button>
         </div>
@@ -267,31 +267,31 @@ export default function SubAdminsQuickAdmin() {
       {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved') || msg === t('createdSuccessfully') ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 
       {showCreate ? (
-        <form onSubmit={(event) => void createSubAdmin(event)} className="grid gap-3 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm md:grid-cols-3">
+        <form onSubmit={(event) => void createSubAdmin(event)} className="grid gap-3 rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm md:grid-cols-3">
           <input value={form.display_name} onChange={(event) => setForm((current) => ({ ...current, display_name: event.target.value }))} placeholder={t('formName')} className={inputClass} dir={isAr ? "rtl" : "ltr"} />
           <input value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} placeholder={t('formEmail')} type="email" dir="ltr" className={inputClass} />
           <input value={form.password} onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))} placeholder={t('formPassword')} type="password" dir="ltr" className={inputClass} />
-          <button type="submit" disabled={creating || !form.email.trim() || form.password.length < 8} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50 md:col-span-3">
+          <button type="submit" disabled={creating || !form.email.trim() || form.password.length < 8} className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-text-primary disabled:opacity-50 md:col-span-3">
             {creating ? t('formCreating') : t('formCreate')}
           </button>
         </form>
       ) : null}
 
-      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading')}</p>
-        : subAdmins.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noAccounts')}</p>
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
+        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+        : subAdmins.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noAccounts')}</p>
         : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]">
-                <tr>{[t('tableHeaderName'), t('tableHeaderEmail'), t('tableHeaderDate'), t('tableHeaderStatus')].map((head, index) => <th key={head} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${index === 2 ? 'hidden md:table-cell' : ''}`}>{head}</th>)}</tr>
+                <tr>{[t('tableHeaderName'), t('tableHeaderEmail'), t('tableHeaderDate'), t('tableHeaderStatus')].map((head, index) => <th key={head} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-text-muted ${index === 2 ? 'hidden md:table-cell' : ''}`}>{head}</th>)}</tr>
               </thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {subAdmins.map((item) => (
                   <tr key={item.user_id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openSubAdmin(item)}>
-                    <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{item.display_name || '-'}</td>
-                    <td className="px-5 py-3 font-mono text-xs text-[#57534E]" dir="ltr">{item.email}</td>
-                    <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">{formatDate(item.created_at, formatLoc)}</td>
+                    <td className="px-5 py-3 font-semibold text-text-primary group-hover:text-primary">{item.display_name || '-'}</td>
+                    <td className="px-5 py-3 font-mono text-xs text-text-secondary" dir="ltr">{item.email}</td>
+                    <td className="hidden px-5 py-3 text-xs text-text-muted md:table-cell">{formatDate(item.created_at, formatLoc)}</td>
                     <td className="px-5 py-3" onClick={(event) => event.stopPropagation()}>
                       <button type="button" onClick={() => void patchSubAdmin(item, { is_active: !item.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${item.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
                         {item.is_active ? t('statusActive') : t('statusDisabled')}
@@ -309,12 +309,12 @@ export default function SubAdminsQuickAdmin() {
         <Modal title={selected.display_name || selected.email} onClose={closeSubAdmin} closeTitle={tCommon('close')}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved') ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
-            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
               <div className="space-y-2">
                 <Field label={t('fieldName')}><InlineText value={selected.display_name ?? ''} dir={isAr ? "rtl" : "ltr"} onSave={(display_name) => patchSubAdmin(selected, { display_name })} /></Field>
                 <Field label={t('fieldEmail')}><InlineText value={selected.email} dir="ltr" onSave={(email) => patchSubAdmin(selected, { email })} /></Field>
                 <Field label={t('fieldStatus')}><ActivePills value={selected.is_active} labelActive={t('statusActive')} labelDisabled={t('statusDisabled')} onSave={(is_active) => patchSubAdmin(selected, { is_active })} /></Field>
-                <Field label={t('fieldCreatedAt')}><span className="block px-3 py-2 text-sm font-semibold text-[#1C1917]">{formatDate(selected.created_at, formatLoc)}</span></Field>
+                <Field label={t('fieldCreatedAt')}><span className="block px-3 py-2 text-sm font-semibold text-text-primary">{formatDate(selected.created_at, formatLoc)}</span></Field>
               </div>
             </div>
           </div>

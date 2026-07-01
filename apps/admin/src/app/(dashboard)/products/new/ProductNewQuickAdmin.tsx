@@ -11,7 +11,7 @@ type Category = { id: string; name_ar: string; name_en?: string | null };
 type Brand = { id: string; name: string };
 
 const inputClass =
-  'w-full rounded-lg border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-lg border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -38,7 +38,7 @@ function slugify(value: string) {
 
 function TogglePill({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-black ${active ? 'border-green-200 bg-green-50 text-green-700' : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}>
+    <button type="button" onClick={onClick} className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-black ${active ? 'border-green-200 bg-green-50 text-green-700' : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'}`}>
       {active ? <Check size={13} /> : null}
       {label}
     </button>
@@ -135,14 +135,14 @@ export default function ProductNewQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-background-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <Link href="/products" className="inline-flex items-center gap-2 text-xs font-black text-[#B8860B]">
+          <Link href="/products" className="inline-flex items-center gap-2 text-xs font-black text-primary">
             <ArrowRight size={14} className={isAr ? "" : "rotate-180"} /> {t('productsTitle', { fallback: 'المنتجات' })}
           </Link>
-          <h1 className="mt-2 text-2xl font-black text-[#1C1917]">{t('newProduct', { fallback: 'منتج جديد' })}</h1>
+          <h1 className="mt-2 text-2xl font-black text-text-primary">{t('newProduct', { fallback: 'منتج جديد' })}</h1>
         </div>
-        <button type="button" onClick={() => router.refresh()} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#57534E] hover:border-[#B8860B]">
+        <button type="button" onClick={() => router.refresh()} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-text-secondary hover:border-primary">
           <RefreshCw size={16} /> {tCommon('refresh', { fallback: 'تحديث' })}
         </button>
       </section>
@@ -151,7 +151,7 @@ export default function ProductNewQuickAdmin() {
 
       <form onSubmit={(event) => void submit(event)} className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
         <div className="grid content-start gap-5">
-          <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
             <div className="grid gap-4 md:grid-cols-2">
             <label className="grid gap-1">
               <span className="text-xs font-black text-[#8B8172]">{t('productNameAr', { fallback: 'الاسم العربي' })}</span>
@@ -176,8 +176,8 @@ export default function ProductNewQuickAdmin() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
-          <div className="mb-4 text-sm font-black text-[#1C1917]">{t('media', { fallback: 'الوسائط (صور وفيديوهات)' })}</div>
+        <section className="rounded-lg border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
+          <div className="mb-4 text-sm font-black text-text-primary">{t('media', { fallback: 'الوسائط (صور وفيديوهات)' })}</div>
           <div className="grid gap-4">
             <input 
               type="file" 
@@ -202,14 +202,14 @@ export default function ProductNewQuickAdmin() {
                   const url = URL.createObjectURL(file);
                   const isPrimary = file === primaryFile;
                   return (
-                    <div key={idx} className={`relative overflow-hidden rounded-lg border-2 ${isPrimary ? 'border-[#B8860B]' : 'border-transparent'}`}>
+                    <div key={idx} className={`relative overflow-hidden rounded-lg border-2 ${isPrimary ? 'border-primary' : 'border-transparent'}`}>
                       {isImage ? (
                         <img src={url} alt={file.name} className="h-24 w-full bg-gray-100 object-cover" />
                       ) : (
                         <video src={url} className="h-24 w-full bg-gray-100 object-cover" />
                       )}
-                      <button type="button" onClick={() => setFiles(files.filter(f => f !== file))} className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-white shadow-sm">×</button>
-                      <button type="button" onClick={() => setPrimaryFile(file)} className={`absolute bottom-0 left-0 right-0 py-1 text-center text-[10px] font-bold text-white transition ${isPrimary ? 'bg-[#B8860B]' : 'bg-black/50 hover:bg-black/70'}`}>
+                      <button type="button" onClick={() => setFiles(files.filter(f => f !== file))} className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-text-primary shadow-sm">×</button>
+                      <button type="button" onClick={() => setPrimaryFile(file)} className={`absolute bottom-0 left-0 right-0 py-1 text-center text-[10px] font-bold text-text-primary transition ${isPrimary ? 'bg-primary' : 'bg-black/50 hover:bg-black/70'}`}>
                         {isPrimary ? 'الرئيسية' : 'تعيين رئيسية'}
                       </button>
                     </div>
@@ -222,7 +222,7 @@ export default function ProductNewQuickAdmin() {
       </div>
 
       <aside className="space-y-5">
-        <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
+        <section className="rounded-lg border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
             <div className="grid gap-4">
               <label className="grid gap-1">
                 <span className="text-xs font-black text-[#8B8172]">{t('category', { fallback: 'التصنيف' })}</span>
@@ -241,14 +241,14 @@ export default function ProductNewQuickAdmin() {
             </div>
           </section>
 
-          <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
             <div className="flex flex-wrap gap-2">
               <TogglePill active={form.is_active} label={t('active', { fallback: 'نشط' })} onClick={() => setForm((current) => ({ ...current, is_active: !current.is_active }))} />
               <TogglePill active={form.is_featured} label={t('featured', { fallback: 'مميز' })} onClick={() => setForm((current) => ({ ...current, is_featured: !current.is_featured }))} />
             </div>
           </section>
 
-          <button type="submit" disabled={!ready || saving} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#B8860B] px-5 py-3 text-sm font-black text-white hover:bg-[#9A7209] disabled:cursor-not-allowed disabled:opacity-50">
+          <button type="submit" disabled={!ready || saving} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-black text-text-primary hover:bg-[#9A7209] disabled:cursor-not-allowed disabled:opacity-50">
             <PackagePlus size={17} />
             {saving ? tCommon('saving', { fallback: 'جار الحفظ...' }) : t('createProductBtn', { fallback: 'إنشاء المنتج' })}
           </button>

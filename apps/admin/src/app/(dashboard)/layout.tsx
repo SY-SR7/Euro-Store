@@ -143,13 +143,13 @@ function NavLink({
       className={[
         'relative flex h-8 items-center gap-2 rounded-lg px-2 text-[13px] font-bold transition',
         active
-          ? 'bg-[#B8860B] text-white shadow-sm'
-          : 'text-[#57534E] hover:bg-[#F4EFE6] hover:text-[#1C1917]',
+          ? 'bg-primary text-text-primary shadow-sm'
+          : 'text-text-secondary hover:bg-[#F4EFE6] hover:text-text-primary',
       ].join(' ')}
     >
       <span className="grid w-5 shrink-0 place-items-center leading-none"><Icon size={14} /></span>
       <span className="min-w-0 flex-1 truncate">{item.label}</span>
-      {active && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white" />}
+      {active && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-background-card" />}
     </Link>
   );
 }
@@ -216,12 +216,12 @@ function SidebarContent({
           onClick={onNavigate}
           className="flex min-w-0 items-center gap-2 rounded-xl px-1 py-1 transition hover:bg-[#F4EFE6]"
         >
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-[#B8860B] bg-white text-sm font-black text-[#B8860B]">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl border border-primary bg-background-card text-sm font-black text-primary">
             E
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-[15px] font-black tracking-tight text-[#1C1917]">EUROSTORE</span>
-            <span className="block truncate text-[10px] font-bold text-[#A8A29E]">{t('adminPanel', { fallback: 'لوحة الإدارة' })}</span>
+            <span className="block truncate text-[15px] font-black tracking-tight text-text-primary">EUROSTORE</span>
+            <span className="block truncate text-[10px] font-bold text-text-muted">{t('adminPanel', { fallback: 'لوحة الإدارة' })}</span>
           </span>
         </Link>
 
@@ -229,7 +229,7 @@ function SidebarContent({
           <button
             type="button"
             onClick={onNavigate}
-            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F4EFE6] text-xl text-[#57534E]"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F4EFE6] text-xl text-text-secondary"
             aria-label={tCommon('closeMenu', { fallback: 'إغلاق القائمة' })}
           >
             <X size={18} />
@@ -241,7 +241,7 @@ function SidebarContent({
         <div className="space-y-2">
           {groupedItems.map((entry) => (
             <section key={entry.group}>
-              <div className="mb-1 px-2 text-[9px] font-black tracking-wide text-[#A8A29E]">
+              <div className="mb-1 px-2 text-[9px] font-black tracking-wide text-text-muted">
                 {entry.group}
               </div>
 
@@ -282,21 +282,21 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
   }, [pathname, navItems, t]);
 
   return (
-    <div className="min-h-screen bg-[#F8F6F2] text-[#1C1917]" dir={isAr ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-[#F8F6F2] text-text-primary" dir={isAr ? "rtl" : "ltr"}>
       <header className="fixed inset-x-0 top-0 z-[100] h-[64px] border-b border-[#E7DDCC] bg-[#FBF8F1]/95 shadow-sm backdrop-blur-xl">
         <div className="flex h-full items-center justify-between gap-3 px-4 sm:px-5 lg:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="grid h-10 w-10 place-items-center rounded-xl border border-[#E7DDCC] bg-white text-xl text-[#57534E] shadow-sm transition hover:border-[#B8860B] hover:text-[#B8860B] lg:hidden"
+              className="grid h-10 w-10 place-items-center rounded-xl border border-[#E7DDCC] bg-background-card text-xl text-text-secondary shadow-sm transition hover:border-primary hover:text-primary lg:hidden"
               aria-label={tCommon('openSidebar', { fallback: 'فتح السايدبار' })}
             >
               <Menu size={19} />
             </button>
 
             <div className="min-w-0">
-              <h1 className="truncate text-base font-black text-[#1C1917]">{title}</h1>
+              <h1 className="truncate text-base font-black text-text-primary">{title}</h1>
             </div>
           </div>
 
@@ -304,10 +304,10 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
             <Link
               href="/notifications"
               className={[
-                'relative grid h-10 w-10 place-items-center rounded-xl border bg-white text-base shadow-sm transition',
+                'relative grid h-10 w-10 place-items-center rounded-xl border bg-background-card text-base shadow-sm transition',
                 isActivePath(pathname, '/notifications')
-                  ? 'border-[#B8860B] text-[#B8860B]'
-                  : 'border-[#E7DDCC] text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]',
+                  ? 'border-primary text-primary'
+                  : 'border-[#E7DDCC] text-text-secondary hover:border-primary hover:text-primary',
               ].join(' ')}
               aria-label={tCommon('notifications', { fallback: 'الإشعارات' })}
             >

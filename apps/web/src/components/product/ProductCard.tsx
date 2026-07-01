@@ -35,7 +35,7 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
       initial="rest"
       whileHover="hover"
       style={{ transformStyle: "preserve-3d" }}
-      className="group relative bg-[#1E2020] rounded-md overflow-hidden border border-[#E8DCC3] hover:border-[#C9A84C]/30 transition-all duration-300 flex flex-col h-full"
+      className="group relative bg-[#1E2020] rounded-md overflow-hidden border border-border hover:border-primary/30 transition-all duration-300 flex flex-col h-full"
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-[#1A1C1C]">
         {product.primary_image_url ? (
@@ -55,7 +55,7 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         {/* Badges */}
         <div className="absolute top-3 start-3 flex flex-col gap-2">
           {isNew && (
-            <span className="bg-[#C9A84C] text-black text-[10px] font-bold px-2 py-1 rounded-sm uppercase shimmer">
+            <span className="bg-primary text-text-primary text-[10px] font-bold px-2 py-1 rounded-sm uppercase shimmer">
               {t('new')}
             </span>
           )}
@@ -67,7 +67,7 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         </div>
 
         {/* Wishlist */}
-        <button className="absolute top-3 end-3 opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-full bg-[#FFFDF8]/20 hover:bg-[#FFFDF8]/40 backdrop-blur-sm z-10">
+        <button className="absolute top-3 end-3 opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-full bg-background-card/20 hover:bg-background-card/40 backdrop-blur-sm z-10">
           <Heart className="w-5 h-5 text-[#1F1B16]" />
         </button>
       </div>
@@ -78,12 +78,12 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
             {isAr ? (product.brand?.name_ar || product.brand?.name_en || 'EuroStore') : (product.brand?.name_en || product.brand?.name_ar || 'EuroStore')}
           </p>
           <Link href={`/products/${product.slug}`} className="block">
-            <h3 className="text-[#1F1B16] text-sm font-medium line-clamp-1 hover:text-[#C9A84C] transition-colors">
+            <h3 className="text-[#1F1B16] text-sm font-medium line-clamp-1 hover:text-primary transition-colors">
               {productName}
             </h3>
           </Link>
         </div>
-        <p className="text-[#C9A84C] font-semibold mt-2 text-sm">
+        <p className="text-primary font-semibold mt-2 text-sm">
           {new Intl.NumberFormat(isAr ? 'ar-SY' : 'en-US', { style: 'currency', currency: 'SYP', maximumFractionDigits: 0 }).format(displayPrice)}
         </p>
       </div>

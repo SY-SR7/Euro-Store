@@ -17,7 +17,7 @@ type Category = {
 };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -42,9 +42,9 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="w-full max-w-2xl rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]"><X size={17} /></button>
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
+          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]"><X size={17} /></button>
         </div>
         <div className="p-5">{children}</div>
       </div>
@@ -67,7 +67,7 @@ function InlineText({ value, onSave, dir = 'rtl' }: { value?: string | null; onS
   useEffect(() => { if (!editing) setDraft(value ?? ''); }, [editing, value]);
   const commit = () => { const next = draft.trim(); setEditing(false); if (next !== (value ?? '')) void onSave(next); };
   if (editing) return <input autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
-  return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">{value || <span className="text-[#A8A29E]">—</span>}</button>;
+  return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">{value || <span className="text-text-muted">—</span>}</button>;
 }
 
 function InlineNumber({ value, onSave }: { value?: number | null; onSave: (value: number) => void | Promise<void> }) {
@@ -76,7 +76,7 @@ function InlineNumber({ value, onSave }: { value?: number | null; onSave: (value
   useEffect(() => { if (!editing) setDraft(String(value ?? 0)); }, [editing, value]);
   const commit = () => { const next = Number(draft); setEditing(false); if (Number.isFinite(next) && next !== (value ?? 0)) void onSave(next); };
   if (editing) return <input autoFocus type="number" value={draft} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
-  return <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-[#1C1917] transition hover:bg-[#FAF7EF]">{value ?? 0}</button>;
+  return <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-text-primary transition hover:bg-background">{value ?? 0}</button>;
 }
 
 function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolean) => void | Promise<void> }) {
@@ -84,7 +84,7 @@ function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolea
   return (
     <div className="flex gap-2">
       {[{ v: true, l: t('active', { fallback: 'مفعّل' }), c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: t('inactive', { fallback: 'غير مفعّل' }), c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
-        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}>{option.l}</button>
+        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'}`}>{option.l}</button>
       ))}
     </div>
   );
@@ -175,39 +175,39 @@ export default function CategoriesQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-        <div><h1 className="text-2xl font-black text-[#1C1917]">{t('categoriesTitle', { fallback: 'إدارة التصنيفات' })}</h1><p className="mt-1 text-sm text-[#A8A29E]">{categories.length} {tCommon('items', { fallback: 'عنصر' })}</p></div>
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div><h1 className="text-2xl font-black text-text-primary">{t('categoriesTitle', { fallback: 'إدارة التصنيفات' })}</h1><p className="mt-1 text-sm text-text-muted">{categories.length} {tCommon('items', { fallback: 'عنصر' })}</p></div>
         <div className="flex gap-2">
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"><RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}</button>
-          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]"><Plus size={15} />{t('newCategory', { fallback: 'تصنيف جديد' })}</button>
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary"><RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}</button>
+          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-[#2D2926]"><Plus size={15} />{t('newCategory', { fallback: 'تصنيف جديد' })}</button>
         </div>
       </div>
 
       {showCreate ? (
-        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
           <div className="grid gap-3 sm:grid-cols-2">
             <input value={newForm.name_ar} onChange={(e) => setNewForm((f) => ({ ...f, name_ar: e.target.value }))} placeholder={t('categoryNameAr', { fallback: 'الاسم بالعربية' })} className={inputClass} />
             <input value={newForm.name_en} onChange={(e) => setNewForm((f) => ({ ...f, name_en: e.target.value }))} placeholder={t('categoryNameEn', { fallback: 'الاسم بالإنجليزية' })} className={inputClass} dir="ltr" />
             <input value={newForm.slug} onChange={(e) => setNewForm((f) => ({ ...f, slug: e.target.value }))} placeholder={t('categorySlug', { fallback: 'الرابط' })} className={inputClass} dir="ltr" />
             <input type="number" value={newForm.sort_order} onChange={(e) => setNewForm((f) => ({ ...f, sort_order: e.target.value }))} placeholder={t('position', { fallback: 'الترتيب' })} className={inputClass} />
-            <button type="button" onClick={() => void createCategory()} disabled={!newForm.name_ar} className="rounded-xl bg-[#B8860B] py-2 text-sm font-bold text-white disabled:opacity-50 sm:col-span-2">{t('saveCategory', { fallback: 'حفظ التصنيف' })}</button>
+            <button type="button" onClick={() => void createCategory()} disabled={!newForm.name_ar} className="rounded-xl bg-primary py-2 text-sm font-bold text-text-primary disabled:opacity-50 sm:col-span-2">{t('saveCategory', { fallback: 'حفظ التصنيف' })}</button>
           </div>
         </div>
       ) : null}
 
-      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
-        : categories.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noCategories', { fallback: 'لا توجد تصنيفات' })}</p>
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
+        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+        : categories.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noCategories', { fallback: 'لا توجد تصنيفات' })}</p>
         : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
-              <thead className="bg-[#F8F6F2]"><tr>{[t('categoryNameAr', { fallback: 'الاسم بالعربية' }),'Slug',t('position', { fallback: 'الترتيب' }),t('status', { fallback: 'الحالة' })].map((h,i)=><th key={h} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${i===1?'hidden sm:table-cell':''} ${i===2?'hidden md:table-cell':''}`}>{h}</th>)}</tr></thead>
+              <thead className="bg-[#F8F6F2]"><tr>{[t('categoryNameAr', { fallback: 'الاسم بالعربية' }),'Slug',t('position', { fallback: 'الترتيب' }),t('status', { fallback: 'الحالة' })].map((h,i)=><th key={h} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-text-muted ${i===1?'hidden sm:table-cell':''} ${i===2?'hidden md:table-cell':''}`}>{h}</th>)}</tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {[...categories].sort((a,b)=>(a.sort_order??0)-(b.sort_order??0)).map((category) => (
                   <tr key={category.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openCategory(category)}>
-                    <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</td>
-                    <td className="hidden px-5 py-3 font-mono text-xs text-[#A8A29E] sm:table-cell">{category.slug ?? ''}</td>
-                    <td className="hidden px-5 py-3 text-[#57534E] md:table-cell">{category.sort_order ?? 0}</td>
+                    <td className="px-5 py-3 font-semibold text-text-primary group-hover:text-primary">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</td>
+                    <td className="hidden px-5 py-3 font-mono text-xs text-text-muted sm:table-cell">{category.slug ?? ''}</td>
+                    <td className="hidden px-5 py-3 text-text-secondary md:table-cell">{category.sort_order ?? 0}</td>
                     <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                       <button type="button" onClick={() => void patchCategory(category, { is_active: !category.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${category.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{category.is_active ? t('active', { fallback: 'مفعّل' }) : t('inactive', { fallback: 'غير مفعّل' })}</button>
                     </td>
@@ -223,7 +223,7 @@ export default function CategoriesQuickAdmin() {
         <Modal title={isAr ? (selected.name_ar ?? 'قسم') : (selected.name_en || selected.name_ar || 'Category')} onClose={closeCategory}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === t('saveSuccess', { fallback: 'تم الحفظ بنجاح' }) ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
-            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
               <div className="space-y-2">
                 <Field label={t('categoryNameAr', { fallback: 'الاسم بالعربية' })}><InlineText value={selected.name_ar ?? ''} dir={isAr ? "rtl" : "ltr"} onSave={(name_ar) => patchCategory(selected, { name_ar })} /></Field>
                 <Field label={t('categoryNameEn', { fallback: 'الاسم بالإنجليزية' })}><InlineText value={selected.name_en ?? ''} dir="ltr" onSave={(name_en) => patchCategory(selected, { name_en })} /></Field>

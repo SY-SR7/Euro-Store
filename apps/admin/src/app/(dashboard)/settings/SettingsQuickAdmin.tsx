@@ -39,7 +39,7 @@ const SETTINGS: SettingConfig[] = [
 ];
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -113,8 +113,8 @@ function InlineSetting({
   }
 
   return (
-    <button type="button" onClick={() => setEditing(true)} className="flex min-h-10 w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-start transition hover:bg-[#FAF7EF]">
-      <span className="font-mono text-sm font-black text-[#1C1917]" dir="ltr">{value || '-'}</span>
+    <button type="button" onClick={() => setEditing(true)} className="flex min-h-10 w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-start transition hover:bg-background">
+      <span className="font-mono text-sm font-black text-text-primary" dir="ltr">{value || '-'}</span>
       <span className="shrink-0 text-xs font-black text-[#8B8172]">{unitLabel}</span>
     </button>
   );
@@ -173,31 +173,31 @@ export default function SettingsQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('settingsTitle', { fallback: 'إعدادات النظام' })}</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{t('settingsDesc', { fallback: 'القيم العامة' })}</p>
+          <h1 className="text-2xl font-black text-text-primary">{t('settingsTitle', { fallback: 'إعدادات النظام' })}</h1>
+          <p className="mt-1 text-sm text-text-muted">{t('settingsDesc', { fallback: 'القيم العامة' })}</p>
         </div>
-        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
+        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary">
           <RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}
         </button>
       </div>
 
       {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved', { fallback: 'تم الحفظ' }) ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 
-      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
       : (
         <div className="grid gap-5 xl:grid-cols-2">
           {groups.map((groupKey) => (
-            <section key={groupKey} className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
-              <h2 className="mb-4 text-sm font-black text-[#B8860B]">{t(groupKey)}</h2>
+            <section key={groupKey} className="rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
+              <h2 className="mb-4 text-sm font-black text-primary">{t(groupKey)}</h2>
               <div className="divide-y divide-[#F0ECE6]">
                 {values.filter((item) => item.config.groupKey === groupKey).map(({ config, row, value }) => (
                   <div key={config.key} className="grid gap-2 py-3 first:pt-0 last:pb-0 md:grid-cols-[190px_minmax(0,1fr)] md:items-center">
                     <div className="min-w-0">
-                      <p className="text-sm font-black text-[#1C1917]">{t(config.labelKey)}</p>
-                      <p className="mt-0.5 truncate font-mono text-[11px] text-[#A8A29E]" dir="ltr">{config.key}</p>
-                      {row?.updated_at ? <p className="mt-1 text-[11px] text-[#A8A29E]">{formatDate(row.updated_at, locale === 'ar' ? 'ar-SY' : 'en-US')}</p> : null}
+                      <p className="text-sm font-black text-text-primary">{t(config.labelKey)}</p>
+                      <p className="mt-0.5 truncate font-mono text-[11px] text-text-muted" dir="ltr">{config.key}</p>
+                      {row?.updated_at ? <p className="mt-1 text-[11px] text-text-muted">{formatDate(row.updated_at, locale === 'ar' ? 'ar-SY' : 'en-US')}</p> : null}
                     </div>
                     <InlineSetting config={config} value={value} unitLabel={t(config.unitKey)} onSave={(next) => patchSetting(config, next)} />
                   </div>

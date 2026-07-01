@@ -10,10 +10,10 @@ export function CartBadge() {
 
   return (
     <Link href="/cart" aria-label={t('title')} 
-      className={`relative inline-flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200 hover:bg-[#FACC15]/20 hover:text-[#B8860B] ${
+      className={`relative inline-flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200 hover:bg-primary/20 hover:text-primary ${
         isActive 
-          ? 'bg-[#FACC15]/15 text-[#B8860B] ring-1 ring-[#B8860B]/30 shadow-sm border-transparent' 
-          : 'border border-black/10 bg-white/80 text-[#57534E]'
+          ? 'bg-primary/15 text-primary ring-1 ring-primary/30 shadow-sm border-transparent' 
+          : 'border border-border bg-background-card/80 text-text-secondary'
       }`}>
       <ShoppingBag className="h-4 w-4" />
     </Link>

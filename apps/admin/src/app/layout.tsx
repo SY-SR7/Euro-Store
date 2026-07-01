@@ -13,7 +13,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
-      <body className="min-h-screen bg-[#F8F6F2] text-[#1C1917] antialiased">
+      <body className="min-h-screen bg-[#F8F6F2] text-text-primary antialiased">
 <NextIntlClientProvider locale={locale} messages={messages}>
 {children}
         </NextIntlClientProvider>

@@ -34,14 +34,14 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   if (!category) notFound();
 
   return (
-    <main className={`min-h-screen bg-[#FAF7EF] px-6 py-12 text-[#1F1B16]`} dir={isAr ? "rtl" : "ltr"}>
+    <main className={`min-h-screen bg-background px-6 py-12 text-[#1F1B16]`} dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-7xl space-y-10">
-        <Link href="/categories" className="text-sm font-bold text-[#C9A84C] hover:underline">
+        <Link href="/categories" className="text-sm font-bold text-primary hover:underline">
           {isAr ? '←' : '→'} {t('allCategoriesLink')}
         </Link>
 
-        <section className={`border-b border-[#E8DCC3] pb-10 ${isAr ? 'text-right' : 'text-left'}`}>
-          <p className="text-sm font-bold text-[#C9A84C]">{t('categoryTag')}</p>
+        <section className={`border-b border-border pb-10 ${isAr ? 'text-right' : 'text-left'}`}>
+          <p className="text-sm font-bold text-primary">{t('categoryTag')}</p>
           <h1 className="mt-3 text-6xl font-black">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</h1>
           {(!isAr && category.name_ar) && (
             <p className="mt-3 text-lg text-[#6F6658]" dir="rtl">{category.name_ar}</p>

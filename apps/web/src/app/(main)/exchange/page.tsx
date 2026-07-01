@@ -32,15 +32,15 @@ export default async function ExchangeIndexPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
+    <main className="min-h-screen bg-background px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <Link href="/" className="text-sm text-[#B8860B] hover:underline">{t('home')}</Link>
-            <h1 className="mt-3 text-2xl font-black text-[#1C1917]">{t('title')}</h1>
+            <Link href="/" className="text-sm text-primary hover:underline">{t('home')}</Link>
+            <h1 className="mt-3 text-2xl font-black text-text-primary">{t('title')}</h1>
           </div>
           <Link href="/exchange/new"
-            className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
+            className="rounded-xl bg-primary px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
             + {t('newRequest')}
           </Link>
         </div>
@@ -52,24 +52,24 @@ export default async function ExchangeIndexPage() {
         </div>
 
         {!user ? (
-          <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 text-center shadow-sm">
-            <p className="text-[#A8A29E] mb-4">{t('loginToTrack')}</p>
-            <Link href="/auth/login" className="rounded-xl bg-[#B8860B] px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
+          <div className="rounded-2xl border border-border bg-background-card p-8 text-center shadow-sm">
+            <p className="text-text-muted mb-4">{t('loginToTrack')}</p>
+            <Link href="/auth/login" className="rounded-xl bg-primary px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
               {t('login')}
             </Link>
           </div>
         ) : requests.length === 0 ? (
-          <div className="rounded-2xl border border-[#E7E3DC] bg-white p-8 text-center shadow-sm">
-            <p className="text-[#A8A29E]">{t('noRequests')}</p>
+          <div className="rounded-2xl border border-border bg-background-card p-8 text-center shadow-sm">
+            <p className="text-text-muted">{t('noRequests')}</p>
           </div>
         ) : (
-          <div className="rounded-2xl border border-[#E7E3DC] bg-white shadow-sm">
+          <div className="rounded-2xl border border-border bg-background-card shadow-sm">
             <div className="divide-y divide-[#F0ECE6]">
               {requests.map(req => (
                 <div key={req.id} className="flex items-center justify-between px-5 py-4">
                   <div>
-                    <p className="font-semibold text-[#1C1917] text-sm">{req.reason_ar ?? '—'}</p>
-                    <p className="mt-1 text-xs text-[#A8A29E]">{new Date(req.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}</p>
+                    <p className="font-semibold text-text-primary text-sm">{req.reason_ar ?? '—'}</p>
+                    <p className="mt-1 text-xs text-text-muted">{new Date(req.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}</p>
                   </div>
                   <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_COLOR[req.status] ?? 'bg-stone-100 text-stone-500'}`}>
                     {t(`status.${req.status}`, { fallback: STATUS_LABEL[req.status] ?? req.status })}

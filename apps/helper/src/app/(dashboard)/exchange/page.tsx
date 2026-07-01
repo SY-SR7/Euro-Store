@@ -65,7 +65,7 @@ export default function HelperExchangePage() {
                   <button
                     onClick={() => generateQR(ex.id)}
                     disabled={genning[ex.id]}
-                    className="shrink-0 rounded-md bg-[#C9A84C] px-4 py-2 text-sm font-semibold text-[#0F0F0F] hover:bg-[#A67C2E] disabled:opacity-50"
+                    className="shrink-0 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-[#0F0F0F] hover:bg-[#A67C2E] disabled:opacity-50"
                   >
                     {genning[ex.id] ? t('common.loading') : t('helper.generateQR')}
                   </button>
@@ -77,12 +77,12 @@ export default function HelperExchangePage() {
                   <p className="text-xs text-green-400 mb-2">✓ {t('helper.qrReady')}</p>
                   <textarea
                     readOnly
-                    className="w-full text-xs font-mono text-[#C9A84C] bg-transparent resize-none h-20 focus:outline-none"
+                    className="w-full text-xs font-mono text-primary bg-transparent resize-none h-20 focus:outline-none"
                     value={tokens[ex.id]}
                   />
                   <button
                     onClick={() => (navigator as any).clipboard.writeText(tokens[ex.id] ?? '')}
-                    className="mt-2 text-xs text-[#9CA3AF] hover:text-[#C9A84C] underline"
+                    className="mt-2 text-xs text-[#9CA3AF] hover:text-primary underline"
                   >
                     {t('loyalty.copyCode')}
                   </button>

@@ -47,19 +47,19 @@ function StaticProductIntro({
   imageUrl?: string | null;
 }) {
   return (
-    <div className="relative flex h-full min-h-[360px] w-full items-center justify-center overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-[#F3EEE3] shadow-2xl">
-      <div className="relative aspect-[4/5] w-[68%] max-w-[360px] overflow-hidden rounded-[1.5rem] border border-[#E8DCC3] bg-[#FFFDF8] shadow-2xl">
+    <div className="relative flex h-full min-h-[360px] w-full items-center justify-center overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-background-secondary shadow-2xl">
+      <div className="relative aspect-[4/5] w-[68%] max-w-[360px] overflow-hidden rounded-[1.5rem] border border-border bg-background-card shadow-2xl">
         {imageUrl ? (
           <img src={imageUrl} alt={title} className="h-full w-full object-cover" />
         ) : (
-          <div className="flex h-full w-full items-center justify-center px-6 text-center text-2xl font-black text-[#C9A84C]">
+          <div className="flex h-full w-full items-center justify-center px-6 text-center text-2xl font-black text-primary">
             {title}
           </div>
         )}
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#FFFDF8] via-[#FFFDF8]/85 to-transparent p-6 text-[#1F1B16]">
-        <p className="text-sm font-bold text-[#C9A84C]">مقدمة القسم</p>
+        <p className="text-sm font-bold text-primary">مقدمة القسم</p>
         <h3 className="mt-2 text-2xl font-black md:text-3xl">{title}</h3>
       </div>
     </div>
@@ -265,7 +265,7 @@ function ScrollLockedVideo({
 
   return (
     <div
-      className="relative h-full min-h-[360px] w-full origin-top overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-[#F3EEE3] shadow-2xl transition-transform duration-300"
+      className="relative h-full min-h-[360px] w-full origin-top overflow-hidden rounded-[2rem] border border-[#D7BE79] bg-background-secondary shadow-2xl transition-transform duration-300"
       style={{
         transform: `translateY(${frameTranslate}) scale(${frameScale})`,
       }}
@@ -295,15 +295,15 @@ function ScrollLockedVideo({
       />
 
       {!ready ? (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#F3EEE3] text-center text-sm font-bold text-[#C9A84C]">
+        <div className="absolute inset-0 flex items-center justify-center bg-background-secondary text-center text-sm font-bold text-primary">
           جار تجهيز الفيديو...
         </div>
       ) : null}
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1F1B16]/75 to-transparent p-5 text-white md:p-6">
-        <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-white/25">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1F1B16]/75 to-transparent p-5 text-text-primary md:p-6">
+        <div className="mb-3 h-1.5 overflow-hidden rounded-full bg-background-card/25">
           <div
-            className="h-full rounded-full bg-[#C9A84C] transition-[width] duration-75"
+            className="h-full rounded-full bg-primary transition-[width] duration-75"
             style={{ width: `${Math.round(progress * 100)}%` }}
           />
         </div>
@@ -344,7 +344,7 @@ function CategorySection({
     <section
       ref={sectionRef}
       id={`section-${section.category.slug}`}
-      className="relative min-h-[240vh] border-t border-[#E8DCC3] py-10 md:py-16"
+      className="relative min-h-[240vh] border-t border-border py-10 md:py-16"
     >
       <div className="sticky top-20 z-10 grid min-h-[calc(100vh-5rem)] items-start gap-6 lg:top-24 lg:grid-cols-[0.92fr_1.08fr] lg:gap-10">
         <div className="h-[52vh] min-h-[360px] lg:h-[62vh] lg:min-h-[430px]">
@@ -360,9 +360,9 @@ function CategorySection({
           )}
         </div>
 
-        <div className="rounded-[2rem] border border-[#E8DCC3] bg-[#FFFDF8]/95 p-4 shadow-xl backdrop-blur md:p-6">
+        <div className="rounded-[2rem] border border-border bg-background-card/95 p-4 shadow-xl backdrop-blur md:p-6">
           <div className="mb-6 text-right">
-            <p className="text-sm font-bold text-[#C9A84C]">
+            <p className="text-sm font-bold text-primary">
               {hasVideo ? 'القسم الأول — فيديو تفاعلي' : 'قسم'}
             </p>
             <h2 className="mt-2 text-4xl font-black text-[#1F1B16] md:text-5xl">
@@ -377,7 +377,7 @@ function CategorySection({
           </div>
 
           {section.products.length === 0 ? (
-            <div className="rounded-2xl border border-[#E8DCC3] bg-[#FAF7EF] p-10 text-center text-[#6F6658]">
+            <div className="rounded-2xl border border-border bg-background p-10 text-center text-[#6F6658]">
               {t('noCategoryProducts')}
             </div>
           ) : (
@@ -397,7 +397,7 @@ function CategorySection({
           <div className="mt-6 text-left">
             <a
               href={`/categories/${section.category.slug}`}
-              className="inline-flex rounded-xl border border-[#C9A84C] px-5 py-3 text-sm font-black text-[#C9A84C] transition hover:bg-[#C9A84C] hover:text-[#1F1B16]"
+              className="inline-flex rounded-xl border border-primary px-5 py-3 text-sm font-black text-primary transition hover:bg-primary hover:text-[#1F1B16]"
             >
               {t('viewAllProducts')} {isAr ? section.category.name_ar : (section.category.name_en || section.category.name_ar)}
             </a>

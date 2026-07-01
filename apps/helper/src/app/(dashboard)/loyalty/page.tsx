@@ -47,7 +47,7 @@ export default function HelperLoyaltyPage() {
           <div className="flex flex-col gap-1.5">
             <label className="text-sm text-[#9CA3AF]">{t('helper.customerId')}</label>
             <input
-              className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm focus:border-[#C9A84C] focus:outline-none"
+              className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
               value={customerId} onChange={(e) => setCustomerId((e.target as HTMLInputElement).value)} placeholder="UUID"
             />
           </div>
@@ -55,21 +55,21 @@ export default function HelperLoyaltyPage() {
             <label className="text-sm text-[#9CA3AF]">{t('helper.pointsToGrant')}</label>
             <input
               type="number" min="1"
-              className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm focus:border-[#C9A84C] focus:outline-none"
+              className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
               value={points} onChange={(e) => setPoints((e.target as HTMLInputElement).value)} placeholder="100"
             />
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="text-sm text-[#9CA3AF]">{t('helper.grantDescription')} ({t('common.optional')})</label>
             <input
-              className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm focus:border-[#C9A84C] focus:outline-none"
+              className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
               value={description} onChange={(e) => setDescription((e.target as HTMLInputElement).value)} placeholder={t('helper.grantDescPlaceholder')}
             />
           </div>
           <button
             onClick={handleGrant}
             disabled={loading || !customerId.trim() || !points}
-            className="rounded-md bg-[#C9A84C] px-6 py-2.5 font-semibold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors disabled:opacity-50"
+            className="rounded-md bg-primary px-6 py-2.5 font-semibold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors disabled:opacity-50"
           >
             {loading ? t('common.loading') : t('helper.grantLoyalty')}
           </button>

@@ -12,7 +12,7 @@ export function CopyReferralButton({ code }: { code: string }) {
         el.textContent = `✓ ${t('copied')}`;
         setTimeout(() => { el.textContent = orig; }, 2000);
       }}
-      className="rounded-xl border border-[#C9A84C] px-4 py-1.5 text-xs font-bold text-[#C9A84C] hover:bg-[#C9A84C] hover:text-white transition-colors"
+      className="rounded-xl border border-primary px-4 py-1.5 text-xs font-bold text-primary hover:bg-primary hover:text-text-primary transition-colors"
     >
       {t('copyCode')}
     </button>

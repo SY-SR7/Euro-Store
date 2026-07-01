@@ -33,21 +33,21 @@ export default async function AccountPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#FAFAF8] px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
+    <main className="min-h-screen bg-background px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-lg space-y-5">
-        <h1 className="text-2xl font-black text-[#1C1917]">{t('myAccount')}</h1>
+        <h1 className="text-2xl font-black text-text-primary">{t('myAccount')}</h1>
 
         {/* Profile card */}
-        <div className="rounded-2xl border border-[#E7E3DC] bg-white p-5 shadow-sm flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#FEF3C7] text-[#B8860B] shrink-0">
+        <div className="rounded-2xl border border-border bg-background-card p-5 shadow-sm flex items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#FEF3C7] text-primary shrink-0">
             <User className="h-7 w-7" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="font-bold text-[#1C1917] truncate">{profile?.full_name ?? user.email}</p>
-            <p className="text-xs text-[#A8A29E] truncate">{user.email}</p>
-            {profile?.phone && <p className="text-xs text-[#A8A29E] mt-0.5">{profile.phone}</p>}
+            <p className="font-bold text-text-primary truncate">{profile?.full_name ?? user.email}</p>
+            <p className="text-xs text-text-muted truncate">{user.email}</p>
+            {profile?.phone && <p className="text-xs text-text-muted mt-0.5">{profile.phone}</p>}
             {profile?.referral_code && (
-              <p className="mt-1 font-mono text-xs text-[#A8A29E]">{t('referralCode')}: <span className="text-[#B8860B] font-bold">{profile.referral_code}</span></p>
+              <p className="mt-1 font-mono text-xs text-text-muted">{t('referralCode')}: <span className="text-primary font-bold">{profile.referral_code}</span></p>
             )}
           </div>
         </div>
@@ -56,16 +56,16 @@ export default async function AccountPage() {
         <div className="grid gap-3">
           {quickLinks.map(({ href, icon: Icon, label, badge, badgeColor }) => (
             <Link key={href} href={href}
-              className="flex items-center justify-between rounded-2xl border border-[#E7E3DC] bg-white p-4 shadow-sm hover:border-[#C9A84C]/40 hover:shadow-md transition-all">
+              className="flex items-center justify-between rounded-2xl border border-border bg-background-card p-4 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FEF3C7] text-[#B8860B]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FEF3C7] text-primary">
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className="font-semibold text-[#1C1917]">{label}</span>
+                <span className="font-semibold text-text-primary">{label}</span>
               </div>
               <div className="flex items-center gap-2">
                 {badge && <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${badgeColor}`}>{badge}</span>}
-                {isAr ? <ChevronLeft className="h-4 w-4 text-[#A8A29E]" /> : <ChevronRight className="h-4 w-4 text-[#A8A29E]" />}
+                {isAr ? <ChevronLeft className="h-4 w-4 text-text-muted" /> : <ChevronRight className="h-4 w-4 text-text-muted" />}
               </div>
             </Link>
           ))}

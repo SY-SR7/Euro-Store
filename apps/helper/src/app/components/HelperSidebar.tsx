@@ -18,14 +18,14 @@ export function HelperSidebar() {
   return (
     <aside className="flex h-full w-56 flex-col bg-[#111111] border-e border-[#2E2E2E]">
       <div className="flex h-16 items-center px-5 border-b border-[#2E2E2E]">
-        <span className="font-semibold text-[#C9A84C]">Helper</span>
+        <span className="font-semibold text-primary">Helper</span>
       </div>
       <nav className="flex-1 p-4 space-y-1">
         {navItems.map(({ href, icon: Icon, labelKey }) => {
           const active = pathname === href || pathname.startsWith(href);
           return (
             <Link key={href} href={href} className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-              active ? 'bg-[#C9A84C]/10 text-[#C9A84C]' : 'text-[#9CA3AF] hover:bg-[#1A1A1A] hover:text-[#E2E2E2]'
+              active ? 'bg-primary/10 text-primary' : 'text-[#9CA3AF] hover:bg-[#1A1A1A] hover:text-[#E2E2E2]'
             }`}>
               <Icon className="h-4 w-4" />
               {t(labelKey)}

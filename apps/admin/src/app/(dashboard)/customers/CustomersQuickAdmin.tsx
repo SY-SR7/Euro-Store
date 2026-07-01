@@ -18,7 +18,7 @@ type Customer = {
 };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -46,13 +46,13 @@ function Modal({ title, onClose, children, closeTitle }: { title: string; onClos
         className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
           <button
             type="button"
             title={closeTitle || "Close"}
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]"
           >
             <X size={17} />
           </button>
@@ -125,9 +125,9 @@ function InlineText({
       type="button"
       onClick={() => setEditing(true)}
       dir={dir}
-      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]"
+      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background"
     >
-      {value?.trim() ? value : <span className="text-[#A8A29E]">—</span>}
+      {value?.trim() ? value : <span className="text-text-muted">—</span>}
     </button>
   );
 }
@@ -183,7 +183,7 @@ function InlineNumber({
     <button
       type="button"
       onClick={() => setEditing(true)}
-      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-black text-[#B8860B] transition hover:bg-[#FAF7EF]"
+      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-black text-primary transition hover:bg-background"
     >
       {Number(value ?? 0).toLocaleString(locale)}
     </button>
@@ -214,7 +214,7 @@ function StatusPills({
               if (!active) void onSave(option.value);
             }}
             className={`rounded-full border px-3 py-1 text-xs font-black transition ${
-              active ? option.cls : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'
+              active ? option.cls : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'
             }`}
           >
             {option.label}
@@ -334,22 +334,22 @@ export default function CustomersQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+      <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('customersTitle', { fallback: 'العملاء' })}</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{t('customersCount', { count: customers.length, fallback: `${customers.length} عميل` })}</p>
+          <h1 className="text-2xl font-black text-text-primary">{t('customersTitle', { fallback: 'العملاء' })}</h1>
+          <p className="mt-1 text-sm text-text-muted">{t('customersCount', { count: customers.length, fallback: `${customers.length} عميل` })}</p>
         </div>
         <button
           type="button"
           onClick={load}
-          className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"
+          className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary"
         >
           <RefreshCw size={15} />
           {tCommon('refresh', { fallback: 'تحديث' })}
         </button>
       </div>
 
-      <div className="flex overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm focus-within:border-[#B8860B]">
+      <div className="flex overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm focus-within:border-primary">
         <input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
@@ -361,11 +361,11 @@ export default function CustomersQuickAdmin() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
         {loading ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+          <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
         ) : customers.length === 0 ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noCustomers', { fallback: 'لا يوجد عملاء' })}</p>
+          <p className="p-10 text-center text-sm text-text-muted">{t('noCustomers', { fallback: 'لا يوجد عملاء' })}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
@@ -380,7 +380,7 @@ export default function CustomersQuickAdmin() {
                   ].map((heading, index) => (
                     <th
                       key={heading}
-                      className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${
+                      className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-text-muted ${
                         index === 2 || index === 4 ? 'hidden md:table-cell' : ''
                       }`}
                     >
@@ -396,13 +396,13 @@ export default function CustomersQuickAdmin() {
                     className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]"
                     onClick={() => openCustomer(customer)}
                   >
-                    <td className="px-5 py-3 font-semibold text-[#1C1917] transition-colors group-hover:text-[#B8860B]">
+                    <td className="px-5 py-3 font-semibold text-text-primary transition-colors group-hover:text-primary">
                       {customer.full_name ?? '—'}
                     </td>
-                    <td className={`px-5 py-3 text-[#57534E] ${isAr ? "text-right" : "text-left"}`} dir="ltr">
+                    <td className={`px-5 py-3 text-text-secondary ${isAr ? "text-right" : "text-left"}`} dir="ltr">
                       {customer.phone ?? ''}
                     </td>
-                    <td className="hidden px-5 py-3 font-bold text-[#B8860B] md:table-cell">
+                    <td className="hidden px-5 py-3 font-bold text-primary md:table-cell">
                       {customer.loyalty_points ?? 0}
                     </td>
                     <td className="px-5 py-3" onClick={(event) => event.stopPropagation()}>
@@ -418,7 +418,7 @@ export default function CustomersQuickAdmin() {
                         {customer.is_blocked ? t('statusBlocked', { fallback: 'محظور' }) : t('statusActive', { fallback: 'نشط' })}
                       </button>
                     </td>
-                    <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">
+                    <td className="hidden px-5 py-3 text-xs text-text-muted md:table-cell">
                       {new Date(customer.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
                     </td>
                   </tr>
@@ -444,7 +444,7 @@ export default function CustomersQuickAdmin() {
               </div>
             ) : null}
 
-            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
               <div className="space-y-2">
                 <Field label={t('name', { fallback: 'الاسم' })}>
                   <InlineText
@@ -478,12 +478,12 @@ export default function CustomersQuickAdmin() {
                   />
                 </Field>
                 <Field label={t('referralCode', { fallback: 'كود الإحالة' })}>
-                  <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
+                  <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-text-primary">
                     {selected.referral_code ?? '—'}
                   </div>
                 </Field>
                 <Field label={t('registrationDate', { fallback: 'تاريخ التسجيل' })}>
-                  <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
+                  <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-text-primary">
                     {new Date(selected.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
                   </div>
                 </Field>

@@ -99,7 +99,7 @@ function actionStyle(action?: string) {
   if (kind === 'delete') return 'border-red-200 bg-red-50 text-red-700';
   if (kind === 'status') return 'border-amber-200 bg-amber-50 text-amber-800';
   if (kind === 'undo') return 'border-blue-200 bg-blue-50 text-blue-700';
-  return 'border-[#E5E0D8] bg-[#F8F6F2] text-[#57534E]';
+  return 'border-[#E5E0D8] bg-[#F8F6F2] text-text-secondary';
 }
 
 function ActionIcon({ action }: { action?: string }) {
@@ -116,9 +116,9 @@ function Modal({ title, onClose, children, closeTitle }: { title: string; onClos
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="flex max-h-[92vh] w-full max-w-4xl flex-col rounded-lg border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -130,7 +130,7 @@ function Modal({ title, onClose, children, closeTitle }: { title: string; onClos
 
 function JsonBlock({ title, value }: { title: string; value: unknown }) {
   return (
-    <div className="rounded-lg border border-[#E5E0D8] bg-white p-4">
+    <div className="rounded-lg border border-[#E5E0D8] bg-background-card p-4">
       <h3 className="mb-3 text-xs font-black text-[#8B8172]">{title}</h3>
       <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-[#121414] p-3 text-left text-xs leading-6 text-[#DDEBD2]" dir="ltr">
         {pretty(value)}
@@ -253,12 +253,12 @@ export default function AuditLogsQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+      <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-background-card p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('title')}</h1>
+          <h1 className="text-2xl font-black text-text-primary">{t('title')}</h1>
           <p className="mt-1 text-sm text-[#8B8172]">{t('countLogs', { count: stats.total })}</p>
         </div>
-        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#B8860B]">
+        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-primary">
           <RefreshCw size={16} /> {tCommon('refresh')}
         </button>
       </section>
@@ -269,23 +269,23 @@ export default function AuditLogsQuickAdmin() {
           [t('statsUndoable'), stats.undoable],
           [t('statsErrors'), stats.errors],
         ].map(([label, value]) => (
-          <div key={String(label)} className="rounded-lg border border-[#E5E0D8] bg-white p-4 shadow-sm">
+          <div key={String(label)} className="rounded-lg border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
             <p className="text-xs font-black text-[#8B8172]">{label}</p>
-            <p className="mt-2 text-2xl font-black text-[#1C1917]" dir="ltr">{Number(value).toLocaleString(formatLoc)}</p>
+            <p className="mt-2 text-2xl font-black text-text-primary" dir="ltr">{Number(value).toLocaleString(formatLoc)}</p>
           </div>
         ))}
       </section>
 
-      <section className="rounded-lg border border-[#E5E0D8] bg-white p-4 shadow-sm">
+      <section className="rounded-lg border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex gap-2 overflow-x-auto pb-1">
             {filters.map((item) => (
-              <button key={item.key} type="button" onClick={() => setFilter(item.key)} className={`whitespace-nowrap rounded-lg border px-3 py-2 text-xs font-black ${filter === item.key ? 'border-[#B8860B] bg-[#B8860B] text-white' : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#57534E] hover:border-[#B8860B]'}`}>
+              <button key={item.key} type="button" onClick={() => setFilter(item.key)} className={`whitespace-nowrap rounded-lg border px-3 py-2 text-xs font-black ${filter === item.key ? 'border-primary bg-primary text-text-primary' : 'border-[#E5E0D8] bg-background text-text-secondary hover:border-primary'}`}>
                 {item.label}
               </button>
             ))}
           </div>
-          <div className="flex overflow-hidden rounded-lg border border-[#E5E0D8] bg-[#FAFAF8] focus-within:border-[#B8860B] xl:w-96">
+          <div className="flex overflow-hidden rounded-lg border border-[#E5E0D8] bg-background focus-within:border-primary xl:w-96">
             <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('searchPlaceholder')} className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm outline-none" dir={isAr ? "rtl" : "ltr"} />
             <span className={`grid w-10 place-items-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-[#8B8172]`}><Search size={16} /></span>
           </div>
@@ -294,9 +294,9 @@ export default function AuditLogsQuickAdmin() {
 
       {msg ? <div className={`rounded-lg border px-4 py-3 text-sm font-bold ${msg === t('undoneSuccess') ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 
-      <section className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading')}</p>
-        : filtered.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noLogs')}</p>
+      <section className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-background-card shadow-sm">
+        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+        : filtered.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noLogs')}</p>
         : (
           <div className="divide-y divide-[#F0ECE6]">
             {filtered.map((log) => {
@@ -322,12 +322,12 @@ export default function AuditLogsQuickAdmin() {
                   <span className={`grid h-10 w-10 place-items-center rounded-lg border ${actionStyle(log.action)}`}><ActionIcon action={log.action} /></span>
                   <span className="min-w-0">
                     <span className="flex flex-wrap items-center gap-2">
-                      <span className="font-black text-[#1C1917]">{isAr ? log.action_ar : (log.action_ar || log.action || t('defaultAction'))}</span>
-                      <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-2 py-1 text-[11px] font-bold text-[#57534E]">{finalEntityLabel}</span>
+                      <span className="font-black text-text-primary">{isAr ? log.action_ar : (log.action_ar || log.action || t('defaultAction'))}</span>
+                      <span className="rounded-full border border-[#E5E0D8] bg-[#F8F6F2] px-2 py-1 text-[11px] font-bold text-text-secondary">{finalEntityLabel}</span>
                       {canUndo ? <span className="rounded-full border border-blue-200 bg-blue-50 px-2 py-1 text-[11px] font-bold text-blue-700">{t('badgeUndo')}</span> : null}
                     </span>
-                    <span className="mt-1 block truncate text-sm text-[#57534E]">{log.summary || log.path || log.entity_id || '-'}</span>
-                    <span className="mt-1 block text-xs text-[#A8A29E]" dir="ltr">{log.admin_email || t('defaultAdmin')}</span>
+                    <span className="mt-1 block truncate text-sm text-text-secondary">{log.summary || log.path || log.entity_id || '-'}</span>
+                    <span className="mt-1 block text-xs text-text-muted" dir="ltr">{log.admin_email || t('defaultAdmin')}</span>
                   </span>
                   <span className="text-xs font-bold text-[#8B8172]">{formatDate(log.created_at, formatLoc)}</span>
                 </button>
@@ -363,9 +363,9 @@ export default function AuditLogsQuickAdmin() {
                 [t('detailResult'), String(selected.status_code ?? '-')],
                 [t('detailIp'), selected.ip || '-'],
               ].map(([label, value]) => (
-                <div key={String(label)} className="rounded-lg border border-[#E5E0D8] bg-white p-3">
+                <div key={String(label)} className="rounded-lg border border-[#E5E0D8] bg-background-card p-3">
                   <p className="text-xs font-bold text-[#8B8172]">{label}</p>
-                  <p className={`mt-1 break-words text-sm font-black text-[#1C1917] ${label === t('detailPath') || label === t('detailMethod') || label === t('detailIp') || label === t('detailId') ? "text-left" : ""}`} dir="auto">{value}</p>
+                  <p className={`mt-1 break-words text-sm font-black text-text-primary ${label === t('detailPath') || label === t('detailMethod') || label === t('detailIp') || label === t('detailId') ? "text-left" : ""}`} dir="auto">{value}</p>
                 </div>
               ))}
             </div>
@@ -376,8 +376,8 @@ export default function AuditLogsQuickAdmin() {
               <JsonBlock title={t('jsonAfter')} value={selected.new_values} />
             </div>
 
-            <div className="flex flex-col gap-3 rounded-lg border border-[#E5E0D8] bg-white p-4 md:flex-row md:items-center md:justify-between">
-              <div className="flex items-center gap-2 text-sm font-bold text-[#57534E]">
+            <div className="flex flex-col gap-3 rounded-lg border border-[#E5E0D8] bg-background-card p-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-2 text-sm font-bold text-text-secondary">
                 <Eye size={16} />
                 {selected.undone_at ? t('undoneAt', { date: formatDate(selected.undone_at, formatLoc) }) : selected.undo?.reason || t('noAutoUndo')}
               </div>
@@ -385,7 +385,7 @@ export default function AuditLogsQuickAdmin() {
                 type="button"
                 onClick={() => void undo(selected)}
                 disabled={!selected.undo?.possible || Boolean(selected.undone_at) || undoingId === selected.id}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#B8860B] px-4 py-2 text-sm font-black text-white hover:bg-[#9A7209] disabled:cursor-not-allowed disabled:bg-[#E5E0D8] disabled:text-[#A8A29E]"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-black text-text-primary hover:bg-[#9A7209] disabled:cursor-not-allowed disabled:bg-[#E5E0D8] disabled:text-text-muted"
               >
                 <Undo2 size={16} />
                 {undoingId === selected.id ? t('undoing') : selected.undone_at ? t('undone') : t('undoBtn')}

@@ -116,7 +116,7 @@ type FilterData = {
 type SelectOption = { value: string; label: string };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 function formatSYP(value: number | null | undefined) {
   return `${Number(value || 0).toLocaleString('ar-SY')} ل.س`;
@@ -166,15 +166,15 @@ function Modal({
         className="flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between gap-4 border-b border-[#EFE7DA] bg-white px-4 py-3 sm:px-5">
+        <div className="flex items-center justify-between gap-4 border-b border-[#EFE7DA] bg-background-card px-4 py-3 sm:px-5">
           <div className="min-w-0">
-            <h2 className="truncate text-base font-black text-[#1C1917]">{title}</h2>
+            <h2 className="truncate text-base font-black text-text-primary">{title}</h2>
             {subtitle ? <p className="truncate text-xs text-[#8B8172]">{subtitle}</p> : null}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-[#E5E0D8] bg-[#FAF7EF] text-[#57534E] transition hover:border-[#B8860B] hover:text-[#1C1917]"
+            className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-[#E5E0D8] bg-background text-text-secondary transition hover:border-primary hover:text-text-primary"
           >
             <X size={18} />
           </button>
@@ -195,9 +195,9 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+    <section className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h3 className="text-sm font-black text-[#1C1917]">{title}</h3>
+        <h3 className="text-sm font-black text-text-primary">{title}</h3>
         {action}
       </div>
       {children}
@@ -294,9 +294,9 @@ function InlineText({
       type="button"
       onClick={() => setEditing(true)}
       dir={dir}
-      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF] focus:bg-[#FAF7EF] focus:outline-none"
+      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background focus:bg-background focus:outline-none"
     >
-      {value?.trim() ? value : <span className="text-[#A8A29E]">{placeholder}</span>}
+      {value?.trim() ? value : <span className="text-text-muted">{placeholder}</span>}
     </button>
   );
 }
@@ -358,9 +358,9 @@ function InlineNumber({
     <button
       type="button"
       onClick={() => setEditing(true)}
-      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-[#1C1917] transition hover:bg-[#FAF7EF]"
+      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-text-primary transition hover:bg-background"
     >
-      {value == null ? <span className="text-[#A8A29E]">—</span> : Number(value).toLocaleString('ar-SY')}
+      {value == null ? <span className="text-text-muted">—</span> : Number(value).toLocaleString('ar-SY')}
     </button>
   );
 }
@@ -405,7 +405,7 @@ function InlineSelect({
     <button
       type="button"
       onClick={() => setEditing(true)}
-      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]"
+      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background"
     >
       {currentLabel}
     </button>
@@ -435,7 +435,7 @@ function ChoicePills<T extends string | boolean>({
             className={`rounded-full border px-3 py-1 text-xs font-black transition ${
               active
                 ? option.activeClass
-                : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'
+                : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'
             }`}
           >
             {option.label}
@@ -462,7 +462,7 @@ function FilterSection({
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="mb-2 flex w-full items-center justify-between text-xs font-black uppercase text-[#8B8172] transition hover:text-[#1C1917]"
+        className="mb-2 flex w-full items-center justify-between text-xs font-black uppercase text-[#8B8172] transition hover:text-text-primary"
       >
         {title}
         <span className="text-base leading-none">{open ? '−' : '+'}</span>
@@ -484,14 +484,14 @@ function CheckItem({
   onChange: () => void;
 }) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 transition hover:bg-white">
+    <label className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1 transition hover:bg-background-card">
       <input
         type="checkbox"
         checked={checked}
         onChange={onChange}
         className="h-3.5 w-3.5 accent-[#B8860B]"
       />
-      <span className="min-w-0 flex-1 truncate text-xs font-semibold text-[#1C1917]">{label}</span>
+      <span className="min-w-0 flex-1 truncate text-xs font-semibold text-text-primary">{label}</span>
       <span className="text-[10px] tabular-nums text-[#8B8172]">{count}</span>
     </label>
   );
@@ -945,7 +945,7 @@ export default function ProductQuickAdmin() {
   return (
     <div className="flex h-full gap-0" dir={isAr ? "rtl" : "ltr"}>
       {sidebarOpen ? (
-        <aside className={`flex-none w-60 space-y-3 overflow-y-auto ${isAr ? "border-l" : "border-r"} border-[#EFE7DA] bg-[#FAF7EF] p-4`}>
+        <aside className={`flex-none w-60 space-y-3 overflow-y-auto ${isAr ? "border-l" : "border-r"} border-[#EFE7DA] bg-background p-4`}>
           <div className="flex items-center justify-between gap-2">
             <span className="inline-flex items-center gap-2 text-xs font-black text-[#8B8172]">
               <SlidersHorizontal size={14} />
@@ -954,7 +954,7 @@ export default function ProductQuickAdmin() {
             <button
               type="button"
               onClick={clearAll}
-              className="rounded-full px-2 py-1 text-[11px] font-black text-[#B8860B] transition hover:bg-white"
+              className="rounded-full px-2 py-1 text-[11px] font-black text-primary transition hover:bg-background-card"
             >
               {tCommon('clear', { fallback: 'مسح' })}
             </button>
@@ -975,8 +975,8 @@ export default function ProductQuickAdmin() {
                 onClick={() => setStatus(key)}
                 className={`rounded-xl border px-2 py-2 text-xs font-black transition ${
                   status === key
-                    ? 'border-[#B8860B] bg-white text-[#1C1917]'
-                    : 'border-transparent text-[#8B8172] hover:bg-white'
+                    ? 'border-primary bg-background-card text-text-primary'
+                    : 'border-transparent text-[#8B8172] hover:bg-background-card'
                 }`}
               >
                 {label}
@@ -1060,7 +1060,7 @@ export default function ProductQuickAdmin() {
                       setPriceMin(event.target.value ? Number(event.target.value) : null)
                     }
                     placeholder={t('from', { fallback: 'من' })}
-                    className="min-w-0 rounded-lg border border-[#E5E0D8] px-2 py-1 text-[11px] outline-none focus:border-[#B8860B]"
+                    className="min-w-0 rounded-lg border border-[#E5E0D8] px-2 py-1 text-[11px] outline-none focus:border-primary"
                     dir="ltr"
                   />
                   <input
@@ -1070,7 +1070,7 @@ export default function ProductQuickAdmin() {
                       setPriceMax(event.target.value ? Number(event.target.value) : null)
                     }
                     placeholder={t('to', { fallback: 'إلى' })}
-                    className="min-w-0 rounded-lg border border-[#E5E0D8] px-2 py-1 text-[11px] outline-none focus:border-[#B8860B]"
+                    className="min-w-0 rounded-lg border border-[#E5E0D8] px-2 py-1 text-[11px] outline-none focus:border-primary"
                     dir="ltr"
                   />
                 </div>
@@ -1091,11 +1091,11 @@ export default function ProductQuickAdmin() {
               type="button"
               title={sidebarOpen ? tCommon('hideFilters', { fallback: 'إخفاء الفلاتر' }) : tCommon('showFilters', { fallback: 'إظهار الفلاتر' })}
               onClick={() => setSidebarOpen((current) => !current)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] bg-white text-[#57534E] transition hover:border-[#B8860B]"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] bg-background-card text-text-secondary transition hover:border-primary"
             >
               <SlidersHorizontal size={17} />
             </button>
-            <h1 className="text-xl font-black text-[#1C1917]">
+            <h1 className="text-xl font-black text-text-primary">
               {t('productsTitle', { fallback: 'المنتجات' })}
               {filterData ? (
                 <span className="mr-2 text-sm font-semibold text-[#8B8172]">({filterData.total})</span>
@@ -1109,7 +1109,7 @@ export default function ProductQuickAdmin() {
                 event.preventDefault();
                 void load();
               }}
-              className="flex overflow-hidden rounded-xl border border-[#E5E0D8] bg-white focus-within:border-[#B8860B]"
+              className="flex overflow-hidden rounded-xl border border-[#E5E0D8] bg-background-card focus-within:border-primary"
             >
               <input
                 value={search}
@@ -1120,14 +1120,14 @@ export default function ProductQuickAdmin() {
               <button
                 type="submit"
                 title={tCommon('search', { fallback: 'بحث' })}
-                className={`flex w-10 items-center justify-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-[#57534E] transition hover:bg-[#FAF7EF] hover:text-[#1C1917]`}
+                className={`flex w-10 items-center justify-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-text-secondary transition hover:bg-background hover:text-text-primary`}
               >
                 <Search size={16} />
               </button>
             </form>
             <Link
               href="/products/new"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#1C1917] px-4 text-sm font-black text-white transition hover:bg-[#2D2926]"
+              className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#1C1917] px-4 text-sm font-black text-text-primary transition hover:bg-[#2D2926]"
             >
               <Plus size={16} />
               {t('newProduct', { fallback: 'منتج جديد' })}
@@ -1148,12 +1148,12 @@ export default function ProductQuickAdmin() {
             ))}
           </div>
         ) : products.length === 0 ? (
-          <div className="rounded-2xl border border-[#E5E0D8] bg-white p-14 text-center text-[#8B8172]">
+          <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-14 text-center text-[#8B8172]">
             <p className="text-lg font-black">{t('noProducts', { fallback: 'لا توجد منتجات' })}</p>
             <button
               type="button"
               onClick={clearAll}
-              className="mt-3 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#B8860B] hover:bg-[#FAF7EF]"
+              className="mt-3 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-primary hover:bg-background"
             >
               {t('clearFilters', { fallback: 'مسح الفلاتر' })}
             </button>
@@ -1165,7 +1165,7 @@ export default function ProductQuickAdmin() {
                 key={product.id}
                 type="button"
                 onClick={() => openProduct(product)}
-                className="group flex min-h-48 flex-col rounded-2xl border border-[#E5E0D8] bg-white p-3 text-right shadow-sm transition hover:-translate-y-0.5 hover:border-[#B8860B] hover:shadow-md"
+                className="group flex min-h-48 flex-col rounded-2xl border border-[#E5E0D8] bg-background-card p-3 text-right shadow-sm transition hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
               >
                 <div className="mb-3 aspect-[4/3] w-full overflow-hidden rounded-xl bg-[#F1E8DA]">
                   {product.image_url ? (
@@ -1175,16 +1175,16 @@ export default function ProductQuickAdmin() {
                       className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-xs font-bold text-[#A8A29E]">
+                    <div className="flex h-full w-full items-center justify-center text-xs font-bold text-text-muted">
                       {t('noImage', { fallback: 'لا توجد صورة' })}
                     </div>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black text-[#1C1917]">{isAr ? product.name_ar : (product.name_en || product.name_ar)}</p>
+                  <p className="truncate text-sm font-black text-text-primary">{isAr ? product.name_ar : (product.name_en || product.name_ar)}</p>
                   <p className="truncate text-xs text-[#8B8172]">{isAr ? product.name_en : product.name_ar}</p>
                   {product.minPrice ? (
-                    <p className="mt-1 text-xs font-black text-[#B8860B]">{formatSYP(product.minPrice)}</p>
+                    <p className="mt-1 text-xs font-black text-primary">{formatSYP(product.minPrice)}</p>
                   ) : null}
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1.5">
@@ -1248,12 +1248,12 @@ export default function ProductQuickAdmin() {
                           if (!image.is_primary) void patchImage(image, { is_primary: true });
                         }}
                         className={`relative overflow-hidden rounded-xl border-2 bg-[#F8F3EA] transition ${
-                          image.is_primary ? 'border-[#B8860B]' : 'border-[#E5E0D8] hover:border-[#B8860B]'
+                          image.is_primary ? 'border-primary' : 'border-[#E5E0D8] hover:border-primary'
                         }`}
                       >
                         <img src={image.url} alt={image.alt_ar ?? ''} className="aspect-square w-full object-cover" />
                         {image.is_primary ? (
-                          <span className={`absolute ${isAr ? "right-1" : "left-1"} top-1 rounded-full bg-[#B8860B] px-1.5 py-0.5 text-[9px] font-black text-white`}>
+                          <span className={`absolute ${isAr ? "right-1" : "left-1"} top-1 rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-black text-text-primary`}>
                             {t('primary', { fallback: 'رئيسية' })}
                           </span>
                         ) : null}
@@ -1326,7 +1326,7 @@ export default function ProductQuickAdmin() {
                         value={Boolean(activeProduct.is_featured)}
                         options={[
                           { value: true, label: t('featured', { fallback: 'مميز' }), activeClass: 'border-amber-200 bg-amber-50 text-amber-700' },
-                          { value: false, label: t('normal', { fallback: 'عادي' }), activeClass: 'border-[#E5E0D8] bg-[#FAF7EF] text-[#57534E]' },
+                          { value: false, label: t('normal', { fallback: 'عادي' }), activeClass: 'border-[#E5E0D8] bg-background text-text-secondary' },
                         ]}
                         onSave={(value) => patchProduct({ is_featured: value })}
                       />
@@ -1336,17 +1336,17 @@ export default function ProductQuickAdmin() {
               </div>
 
               <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
+                <div className="rounded-2xl border border-[#E5E0D8] bg-background-card px-4 py-3">
                   <p className="text-xs font-bold text-[#8B8172]">{t('variants', { fallback: 'الخيارات' })}</p>
-                  <p className="mt-1 text-2xl font-black text-[#1C1917]">{variants.length}</p>
+                  <p className="mt-1 text-2xl font-black text-text-primary">{variants.length}</p>
                 </div>
-                <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
+                <div className="rounded-2xl border border-[#E5E0D8] bg-background-card px-4 py-3">
                   <p className="text-xs font-bold text-[#8B8172]">{t('stock', { fallback: 'المخزون' })}</p>
-                  <p className="mt-1 text-2xl font-black text-[#1C1917]">{totalStock}</p>
+                  <p className="mt-1 text-2xl font-black text-text-primary">{totalStock}</p>
                 </div>
-                <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
+                <div className="rounded-2xl border border-[#E5E0D8] bg-background-card px-4 py-3">
                   <p className="text-xs font-bold text-[#8B8172]">{t('lowestPrice', { fallback: 'أدنى سعر' })}</p>
-                  <p className="mt-1 text-lg font-black text-[#B8860B]">{minPrice ? formatSYP(minPrice) : '—'}</p>
+                  <p className="mt-1 text-lg font-black text-primary">{minPrice ? formatSYP(minPrice) : '—'}</p>
                 </div>
               </div>
 
@@ -1356,7 +1356,7 @@ export default function ProductQuickAdmin() {
                   <button
                     type="button"
                     onClick={() => setShowAddVariant((current) => !current)}
-                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926]"
+                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-text-primary hover:bg-[#2D2926]"
                   >
                     <Plus size={14} />
                     {t('addVariant', { fallback: 'خيار' })}
@@ -1404,7 +1404,7 @@ export default function ProductQuickAdmin() {
                         type="button"
                         onClick={createVariant}
                         disabled={savingKey === 'variant:new' || !newVariant.sku.trim() || !newVariant.price_syp.trim()}
-                        className="rounded-xl bg-[#B8860B] px-4 py-2 text-sm font-black text-white transition hover:bg-[#9A7209] disabled:opacity-50"
+                        className="rounded-xl bg-primary px-4 py-2 text-sm font-black text-text-primary transition hover:bg-[#9A7209] disabled:opacity-50"
                       >
                         {tCommon('add', { fallback: 'إضافة' })}
                       </button>
@@ -1423,8 +1423,8 @@ export default function ProductQuickAdmin() {
                                   onClick={() => setNewVariantAttributeValue(type, value.id)}
                                   className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-bold transition ${
                                     checked
-                                      ? 'border-[#B8860B] bg-[#FFF4D8] text-[#1C1917]'
-                                      : 'border-[#E5E0D8] bg-white text-[#57534E] hover:border-[#B8860B]'
+                                      ? 'border-primary bg-[#FFF4D8] text-text-primary'
+                                      : 'border-[#E5E0D8] bg-background-card text-text-secondary hover:border-primary'
                                   }`}
                                 >
                                   <ColorDot hex={value.hex_color} />
@@ -1529,8 +1529,8 @@ export default function ProductQuickAdmin() {
                                         onClick={() => setVariantAttributeValue(variant, type, value.id)}
                                         className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-bold transition ${
                                           checked
-                                            ? 'border-[#B8860B] bg-[#FFF4D8] text-[#1C1917]'
-                                            : 'border-[#E5E0D8] bg-white text-[#57534E] hover:border-[#B8860B]'
+                                            ? 'border-primary bg-[#FFF4D8] text-text-primary'
+                                            : 'border-[#E5E0D8] bg-background-card text-text-secondary hover:border-primary'
                                         }`}
                                       >
                                         <ColorDot hex={value.hex_color} />
@@ -1556,7 +1556,7 @@ export default function ProductQuickAdmin() {
                     type="button"
                     onClick={addImage}
                     disabled={savingKey === 'image:new' || !newImageUrl.trim()}
-                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926] disabled:opacity-50"
+                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-text-primary hover:bg-[#2D2926] disabled:opacity-50"
                   >
                     <ImagePlus size={14} />
                     {tCommon('add', { fallback: 'إضافة' })}
@@ -1587,12 +1587,12 @@ export default function ProductQuickAdmin() {
                             if (!image.is_primary) void patchImage(image, { is_primary: true });
                           }}
                           className={`relative mb-3 block w-full overflow-hidden rounded-xl border-2 bg-[#F8F3EA] ${
-                            image.is_primary ? 'border-[#B8860B]' : 'border-[#E5E0D8] hover:border-[#B8860B]'
+                            image.is_primary ? 'border-primary' : 'border-[#E5E0D8] hover:border-primary'
                           }`}
                         >
                           <img src={image.url} alt={image.alt_ar ?? ''} className="aspect-video w-full object-cover" />
                           {image.is_primary ? (
-                            <span className={`absolute ${isAr ? "right-2" : "left-2"} top-2 rounded-full bg-[#B8860B] px-2 py-0.5 text-[10px] font-black text-white`}>
+                            <span className={`absolute ${isAr ? "right-2" : "left-2"} top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-black text-text-primary`}>
                               {t('primary', { fallback: 'رئيسية' })}
                             </span>
                           ) : null}
@@ -1626,12 +1626,12 @@ export default function ProductQuickAdmin() {
                               {
                                 value: true,
                                 label: 'رئيسية',
-                                activeClass: 'border-[#B8860B] bg-[#FFF4D8] text-[#1C1917]',
+                                activeClass: 'border-primary bg-[#FFF4D8] text-text-primary',
                               },
                               {
                                 value: false,
                                 label: 'عادية',
-                                activeClass: 'border-[#E5E0D8] bg-[#FAF7EF] text-[#57534E]',
+                                activeClass: 'border-[#E5E0D8] bg-background text-text-secondary',
                               },
                             ]}
                             onSave={(value) => patchImage(image, { is_primary: value })}

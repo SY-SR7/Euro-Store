@@ -184,7 +184,7 @@ export default function ProductPage({ params }: { params: any }) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center" dir="rtl">
         <div className="text-center space-y-3">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[#C9A84C] border-t-transparent" />
+          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           <p className="text-sm text-[#6F6658]">{td('loading')}</p>
         </div>
       </div>
@@ -197,7 +197,7 @@ export default function ProductPage({ params }: { params: any }) {
         <div className="text-center space-y-4">
           <ImageWithFallback kind="product" label={td('notFoundImage')} className="mx-auto h-40 w-40 rounded-3xl" />
           <p className="text-2xl font-black text-[#1F1B16]">{td('notFoundTitle')}</p>
-          <Link href="/products" className="text-[#C9A84C] hover:underline">{td('backToProducts')}</Link>
+          <Link href="/products" className="text-primary hover:underline">{td('backToProducts')}</Link>
         </div>
       </div>
     );
@@ -206,13 +206,13 @@ export default function ProductPage({ params }: { params: any }) {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10" dir="rtl">
       <nav className="mb-6 flex flex-wrap items-center gap-2 text-xs text-[#6F6658]">
-        <Link href="/" className="hover:text-[#C9A84C]">{td('home')}</Link>
+        <Link href="/" className="hover:text-primary">{td('home')}</Link>
         <span>/</span>
-        <Link href="/products" className="hover:text-[#C9A84C]">{td('products')}</Link>
+        <Link href="/products" className="hover:text-primary">{td('products')}</Link>
         {category && (
           <>
             <span>/</span>
-            <Link href={`/categories/${category.slug}`} className="hover:text-[#C9A84C]">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</Link>
+            <Link href={`/categories/${category.slug}`} className="hover:text-primary">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</Link>
           </>
         )}
         <span>/</span>
@@ -238,8 +238,8 @@ export default function ProductPage({ params }: { params: any }) {
                 key={img.id}
                 onClick={() => setMainImage(img.url)}
                 className={[
-                  'aspect-square overflow-hidden rounded-xl border-2 bg-white transition-colors',
-                  mainImage === img.url ? 'border-[#C9A84C]' : 'border-transparent hover:border-[#C9A84C]/50',
+                  'aspect-square overflow-hidden rounded-xl border-2 bg-background-card transition-colors',
+                  mainImage === img.url ? 'border-primary' : 'border-transparent hover:border-primary/50',
                 ].join(' ')}
               >
                 <ImageWithFallback
@@ -255,7 +255,7 @@ export default function ProductPage({ params }: { params: any }) {
         </div>
 
         <div className="space-y-5">
-          {brand && <p className="text-xs font-semibold uppercase tracking-widest text-[#C9A84C]">{brand.name}</p>}
+          {brand && <p className="text-xs font-semibold uppercase tracking-widest text-primary">{brand.name}</p>}
 
           <div>
             <h1 className="text-3xl font-black leading-tight text-[#171411]">{isAr ? product.name_ar : (product.name_en || product.name_ar)}</h1>
@@ -264,21 +264,21 @@ export default function ProductPage({ params }: { params: any }) {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DCC3] bg-white px-3 py-1 text-xs font-bold text-[#6F6658]">
-              <Layers3 className="h-3.5 w-3.5 text-[#C9A84C]" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background-card px-3 py-1 text-xs font-bold text-[#6F6658]">
+              <Layers3 className="h-3.5 w-3.5 text-primary" />
               {variants.length} {td('variant')}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DCC3] bg-white px-3 py-1 text-xs font-bold text-[#6F6658]">
-              <Boxes className="h-3.5 w-3.5 text-[#C9A84C]" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background-card px-3 py-1 text-xs font-bold text-[#6F6658]">
+              <Boxes className="h-3.5 w-3.5 text-primary" />
               {td('totalStock')} {totalStock}
             </span>
           </div>
 
           {selected ? (
-            <div className="rounded-3xl border border-[#E8DCC3] bg-white p-5 shadow-sm">
+            <div className="rounded-3xl border border-border bg-background-card p-5 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-bold text-[#A8A29E]">{td('selectedVariant')}</p>
+                  <p className="text-xs font-bold text-text-muted">{td('selectedVariant')}</p>
                   <p className="mt-1 text-lg font-black text-[#1F1B16]">{variantTitle(selected, td)}</p>
                 </div>
                 <div className="text-left">
@@ -291,39 +291,39 @@ export default function ProductPage({ params }: { params: any }) {
 
               <div className="mt-4 grid gap-2 sm:grid-cols-2">
                 {selected.sku && (
-                  <div className="rounded-2xl bg-[#FAF7EF] p-3 text-sm">
-                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Barcode className="h-4 w-4 text-[#C9A84C]" /> SKU</p>
+                  <div className="rounded-2xl bg-background p-3 text-sm">
+                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Barcode className="h-4 w-4 text-primary" /> SKU</p>
                     <p className="mt-1 font-mono text-[#1F1B16]" dir="ltr">{selected.sku}</p>
                   </div>
                 )}
                 {selected.color && (
-                  <div className="rounded-2xl bg-[#FAF7EF] p-3 text-sm">
-                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Palette className="h-4 w-4 text-[#C9A84C]" /> {td('color')}</p>
+                  <div className="rounded-2xl bg-background p-3 text-sm">
+                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Palette className="h-4 w-4 text-primary" /> {td('color')}</p>
                     <p className="mt-1 font-black text-[#1F1B16]">{selected.color}</p>
                   </div>
                 )}
                 {selected.size && (
-                  <div className="rounded-2xl bg-[#FAF7EF] p-3 text-sm">
-                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Ruler className="h-4 w-4 text-[#C9A84C]" /> {td('size')}</p>
+                  <div className="rounded-2xl bg-background p-3 text-sm">
+                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Ruler className="h-4 w-4 text-primary" /> {td('size')}</p>
                     <p className="mt-1 font-black text-[#1F1B16]">{selected.size}</p>
                   </div>
                 )}
-                <div className="rounded-2xl bg-[#FAF7EF] p-3 text-sm">
-                  <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Boxes className="h-4 w-4 text-[#C9A84C]" /> {td('stock')}</p>
+                <div className="rounded-2xl bg-background p-3 text-sm">
+                  <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Boxes className="h-4 w-4 text-primary" /> {td('stock')}</p>
                   <p className="mt-1 font-black text-[#1F1B16]">{selectedStock} {td('pieces')}</p>
                 </div>
               </div>
 
               {attrs.length > 0 && (
-                <div className="mt-3 rounded-2xl bg-[#FAF7EF] p-3 text-sm">
+                <div className="mt-3 rounded-2xl bg-background p-3 text-sm">
                   <p className="mb-2 flex items-center gap-2 font-bold text-[#6F6658]">
-                    <Info className="h-4 w-4 text-[#C9A84C]" />
+                    <Info className="h-4 w-4 text-primary" />
                     {td('extraDetails')}
                   </p>
                   <div className="grid gap-2 sm:grid-cols-2">
                     {attrs.map(([k, v]: any) => (
-                      <p key={k} className="rounded-xl bg-white px-3 py-2">
-                        <span className="text-[#A8A29E]">{k}: </span>
+                      <p key={k} className="rounded-xl bg-background-card px-3 py-2">
+                        <span className="text-text-muted">{k}: </span>
                         <strong className="text-[#1F1B16]">{String(v)}</strong>
                       </p>
                     ))}
@@ -337,7 +337,7 @@ export default function ProductPage({ params }: { params: any }) {
               </div>
             </div>
           ) : (
-            <div className="rounded-3xl border border-[#E8DCC3] bg-white p-6 text-center">
+            <div className="rounded-3xl border border-border bg-background-card p-6 text-center">
               <p className="font-bold text-[#6F6658]">{td('noVariants')}</p>
             </div>
           )}
@@ -356,18 +356,18 @@ export default function ProductPage({ params }: { params: any }) {
                       className={[
                         'rounded-2xl border p-3 text-right transition-all',
                         active
-                          ? 'border-[#C9A84C] bg-[#C9A84C]/10 shadow-sm'
-                          : 'border-[#E8DCC3] bg-white hover:border-[#C9A84C]/60',
+                          ? 'border-primary bg-primary/10 shadow-sm'
+                          : 'border-border bg-background-card hover:border-primary/60',
                       ].join(' ')}
                     >
                       <p className="font-black text-[#1F1B16]">{variantTitle(v, td)}</p>
                       <div className="mt-2 flex flex-wrap gap-1 text-[11px]">
-                        {v.color && <span className="rounded-full bg-[#FAF7EF] px-2 py-1">{td('colorLabel')}: {v.color}</span>}
-                        {v.size && <span className="rounded-full bg-[#FAF7EF] px-2 py-1">{td('sizeLabel')}: {v.size}</span>}
-                        {v.sku && <span className="rounded-full bg-[#FAF7EF] px-2 py-1" dir="ltr">{v.sku}</span>}
+                        {v.color && <span className="rounded-full bg-background px-2 py-1">{td('colorLabel')}: {v.color}</span>}
+                        {v.size && <span className="rounded-full bg-background px-2 py-1">{td('sizeLabel')}: {v.size}</span>}
+                        {v.sku && <span className="rounded-full bg-background px-2 py-1" dir="ltr">{v.sku}</span>}
                       </div>
                       <div className="mt-2 flex items-center justify-between gap-2">
-                        <span className="font-black text-[#C9A84C]">{formatSYP(v.price_syp)}</span>
+                        <span className="font-black text-primary">{formatSYP(v.price_syp)}</span>
                         <span className={qty > 0 ? 'text-xs font-bold text-green-700' : 'text-xs font-bold text-red-700'}>
                           {qty > 0 ? `${qty} ${td('pieces')}` : td('outOfStockShort')}
                         </span>
@@ -391,7 +391,7 @@ export default function ProductPage({ params }: { params: any }) {
                 onClick={handleAddToCart}
                 className={[
                   'flex-1 rounded-2xl py-4 text-base font-black transition-all',
-                  added ? 'bg-green-600 text-white' : 'bg-[#C9A84C] text-[#111] hover:bg-[#D8B95F] active:scale-[0.98]',
+                  added ? 'bg-green-600 text-text-primary' : 'bg-primary text-text-primary hover:bg-[#D8B95F] active:scale-[0.98]',
                 ].join(' ')}
               >
                 {added ? td('addedToCart') : td('addToCart')}
@@ -402,7 +402,7 @@ export default function ProductPage({ params }: { params: any }) {
               </button>
             )}
             {product?.id && (
-              <div className="rounded-2xl border border-[#E8DCC3] bg-white p-2">
+              <div className="rounded-2xl border border-border bg-background-card p-2">
                 <WishlistButton productId={product.id} />
               </div>
             )}
@@ -411,7 +411,7 @@ export default function ProductPage({ params }: { params: any }) {
           {category && (
             <p className="text-xs text-[#6F6658]">
               {td('category')} 
-              <Link href={`/categories/${category.slug}`} className="text-[#C9A84C] hover:underline">
+              <Link href={`/categories/${category.slug}`} className="text-primary hover:underline">
                 {isAr ? category.name_ar : (category.name_en || category.name_ar)}
               </Link>
             </p>

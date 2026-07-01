@@ -73,7 +73,7 @@ const PAYMENT_COLOR: Record<string, string> = {
 };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 function money(value?: number | null) {
   return `${Number(value || 0).toLocaleString('ar-SY')} ل.س`;
@@ -105,12 +105,12 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
         className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]"
           >
             <X size={17} />
           </button>
@@ -123,8 +123,8 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
-      <h3 className="mb-3 text-sm font-black text-[#1C1917]">{title}</h3>
+    <section className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
+      <h3 className="mb-3 text-sm font-black text-text-primary">{title}</h3>
       {children}
     </section>
   );
@@ -217,9 +217,9 @@ function InlineText({
       type="button"
       onClick={() => setEditing(true)}
       dir={dir}
-      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]"
+      className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background"
     >
-      {value?.trim() ? value : <span className="text-[#A8A29E]">—</span>}
+      {value?.trim() ? value : <span className="text-text-muted">—</span>}
     </button>
   );
 }
@@ -250,8 +250,8 @@ function ChoicePills({
             }}
             className={`rounded-full border px-3 py-1 text-xs font-black transition ${
               active
-                ? colors?.[option] ?? 'border-[#B8860B] bg-[#FFF4D8] text-[#1C1917]'
-                : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'
+                ? colors?.[option] ?? 'border-primary bg-[#FFF4D8] text-text-primary'
+                : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'
             }`}
           >
             {labels[option] ?? option}
@@ -377,23 +377,23 @@ export default function OrdersQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+      <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('ordersTitle', { fallback: 'الطلبات' })}</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{total} {t('orderCount', { fallback: 'طلب' })}</p>
+          <h1 className="text-2xl font-black text-text-primary">{t('ordersTitle', { fallback: 'الطلبات' })}</h1>
+          <p className="mt-1 text-sm text-text-muted">{total} {t('orderCount', { fallback: 'طلب' })}</p>
         </div>
         <button
           type="button"
           onClick={load}
-          className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"
+          className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary"
         >
           <RefreshCw size={15} />
           {tCommon('refresh', { fallback: 'تحديث' })}
         </button>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm sm:flex-row sm:items-center">
-        <div className="flex flex-1 overflow-hidden rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] focus-within:border-[#B8860B]">
+      <div className="flex flex-col gap-3 rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm sm:flex-row sm:items-center">
+        <div className="flex flex-1 overflow-hidden rounded-xl border border-[#E5E0D8] bg-background focus-within:border-primary">
           <input
             value={search}
             onChange={(event) => {
@@ -413,7 +413,7 @@ export default function OrdersQuickAdmin() {
             setStatusFilter(event.target.value);
             setPage(1);
           }}
-          className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B] sm:w-44"
+          className="w-full rounded-xl border border-[#E5E0D8] bg-background px-3 py-2 text-sm outline-none focus:border-primary sm:w-44"
         >
           <option value="">{t('allStatuses', { fallback: 'كل الحالات' })}</option>
           {['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map((key) => (
@@ -424,11 +424,11 @@ export default function OrdersQuickAdmin() {
         </select>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
         {loading ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">{t('loading', { fallback: 'جار التحميل...' })}</p>
+          <p className="p-10 text-center text-sm text-text-muted">{t('loading', { fallback: 'جار التحميل...' })}</p>
         ) : orders.length === 0 ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noOrders', { fallback: 'لا توجد طلبات' })}</p>
+          <p className="p-10 text-center text-sm text-text-muted">{t('noOrders', { fallback: 'لا توجد طلبات' })}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
@@ -444,7 +444,7 @@ export default function OrdersQuickAdmin() {
                   ].map((heading, index) => (
                     <th
                       key={heading}
-                      className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${
+                      className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-text-muted ${
                         index >= 4 ? 'hidden md:table-cell' : ''
                       }`}
                     >
@@ -460,10 +460,10 @@ export default function OrdersQuickAdmin() {
                     className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]"
                     onClick={() => void open(order)}
                   >
-                    <td className="px-5 py-3 font-mono text-xs font-bold text-[#1C1917] transition-colors group-hover:text-[#B8860B]">
+                    <td className="px-5 py-3 font-mono text-xs font-bold text-text-primary transition-colors group-hover:text-primary">
                       {order.order_number}
                     </td>
-                    <td className="px-5 py-3 text-[#57534E]">{order.address_snapshot?.full_name ?? '—'}</td>
+                    <td className="px-5 py-3 text-text-secondary">{order.address_snapshot?.full_name ?? '—'}</td>
                     <td className="px-5 py-3">
                       <span className={`rounded-full border px-3 py-1 text-xs font-bold ${STATUS_COLOR[order.status] ?? 'bg-gray-100 text-gray-500 border-gray-200'}`}>
                         {t(`status.${order.status}`)}
@@ -474,8 +474,8 @@ export default function OrdersQuickAdmin() {
                         {t(`paymentStatus.${order.payment_status ?? 'pending'}`)}
                       </span>
                     </td>
-                    <td className="hidden px-5 py-3 font-bold text-[#B8860B] md:table-cell">{money(order.total_syp)}</td>
-                    <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">
+                    <td className="hidden px-5 py-3 font-bold text-primary md:table-cell">{money(order.total_syp)}</td>
+                    <td className="hidden px-5 py-3 text-xs text-text-muted md:table-cell">
                       {new Date(order.created_at).toLocaleDateString(isAr ? 'ar-SY' : 'en-US')}
                     </td>
                   </tr>
@@ -492,7 +492,7 @@ export default function OrdersQuickAdmin() {
                 >
                   {tCommon('previous', { fallback: 'السابق' })}
                 </button>
-                <span className="text-xs text-[#A8A29E]">{tCommon('page', { fallback: 'صفحة' })} {page} {tCommon('of', { fallback: 'من' })} {Math.ceil(total / 25)}</span>
+                <span className="text-xs text-text-muted">{tCommon('page', { fallback: 'صفحة' })} {page} {tCommon('of', { fallback: 'من' })} {Math.ceil(total / 25)}</span>
                 <button
                   type="button"
                   onClick={() => setPage((current) => current + 1)}
@@ -623,21 +623,21 @@ export default function OrdersQuickAdmin() {
               </div>
 
               <div className="grid gap-3 sm:grid-cols-4">
-                <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
+                <div className="rounded-2xl border border-[#E5E0D8] bg-background-card px-4 py-3">
                   <p className="text-xs font-bold text-[#8B8172]">{t('subtotal', { fallback: 'الجزئي' })}</p>
-                  <p className="mt-1 font-black text-[#1C1917]">{money(selected.subtotal_syp)}</p>
+                  <p className="mt-1 font-black text-text-primary">{money(selected.subtotal_syp)}</p>
                 </div>
-                <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
+                <div className="rounded-2xl border border-[#E5E0D8] bg-background-card px-4 py-3">
                   <p className="text-xs font-bold text-[#8B8172]">{t('discount', { fallback: 'الخصم' })}</p>
                   <p className="mt-1 font-black text-red-600">{money((selected.discount_syp ?? 0) + (selected.loyalty_discount_syp ?? 0))}</p>
                 </div>
-                <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
+                <div className="rounded-2xl border border-[#E5E0D8] bg-background-card px-4 py-3">
                   <p className="text-xs font-bold text-[#8B8172]">{t('shippingCost', { fallback: 'الشحن' })}</p>
-                  <p className="mt-1 font-black text-[#1C1917]">{money(selected.shipping_syp)}</p>
+                  <p className="mt-1 font-black text-text-primary">{money(selected.shipping_syp)}</p>
                 </div>
-                <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
+                <div className="rounded-2xl border border-[#E5E0D8] bg-background-card px-4 py-3">
                   <p className="text-xs font-bold text-[#8B8172]">{t('totalAmount', { fallback: 'الإجمالي' })}</p>
-                  <p className="mt-1 font-black text-[#B8860B]">{money(selected.total_syp)}</p>
+                  <p className="mt-1 font-black text-primary">{money(selected.total_syp)}</p>
                 </div>
               </div>
 
@@ -653,7 +653,7 @@ export default function OrdersQuickAdmin() {
                           t('tablePrice', { fallback: 'السعر' }),
                           t('tableTotal', { fallback: 'الإجمالي' })
                         ].map((heading) => (
-                          <th key={heading} className={`px-4 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E]`}>
+                          <th key={heading} className={`px-4 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-text-muted`}>
                             {heading}
                           </th>
                         ))}
@@ -662,13 +662,13 @@ export default function OrdersQuickAdmin() {
                     <tbody className="divide-y divide-[#F0ECE6]">
                       {(selected.order_items ?? []).map((item) => (
                         <tr key={item.id}>
-                          <td className="px-4 py-3 font-semibold text-[#1C1917]">
+                          <td className="px-4 py-3 font-semibold text-text-primary">
                             {isAr ? (item.product_snapshot?.name_ar ?? '—') : (item.product_snapshot?.name_en || item.product_snapshot?.name_ar || '—')}
                           </td>
-                          <td className="px-4 py-3 font-mono text-xs text-[#57534E]">{item.product_snapshot?.sku ?? '—'}</td>
-                          <td className="px-4 py-3 text-[#57534E]">{item.quantity}</td>
-                          <td className="px-4 py-3 text-[#57534E]">{money(item.unit_price_syp)}</td>
-                          <td className="px-4 py-3 font-bold text-[#1C1917]">{money(item.total_price_syp)}</td>
+                          <td className="px-4 py-3 font-mono text-xs text-text-secondary">{item.product_snapshot?.sku ?? '—'}</td>
+                          <td className="px-4 py-3 text-text-secondary">{item.quantity}</td>
+                          <td className="px-4 py-3 text-text-secondary">{money(item.unit_price_syp)}</td>
+                          <td className="px-4 py-3 font-bold text-text-primary">{money(item.total_price_syp)}</td>
                         </tr>
                       ))}
                     </tbody>

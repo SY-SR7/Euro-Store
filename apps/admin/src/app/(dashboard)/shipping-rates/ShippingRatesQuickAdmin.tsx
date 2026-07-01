@@ -16,7 +16,7 @@ type Rate = {
 };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 function money(value: number | null | undefined, locale: string, currencySymbol: string) {
   return value == null ? '—' : `${Number(value).toLocaleString(locale)} ${currencySymbol}`;
@@ -45,9 +45,9 @@ function Modal({ title, onClose, children, closeTitle }: { title: string; onClos
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="w-full max-w-xl rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -72,7 +72,7 @@ function InlineText({ value, onSave, dir = 'rtl', emptyField = '—' }: { value?
   useEffect(() => { if (!editing) setDraft(value ?? ''); }, [editing, value]);
   const commit = () => { const next = draft.trim(); setEditing(false); if (next !== (value ?? '')) void onSave(next); };
   if (editing) return <input autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
-  return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">{value || <span className="text-[#A8A29E]">{emptyField}</span>}</button>;
+  return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">{value || <span className="text-text-muted">{emptyField}</span>}</button>;
 }
 
 function InlineNumber({
@@ -124,7 +124,7 @@ function InlineNumber({
   }
 
   return (
-    <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-[#1C1917] transition hover:bg-[#FAF7EF]" dir="ltr">
+    <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-text-primary transition hover:bg-background" dir="ltr">
       {money(value, locale, currencySymbol)}
     </button>
   );
@@ -134,7 +134,7 @@ function ActivePills({ value, onSave, labelActive, labelDisabled }: { value: boo
   return (
     <div className="flex gap-2">
       {[{ v: true, l: labelActive, c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: labelDisabled, c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
-        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}>
+        <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'}`}>
           {option.l}
         </button>
       ))}
@@ -225,27 +225,27 @@ export default function ShippingRatesQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+      <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('shippingRatesTitle')}</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{t('countGovernorates', { count: rates.length })}</p>
+          <h1 className="text-2xl font-black text-text-primary">{t('shippingRatesTitle')}</h1>
+          <p className="mt-1 text-sm text-text-muted">{t('countGovernorates', { count: rates.length })}</p>
         </div>
-        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"><RefreshCw size={15} />{tCommon('refresh')}</button>
+        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-text-secondary hover:border-primary"><RefreshCw size={15} />{tCommon('refresh')}</button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading')}</p>
-        : rates.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noShippingRates')}</p>
+      <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
+        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+        : rates.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noShippingRates')}</p>
         : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
-              <thead className="bg-[#F8F6F2]"><tr>{[t('tableGovernorate'), t('tableShippingRate'), t('tableFreeShippingOver'), t('tableStatus')].map((h,i)=><th key={h} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${i>=2?'hidden md:table-cell':''}`}>{h}</th>)}</tr></thead>
+              <thead className="bg-[#F8F6F2]"><tr>{[t('tableGovernorate'), t('tableShippingRate'), t('tableFreeShippingOver'), t('tableStatus')].map((h,i)=><th key={h} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-text-muted ${i>=2?'hidden md:table-cell':''}`}>{h}</th>)}</tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {rates.map((rate) => (
                   <tr key={rate.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openRate(rate)}>
-                    <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{rate.governorate}</td>
-                    <td className="px-5 py-3 font-bold text-[#B8860B]" dir="ltr">{money(rate.base_rate_syp, formatLoc, currencySymbol)}</td>
-                    <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell" dir="ltr">{money(rate.free_shipping_threshold_syp, formatLoc, currencySymbol)}</td>
+                    <td className="px-5 py-3 font-semibold text-text-primary group-hover:text-primary">{rate.governorate}</td>
+                    <td className="px-5 py-3 font-bold text-primary" dir="ltr">{money(rate.base_rate_syp, formatLoc, currencySymbol)}</td>
+                    <td className="hidden px-5 py-3 text-xs text-text-muted md:table-cell" dir="ltr">{money(rate.free_shipping_threshold_syp, formatLoc, currencySymbol)}</td>
                     <td className="hidden px-5 py-3 md:table-cell" onClick={(event) => event.stopPropagation()}>
                       <button type="button" onClick={() => void patchRate(rate, { is_active: !rate.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${rate.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{rate.is_active ? t('statusActive') : t('statusDisabled')}</button>
                     </td>
@@ -261,7 +261,7 @@ export default function ShippingRatesQuickAdmin() {
         <Modal title={selected.governorate} onClose={closeRate} closeTitle={tCommon('close')}>
           <div className="space-y-4">
             {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved') ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
-            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
               <div className="space-y-2">
                 <Field label={t('tableGovernorate')}><InlineText value={selected.governorate} dir={isAr ? "rtl" : "ltr"} emptyField={t('emptyField')} onSave={(governorate) => patchRate(selected, { governorate })} /></Field>
                 <Field label={t('tableShippingRate')}><InlineNumber value={selected.base_rate_syp} locale={formatLoc} currencySymbol={currencySymbol} onSave={(base_rate_syp) => patchRate(selected, { base_rate_syp: Number(base_rate_syp ?? 0) })} /></Field>

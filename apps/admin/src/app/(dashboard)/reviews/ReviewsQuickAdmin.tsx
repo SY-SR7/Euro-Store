@@ -17,7 +17,7 @@ type Review = {
 };
 
 const inputClass =
-  'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
+  'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
@@ -45,12 +45,12 @@ function Modal({ title, subtitle, onClose, children, closeTitle }: { title: stri
         className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
           <div className="min-w-0">
-            <h2 className="truncate font-black text-[#1C1917]">{title}</h2>
+            <h2 className="truncate font-black text-text-primary">{title}</h2>
             {subtitle ? <p className="mt-0.5 truncate text-xs text-[#8B8172]">{subtitle}</p> : null}
           </div>
-          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -130,8 +130,8 @@ function InlineText({
   }
 
   return (
-    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">
-      {value?.trim() ? value : <span className="text-[#A8A29E]">{fallbackText}</span>}
+    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">
+      {value?.trim() ? value : <span className="text-text-muted">{fallbackText}</span>}
     </button>
   );
 }
@@ -145,9 +145,9 @@ function StarPicker({ value, onSave, starsLabel }: { value: number; onSave: (val
           type="button"
           onClick={() => n !== value && void onSave(n)}
           title={starsLabel.replace('{count}', String(n))}
-          className="rounded-lg p-1 transition hover:bg-[#FAF7EF]"
+          className="rounded-lg p-1 transition hover:bg-background"
         >
-          <Star size={20} className={n <= value ? 'fill-[#B8860B] text-[#B8860B]' : 'text-[#E5E0D8]'} />
+          <Star size={20} className={n <= value ? 'fill-[#B8860B] text-primary' : 'text-[#E5E0D8]'} />
         </button>
       ))}
     </div>
@@ -169,7 +169,7 @@ function StatusPills({ value, onSave, optionsLabels }: { value: Review['status']
             key={option.value}
             type="button"
             onClick={() => !active && void onSave(option.value)}
-            className={`rounded-full border px-3 py-1 text-xs font-black transition ${active ? option.cls : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}
+            className={`rounded-full border px-3 py-1 text-xs font-black transition ${active ? option.cls : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'}`}
           >
             {option.label}
           </button>
@@ -183,7 +183,7 @@ function Stars({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((n) => (
-        <Star key={n} size={14} className={n <= rating ? 'fill-[#B8860B] text-[#B8860B]' : 'text-[#E5E0D8]'} />
+        <Star key={n} size={14} className={n <= rating ? 'fill-[#B8860B] text-primary' : 'text-[#E5E0D8]'} />
       ))}
     </div>
   );
@@ -297,13 +297,13 @@ export default function ReviewsQuickAdmin() {
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-black text-[#1C1917]">{t('reviewsTitle', { fallback: 'تقييمات المنتجات' })}</h1>
+          <h1 className="text-xl font-black text-text-primary">{t('reviewsTitle', { fallback: 'تقييمات المنتجات' })}</h1>
           <p className="mt-1 text-sm text-[#8B8172]">{t('reviewsDesc', { fallback: 'مراجعة واعتماد تقييمات العملاء، وتعديل أي حقل بضغطة واحدة' })}</p>
         </div>
         <button
           type="button"
           onClick={() => void load()}
-          className="flex items-center gap-2 rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm font-bold text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]"
+          className="flex items-center gap-2 rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm font-bold text-text-secondary hover:border-primary hover:text-primary"
         >
           <RefreshCw size={15} /> {tCommon('refresh', { fallback: 'تحديث' })}
         </button>
@@ -316,7 +316,7 @@ export default function ReviewsQuickAdmin() {
             type="button"
             onClick={() => setTab(tItem.key)}
             className={`rounded-xl px-3 py-1.5 text-sm font-bold transition-colors ${
-              tab === tItem.key ? 'bg-[#B8860B] text-white' : 'text-[#57534E] hover:bg-[#F8F6F2]'
+              tab === tItem.key ? 'bg-primary text-text-primary' : 'text-text-secondary hover:bg-[#F8F6F2]'
             }`}
           >
             {tItem.label}
@@ -331,11 +331,11 @@ export default function ReviewsQuickAdmin() {
           ))}
         </div>
       ) : reviews.length === 0 ? (
-        <div className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E]">
+        <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted">
           {t('noReviews', { fallback: 'لا توجد تقييمات في هذا القسم' })}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-background-card shadow-sm">
           <div className="divide-y divide-[#F0ECE6]">
             {reviews.map((r) => (
               <div
@@ -345,8 +345,8 @@ export default function ReviewsQuickAdmin() {
               >
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate font-bold text-[#1C1917] group-hover:text-[#B8860B]">{locale === 'ar' ? (r.products?.name_ar ?? t('emptyProduct')) : (r.products?.name_en || r.products?.name_ar || t('emptyProduct'))}</p>
-                    <p className="mt-0.5 text-xs text-[#A8A29E]">
+                    <p className="truncate font-bold text-text-primary group-hover:text-primary">{locale === 'ar' ? (r.products?.name_ar ?? t('emptyProduct')) : (r.products?.name_en || r.products?.name_ar || t('emptyProduct'))}</p>
+                    <p className="mt-0.5 text-xs text-text-muted">
                       {r.customer_profiles?.full_name ?? t('defaultCustomer', { fallback: 'عميل' })} · {new Date(r.created_at).toLocaleDateString(isAr ? 'ar-SY' : 'en-US')}
                     </p>
                   </div>
@@ -355,13 +355,13 @@ export default function ReviewsQuickAdmin() {
                     <StatusBadge status={r.status} optionsLabels={statusLabels} />
                   </div>
                 </div>
-                {r.comment && <p className="mt-3 line-clamp-2 rounded-xl bg-[#FAF7EF] p-3 text-sm text-[#3C352C]">{r.comment}</p>}
+                {r.comment && <p className="mt-3 line-clamp-2 rounded-xl bg-background p-3 text-sm text-[#3C352C]">{r.comment}</p>}
                 {r.status === 'pending' && (
                   <div className="mt-3 flex gap-2" onClick={(event) => event.stopPropagation()}>
                     <button
                       type="button"
                       onClick={() => { openReview(r); void patchReview({ status: 'approved' }); }}
-                      className="flex items-center gap-1.5 rounded-xl bg-green-600 px-4 py-2 text-xs font-bold text-white hover:bg-green-700"
+                      className="flex items-center gap-1.5 rounded-xl bg-green-600 px-4 py-2 text-xs font-bold text-text-primary hover:bg-green-700"
                     >
                       <CheckCircle2 size={14} /> {t('approveBtn', { fallback: 'اعتماد' })}
                     </button>
@@ -388,7 +388,7 @@ export default function ReviewsQuickAdmin() {
                 {msg}
               </div>
             ) : null}
-            <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
+            <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
               <div className="space-y-2">
                 <Field label={t('ratingLabel', { fallback: 'التقييم' })}>
                   <StarPicker value={selected.rating} starsLabel={t('starsCount', { fallback: '{count} نجوم' })} onSave={(rating) => patchReview({ rating })} />
@@ -400,17 +400,17 @@ export default function ReviewsQuickAdmin() {
                   <StatusPills value={selected.status} optionsLabels={statusLabels} onSave={(status) => patchReview({ status })} />
                 </Field>
                 <Field label={t('productLabel', { fallback: 'المنتج' })}>
-                  <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
+                  <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-text-primary">
                     {locale === 'ar' ? (selected.products?.name_ar ?? t('emptyProduct')) : (selected.products?.name_en || selected.products?.name_ar || t('emptyProduct'))}
                   </div>
                 </Field>
                 <Field label={t('customerLabel', { fallback: 'العميل' })}>
-                  <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
+                  <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-text-primary">
                     {selected.customer_profiles?.full_name ?? t('emptyProduct')} {selected.customer_profiles?.email ? `· ${selected.customer_profiles.email}` : ''}
                   </div>
                 </Field>
                 <Field label={t('dateLabel', { fallback: 'تاريخ التقييم' })}>
-                  <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
+                  <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-text-primary">
                     {new Date(selected.created_at).toLocaleDateString(isAr ? 'ar-SY' : 'en-US')}
                   </div>
                 </Field>

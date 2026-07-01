@@ -67,7 +67,7 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs font-bold text-[#B8860B] hover:underline"
+        className="text-xs font-bold text-primary hover:underline"
       >
         ⭐ {t('writeReview')}
       </button>
@@ -75,8 +75,8 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
   }
 
   return (
-    <div className={`rounded-xl border border-[#E5E0D8] bg-[#FAF7EF] p-3 space-y-2`} dir={isAr ? "rtl" : "ltr"}>
-      <p className="text-xs font-bold text-[#1C1917]">{t('reviewFor')} «{productNameAr}»</p>
+    <div className={`rounded-xl border border-[#E5E0D8] bg-background p-3 space-y-2`} dir={isAr ? "rtl" : "ltr"}>
+      <p className="text-xs font-bold text-text-primary">{t('reviewFor')} «{productNameAr}»</p>
 
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
@@ -91,7 +91,7 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
           >
             <Star
               className={`h-5 w-5 ${
-                (hover || rating) >= n ? 'fill-[#B8860B] text-[#B8860B]' : 'text-[#D6CFC2]'
+                (hover || rating) >= n ? 'fill-[#B8860B] text-primary' : 'text-[#D6CFC2]'
               }`}
             />
           </button>
@@ -103,7 +103,7 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
         onChange={(e) => setComment(e.target.value)}
         placeholder={t('writeCommentOptional')}
         rows={3}
-        className="w-full rounded-lg border border-[#E5E0D8] bg-white p-2 text-xs text-[#1C1917] focus:border-[#B8860B] focus:outline-none"
+        className="w-full rounded-lg border border-[#E5E0D8] bg-background-card p-2 text-xs text-text-primary focus:border-primary focus:outline-none"
       />
 
       {error && <p className="text-xs font-semibold text-red-600">{error}</p>}
@@ -113,7 +113,7 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
           type="button"
           disabled={loading}
           onClick={handleSubmit}
-          className="flex items-center justify-center gap-1.5 rounded-lg bg-[#B8860B] px-4 py-1.5 text-xs font-bold text-white transition-colors hover:bg-[#9A7209] disabled:opacity-60"
+          className="flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-1.5 text-xs font-bold text-text-primary transition-colors hover:bg-[#9A7209] disabled:opacity-60"
         >
           {loading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
           {t('submitReview')}
@@ -121,7 +121,7 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="rounded-lg border border-[#E5E0D8] px-4 py-1.5 text-xs font-bold text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]"
+          className="rounded-lg border border-[#E5E0D8] px-4 py-1.5 text-xs font-bold text-text-secondary hover:border-primary hover:text-primary"
         >
           {t('cancel')}
         </button>

@@ -121,7 +121,7 @@ function toneClass(tone: Tone) {
   if (tone === 'warning') return 'border-amber-200 bg-amber-50 text-amber-800';
   if (tone === 'success') return 'border-green-200 bg-green-50 text-green-700';
   if (tone === 'info') return 'border-blue-200 bg-blue-50 text-blue-700';
-  return 'border-[#E5E0D8] bg-[#F8F6F2] text-[#57534E]';
+  return 'border-[#E5E0D8] bg-[#F8F6F2] text-text-secondary';
 }
 
 function buildOrderNotifications(rows: Record<string, unknown>[], t: any, locale: string, orderStatusMap: Record<string, string>, unitSyp: string): NotificationItem[] {
@@ -333,9 +333,9 @@ function Modal({ title, onClose, children, closeTitle }: { title: string; onClos
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="w-full max-w-2xl overflow-hidden rounded-lg border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
-          <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
+          <h2 className="font-black text-text-primary">{title}</h2>
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -501,16 +501,16 @@ export default function NotificationsQuickAdmin() {
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+      <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-background-card p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">{t('title')}</h1>
+          <h1 className="text-2xl font-black text-text-primary">{t('title')}</h1>
           <p className="mt-1 text-sm text-[#8B8172]">{t('unreadCount', { count: unread.size })}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={markAllRead} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#57534E] hover:border-[#B8860B]">
+          <button type="button" onClick={markAllRead} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-text-secondary hover:border-primary">
             <CheckCircle2 size={16} /> {t('markAllRead')}
           </button>
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#B8860B]">
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-text-primary hover:bg-primary">
             <RefreshCw size={16} /> {tCommon('refresh')}
           </button>
         </div>
@@ -527,37 +527,37 @@ export default function NotificationsQuickAdmin() {
         ].map(([label, value, Icon]) => {
           const IconComponent = Icon as typeof Bell;
           return (
-            <div key={String(label)} className="rounded-lg border border-[#E5E0D8] bg-white p-4 shadow-sm">
-              <IconComponent size={16} className="text-[#B8860B]" />
-              <p className="mt-3 text-2xl font-black text-[#1C1917]" dir="ltr">{Number(value).toLocaleString(formatLoc)}</p>
+            <div key={String(label)} className="rounded-lg border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
+              <IconComponent size={16} className="text-primary" />
+              <p className="mt-3 text-2xl font-black text-text-primary" dir="ltr">{Number(value).toLocaleString(formatLoc)}</p>
               <p className="mt-1 text-xs font-black text-[#8B8172]">{String(label)}</p>
             </div>
           );
         })}
       </section>
 
-      <section className="rounded-lg border border-[#E5E0D8] bg-white p-4 shadow-sm">
+      <section className="rounded-lg border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex gap-2 overflow-x-auto pb-1">
             {tabs.map((item) => (
-              <button key={item.key} type="button" onClick={() => setTab(item.key)} className={`whitespace-nowrap rounded-lg border px-3 py-2 text-xs font-black ${tab === item.key ? 'border-[#B8860B] bg-[#B8860B] text-white' : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#57534E] hover:border-[#B8860B]'}`}>
+              <button key={item.key} type="button" onClick={() => setTab(item.key)} className={`whitespace-nowrap rounded-lg border px-3 py-2 text-xs font-black ${tab === item.key ? 'border-primary bg-primary text-text-primary' : 'border-[#E5E0D8] bg-background text-text-secondary hover:border-primary'}`}>
                 {item.label} <span className="ms-1" dir="ltr">{item.count.toLocaleString(formatLoc)}</span>
               </button>
             ))}
           </div>
           <div className="flex gap-2">
-            <div className="flex overflow-hidden rounded-lg border border-[#E5E0D8] bg-[#FAFAF8] focus-within:border-[#B8860B]">
+            <div className="flex overflow-hidden rounded-lg border border-[#E5E0D8] bg-background focus-within:border-primary">
               <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('searchPlaceholder')} className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm outline-none" dir={isAr ? "rtl" : "ltr"} />
               <span className={`grid w-10 place-items-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-[#8B8172]`}><Search size={16} /></span>
             </div>
-            <button type="button" onClick={resetRead} className="rounded-lg border border-[#E5E0D8] px-3 py-2 text-xs font-bold text-[#57534E] hover:border-[#B8860B]">{t('showBtn')}</button>
+            <button type="button" onClick={resetRead} className="rounded-lg border border-[#E5E0D8] px-3 py-2 text-xs font-bold text-text-secondary hover:border-primary">{t('showBtn')}</button>
           </div>
         </div>
       </section>
 
-      <section className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading')}</p>
-        : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noNotifications')}</p>
+      <section className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-background-card shadow-sm">
+        {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+        : visible.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noNotifications')}</p>
         : (
           <div className="divide-y divide-[#F0ECE6]">
             {visible.map((item) => {
@@ -569,19 +569,19 @@ export default function NotificationsQuickAdmin() {
                   </button>
                   <button type="button" onClick={() => openItem(item)} className={`min-w-0 ${isAr ? "text-right" : "text-left"}`}>
                     <span className="flex flex-wrap items-center gap-2">
-                      {!read ? <span className="h-2 w-2 rounded-full bg-[#B8860B]" /> : null}
-                      <span className="font-black text-[#1C1917]">{item.title}</span>
+                      {!read ? <span className="h-2 w-2 rounded-full bg-primary" /> : null}
+                      <span className="font-black text-text-primary">{item.title}</span>
                       <span className={`rounded-full border px-2 py-1 text-[11px] font-bold ${toneClass(item.tone)}`}>{item.badge ?? sourceMap[item.source]}</span>
                     </span>
-                    <span className="mt-1 block truncate text-sm text-[#57534E]">{item.description}</span>
-                    <span className="mt-1 block text-xs text-[#A8A29E]">{dateText(item.createdAt, formatLoc)} - {relative(item.createdAt, t)}</span>
+                    <span className="mt-1 block truncate text-sm text-text-secondary">{item.description}</span>
+                    <span className="mt-1 block text-xs text-text-muted">{dateText(item.createdAt, formatLoc)} - {relative(item.createdAt, t)}</span>
                   </button>
                   <div className="flex gap-2">
-                    <button type="button" onClick={() => saveRead(read ? readIds.filter((id) => id !== item.id) : [item.id, ...readIds])} className="rounded-lg border border-[#E5E0D8] px-3 py-2 text-xs font-bold text-[#57534E] hover:border-[#B8860B]">
+                    <button type="button" onClick={() => saveRead(read ? readIds.filter((id) => id !== item.id) : [item.id, ...readIds])} className="rounded-lg border border-[#E5E0D8] px-3 py-2 text-xs font-bold text-text-secondary hover:border-primary">
                       {read ? t('btnUnread') : t('btnRead')}
                     </button>
                     {item.actionHref ? (
-                      <Link href={item.actionHref} onClick={() => !read && saveRead([item.id, ...readIds])} className="rounded-lg bg-[#1C1917] px-3 py-2 text-xs font-black text-white hover:bg-[#B8860B]">
+                      <Link href={item.actionHref} onClick={() => !read && saveRead([item.id, ...readIds])} className="rounded-lg bg-[#1C1917] px-3 py-2 text-xs font-black text-text-primary hover:bg-primary">
                         {item.actionLabel ?? t('openBtn')}
                       </Link>
                     ) : null}
@@ -596,22 +596,22 @@ export default function NotificationsQuickAdmin() {
       {selected ? (
         <Modal title={selected.title} onClose={closeItem} closeTitle={tCommon('close')}>
           <div className="space-y-4">
-            <div className="rounded-lg border border-[#E5E0D8] bg-white p-4">
+            <div className="rounded-lg border border-[#E5E0D8] bg-background-card p-4">
               <div className="flex items-center gap-2">
                 <span className={`grid h-9 w-9 place-items-center rounded-lg border ${toneClass(selected.tone)}`}>{sourceIcon(selected.source)}</span>
                 <div>
-                  <p className="text-sm font-black text-[#1C1917]">{selected.description}</p>
+                  <p className="text-sm font-black text-text-primary">{selected.description}</p>
                   <p className="mt-1 text-xs text-[#8B8172]">{sourceMap[selected.source]} - {dateText(selected.createdAt, formatLoc)}</p>
                 </div>
               </div>
             </div>
 
             {selected.meta?.length ? (
-              <div className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-white">
+              <div className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-background-card">
                 {selected.meta.map(([label, value]) => (
                   <div key={`${label}:${value}`} className="flex items-start justify-between gap-4 border-b border-[#F0ECE6] px-4 py-3 text-sm last:border-b-0">
                     <span className="text-[#8B8172]">{label}</span>
-                    <span className={`max-w-[65%] break-words ${isAr ? "text-left" : "text-right"} font-black text-[#1C1917]`} dir="auto">{value}</span>
+                    <span className={`max-w-[65%] break-words ${isAr ? "text-left" : "text-right"} font-black text-text-primary`} dir="auto">{value}</span>
                   </div>
                 ))}
               </div>
@@ -619,11 +619,11 @@ export default function NotificationsQuickAdmin() {
 
             <div className="flex flex-col gap-2 sm:flex-row">
               {selected.actionHref ? (
-                <Link href={selected.actionHref} onClick={() => setSelected(null)} className="flex-1 rounded-lg bg-[#B8860B] px-4 py-3 text-center text-sm font-black text-white hover:bg-[#9A7209]">
+                <Link href={selected.actionHref} onClick={() => setSelected(null)} className="flex-1 rounded-lg bg-primary px-4 py-3 text-center text-sm font-black text-text-primary hover:bg-[#9A7209]">
                   {selected.actionLabel ?? t('openBtn')}
                 </Link>
               ) : null}
-              <button type="button" onClick={closeItem} className="rounded-lg border border-[#E5E0D8] px-4 py-3 text-sm font-bold text-[#57534E] hover:border-[#B8860B]">
+              <button type="button" onClick={closeItem} className="rounded-lg border border-[#E5E0D8] px-4 py-3 text-sm font-bold text-text-secondary hover:border-primary">
                 {tCommon('close')}
               </button>
             </div>

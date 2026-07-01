@@ -61,7 +61,7 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
   return (
     <Link
       href={`/products/${product.slug}`}
-      className="group flex min-h-full flex-col overflow-hidden rounded-2xl border border-[#E8DCC3] bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#C9A84C]/60 hover:shadow-md"
+      className="group flex min-h-full flex-col overflow-hidden rounded-2xl border border-border bg-background-card shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-md"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-[#F3EDE3]">
         <div className="absolute left-2 top-2 z-10">
@@ -80,7 +80,7 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
         />
 
         {product.is_featured && (
-          <span className="absolute right-2 top-2 rounded-full bg-[#C9A84C] px-2 py-0.5 text-[10px] font-black text-white shadow">
+          <span className="absolute right-2 top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-black text-text-primary shadow">
             {t('featured')}
           </span>
         )}
@@ -96,12 +96,12 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
             {productName}
           </p>
           {(!isAr && product.name_ar) && (
-            <p className="mt-0.5 line-clamp-1 text-xs text-[#A8A29E]" dir="rtl">
+            <p className="mt-0.5 line-clamp-1 text-xs text-text-muted" dir="rtl">
               {product.name_ar}
             </p>
           )}
           {(isAr && product.name_en) && (
-            <p className="mt-0.5 line-clamp-1 text-xs text-[#A8A29E]" dir="ltr">
+            <p className="mt-0.5 line-clamp-1 text-xs text-text-muted" dir="ltr">
               {product.name_en}
             </p>
           )}
@@ -110,23 +110,23 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
         <div className="mt-auto space-y-2 pt-2">
           <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#6F6658]">
             {variants != null && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#FAF7EF] px-2 py-1 font-bold">
-                <Layers3 className="h-3 w-3 text-[#C9A84C]" />
+              <span className="inline-flex items-center gap-1 rounded-full bg-background px-2 py-1 font-bold">
+                <Layers3 className="h-3 w-3 text-primary" />
                 {variants} {t('variant')}
               </span>
             )}
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#FAF7EF] px-2 py-1 font-bold">
-              <Package className="h-3 w-3 text-[#C9A84C]" />
+            <span className="inline-flex items-center gap-1 rounded-full bg-background px-2 py-1 font-bold">
+              <Package className="h-3 w-3 text-primary" />
               {t('details')}
             </span>
           </div>
 
           {minPrice != null && Number(minPrice) > 0 ? (
-            <p className="text-base font-black text-[#C9A84C]">
+            <p className="text-base font-black text-primary">
               {t('startsFrom')} {formatSYP(minPrice, isAr, t)}
             </p>
           ) : (
-            <p className="text-sm font-bold text-[#A8A29E]">
+            <p className="text-sm font-bold text-text-muted">
               {t('priceInDetails')}
             </p>
           )}

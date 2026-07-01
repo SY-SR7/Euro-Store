@@ -18,7 +18,7 @@ function Stars({ rating, size = 'h-4 w-4' }: { rating: number; size?: string }) 
       {[1, 2, 3, 4, 5].map((n) => (
         <Star
           key={n}
-          className={`${size} ${n <= Math.round(rating) ? 'fill-[#B8860B] text-[#B8860B]' : 'text-[#D6CFC2]'}`}
+          className={`${size} ${n <= Math.round(rating) ? 'fill-[#B8860B] text-primary' : 'text-[#D6CFC2]'}`}
         />
       ))}
     </div>
@@ -50,34 +50,34 @@ export function ReviewsSection({ productId }: { productId: string }) {
   }
 
   return (
-    <section className={`rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm`} dir={isAr ? "rtl" : "ltr"}>
+    <section className={`rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm`} dir={isAr ? "rtl" : "ltr"}>
       <div className="flex items-center justify-between">
-        <h2 className="font-black text-[#1C1917]">{t('customerReviews')}</h2>
+        <h2 className="font-black text-text-primary">{t('customerReviews')}</h2>
         {count > 0 && (
           <div className="flex items-center gap-2">
             <Stars rating={average} />
-            <span className="text-sm font-bold text-[#1C1917]">{average}</span>
-            <span className="text-xs text-[#A8A29E]">({count} {t('reviewWord')})</span>
+            <span className="text-sm font-bold text-text-primary">{average}</span>
+            <span className="text-xs text-text-muted">({count} {t('reviewWord')})</span>
           </div>
         )}
       </div>
 
       {count === 0 ? (
-        <p className="mt-4 text-sm text-[#A8A29E]">{t('noReviews')}</p>
+        <p className="mt-4 text-sm text-text-muted">{t('noReviews')}</p>
       ) : (
         <div className="mt-4 space-y-4 divide-y divide-[#F0ECE6]">
           {reviews.map((r) => (
             <div key={r.id} className="pt-4 first:pt-0">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-bold text-[#1C1917]">{r.customer_name}</p>
-                <span className="text-xs text-[#A8A29E]">
+                <p className="text-sm font-bold text-text-primary">{r.customer_name}</p>
+                <span className="text-xs text-text-muted">
                   {new Date(r.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
                 </span>
               </div>
               <div className="mt-1">
                 <Stars rating={r.rating} size="h-3.5 w-3.5" />
               </div>
-              {r.comment && <p className="mt-2 text-sm text-[#57534E]">{r.comment}</p>}
+              {r.comment && <p className="mt-2 text-sm text-text-secondary">{r.comment}</p>}
             </div>
           ))}
         </div>
