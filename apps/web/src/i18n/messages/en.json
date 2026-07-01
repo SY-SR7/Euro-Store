@@ -46,7 +46,26 @@
     "heroSubtitle": "Curated European fashion for the Syrian market",
     "shopNow": "Shop now",
     "categoriesTag": "Categories",
-    "tagline": "European fashion delivered to your door"
+    "tagline": "European fashion delivered to your door",
+    "hero": {
+      "collection": "EuroStore Collection",
+      "words": [
+        "Worn",
+        "with style,",
+        "lived",
+        "with confidence"
+      ],
+      "subtitle": "Discover the latest fashion trends from world-renowned brands, tailored to your exquisite taste.",
+      "shopNow": "Shop Now",
+      "explore": "Explore Collections",
+      "stats": {
+        "exclusive": "Exclusive Brands",
+        "customers": "Premium Clients",
+        "categoriesNum": "15+",
+        "categories": "Shopping Depts"
+      },
+      "scrollDown": "Scroll Down"
+    }
   },
   "faq": {
     "title": "FAQ"
