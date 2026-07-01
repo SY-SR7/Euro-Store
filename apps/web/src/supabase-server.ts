@@ -55,6 +55,7 @@ export async function getSessionClient(): Promise<{ client: SupabaseClient; user
   const jar = await cookies();
 
   const client = createServerClient(supabaseUrl(), anonKey(), {
+    ...clientOptions,
     cookies: {
       get(name: string) {
         return jar.get(name)?.value;
