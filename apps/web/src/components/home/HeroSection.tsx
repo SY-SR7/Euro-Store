@@ -1,6 +1,7 @@
 'use client';
 
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { useRef } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
@@ -33,19 +34,24 @@ const scaleIn = {
 export function HeroSection() {
   const prefersReduced = useReducedMotion();
   const t = useTranslations('home.hero');
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   return (
     <section
       id="hero"
+      ref={ref}
       className="relative h-screen w-full overflow-hidden flex items-center justify-center"
       dir="rtl"
     >
-      {/* ── Background Image with subtle zoom ── */}
+      {/* ── Background Image with subtle zoom & parallax ── */}
       <motion.img
         initial={{ scale: 1.05 }}
         animate={{ scale: 1 }}
         transition={{ duration: 10, ease: 'easeOut' }}
-        className="absolute inset-0 w-full h-full object-cover"
+        style={{ y: prefersReduced ? 0 : y }}
+        className="absolute inset-0 w-full h-full object-cover will-change-transform"
         src="/images/hero-bg.png"
         alt="Hero Background"
       />
