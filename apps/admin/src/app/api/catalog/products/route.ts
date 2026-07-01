@@ -1,4 +1,4 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient, requireAdminContext, writeAuditLog } from '@/supabase-server';
 import { z } from 'zod';
 
@@ -14,6 +14,12 @@ const createProductSchema = z.object({
   brand_id:       z.string().uuid().optional(),
   is_featured:    z.boolean().default(false),
   is_active:      z.boolean().default(true),
+  media:          z.array(z.object({
+    type: z.enum(['image', 'video']),
+    url: z.string().url(),
+    isPrimary: z.boolean().optional(),
+    originalName: z.string().optional()
+  })).optional(),
 });
 
 export async function GET() {
@@ -42,12 +48,40 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'invalid_input', details: parsed.error.flatten() }, { status: 400 });
     }
 
+    const { media, ...productData } = parsed.data;
+
+    // Find primary image URL
+    const primaryImage = media?.find(m => m.type === 'image' && m.isPrimary)?.url 
+                      || media?.find(m => m.type === 'image')?.url;
+
+    if (primaryImage) {
+      (productData as any).image_url = primaryImage;
+    }
+
     const { data, error } = await admin
       .from('products')
-      .insert(parsed.data as never)
+      .insert(productData as never)
       .select('id, name_ar, name_en, slug')
       .single();
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+    if (media && media.length > 0) {
+      const images = media.filter(m => m.type === 'image').map((m, index) => ({
+        product_id: data.id,
+        url: m.url,
+        is_primary: m.isPrimary || false,
+        sort_order: index,
+        alt_en: m.originalName
+      }));
+      if (images.length) await admin.from('product_images').insert(images as never);
+
+      const videos = media.filter(m => m.type === 'video').map((m) => ({
+        product_id: data.id,
+        url: m.url,
+        thumbnail_url: m.url // Fallback
+      }));
+      if (videos.length) await admin.from('product_videos').insert(videos as never);
+    }
 
     await writeAuditLog({
       admin, actorId: userId, actorRole: 'admin',
