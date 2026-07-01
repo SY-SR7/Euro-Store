@@ -10,15 +10,24 @@ export const dynamic = 'force-dynamic';
 async function getLoyaltyData() {
   const { client, user } = await getSessionClient();
 
-  // Load settings
+  // Load settings — keys must match system_settings table exactly
   const settingsRes = await client.from('system_settings').select('key,value')
-    .in('key', ['loyalty_earn_amount_syp','loyalty_earn_points','loyalty_redeem_points_per_syp','loyalty_max_redeem_percent','loyalty_referral_bonus_points']);
+    .in('key', [
+      'loyalty_earn_amount_syp',
+      'loyalty_earn_points',
+      'loyalty_point_value_syp',
+      'loyalty_min_redemption_pts',
+      'loyalty_max_redemption_pct',
+      'referral_bonus_points',
+    ]);
+  // Defaults aligned with seed_data.sql
   const s: Record<string,number> = {
     loyalty_earn_amount_syp: 1000,
     loyalty_earn_points: 10,
-    loyalty_redeem_points_per_syp: 1,
-    loyalty_max_redeem_percent: 20,
-    loyalty_referral_bonus_points: 50,
+    loyalty_point_value_syp: 10,
+    loyalty_min_redemption_pts: 100,
+    loyalty_max_redemption_pct: 30,
+    referral_bonus_points: 50,
   };
   for (const row of (settingsRes.data ?? [])) {
     s[row.key] = Number(row.value) || s[row.key];
@@ -50,7 +59,8 @@ export default async function LoyaltyPage() {
   const locale = await getLocale();
   const isAr = locale === 'ar';
   const { user, points, referral_code, fullName, settings } = await getLoyaltyData();
-  const pointValueSyp = Math.floor(points / (settings.loyalty_redeem_points_per_syp || 1));
+  // 1 point = loyalty_point_value_syp
+  const pointValueSyp = Math.floor(points * (settings.loyalty_point_value_syp || 10));
   const earnExample = settings.loyalty_earn_amount_syp;
   const earnPts     = settings.loyalty_earn_points;
 
@@ -76,7 +86,7 @@ export default async function LoyaltyPage() {
                 <p className="text-xs text-[#6F6658]">{t('yourReferralCode')}</p>
                 <p className="font-mono font-black text-[#1F1B16] text-2xl tracking-widest">{referral_code}</p>
                 <p className="text-xs text-[#A8A29E]">
-                  {t('shareCodeGet')} <strong>{settings.loyalty_referral_bonus_points}</strong> {t('pointsPerReferral')}
+                  {t('shareCodeGet')} <strong>{settings.referral_bonus_points}</strong> {t('pointsPerReferral')}
                 </p>
                 <CopyReferralButton code={referral_code} />
               </div>
@@ -116,7 +126,7 @@ export default async function LoyaltyPage() {
               <div>
                 <p className="font-bold text-[#1F1B16]">{t('usePointsAsDiscount')}</p>
                 <p className="text-[#6F6658] mt-1">
-                  {t('every')} <strong className="text-[#C9A84C]">{settings.loyalty_redeem_points_per_syp}</strong> {settings.loyalty_redeem_points_per_syp === 1 ? t('point') : t('points')} = 1 {t('syp')} {t('discountAtCheckout', { percent: settings.loyalty_max_redeem_percent, fallback: `خصم عند الدفع (بحد أقصى ${settings.loyalty_max_redeem_percent}% من قيمة الطلب)` })}
+                  {t('every')} <strong className="text-[#C9A84C]">1</strong> {t('point')} = <strong className="text-[#C9A84C]">{settings.loyalty_point_value_syp}</strong> {t('syp')} {t('discountAtCheckout', { percent: settings.loyalty_max_redemption_pct, fallback: `خصم عند الدفع (بحد أقصى ${settings.loyalty_max_redemption_pct}% من قيمة الطلب)` })}
                 </p>
               </div>
             </div>
@@ -125,7 +135,7 @@ export default async function LoyaltyPage() {
               <div>
                 <p className="font-bold text-[#1F1B16]">{t('getReferralBonus')}</p>
                 <p className="text-[#6F6658] mt-1">
-                  {t('shareCodeAndGet')} <strong className="text-[#C9A84C]">{settings.loyalty_referral_bonus_points}</strong> {t('pointsWhenRegistered')}
+                  {t('shareCodeAndGet')} <strong className="text-[#C9A84C]">{settings.referral_bonus_points}</strong> {t('pointsWhenRegistered')}
                 </p>
               </div>
             </div>
