@@ -322,7 +322,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(v => !v)}
-              className={`flex items-center gap-2 rounded-lg border border-border bg-background-card px-3 py-2 text-sm font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors ${sidebarOpen ? 'hidden md:flex' : ''}`}
+              className="hidden md:flex items-center gap-2 rounded-lg border border-border bg-background-card px-3 py-2 text-sm font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="3" y1="6" x2="21" y2="6" />
