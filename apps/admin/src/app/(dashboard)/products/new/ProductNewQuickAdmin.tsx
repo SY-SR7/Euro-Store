@@ -124,6 +124,8 @@ export default function ProductNewQuickAdmin() {
           brand_id: form.brand_id || undefined,
           is_active: form.is_active,
           is_featured: form.is_featured,
+          base_price_syp: Number(form.base_price_syp) || 0,
+          sku: form.sku.trim() || undefined,
           media,
         }),
       });
