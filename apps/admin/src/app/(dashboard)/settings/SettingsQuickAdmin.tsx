@@ -22,14 +22,20 @@ type SettingConfig = {
 };
 
 const SETTINGS: SettingConfig[] = [
-  { key: 'usd_exchange_rate', labelKey: 'usd_exchange_rate', groupKey: 'groupSystem', fallback: '15000', unitKey: 'unitSyp', type: 'number' },
-  { key: 'max_exchange_days', labelKey: 'max_exchange_days', groupKey: 'groupSystem', fallback: '7', unitKey: 'unitDays', type: 'number' },
-  { key: 'loyalty_earn_amount_syp', labelKey: 'loyalty_earn_amount_syp', groupKey: 'groupLoyalty', fallback: '1000', unitKey: 'unitSyp', type: 'number' },
-  { key: 'loyalty_earn_points', labelKey: 'loyalty_earn_points', groupKey: 'groupLoyalty', fallback: '10', unitKey: 'unitPoints', type: 'number' },
-  { key: 'loyalty_redeem_points_per_syp', labelKey: 'loyalty_redeem_points_per_syp', groupKey: 'groupLoyalty', fallback: '1', unitKey: 'unitPoints', type: 'number' },
-  { key: 'loyalty_max_redeem_percent', labelKey: 'loyalty_max_redeem_percent', groupKey: 'groupLoyalty', fallback: '20', unitKey: 'unitPercent', type: 'number' },
-  { key: 'loyalty_referral_bonus_points', labelKey: 'loyalty_referral_bonus_points', groupKey: 'groupLoyalty', fallback: '50', unitKey: 'unitPoints', type: 'number' },
-  { key: 'referral_bonus_points', labelKey: 'referral_bonus_points', groupKey: 'groupLoyalty', fallback: '50', unitKey: 'unitPoints', type: 'number' },
+  // --- System ---
+  { key: 'usd_exchange_rate',            labelKey: 'usd_exchange_rate',            groupKey: 'groupSystem',   fallback: '15000', unitKey: 'unitSyp',     type: 'number' },
+  { key: 'max_exchange_days',            labelKey: 'max_exchange_days',            groupKey: 'groupSystem',   fallback: '7',     unitKey: 'unitDays',    type: 'number' },
+  { key: 'min_order_value_syp',          labelKey: 'min_order_value_syp',          groupKey: 'groupSystem',   fallback: '0',     unitKey: 'unitSyp',     type: 'number' },
+  // --- Contact ---
+  { key: 'contact_whatsapp',             labelKey: 'contact_whatsapp',             groupKey: 'groupContact',  fallback: '',      unitKey: 'unitNone',    type: 'text'   },
+  { key: 'contact_email',                labelKey: 'contact_email',                groupKey: 'groupContact',  fallback: '',      unitKey: 'unitNone',    type: 'text'   },
+  // --- Loyalty ---
+  { key: 'loyalty_earn_amount_syp',      labelKey: 'loyalty_earn_amount_syp',      groupKey: 'groupLoyalty',  fallback: '1000',  unitKey: 'unitSyp',     type: 'number' },
+  { key: 'loyalty_earn_points',          labelKey: 'loyalty_earn_points',          groupKey: 'groupLoyalty',  fallback: '10',    unitKey: 'unitPoints',  type: 'number' },
+  { key: 'loyalty_point_value_syp',      labelKey: 'loyalty_point_value_syp',      groupKey: 'groupLoyalty',  fallback: '10',    unitKey: 'unitSyp',     type: 'number' },
+  { key: 'loyalty_max_redemption_pct',   labelKey: 'loyalty_max_redemption_pct',   groupKey: 'groupLoyalty',  fallback: '30',    unitKey: 'unitPercent', type: 'number' },
+  { key: 'loyalty_min_redemption_pts',   labelKey: 'loyalty_min_redemption_pts',   groupKey: 'groupLoyalty',  fallback: '100',   unitKey: 'unitPoints',  type: 'number' },
+  { key: 'referral_bonus_points',        labelKey: 'referral_bonus_points',        groupKey: 'groupLoyalty',  fallback: '50',    unitKey: 'unitPoints',  type: 'number' },
 ];
 
 const inputClass =
