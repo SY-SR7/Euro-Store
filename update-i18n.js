@@ -9,55 +9,45 @@ const enContent = fs.readFileSync(enPath, 'utf8').replace(/^\uFEFF/, '');
 const ar = JSON.parse(arContent);
 const en = JSON.parse(enContent);
 
-ar.adminExchanges = {
-  exchangesTitle: "طلبات الاستبدال",
-  exchangesCount: "{count} طلب",
-  all: "الكل",
-  noExchanges: "لا توجد طلبات استبدال",
-  id: "الرقم",
-  reason: "السبب",
-  status: "الحالة",
-  requestDate: "تاريخ الطلب",
-  exchangeRequestHeader: "طلب استبدال #{id}",
-  statusPending: "قيد الانتظار",
-  statusApproved: "تمت الموافقة",
-  statusRejected: "مرفوض",
-  statusCompleted: "مكتمل",
-  reasonAr: "السبب العربي",
-  reasonEn: "السبب الإنجليزي",
-  adminNotes: "ملاحظات الإدارة",
-  orderId: "رقم الطلب",
-  customerImages: "صور العميل",
-  noImages: "لا توجد صور",
-  imageFallback: "صورة {index}",
-  failedToLoadDetails: "تعذر تحميل التفاصيل"
+ar.adminSettings = {
+  settingsTitle: "إعدادات النظام",
+  settingsDesc: "القيم العامة",
+  usd_exchange_rate: "سعر الدولار",
+  max_exchange_days: "مدة الاستبدال",
+  loyalty_earn_amount_syp: "مبلغ كسب النقاط",
+  loyalty_earn_points: "نقاط الكسب",
+  loyalty_redeem_points_per_syp: "نقاط كل ليرة",
+  loyalty_max_redeem_percent: "حد خصم النقاط",
+  loyalty_referral_bonus_points: "مكافأة الإحالة",
+  referral_bonus_points: "إحالة قديمة",
+  groupSystem: "النظام",
+  groupLoyalty: "الولاء",
+  unitSyp: "ل.س",
+  unitDays: "يوم",
+  unitPoints: "نقطة",
+  unitPercent: "%"
 };
 
-en.adminExchanges = {
-  exchangesTitle: "Exchange Requests",
-  exchangesCount: "{count} requests",
-  all: "All",
-  noExchanges: "No exchange requests found",
-  id: "ID",
-  reason: "Reason",
-  status: "Status",
-  requestDate: "Request Date",
-  exchangeRequestHeader: "Exchange Request #{id}",
-  statusPending: "Pending",
-  statusApproved: "Approved",
-  statusRejected: "Rejected",
-  statusCompleted: "Completed",
-  reasonAr: "Reason (Arabic)",
-  reasonEn: "Reason (English)",
-  adminNotes: "Admin Notes",
-  orderId: "Order ID",
-  customerImages: "Customer Images",
-  noImages: "No images",
-  imageFallback: "Image {index}",
-  failedToLoadDetails: "Failed to load details"
+en.adminSettings = {
+  settingsTitle: "System Settings",
+  settingsDesc: "General Values",
+  usd_exchange_rate: "USD Exchange Rate",
+  max_exchange_days: "Exchange Duration",
+  loyalty_earn_amount_syp: "Points Earn Amount",
+  loyalty_earn_points: "Earn Points",
+  loyalty_redeem_points_per_syp: "Points Per SYP",
+  loyalty_max_redeem_percent: "Max Points Discount",
+  loyalty_referral_bonus_points: "Referral Bonus",
+  referral_bonus_points: "Old Referral Bonus",
+  groupSystem: "System",
+  groupLoyalty: "Loyalty",
+  unitSyp: "SYP",
+  unitDays: "Days",
+  unitPoints: "Pts",
+  unitPercent: "%"
 };
 
 fs.writeFileSync(arPath, JSON.stringify(ar, null, 2));
 fs.writeFileSync(enPath, JSON.stringify(en, null, 2));
 
-console.log('Updated i18n files for Exchanges');
+console.log('Updated i18n files for Settings');

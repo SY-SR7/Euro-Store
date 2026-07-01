@@ -507,5 +507,23 @@
     "noImages": "No images",
     "imageFallback": "Image {index}",
     "failedToLoadDetails": "Failed to load details"
+  },
+  "adminSettings": {
+    "settingsTitle": "System Settings",
+    "settingsDesc": "General Values",
+    "usd_exchange_rate": "USD Exchange Rate",
+    "max_exchange_days": "Exchange Duration",
+    "loyalty_earn_amount_syp": "Points Earn Amount",
+    "loyalty_earn_points": "Earn Points",
+    "loyalty_redeem_points_per_syp": "Points Per SYP",
+    "loyalty_max_redeem_percent": "Max Points Discount",
+    "loyalty_referral_bonus_points": "Referral Bonus",
+    "referral_bonus_points": "Old Referral Bonus",
+    "groupSystem": "System",
+    "groupLoyalty": "Loyalty",
+    "unitSyp": "SYP",
+    "unitDays": "Days",
+    "unitPoints": "Pts",
+    "unitPercent": "%"
   }
 }

@@ -507,5 +507,23 @@
     "noImages": "لا توجد صور",
     "imageFallback": "صورة {index}",
     "failedToLoadDetails": "تعذر تحميل التفاصيل"
+  },
+  "adminSettings": {
+    "settingsTitle": "إعدادات النظام",
+    "settingsDesc": "القيم العامة",
+    "usd_exchange_rate": "سعر الدولار",
+    "max_exchange_days": "مدة الاستبدال",
+    "loyalty_earn_amount_syp": "مبلغ كسب النقاط",
+    "loyalty_earn_points": "نقاط الكسب",
+    "loyalty_redeem_points_per_syp": "نقاط كل ليرة",
+    "loyalty_max_redeem_percent": "حد خصم النقاط",
+    "loyalty_referral_bonus_points": "مكافأة الإحالة",
+    "referral_bonus_points": "إحالة قديمة",
+    "groupSystem": "النظام",
+    "groupLoyalty": "الولاء",
+    "unitSyp": "ل.س",
+    "unitDays": "يوم",
+    "unitPoints": "نقطة",
+    "unitPercent": "%"
   }
 }
