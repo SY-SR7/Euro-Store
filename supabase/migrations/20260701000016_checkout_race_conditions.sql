@@ -34,8 +34,7 @@ BEGIN
 
     -- Deduct stock safely
     UPDATE product_variants
-    SET stock_quantity = stock_quantity - v_qty,
-        updated_at = NOW()
+    SET stock_quantity = stock_quantity - v_qty
     WHERE id = v_variant_id;
   END LOOP;
 END;
