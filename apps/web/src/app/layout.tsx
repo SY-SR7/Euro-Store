@@ -21,8 +21,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 import { SmoothScroller } from '../components/layout/SmoothScroller';
 
-import { CustomCursor } from '../components/layout/CustomCursor';
-
 import { PageTransitionProvider } from '../components/layout/PageTransitionProvider';
 
 export default async function RootLayout({
@@ -39,7 +37,6 @@ export default async function RootLayout({
       <body className="min-h-screen bg-background text-text-primary antialiased overflow-x-hidden w-full flex flex-col">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SmoothScroller>
-            <CustomCursor />
             <PageTransitionProvider>
               {children}
             </PageTransitionProvider>
