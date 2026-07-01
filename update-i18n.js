@@ -9,45 +9,59 @@ const enContent = fs.readFileSync(enPath, 'utf8').replace(/^\uFEFF/, '');
 const ar = JSON.parse(arContent);
 const en = JSON.parse(enContent);
 
-ar.adminLoyaltySettings = {
-  loyaltyTitle: "الولاء",
-  loyaltyDesc: "القيم المهمة فقط، وكل قيمة تتعدل من مكانها",
-  loyalty_earn_amount_syp: "مبلغ كسب النقاط",
-  loyalty_earn_points: "نقاط الكسب",
-  loyalty_redeem_points_per_syp: "نقاط كل ليرة خصم",
-  loyalty_max_redeem_percent: "أقصى خصم بالنقاط",
-  loyalty_referral_bonus_points: "مكافأة الإحالة",
-  unitSyp: "ل.س",
-  unitPoints: "نقطة",
-  unitPercent: "%",
-  earn: "الكسب",
-  every: "كل {amount} = {points} نقطة",
-  redeemLabel: "{points} نقطة = {amount}",
-  redeem: "الاستبدال",
-  order50k: "طلب 50,000",
-  referral: "الإحالة"
+ar.adminHomepage = {
+  homepageTitle: "الواجهة الرئيسية",
+  sectionsCount: "{count} قسم",
+  newSection: "قسم جديد",
+  sectionKeyHero: "Hero",
+  sectionKeyFeatured: "منتجات مميزة",
+  sectionKeyCategories: "شبكة التصنيفات",
+  sectionKeyPromotions: "العروض",
+  sectionKeyLoyalty: "الولاء",
+  sectionKeyNewArrivals: "وصل حديثا",
+  titleAr: "العنوان العربي",
+  titleEn: "العنوان الإنجليزي",
+  sortOrder: "الترتيب",
+  addBtn: "إضافة",
+  noSections: "لا توجد أقسام",
+  section: "القسم",
+  title: "العنوان",
+  status: "الحالة",
+  statusVisible: "مرئي",
+  statusHidden: "مخفي",
+  sectionType: "نوع القسم",
+  deleteSection: "حذف القسم",
+  confirmDelete: "حذف هذا القسم؟",
+  failedToLoadSection: "تعذر فتح القسم"
 };
 
-en.adminLoyaltySettings = {
-  loyaltyTitle: "Loyalty",
-  loyaltyDesc: "Important values only, each modified in place",
-  loyalty_earn_amount_syp: "Points Earn Amount",
-  loyalty_earn_points: "Earn Points",
-  loyalty_redeem_points_per_syp: "Points per SYP Discount",
-  loyalty_max_redeem_percent: "Max Points Discount",
-  loyalty_referral_bonus_points: "Referral Bonus",
-  unitSyp: "SYP",
-  unitPoints: "Pts",
-  unitPercent: "%",
-  earn: "Earn",
-  every: "Every {amount} = {points} pts",
-  redeemLabel: "{points} pts = {amount}",
-  redeem: "Redeem",
-  order50k: "50,000 Order",
-  referral: "Referral"
+en.adminHomepage = {
+  homepageTitle: "Homepage",
+  sectionsCount: "{count} sections",
+  newSection: "New Section",
+  sectionKeyHero: "Hero",
+  sectionKeyFeatured: "Featured Products",
+  sectionKeyCategories: "Categories Grid",
+  sectionKeyPromotions: "Promotions",
+  sectionKeyLoyalty: "Loyalty",
+  sectionKeyNewArrivals: "New Arrivals",
+  titleAr: "Arabic Title",
+  titleEn: "English Title",
+  sortOrder: "Sort Order",
+  addBtn: "Add",
+  noSections: "No sections found",
+  section: "Section",
+  title: "Title",
+  status: "Status",
+  statusVisible: "Visible",
+  statusHidden: "Hidden",
+  sectionType: "Section Type",
+  deleteSection: "Delete Section",
+  confirmDelete: "Delete this section?",
+  failedToLoadSection: "Failed to open section"
 };
 
 fs.writeFileSync(arPath, JSON.stringify(ar, null, 2));
 fs.writeFileSync(enPath, JSON.stringify(en, null, 2));
 
-console.log('Updated i18n files for LoyaltySettings');
+console.log('Updated i18n files for Homepage');
