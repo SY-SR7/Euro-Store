@@ -1,5 +1,44 @@
 [
   {
+    "id": "8ab0d4cb-3cdb-45df-b946-ff2c45a7fa4f",
+    "admin_email": "eurostore.private@gmail.com",
+    "action": "update",
+    "action_ar": "تعديل",
+    "entity_type": "orders",
+    "entity_label": "الطلبات",
+    "entity_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb1",
+    "summary": "تعديل في الطلبات — المعرّف: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb1 — نتيجة العملية: 401",
+    "source": "admin-ui",
+    "created_at": "2026-07-01T18:19:05.599Z",
+    "ip": "::1"
+  },
+  {
+    "id": "7f6a105c-5153-406f-bc3b-1f0427c47b2f",
+    "admin_email": "eurostore.private@gmail.com",
+    "action": "update",
+    "action_ar": "تعديل",
+    "entity_type": "orders",
+    "entity_label": "الطلبات",
+    "entity_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb1",
+    "summary": "تعديل في الطلبات — المعرّف: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb1 — نتيجة العملية: 401",
+    "source": "admin-ui",
+    "created_at": "2026-07-01T18:19:03.818Z",
+    "ip": "::1"
+  },
+  {
+    "id": "9c7fb3cb-b018-431c-98bb-3b31591db0b0",
+    "admin_email": "eurostore.private@gmail.com",
+    "action": "update",
+    "action_ar": "تعديل",
+    "entity_type": "orders",
+    "entity_label": "الطلبات",
+    "entity_id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb1",
+    "summary": "تعديل في الطلبات — المعرّف: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbb1 — نتيجة العملية: 401",
+    "source": "admin-ui",
+    "created_at": "2026-07-01T18:19:01.106Z",
+    "ip": "::1"
+  },
+  {
     "id": "9c2be307-6f41-46e3-b2de-95b1da4b6d58",
     "admin_email": "eurostore.private@gmail.com",
     "action": "deactivate",
