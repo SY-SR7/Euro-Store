@@ -341,32 +341,32 @@ export default function NotificationsQuickAdmin() {
   
   const formatLoc = isAr ? 'ar-SY' : 'en-US';
 
-  const sourceMap: Record<Source, string> = {
+  const sourceMap: Record<Source, string> = useMemo(() => ({
     orders: t('sourceOrders'),
     exchanges: t('sourceExchanges'),
     customers: t('sourceCustomers'),
     discounts: t('sourceDiscounts'),
     audit: t('sourceAudit'),
     system: t('sourceSystem'),
-  };
+  }), [t]);
 
-  const orderStatusMap: Record<string, string> = {
+  const orderStatusMap: Record<string, string> = useMemo(() => ({
     pending: t('orderStatusPending'),
     confirmed: t('orderStatusConfirmed'),
     processing: t('orderStatusProcessing'),
     shipped: t('orderStatusShipped'),
     delivered: t('orderStatusDelivered'),
     cancelled: t('orderStatusCancelled'),
-  };
+  }), [t]);
 
-  const exchangeStatusMap: Record<string, string> = {
+  const exchangeStatusMap: Record<string, string> = useMemo(() => ({
     pending: t('exchangeStatusPending'),
     requested: t('exchangeStatusRequested'),
     approved: t('exchangeStatusApproved'),
     rejected: t('exchangeStatusRejected'),
     completed: t('exchangeStatusCompleted'),
     cancelled: t('exchangeStatusCancelled'),
-  };
+  }), [t]);
 
   const [items, setItems] = useState<NotificationItem[]>([]);
   const [readIds, setReadIds] = useState<string[]>([]);
