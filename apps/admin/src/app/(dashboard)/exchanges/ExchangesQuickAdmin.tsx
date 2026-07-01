@@ -34,11 +34,17 @@ const inputClass =
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
+  
+  if (res.status === 401) {
+    if (typeof window !== 'undefined') window.location.href = '/login';
+    throw new Error('انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً');
+  }
+  
   const payload = (await res.json().catch(() => null)) as T | { error?: string } | null;
   if (!res.ok) {
     const message =
       payload && typeof payload === 'object' && 'error' in payload && payload.error
-        ? String(payload.error)
+        ? (payload.error === 'Unauthorized' ? 'انتهت صلاحية الجلسة، يرجى تسجيل الدخول مجدداً' : String(payload.error))
         : 'request_failed';
     throw new Error(message);
   }
