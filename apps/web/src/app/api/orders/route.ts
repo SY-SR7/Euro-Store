@@ -102,13 +102,21 @@ export async function POST(request: Request) {
       subtotal_syp - discount_syp - loyalty_discount_syp + shipping_syp,
     );
 
-    // ¢‚¬¢‚¬ Generate order number ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
+    // ¢ ‚¬¢ ‚¬ Generate order number ¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬
     const { data: orderNum, error: numErr } = await supabase.rpc('generate_order_number');
     if (numErr || !orderNum) {
       return NextResponse.json({ error: 'order_number_failed' }, { status: 500 });
     }
 
-    // ¢‚¬¢‚¬ Insert order ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
+    // ── Check & Deduct Inventory ──────────────────────────────────────────────
+    const stockItems = items.map(i => ({ variant_id: i.variant_id, quantity: i.quantity }));
+    const stockResult = await supabase.rpc('decrement_stock', { p_items: JSON.stringify(stockItems) });
+    if (stockResult.error) {
+      console.error('[orders/POST] decrement_stock error:', stockResult.error);
+      return NextResponse.json({ error: 'out_of_stock', details: stockResult.error.message }, { status: 400 });
+    }
+
+    // ¢ ‚¬¢ ‚¬ Insert order ¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬
     const { data: order, error: orderErr } = await supabase
       .from('orders')
       .insert({
