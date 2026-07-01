@@ -1,48 +1,57 @@
 /* eslint-disable */
 import { NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
-/**
- * Returns loyalty settings from system_settings table.
- * Canonical DB keys:
- *   loyalty_earn_amount_syp      — SYP spent per earn cycle
- *   loyalty_earn_points          — Points earned per cycle
- *   loyalty_point_value_syp      — SYP value of 1 point (e.g. 10 = 1 pt = 10 SYP)
- *   loyalty_min_redemption_pts   — Min points needed to redeem
- *   loyalty_max_redemption_pct   — Max % of order payable by points
- *   referral_bonus_points        — Points awarded for a successful referral
- */
+const KEYS = [
+  'loyalty_earn_amount_syp',
+  'loyalty_earn_points',
+  'loyalty_point_value_syp',
+  'loyalty_min_redemption_pts',
+  'loyalty_max_redemption_pct',
+  'referral_bonus_points',
+];
+
+const DEFAULTS: Record<string, number> = {
+  loyalty_earn_amount_syp: 1000,
+  loyalty_earn_points: 10,
+  loyalty_point_value_syp: 10,
+  loyalty_min_redemption_pts: 100,
+  loyalty_max_redemption_pct: 30,
+  referral_bonus_points: 50,
+};
+
 export async function GET() {
+  const result = { ...DEFAULTS };
   try {
-    const supabase = createServerSupabaseClient();
-    const keys = [
-      'loyalty_earn_amount_syp',
-      'loyalty_earn_points',
-      'loyalty_point_value_syp',
-      'loyalty_min_redemption_pts',
-      'loyalty_max_redemption_pct',
-      'referral_bonus_points',
-    ];
-    const { data } = await supabase.from('system_settings').select('key,value').in('key', keys);
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    // Defaults aligned with seed_data.sql
-    const obj: Record<string, number> = {
-      loyalty_earn_amount_syp: 1000,
-      loyalty_earn_points: 10,
-      loyalty_point_value_syp: 10,
-      loyalty_min_redemption_pts: 100,
-      loyalty_max_redemption_pct: 30,
-      referral_bonus_points: 50,
-    };
-
-    for (const row of (data ?? [])) {
-      obj[row.key] = Number(row.value) || obj[row.key];
+    if (url && key) {
+      const keysParam = KEYS.map(k => `key.eq.${k}`).join(',');
+      const res = await fetch(
+        `${url}/rest/v1/system_settings?or=(${keysParam})&select=key,value`,
+        {
+          cache: 'no-store',
+          headers: {
+            apikey: key,
+            Authorization: `Bearer ${key}`,
+          },
+        }
+      );
+      if (res.ok) {
+        const rows: { key: string; value: string }[] = await res.json();
+        for (const row of rows) {
+          if (row.key in result) result[row.key] = Number(row.value) || result[row.key];
+        }
+      }
     }
+  } catch {}
 
-    return NextResponse.json(obj);
-  } catch {
-    return NextResponse.json({ error: 'server_error' }, { status: 500 });
-  }
+  return NextResponse.json(result, {
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+    },
+  });
 }
