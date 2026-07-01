@@ -23,6 +23,8 @@ import { SmoothScroller } from '../components/layout/SmoothScroller';
 
 import { PageTransitionProvider } from '../components/layout/PageTransitionProvider';
 
+import { Toaster } from 'sonner';
+
 export default async function RootLayout({
   children
 }: Readonly<{
@@ -41,6 +43,7 @@ export default async function RootLayout({
               {children}
             </PageTransitionProvider>
           </SmoothScroller>
+          <Toaster position="bottom-right" />
         </NextIntlClientProvider>
       </body>
     </html>

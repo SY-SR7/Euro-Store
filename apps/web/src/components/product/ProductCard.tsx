@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { Heart } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
+import { useCartStore } from '@/lib/cart/cartStore';
 import type { Database } from '@eurostore/database';
 
 type Product = Database['public']['Tables']['products']['Row'];
