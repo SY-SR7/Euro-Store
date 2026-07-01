@@ -55,7 +55,7 @@
   "euroStore": "Euro Store",
   "auth": {
     "logout": "تسجيل الخروج",
-    "login": "تسجيل الدخول",
+    "login": "دخول",
     "password": "كلمة المرور",
     "alreadyHaveAccount": "لديك حساب بالفعل؟",
     "createAccount": "إنشاء حساب",
@@ -75,7 +75,12 @@
     "email": "البريد الإلكتروني",
     "registerBtn": "إنشاء الحساب",
     "loginBtn": "دخول",
-    "phone": "رقم الهاتف"
+    "phone": "رقم الهاتف",
+    "loginTitle": "تسجيل الدخول",
+    "loggingIn": "جار تسجيل الدخول...",
+    "loggingOut": "جار تسجيل الخروج...",
+    "registerTitle": "إنشاء حساب",
+    "noAccount": "ليس لديك حساب؟"
   },
   "englishShort": "EN",
   "helpSection": "المساعدة",
@@ -124,7 +129,7 @@
     "noData": "لا توجد بيانات",
     "submit": "إرسال",
     "cancel": "إلغاء",
-    "error": "حدث خطأ",
+    "error": "خطأ",
     "arabicShort": "عربي",
     "back": "رجوع",
     "edit": "تعديل",
@@ -144,7 +149,7 @@
     "save": "حفظ",
     "viewDetails": "عرض التفاصيل",
     "searchBtn": "بحث",
-    "search": "بحث",
+    "search": "بحث...",
     "euroStore": "يورو ستور",
     "retry": "إعادة المحاولة",
     "previous": "السابق",
@@ -155,7 +160,17 @@
     "saved": "تم الحفظ",
     "saveFailed": "فشل الحفظ",
     "searchByNamePhoneEmail": "بحث بالاسم أو الهاتف أو البريد...",
-    "unitSyp": "ل.س"
+    "unitSyp": "ل.س",
+    "close": "إغلاق",
+    "of": "من",
+    "add": "إضافة",
+    "closeMenu": "إغلاق القائمة",
+    "yes": "نعم",
+    "no": "لا",
+    "imageFallback": {
+      "alt": "صورة المنتج",
+      "error": "تعذر تحميل الصورة"
+    }
   },
   "productCount": "عدد المنتجات",
   "categories": {
@@ -474,12 +489,27 @@
     "status": "الحالة",
     "registrationDate": "تاريخ التسجيل",
     "referralCode": "كود الإحالة",
-    "customerFallback": "عميل"
+    "customerFallback": "عميل",
+    "title": "إدارة العملاء",
+    "searchPlaceholder": "بحث في العملاء...",
+    "tableCustomer": "العميل",
+    "tableEmail": "البريد الإلكتروني",
+    "tablePhone": "الهاتف",
+    "tableOrders": "الطلبات",
+    "tablePoints": "النقاط",
+    "tableDate": "التاريخ",
+    "loading": "جار التحميل...",
+    "orderCount": "طلب",
+    "pointsLabel": "نقطة",
+    "customerDetails": "تفاصيل العميل",
+    "editCustomer": "تعديل العميل",
+    "blockCustomer": "حظر العميل",
+    "unblockCustomer": "رفع الحظر"
   },
   "adminDiscounts": {
     "discountsTitle": "الخصومات",
     "discountsCount": "{count} كود خصم",
-    "newDiscount": "كود جديد",
+    "newDiscount": "خصم جديد",
     "code": "الكود",
     "type": "النوع",
     "typePercentage": "نسبة %",
@@ -498,8 +528,20 @@
     "discountCodeHeader": "كود: {code}",
     "dateRange": "النطاق",
     "failedToOpenCode": "تعذر فتح الكود",
-    "percentage": "نسبة",
-    "fixed": "ثابت"
+    "percentage": "نسبة مئوية",
+    "fixed": "مبلغ ثابت",
+    "title": "إدارة الخصومات",
+    "searchPlaceholder": "بحث في الأكواد...",
+    "tableCode": "الكود",
+    "tableType": "النوع",
+    "tableValue": "القيمة",
+    "tableStatus": "الحالة",
+    "tableUsage": "الاستخدام",
+    "tableExpiry": "الانتهاء",
+    "loading": "جار التحميل...",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "expired": "منتهي"
   },
   "adminExchanges": {
     "exchangesTitle": "طلبات الاستبدال",
@@ -508,7 +550,14 @@
     "noExchanges": "لا توجد طلبات استبدال",
     "id": "الرقم",
     "reason": "السبب",
-    "status": "الحالة",
+    "status": {
+      "pending": "قيد الانتظار",
+      "requested": "مطلوب",
+      "approved": "مقبول",
+      "rejected": "مرفوض",
+      "completed": "مكتمل",
+      "cancelled": "ملغي"
+    },
     "requestDate": "تاريخ الطلب",
     "exchangeRequestHeader": "طلب استبدال #{id}",
     "statusPending": "قيد الانتظار",
@@ -522,7 +571,19 @@
     "customerImages": "صور العميل",
     "noImages": "لا توجد صور",
     "imageFallback": "صورة {index}",
-    "failedToLoadDetails": "تعذر تحميل التفاصيل"
+    "failedToLoadDetails": "تعذر تحميل التفاصيل",
+    "title": "طلبات الاستبدال",
+    "allStatuses": "كل الحالات",
+    "loading": "جار التحميل...",
+    "tableRequest": "الطلب",
+    "tableOrder": "الطلب المرتبط",
+    "tableStatus": "الحالة",
+    "tableDate": "التاريخ",
+    "tableReason": "السبب",
+    "approve": "قبول",
+    "reject": "رفض",
+    "complete": "إتمام",
+    "details": "التفاصيل"
   },
   "adminSettings": {
     "settingsTitle": "إعدادات النظام",
@@ -540,7 +601,13 @@
     "unitSyp": "ل.س",
     "unitDays": "يوم",
     "unitPoints": "نقطة",
-    "unitPercent": "%"
+    "unitPercent": "%",
+    "title": "الإعدادات",
+    "storeName": "اسم المتجر",
+    "storeEmail": "البريد الإلكتروني",
+    "save": "حفظ الإعدادات",
+    "savedSuccessfully": "تم حفظ الإعدادات",
+    "saveFailed": "فشل حفظ الإعدادات"
   },
   "adminLoyaltySettings": {
     "loyaltyTitle": "الولاء",
@@ -597,7 +664,7 @@
     "statusPending": "بانتظار المراجعة",
     "statusApproved": "معتمد",
     "statusRejected": "مرفوض",
-    "noReviews": "لا توجد تقييمات في هذا القسم",
+    "noReviews": "لا توجد تقييمات",
     "defaultCustomer": "عميل",
     "approveBtn": "اعتماد",
     "rejectBtn": "رفض",
@@ -608,7 +675,21 @@
     "customerLabel": "العميل",
     "dateLabel": "تاريخ التقييم",
     "defaultProduct": "تقييم",
-    "emptyProduct": "—"
+    "emptyProduct": "—",
+    "title": "إدارة التقييمات",
+    "allStatuses": "كل الحالات",
+    "searchPlaceholder": "بحث في التقييمات...",
+    "tableProduct": "المنتج",
+    "tableCustomer": "العميل",
+    "tableRating": "التقييم",
+    "tableStatus": "الحالة",
+    "tableDate": "التاريخ",
+    "loading": "جار التحميل...",
+    "approve": "قبول",
+    "reject": "رفض",
+    "pending": "قيد الانتظار",
+    "approved": "مقبول",
+    "rejected": "مرفوض"
   },
   "adminShippingRates": {
     "shippingRatesTitle": "أسعار الشحن",
@@ -623,10 +704,17 @@
     "noShippingRates": "لا توجد أسعار شحن",
     "emptyField": "—",
     "freeShippingAbove": "شحن مجاني فوق",
-    "unitSyp": "ل.س"
+    "unitSyp": "ل.س",
+    "title": "أسعار الشحن",
+    "newRate": "سعر جديد",
+    "noRates": "لا توجد أسعار شحن",
+    "loading": "جار التحميل...",
+    "governorate": "المحافظة",
+    "price": "السعر",
+    "freeFrom": "مجاني من"
   },
   "adminSubAdmins": {
-    "title": "المشرفون",
+    "title": "إدارة المشرفين",
     "countAccounts": "{count} حساب",
     "newSubAdmin": "مشرف جديد",
     "failedToLoadAdmin": "تعذر فتح المشرف",
@@ -647,7 +735,14 @@
     "fieldName": "الاسم",
     "fieldEmail": "البريد",
     "fieldStatus": "الحالة",
-    "fieldCreatedAt": "تاريخ الإنشاء"
+    "fieldCreatedAt": "تاريخ الإنشاء",
+    "noSubAdmins": "لا يوجد مشرفون",
+    "loading": "جار التحميل...",
+    "tableName": "الاسم",
+    "tableEmail": "البريد",
+    "tableRole": "الدور",
+    "tableStatus": "الحالة",
+    "tableDate": "التاريخ"
   },
   "adminNotifications": {
     "title": "الإشعارات",
@@ -729,7 +824,7 @@
     "failedToLoadNotifications": "تعذر تحميل الإشعارات"
   },
   "adminAuditLogs": {
-    "title": "سجل النشاط",
+    "title": "سجلات النشاط",
     "countLogs": "{count} حركة",
     "failedToLoad": "تعذر تحميل السجل",
     "failedToUndo": "فشل التراجع",
@@ -740,8 +835,8 @@
     "statsTotal": "إجمالي",
     "statsUndoable": "قابل للتراجع",
     "statsErrors": "أخطاء",
-    "searchPlaceholder": "بحث...",
-    "noLogs": "لا توجد حركات",
+    "searchPlaceholder": "بحث في السجلات...",
+    "noLogs": "لا توجد سجلات",
     "defaultAction": "حركة",
     "defaultEntity": "system",
     "defaultAdmin": "unknown-admin@local",
@@ -765,7 +860,13 @@
     "filterDelete": "حذف",
     "filterStatus": "حالة",
     "filterUndo": "تراجع",
-    "methodUi": "UI"
+    "methodUi": "UI",
+    "loading": "جار التحميل...",
+    "tableAction": "الإجراء",
+    "tableEntity": "القسم",
+    "tableUser": "المستخدم",
+    "tableDate": "التاريخ",
+    "tableDetails": "التفاصيل"
   },
   "adminDashboard": {
     "title": "لوحة التحكم",
@@ -798,11 +899,25 @@
     "orderStatusCancelled": "ملغى",
     "exchangeStatusApproved": "مقبول",
     "exchangeStatusRejected": "مرفوض",
-    "exchangeStatusCompleted": "مكتمل"
+    "exchangeStatusCompleted": "مكتمل",
+    "revenue": "الإيرادات",
+    "customers": "العملاء",
+    "exchanges": "الاستبدالات",
+    "recentOrders": "آخر الطلبات",
+    "openOrder": "فتح",
+    "open": "فتح",
+    "status": {
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكد",
+      "processing": "قيد المعالجة",
+      "shipped": "تم الشحن",
+      "delivered": "تم التوصيل",
+      "cancelled": "ملغي"
+    }
   },
   "adminOrders": {
     "ordersTitle": "إدارة الطلبات",
-    "orderCount": "عدد الطلبات",
+    "orderCount": "طلب",
     "allStatuses": "جميع الحالات",
     "tablePayment": "حالة الدفع",
     "tableStatus": "حالة الطلب",
@@ -816,8 +931,10 @@
     },
     "status": {
       "pending": "قيد الانتظار",
+      "confirmed": "مؤكد",
       "processing": "قيد المعالجة",
       "shipped": "تم الشحن",
+      "delivered": "تم التوصيل",
       "cancelled": "ملغي"
     },
     "orderModalTitle": "تفاصيل الطلب: ",
@@ -838,10 +955,64 @@
     "discount": "الخصم",
     "subtotal": "المجموع الفرعي",
     "productsList": "المنتجات",
-    "tableTotal": "المجموع",
+    "tableTotal": "الإجمالي",
     "tablePrice": "السعر",
     "tableQuantity": "الكمية",
     "tableSKU": "SKU",
-    "tableProduct": "المنتج"
+    "tableProduct": "المنتج",
+    "loading": "جار تحميل الطلبات...",
+    "noOrders": "لا توجد طلبات",
+    "tableDate": "التاريخ",
+    "savedSuccessfully": "تم الحفظ بنجاح",
+    "saveFailed": "فشل الحفظ، حاول مجدداً",
+    "loadFailed": "تعذر تحميل بيانات الطلب",
+    "paymentStatusTitle": "حالة الدفع",
+    "paymentMethodTitle": "طريقة الدفع"
+  },
+  "adminProducts": {
+    "title": "إدارة المنتجات",
+    "newProduct": "منتج جديد",
+    "searchPlaceholder": "بحث في المنتجات...",
+    "allCategories": "كل الفئات",
+    "tableProduct": "المنتج",
+    "tableSKU": "SKU",
+    "tableCategory": "الفئة",
+    "tableStatus": "الحالة",
+    "tablePrice": "السعر",
+    "tableActions": "إجراءات",
+    "noProducts": "لا توجد منتجات",
+    "loading": "جار التحميل...",
+    "deleteConfirm": "هل أنت متأكد من حذف هذا المنتج؟",
+    "deleteSuccess": "تم حذف المنتج",
+    "deleteFailed": "فشل حذف المنتج",
+    "editProduct": "تعديل المنتج",
+    "active": "نشط",
+    "draft": "مسودة",
+    "archived": "مؤرشف",
+    "featured": "مميز"
+  },
+  "adminCategories": {
+    "title": "إدارة التصنيفات",
+    "newCategory": "تصنيف جديد",
+    "noCategories": "لا توجد تصنيفات",
+    "loading": "جار التحميل...",
+    "editCategory": "تعديل التصنيف",
+    "deleteConfirm": "هل تريد حذف هذا التصنيف؟"
+  },
+  "adminBrands": {
+    "title": "إدارة العلامات التجارية",
+    "newBrand": "علامة جديدة",
+    "noBrands": "لا توجد علامات تجارية",
+    "loading": "جار التحميل..."
+  },
+  "adminLoyalty": {
+    "title": "إعدادات الولاء",
+    "pointsPerOrder": "نقاط لكل طلب",
+    "pointValue": "قيمة النقطة",
+    "minPoints": "الحد الأدنى للاسترداد",
+    "referralBonus": "مكافأة الإحالة",
+    "save": "حفظ",
+    "savedSuccessfully": "تم الحفظ",
+    "saveFailed": "فشل الحفظ"
   }
 }
