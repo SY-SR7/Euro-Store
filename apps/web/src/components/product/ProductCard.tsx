@@ -98,6 +98,39 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         </p>
       </div>
       <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10" aria-label={`${t('viewProduct')} ${productName}`} />
+      
+      {/* Quick Add to Cart Button */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 w-[85%]">
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Fallback to product.id as variantId if not variant specific
+            const variantId = product.id; 
+            useCartStore.getState().addItem({
+              variantId,
+              productId: product.id,
+              productSlug: product.slug,
+              nameAr: product.name_ar,
+              nameEn: product.name_en || product.name_ar,
+              sku: product.slug,
+              priceSyp: displayPrice,
+              comparePriceSyp: null,
+              imageUrl: product.primary_image_url
+            });
+            import('sonner').then(({ toast }) => {
+              toast.success(isAr ? 'تمت الإضافة للسلة' : 'Added to cart', {
+                description: productName,
+                style: { backgroundColor: '#1F1B16', color: '#B8860B', borderColor: '#B8860B33' }
+              });
+            });
+          }}
+          className="w-full bg-primary text-[#0F0F0F] font-bold py-2.5 rounded-xl shadow-lg hover:bg-[#9A7209] transition-colors flex items-center justify-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          {isAr ? 'أضف سريعاً' : 'Quick Add'}
+        </button>
+      </div>
     </motion.div>
   );
 }
