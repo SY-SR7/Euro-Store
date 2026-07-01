@@ -20,7 +20,7 @@ interface WishlistItem {
 
 function fmt(n: number | null) {
   if (n == null) return '—';
-  return Number(n).toLocaleString('ar-SY') + ' ل.س';
+  return Number(n).toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US') + (locale === 'ar' ? ' ل.س' : ' SYP');
 }
 
 export default function WishlistPage() {

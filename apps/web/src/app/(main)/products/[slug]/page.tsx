@@ -16,15 +16,15 @@ function formatSYP(n: number) {
   return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
 }
 
-function variantTitle(v: any) {
+function variantTitle(v: any, td: any) {
   const parts = [v?.color, v?.size, v?.sku].filter(Boolean);
-  return parts.length ? parts.join(' / ') : 'متغير';
+  return parts.length ? parts.join(' / ') : td('variant');
 }
 
-function stockState(qty: number) {
-  if (qty <= 0) return { text: 'نفذ المخزون', Icon: XCircle, cls: 'bg-red-50 border-red-200 text-red-700' };
-  if (qty <= 5) return { text: `كمية قليلة: ${qty}`, Icon: AlertTriangle, cls: 'bg-amber-50 border-amber-200 text-amber-700' };
-  return { text: `متوفر: ${qty}`, Icon: CheckCircle2, cls: 'bg-green-50 border-green-200 text-green-700' };
+function stockState(qty: number, td: any) {
+  if (qty <= 0) return { text: td('outOfStockLong'), Icon: XCircle, cls: 'bg-red-50 border-red-200 text-red-700' };
+  if (qty <= 5) return { text: `${td('lowStock')} ${qty}`, Icon: AlertTriangle, cls: 'bg-amber-50 border-amber-200 text-amber-700' };
+  return { text: `${td('available')} ${qty}`, Icon: CheckCircle2, cls: 'bg-green-50 border-green-200 text-green-700' };
 }
 
 export default function ProductPage({ params }: { params: any }) {
@@ -40,6 +40,7 @@ export default function ProductPage({ params }: { params: any }) {
   const [added, setAdded] = useState(false);
   const locale = useLocale();
   const t = useTranslations('catalog');
+  const td = useTranslations('productDetails');
   const isAr = locale === 'ar';
 
   const addItem = useCartStore((s: any) => s.addItem);
@@ -151,7 +152,7 @@ export default function ProductPage({ params }: { params: any }) {
   );
 
   const selectedStock = Number(selected?.stock_quantity ?? 0);
-  const selectedState = stockState(selectedStock);
+  const selectedState = stockState(selectedStock, td);
   const StockIcon = selectedState.Icon;
 
   const attrs =
@@ -184,7 +185,7 @@ export default function ProductPage({ params }: { params: any }) {
       <div className="flex min-h-[60vh] items-center justify-center" dir="rtl">
         <div className="text-center space-y-3">
           <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[#C9A84C] border-t-transparent" />
-          <p className="text-sm text-[#6F6658]">جاري التحميل...</p>
+          <p className="text-sm text-[#6F6658]">{td('loading')}</p>
         </div>
       </div>
     );
@@ -194,9 +195,9 @@ export default function ProductPage({ params }: { params: any }) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center" dir="rtl">
         <div className="text-center space-y-4">
-          <ImageWithFallback kind="product" label="المنتج غير موجود" className="mx-auto h-40 w-40 rounded-3xl" />
-          <p className="text-2xl font-black text-[#1F1B16]">المنتج غير موجود</p>
-          <Link href="/products" className="text-[#C9A84C] hover:underline">عودة للمنتجات</Link>
+          <ImageWithFallback kind="product" label={td('notFoundImage')} className="mx-auto h-40 w-40 rounded-3xl" />
+          <p className="text-2xl font-black text-[#1F1B16]">{td('notFoundTitle')}</p>
+          <Link href="/products" className="text-[#C9A84C] hover:underline">{td('backToProducts')}</Link>
         </div>
       </div>
     );
@@ -205,9 +206,9 @@ export default function ProductPage({ params }: { params: any }) {
   return (
     <div className="mx-auto max-w-6xl px-4 py-10" dir="rtl">
       <nav className="mb-6 flex flex-wrap items-center gap-2 text-xs text-[#6F6658]">
-        <Link href="/" className="hover:text-[#C9A84C]">الرئيسية</Link>
+        <Link href="/" className="hover:text-[#C9A84C]">{td('home')}</Link>
         <span>/</span>
-        <Link href="/products" className="hover:text-[#C9A84C]">المنتجات</Link>
+        <Link href="/products" className="hover:text-[#C9A84C]">{td('products')}</Link>
         {category && (
           <>
             <span>/</span>
@@ -225,7 +226,7 @@ export default function ProductPage({ params }: { params: any }) {
               src={mainImage}
               alt={isAr ? product.name_ar : (product.name_en || product.name_ar)}
               kind="product"
-              label="صورة المنتج"
+              label={td('productImage')}
               sublabel={isAr ? product.name_ar : (product.name_en || product.name_ar)}
               className="h-full w-full object-cover"
             />
@@ -245,7 +246,7 @@ export default function ProductPage({ params }: { params: any }) {
                   src={img.url}
                   alt={img.alt_ar ?? (isAr ? product.name_ar : (product.name_en || product.name_ar))}
                   kind="product"
-                  label="صورة"
+                  label={td('image')}
                   className="h-full w-full object-cover"
                 />
               </button>
@@ -265,11 +266,11 @@ export default function ProductPage({ params }: { params: any }) {
           <div className="flex flex-wrap gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DCC3] bg-white px-3 py-1 text-xs font-bold text-[#6F6658]">
               <Layers3 className="h-3.5 w-3.5 text-[#C9A84C]" />
-              {variants.length} متغير
+              {variants.length} {td('variant')}
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E8DCC3] bg-white px-3 py-1 text-xs font-bold text-[#6F6658]">
               <Boxes className="h-3.5 w-3.5 text-[#C9A84C]" />
-              المخزون الكلي: {totalStock}
+              {td('totalStock')} {totalStock}
             </span>
           </div>
 
@@ -277,8 +278,8 @@ export default function ProductPage({ params }: { params: any }) {
             <div className="rounded-3xl border border-[#E8DCC3] bg-white p-5 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-bold text-[#A8A29E]">المتغير المحدد</p>
-                  <p className="mt-1 text-lg font-black text-[#1F1B16]">{variantTitle(selected)}</p>
+                  <p className="text-xs font-bold text-[#A8A29E]">{td('selectedVariant')}</p>
+                  <p className="mt-1 text-lg font-black text-[#1F1B16]">{variantTitle(selected, td)}</p>
                 </div>
                 <div className="text-left">
                   <p className="text-2xl font-black text-[#171411]">{formatSYP(selected.price_syp)}</p>
@@ -297,19 +298,19 @@ export default function ProductPage({ params }: { params: any }) {
                 )}
                 {selected.color && (
                   <div className="rounded-2xl bg-[#FAF7EF] p-3 text-sm">
-                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Palette className="h-4 w-4 text-[#C9A84C]" /> اللون</p>
+                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Palette className="h-4 w-4 text-[#C9A84C]" /> {td('color')}</p>
                     <p className="mt-1 font-black text-[#1F1B16]">{selected.color}</p>
                   </div>
                 )}
                 {selected.size && (
                   <div className="rounded-2xl bg-[#FAF7EF] p-3 text-sm">
-                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Ruler className="h-4 w-4 text-[#C9A84C]" /> المقاس</p>
+                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Ruler className="h-4 w-4 text-[#C9A84C]" /> {td('size')}</p>
                     <p className="mt-1 font-black text-[#1F1B16]">{selected.size}</p>
                   </div>
                 )}
                 <div className="rounded-2xl bg-[#FAF7EF] p-3 text-sm">
-                  <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Boxes className="h-4 w-4 text-[#C9A84C]" /> المخزون</p>
-                  <p className="mt-1 font-black text-[#1F1B16]">{selectedStock} قطعة</p>
+                  <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Boxes className="h-4 w-4 text-[#C9A84C]" /> {td('stock')}</p>
+                  <p className="mt-1 font-black text-[#1F1B16]">{selectedStock} {td('pieces')}</p>
                 </div>
               </div>
 
@@ -317,7 +318,7 @@ export default function ProductPage({ params }: { params: any }) {
                 <div className="mt-3 rounded-2xl bg-[#FAF7EF] p-3 text-sm">
                   <p className="mb-2 flex items-center gap-2 font-bold text-[#6F6658]">
                     <Info className="h-4 w-4 text-[#C9A84C]" />
-                    تفاصيل إضافية
+                    {td('extraDetails')}
                   </p>
                   <div className="grid gap-2 sm:grid-cols-2">
                     {attrs.map(([k, v]: any) => (
@@ -337,13 +338,13 @@ export default function ProductPage({ params }: { params: any }) {
             </div>
           ) : (
             <div className="rounded-3xl border border-[#E8DCC3] bg-white p-6 text-center">
-              <p className="font-bold text-[#6F6658]">لا توجد متغيرات متاحة حالياً</p>
+              <p className="font-bold text-[#6F6658]">{td('noVariants')}</p>
             </div>
           )}
 
           {variants.length > 0 && (
             <div className="space-y-3">
-              <p className="text-sm font-black text-[#3C352C]">اختر المتغير المناسب</p>
+              <p className="text-sm font-black text-[#3C352C]">{td('chooseVariant')}</p>
               <div className="grid gap-2 sm:grid-cols-2">
                 {variants.map((v: any) => {
                   const qty = Number(v.stock_quantity ?? 0);
@@ -359,16 +360,16 @@ export default function ProductPage({ params }: { params: any }) {
                           : 'border-[#E8DCC3] bg-white hover:border-[#C9A84C]/60',
                       ].join(' ')}
                     >
-                      <p className="font-black text-[#1F1B16]">{variantTitle(v)}</p>
+                      <p className="font-black text-[#1F1B16]">{variantTitle(v, td)}</p>
                       <div className="mt-2 flex flex-wrap gap-1 text-[11px]">
-                        {v.color && <span className="rounded-full bg-[#FAF7EF] px-2 py-1">لون: {v.color}</span>}
-                        {v.size && <span className="rounded-full bg-[#FAF7EF] px-2 py-1">مقاس: {v.size}</span>}
+                        {v.color && <span className="rounded-full bg-[#FAF7EF] px-2 py-1">{td('colorLabel')}: {v.color}</span>}
+                        {v.size && <span className="rounded-full bg-[#FAF7EF] px-2 py-1">{td('sizeLabel')}: {v.size}</span>}
                         {v.sku && <span className="rounded-full bg-[#FAF7EF] px-2 py-1" dir="ltr">{v.sku}</span>}
                       </div>
                       <div className="mt-2 flex items-center justify-between gap-2">
                         <span className="font-black text-[#C9A84C]">{formatSYP(v.price_syp)}</span>
                         <span className={qty > 0 ? 'text-xs font-bold text-green-700' : 'text-xs font-bold text-red-700'}>
-                          {qty > 0 ? `${qty} قطعة` : 'نفذ'}
+                          {qty > 0 ? `${qty} ${td('pieces')}` : td('outOfStockShort')}
                         </span>
                       </div>
                     </button>
@@ -393,11 +394,11 @@ export default function ProductPage({ params }: { params: any }) {
                   added ? 'bg-green-600 text-white' : 'bg-[#C9A84C] text-[#111] hover:bg-[#D8B95F] active:scale-[0.98]',
                 ].join(' ')}
               >
-                {added ? '✓ تمت الإضافة إلى السلة' : 'أضف إلى السلة'}
+                {added ? td('addedToCart') : td('addToCart')}
               </button>
             ) : (
               <button disabled className="flex-1 rounded-2xl bg-[#E8DCC3] py-4 text-base font-black text-[#9CA3AF]">
-                {selected ? 'نفذ المخزون' : 'اختر المتغير أولاً'}
+                {selected ? td('outOfStockLong') : td('chooseVariantFirst')}
               </button>
             )}
             {product?.id && (
@@ -409,7 +410,7 @@ export default function ProductPage({ params }: { params: any }) {
 
           {category && (
             <p className="text-xs text-[#6F6658]">
-              التصنيف:{' '}
+              {td('category')} 
               <Link href={`/categories/${category.slug}`} className="text-[#C9A84C] hover:underline">
                 {isAr ? category.name_ar : (category.name_en || category.name_ar)}
               </Link>
