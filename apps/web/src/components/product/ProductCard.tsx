@@ -65,7 +65,7 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         {/* Badges */}
         <div className="absolute top-3 start-3 flex flex-col gap-2 z-10">
           {isNew && (
-            <span className="bg-primary/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+            <span className="bg-primary/90 backdrop-blur-sm text-[#1F1B16] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
               {t('new')}
             </span>
           )}
