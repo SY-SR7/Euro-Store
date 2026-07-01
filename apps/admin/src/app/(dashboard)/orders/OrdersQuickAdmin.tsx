@@ -4,6 +4,7 @@ import { RefreshCw, Search, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type AddressSnapshot = {
   full_name?: string;
@@ -44,27 +45,6 @@ type Order = {
   created_at: string;
   address_snapshot: AddressSnapshot | null;
   order_items?: OrderItem[];
-};
-
-const STATUS_AR: Record<string, string> = {
-  pending: 'قيد الانتظار',
-  confirmed: 'مؤكد',
-  processing: 'جار التجهيز',
-  shipped: 'تم الشحن',
-  delivered: 'تم التسليم',
-  cancelled: 'ملغى',
-};
-
-const PAYMENT_STATUS_AR: Record<string, string> = {
-  pending: 'بانتظار الدفع',
-  paid: 'مدفوع',
-  failed: 'فشل الدفع',
-  refunded: 'مسترجع',
-};
-
-const PAYMENT_METHOD_AR: Record<string, string> = {
-  cash_on_delivery: 'الدفع عند الاستلام',
-  sham_cash: 'شام كاش',
 };
 
 const TRANSITIONS: Record<string, string[]> = {
@@ -123,7 +103,6 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
           <h2 className="font-black text-[#1C1917]">{title}</h2>
           <button
             type="button"
-            title="إغلاق"
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]"
           >
@@ -291,6 +270,11 @@ export default function OrdersQuickAdmin() {
   const [msg, setMsg] = useState('');
   const [autoOpenedId, setAutoOpenedId] = useState('');
 
+  const t = useTranslations('adminOrders');
+  const tCommon = useTranslations('common');
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+
   const load = useCallback(() => {
     setLoading(true);
     const params = new URLSearchParams({ page: String(page), limit: '25' });
@@ -318,7 +302,7 @@ export default function OrdersQuickAdmin() {
       const detail = await fetchJson<Order>(`/api/orders/${order.id}`);
       setSelected(detail);
     } catch (error) {
-      setMsg(error instanceof Error ? error.message : 'تعذر تحميل تفاصيل الطلب');
+      setMsg(error instanceof Error ? error.message : t('loadFailed', { fallback: 'تعذر تحميل تفاصيل الطلب' }));
     } finally {
       setDetailLoading(false);
     }
@@ -373,10 +357,10 @@ export default function OrdersQuickAdmin() {
         body: JSON.stringify(patch),
       });
       mergeOrder(selected.id, updated);
-      setMsg('تم الحفظ');
+      setMsg(t('savedSuccessfully', { fallback: 'تم الحفظ' }));
     } catch (error) {
       mergeOrder(previous.id, previous);
-      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+      setMsg(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل الحفظ' }));
     }
   };
 
@@ -386,11 +370,11 @@ export default function OrdersQuickAdmin() {
     : [];
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">الطلبات</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{total} طلب</p>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('ordersTitle', { fallback: 'الطلبات' })}</h1>
+          <p className="mt-1 text-sm text-[#A8A29E]">{total} {t('orderCount', { fallback: 'طلب' })}</p>
         </div>
         <button
           type="button"
@@ -398,7 +382,7 @@ export default function OrdersQuickAdmin() {
           className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"
         >
           <RefreshCw size={15} />
-          تحديث
+          {tCommon('refresh', { fallback: 'تحديث' })}
         </button>
       </div>
 
@@ -410,10 +394,10 @@ export default function OrdersQuickAdmin() {
               setSearch(event.target.value);
               setPage(1);
             }}
-            placeholder="بحث برقم الطلب أو اسم العميل..."
+            placeholder={tCommon('search', { fallback: 'بحث...' })}
             className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm outline-none"
           />
-          <div className="flex w-10 items-center justify-center border-r border-[#E5E0D8] text-[#8B8172]">
+          <div className={`flex w-10 items-center justify-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-[#8B8172]`}>
             <Search size={16} />
           </div>
         </div>
@@ -425,10 +409,10 @@ export default function OrdersQuickAdmin() {
           }}
           className="w-full rounded-xl border border-[#E5E0D8] bg-[#FAFAF8] px-3 py-2 text-sm outline-none focus:border-[#B8860B] sm:w-44"
         >
-          <option value="">كل الحالات</option>
-          {Object.entries(STATUS_AR).map(([key, value]) => (
+          <option value="">{t('allStatuses', { fallback: 'كل الحالات' })}</option>
+          {['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map((key) => (
             <option key={key} value={key}>
-              {value}
+              {t(`status.${key}`)}
             </option>
           ))}
         </select>
