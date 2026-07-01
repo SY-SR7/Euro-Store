@@ -381,7 +381,7 @@ function CategorySection({
               {t('noCategoryProducts')}
             </div>
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-3 sm:gap-5">
               {section.products.slice(0, 4).map((product) => (
                 <ProductCard
                   key={product.id}
