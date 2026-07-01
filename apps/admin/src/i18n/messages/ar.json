@@ -1067,7 +1067,13 @@
     "saveFailed": "فشل الحفظ، حاول مجدداً",
     "loadFailed": "تعذر تحميل بيانات الطلب",
     "paymentStatusTitle": "حالة الدفع",
-    "paymentMethodTitle": "طريقة الدفع"
+    "paymentMethodTitle": "طريقة الدفع",
+    "refresh": "تحديث",
+    "search": "بحث...",
+    "previous": "السابق",
+    "next": "التالي",
+    "page": "صفحة",
+    "of": "من"
   },
   "adminProducts": {
     "title": "إدارة المنتجات",
