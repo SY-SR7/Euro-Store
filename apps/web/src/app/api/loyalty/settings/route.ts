@@ -26,12 +26,13 @@ export async function GET() {
   const result = { ...DEFAULTS };
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    // Use SERVICE ROLE key to bypass RLS — this is a server-only route
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_KEY;
 
     if (url && key) {
-      const keysParam = KEYS.map(k => `key.eq.${k}`).join(',');
+      const keysParam = KEYS.join(',');
       const res = await fetch(
-        `${url}/rest/v1/system_settings?or=(${keysParam})&select=key,value`,
+        `${url}/rest/v1/system_settings?key=in.(${keysParam})&select=key,value`,
         {
           cache: 'no-store',
           headers: {
@@ -50,8 +51,6 @@ export async function GET() {
   } catch {}
 
   return NextResponse.json(result, {
-    headers: {
-      'Cache-Control': 'no-store, no-cache, must-revalidate',
-    },
+    headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },
   });
 }

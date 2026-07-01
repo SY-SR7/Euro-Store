@@ -26,18 +26,18 @@ const DEFAULTS: Record<string, number> = {
   referral_bonus_points: 50,
 };
 
-/** جلب الإعدادات مباشرة من API الداخلي — مضمون تجاوز كل طبقات الـ cache */
+/** جلب الإعدادات مباشرة من Supabase REST — service role key لتجاوز RLS */
 async function fetchSettings(): Promise<Record<string, number>> {
   const result = { ...DEFAULTS };
   try {
-    // استخدام SUPABASE REST مباشرة بدون أي client
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    // يجب استخدام service role key لأن RLS تمنع anon من قراءة system_settings
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_KEY;
     if (!url || !key) return result;
 
-    const keysParam = SETTINGS_KEYS.map(k => `key.eq.${k}`).join(',');
+    const keysParam = SETTINGS_KEYS.join(',');
     const res = await fetch(
-      `${url}/rest/v1/system_settings?or=(${keysParam})&select=key,value`,
+      `${url}/rest/v1/system_settings?key=in.(${keysParam})&select=key,value`,
       {
         cache: 'no-store',
         headers: {
