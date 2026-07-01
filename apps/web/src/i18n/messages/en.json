@@ -48,7 +48,12 @@
     "priceInDetails": "Price in details",
     "wishlist": "Wishlist",
     "loginToViewWishlist": "Login to view wishlist",
-    "login": "Login"
+    "login": "Login",
+    "emptyWishlist": "Your wishlist is empty",
+    "removeFromWishlist": "Remove from wishlist",
+    "myAccount": "My Account",
+    "myOrders": "My Orders",
+    "loyaltyPoints": "Loyalty Points"
   },
   "home": {
     "categoriesTitle": "Shop by category",
@@ -188,10 +193,39 @@
         "subtitle": "Discover the latest modern designs tailored to your taste",
         "cta": "Shop Now"
       }
-    }
+    },
+    "newArrivals": "New Arrivals",
+    "attrs": "Attributes",
+    "appDescription": "European fashion store for the Syrian market"
   },
   "faq": {
-    "title": "FAQ"
+    "title": "FAQ",
+    "subtitle": "Answers to the most common questions",
+    "anotherQuestion": "Have another question?",
+    "q1": {
+      "q": "What is the exchange policy?",
+      "a": "You can request an exchange within 7 days of receipt, provided the product is in its original condition."
+    },
+    "q2": {
+      "q": "How can I track my order?",
+      "a": "You can track your order through the My Orders section in your account."
+    },
+    "q3": {
+      "q": "What payment methods are available?",
+      "a": "We accept cash on delivery and Sham Cash."
+    },
+    "q4": {
+      "q": "How long does delivery take?",
+      "a": "Delivery takes 2-5 working days depending on the area."
+    },
+    "q5": {
+      "q": "Can I cancel my order?",
+      "a": "You can cancel your order before it is shipped by contacting us."
+    },
+    "q6": {
+      "q": "How do I join the loyalty program?",
+      "a": "With every purchase you earn points that you can use to get discounts."
+    }
   },
   "description": "A European fashion store built for the Syrian market",
   "order": {
@@ -269,7 +303,18 @@
     "featured": "Featured"
   },
   "contact": {
-    "title": "Contact us"
+    "title": "Contact us",
+    "subtitle": "We are here to help",
+    "name": "Name",
+    "namePlaceholder": "Your name...",
+    "email": "Email",
+    "message": "Message",
+    "messagePlaceholder": "Your message...",
+    "whatsapp": "WhatsApp",
+    "sending": "Sending...",
+    "sentSuccess": "Your message was sent successfully!",
+    "directContact": "Direct Contact",
+    "willContactSoon": "We will contact you soon"
   },
   "sales": "Sales",
   "footer": {
@@ -330,7 +375,15 @@
     "loading": "Loading...",
     "prev": "Previous",
     "productCount": "Product count",
-    "continue": "Continue"
+    "continue": "Continue",
+    "confirm": "Confirm",
+    "close": "Close",
+    "add": "Add",
+    "yes": "Yes",
+    "no": "No",
+    "confirmDelete": "Are you sure?",
+    "openSidebar": "Open Menu",
+    "closeMenu": "Close Menu"
   },
   "productCount": "Product count",
   "categories": {
@@ -357,7 +410,8 @@
     "brands": "Brands",
     "home": "Home",
     "exchange": "Exchange",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "wishlist": "Wishlist"
   },
   "newArrivals": "New arrivals",
   "cart": {
@@ -490,7 +544,29 @@
     "home": "Home",
     "loginToTrack": "Login to track and submit exchange requests.",
     "noRequests": "No previous exchange requests.",
-    "loginRequired": "Login Required"
+    "loginRequired": "Login Required",
+    "noEligibleOrders": "No eligible orders for exchange",
+    "exchangeRequests": "Exchange Requests",
+    "selectOrder": "Select Order",
+    "chooseOrder": "Choose an order...",
+    "exchangeReason": "Exchange Reason",
+    "exchangePolicy": "Exchange Policy",
+    "orderNumberLabel": "Order Number",
+    "orderStatus": "Status",
+    "noOrders": "No orders found",
+    "errors": {
+      "selectOrderFirst": "Please select an order first",
+      "writeReason": "Please write a reason",
+      "network": "A connection error occurred",
+      "generic": "An unexpected error occurred"
+    },
+    "loadingOrders": "Loading orders...",
+    "contactConfirmMsg": "We will contact you for confirmation",
+    "contactConfirmMsgSuccess": "Your request was submitted successfully",
+    "confirmedTitle": "Request Received",
+    "successThanks": "Thank you for your trust",
+    "successMsg": "We will contact you soon",
+    "continueShoppingSuccess": "Continue Shopping"
   },
   "admin": {
     "products": "Product management",
@@ -535,7 +611,24 @@
     "getReferralBonus": "Referral bonus",
     "shareCodeAndGet": "Share code and get",
     "pointsWhenRegistered": "points when friends register",
-    "storeBonusTip": "Tip: The store may give you an extra bonus upon activation."
+    "storeBonusTip": "Tip: The store may give you an extra bonus upon activation.",
+    "copied": "Copied!",
+    "copyCode": "Copy Code",
+    "share": "Share",
+    "referralTitle": "Referral Program",
+    "referralDescription": "Invite friends and earn points",
+    "referralCode": "Referral Code",
+    "stars": "stars",
+    "writeReview": "Write a Review",
+    "submitReview": "Submit Review",
+    "reviewSubmitted": "Review submitted!",
+    "reviewSubmittedMsg": "Thank you for sharing",
+    "reviewWord": "review",
+    "reviewFor": "Review for",
+    "reviewRatingError": "Please choose a rating",
+    "reviewSubmitError": "An error occurred while submitting",
+    "reviewSubmitErrorRetry": "Try again",
+    "writeCommentOptional": "Write a comment (optional)"
   },
   "exchangePolicy": "Exchange policy",
   "productDetails": {

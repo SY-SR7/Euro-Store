@@ -48,7 +48,12 @@
     "priceInDetails": "السعر في التفاصيل",
     "wishlist": "المفضلة",
     "loginToViewWishlist": "سجل الدخول لعرض المفضلة",
-    "login": "تسجيل الدخول"
+    "login": "تسجيل الدخول",
+    "emptyWishlist": "قائمة المفضلة فارغة",
+    "removeFromWishlist": "إزالة من المفضلة",
+    "myAccount": "حسابي",
+    "myOrders": "طلباتي",
+    "loyaltyPoints": "نقاط الولاء"
   },
   "home": {
     "categoriesTitle": "تسوق حسب التصنيف",
@@ -188,10 +193,39 @@
         "subtitle": "اكتشف أحدث التصاميم العصرية التي تناسب ذوقك",
         "cta": "تسوق الآن"
       }
-    }
+    },
+    "newArrivals": "وصل حديثاً",
+    "attrs": "الخصائص",
+    "appDescription": "متجر أزياء أوروبي للسوق السوري"
   },
   "faq": {
-    "title": "الأسئلة الشائعة"
+    "title": "الأسئلة الشائعة",
+    "subtitle": "إجابات لأكثر الأسئلة شيوعاً",
+    "anotherQuestion": "هل لديك سؤال آخر؟",
+    "q1": {
+      "q": "ما هي سياسة الاستبدال؟",
+      "a": "يمكنك طلب الاستبدال خلال 7 أيام من الاستلام بشرط أن يكون المنتج بحالته الأصلية."
+    },
+    "q2": {
+      "q": "كيف يمكنني تتبع طلبي؟",
+      "a": "يمكنك تتبع طلبك من خلال قسم طلباتي في حسابك."
+    },
+    "q3": {
+      "q": "ما هي طرق الدفع المتاحة؟",
+      "a": "نقبل الدفع عند الاستلام وشام كاش."
+    },
+    "q4": {
+      "q": "كم تستغرق عملية التوصيل؟",
+      "a": "يستغرق التوصيل بين 2-5 أيام عمل حسب المنطقة."
+    },
+    "q5": {
+      "q": "هل يمكنني إلغاء طلبي؟",
+      "a": "يمكنك إلغاء طلبك قبل شحنه من خلال التواصل معنا."
+    },
+    "q6": {
+      "q": "كيف أشارك في برنامج الولاء؟",
+      "a": "عند كل عملية شراء تكسب نقاطاً يمكنك استخدامها للحصول على خصومات."
+    }
   },
   "description": "متجر أزياء أوروبي مصمم للسوق السوري",
   "order": {
@@ -269,7 +303,18 @@
     "featured": "مميز"
   },
   "contact": {
-    "title": "تواصل معنا"
+    "title": "تواصل معنا",
+    "subtitle": "نحن هنا للمساعدة",
+    "name": "الاسم",
+    "namePlaceholder": "اسمك...",
+    "email": "البريد الإلكتروني",
+    "message": "الرسالة",
+    "messagePlaceholder": "رسالتك...",
+    "whatsapp": "واتساب",
+    "sending": "جار الإرسال...",
+    "sentSuccess": "تم إرسال رسالتك بنجاح!",
+    "directContact": "تواصل مباشر",
+    "willContactSoon": "سنتواصل معك قريباً"
   },
   "sales": "العروض",
   "footer": {
@@ -330,7 +375,15 @@
     "loading": "جار التحميل...",
     "prev": "السابق",
     "productCount": "عدد المنتجات",
-    "continue": "متابعة"
+    "continue": "متابعة",
+    "confirm": "تأكيد",
+    "close": "إغلاق",
+    "add": "إضافة",
+    "yes": "نعم",
+    "no": "لا",
+    "confirmDelete": "هل تريد الحذف؟",
+    "openSidebar": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة"
   },
   "productCount": "عدد المنتجات",
   "categories": {
@@ -357,7 +410,8 @@
     "brands": "العلامات التجارية",
     "home": "الرئيسية",
     "exchange": "الاستبدال",
-    "faq": "الأسئلة الشائعة"
+    "faq": "الأسئلة الشائعة",
+    "wishlist": "المفضلة"
   },
   "newArrivals": "وصل حديثاً",
   "cart": {
@@ -490,7 +544,29 @@
     "home": "الرئيسية",
     "loginToTrack": "سجل الدخول لتتمكن من تقديم وتتبع طلبات الاستبدال.",
     "noRequests": "لا توجد طلبات استبدال سابقة.",
-    "loginRequired": "تسجيل الدخول مطلوب"
+    "loginRequired": "تسجيل الدخول مطلوب",
+    "noEligibleOrders": "لا توجد طلبات مؤهلة للاستبدال",
+    "exchangeRequests": "طلبات الاستبدال",
+    "selectOrder": "اختر الطلب",
+    "chooseOrder": "اختر الطلب...",
+    "exchangeReason": "سبب الاستبدال",
+    "exchangePolicy": "سياسة الاستبدال",
+    "orderNumberLabel": "رقم الطلب",
+    "orderStatus": "الحالة",
+    "noOrders": "لا توجد طلبات",
+    "errors": {
+      "selectOrderFirst": "يرجى اختيار طلب أولاً",
+      "writeReason": "يرجى كتابة سبب الطلب",
+      "network": "حدث خطأ في الاتصال",
+      "generic": "حدث خطأ غير متوقع"
+    },
+    "loadingOrders": "جار تحميل الطلبات...",
+    "contactConfirmMsg": "سيتم التواصل معك للتأكيد",
+    "contactConfirmMsgSuccess": "تم إرسال طلبك بنجاح",
+    "confirmedTitle": "تم استلام طلبك",
+    "successThanks": "شكراً لثقتك بنا",
+    "successMsg": "سنتواصل معك قريباً",
+    "continueShoppingSuccess": "متابعة التسوق"
   },
   "admin": {
     "products": "إدارة المنتجات",
@@ -535,7 +611,24 @@
     "getReferralBonus": "مكافأة الإحالة",
     "shareCodeAndGet": "شارك كود الإحالة واحصل على",
     "pointsWhenRegistered": "نقطة عند تسجيل أصدقائك",
-    "storeBonusTip": "تلميح: قد يعطيك المتجر مكافأة إضافية عند تفعيل حسابك."
+    "storeBonusTip": "تلميح: قد يعطيك المتجر مكافأة إضافية عند تفعيل حسابك.",
+    "copied": "تم النسخ!",
+    "copyCode": "نسخ الكود",
+    "share": "مشاركة",
+    "referralTitle": "برنامج الإحالة",
+    "referralDescription": "ادعُ أصدقاءك واكسب نقاطاً",
+    "referralCode": "كود الإحالة",
+    "stars": "نجوم",
+    "writeReview": "اكتب تقييمك",
+    "submitReview": "إرسال التقييم",
+    "reviewSubmitted": "تم إرسال التقييم!",
+    "reviewSubmittedMsg": "شكراً على مشاركتك",
+    "reviewWord": "تقييم",
+    "reviewFor": "تقييم لـ",
+    "reviewRatingError": "يرجى اختيار تقييم",
+    "reviewSubmitError": "حدث خطأ أثناء الإرسال",
+    "reviewSubmitErrorRetry": "حاول مجدداً",
+    "writeCommentOptional": "اكتب تعليقاً (اختياري)"
   },
   "exchangePolicy": "سياسة الاستبدال",
   "productDetails": {
