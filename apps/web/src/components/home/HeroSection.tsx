@@ -65,121 +65,116 @@ export function HeroSection() {
       />
 
       {/* ── Content ── */}
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto w-full pt-10 drop-shadow-2xl">
-        
-        {/* Pre-title label */}
-        <motion.p
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={0.1}
-          className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-5 opacity-90 drop-shadow-md"
-          style={{ color: '#E8D28A' }}
-        >
-          {t('collection')}
-        </motion.p>
-
-        {/* Main headline — word by word reveal */}
-        <motion.h1
-          className="text-5xl md:text-7xl lg:text-8xl font-black leading-tight mb-6"
-          style={{ 
-            color: '#FFFFFF',
-            textShadow: '0px 4px 20px rgba(0, 0, 0, 0.9)'
-          }}
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: prefersReduced ? 0 : 0.1, delayChildren: 0.3 } },
-          }}
-        >
-          {(t.raw('words') || ['يُرتدى', 'بأناقة،', 'يُعاش', 'بثقة']).map((word: string, i: number) => (
-            <motion.span
-              key={i}
-              variants={{
-                hidden:  { opacity: 0, y: '0.6em' },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: smooth } },
-              }}
-              className="inline-block me-3"
-            >
-              {word}
-            </motion.span>
-          ))}
-        </motion.h1>
-
-        {/* Sub-headline */}
-        <motion.p
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={0.7}
-          className="text-base md:text-xl max-w-xl leading-relaxed mb-10 font-medium"
-          style={{ color: '#E2E2E2', textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}
-        >
-          {t('subtitle')}
-        </motion.p>
-
-        {/* CTA buttons */}
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={1.0}
-          className="flex flex-wrap gap-4 justify-center"
-        >
-          {/* Primary CTA */}
-          <motion.div
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+      <div className="relative z-10 flex flex-col justify-center px-6 max-w-7xl mx-auto w-full h-full pt-20">
+        <div className="max-w-3xl">
+          {/* Pre-title label */}
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0.1}
+            className="text-[10px] md:text-xs font-bold tracking-[0.5em] uppercase mb-8 opacity-90"
+            style={{ color: '#E8D28A' }}
           >
-            <Link
-              href="/products"
-              className="inline-flex items-center gap-2 px-4 md:px-10 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-full shadow-xl"
-              style={{ background: 'linear-gradient(to right, #E8D28A, #C9A84C)', color: '#000' }}
-            >
-              {t('shopNow')}
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rtl:rotate-180">
-                <path d="M8 3L3 8L8 13M3 8H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </Link>
-          </motion.div>
+            {t('collection')} — 2025
+          </motion.p>
 
-          {/* Secondary CTA */}
-          <motion.div
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+          {/* Main headline — Editorial Oversized */}
+          <motion.h1
+            className="text-6xl md:text-8xl lg:text-[9rem] font-headline font-black leading-[0.95] tracking-tight mb-8"
+            style={{ 
+              color: '#FFFFFF',
+              textShadow: '0px 10px 30px rgba(0, 0, 0, 0.4)'
+            }}
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: prefersReduced ? 0 : 0.1, delayChildren: 0.3 } },
+            }}
           >
-            <Link
-              href="/categories"
-              className="inline-flex items-center gap-2 border px-4 md:px-10 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-300 rounded-full bg-black/20 backdrop-blur-sm"
-              style={{ borderColor: 'rgba(232, 210, 138, 0.4)', color: '#FFFFFF' }}
-            >
-              {t('explore')}
-            </Link>
-          </motion.div>
-        </motion.div>
+            {(t.raw('words') || ['يُرتدى', 'بأناقة،', 'يُعاش', 'بثقة']).map((word: string, i: number) => (
+              <motion.span
+                key={i}
+                variants={{
+                  hidden:  { opacity: 0, y: '100%', rotate: 5 },
+                  visible: { opacity: 1, y: 0, rotate: 0, transition: { duration: 0.9, ease: smooth } },
+                }}
+                className="inline-block me-4 lg:me-6 origin-bottom-left"
+              >
+                {word}
+              </motion.span>
+            ))}
+          </motion.h1>
 
-        {/* Stats row */}
+          {/* Sub-headline */}
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0.7}
+            className="text-sm md:text-lg max-w-md leading-relaxed mb-12 font-medium opacity-80"
+            style={{ color: '#F3EEE3' }}
+          >
+            {t('subtitle')}
+          </motion.p>
+
+          {/* CTA buttons */}
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1.0}
+            className="flex flex-wrap gap-6 items-center"
+          >
+            {/* Primary CTA */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            >
+              <Link
+                href="/products"
+                className="inline-flex items-center justify-center gap-3 px-8 md:px-12 py-4 text-xs md:text-sm font-black uppercase tracking-[0.2em] transition-all duration-300 rounded-none bg-white text-black hover:bg-[#E8D28A]"
+              >
+                {t('shopNow')}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="rtl:rotate-180">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </motion.div>
+
+            {/* Secondary CTA */}
+            <motion.div
+              whileHover={{ x: 10 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+            >
+              <Link
+                href="/categories"
+                className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.2em] text-white hover:text-[#E8D28A] transition-colors border-b border-transparent hover:border-[#E8D28A] pb-1"
+              >
+                {t('explore')}
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Stats row - Moved to bottom right on desktop */}
         <motion.div
           variants={scaleIn}
           initial="hidden"
           animate="visible"
           custom={1.3}
-          className="mt-16 flex flex-wrap justify-center gap-10 md:gap-20 pt-10 w-full relative"
+          className="absolute bottom-10 rtl:left-10 ltr:right-10 hidden lg:flex flex-col gap-10 border-l border-white/20 pl-8"
         >
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-[#C9A84C] to-transparent opacity-50" />
           {[
             { num: '+500', label: t('stats.exclusive') },
             { num: '+10k', label: t('stats.customers') },
             { num: t('stats.categoriesNum'), label: t('stats.categories') },
           ].map(({ num, label }) => (
-            <div key={label} className="flex flex-col items-center gap-1">
-              <span className="text-3xl md:text-4xl font-black" style={{ color: '#E8D28A', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.8))' }}>
-                {num}
-              </span>
-              <span className="text-xs md:text-sm font-bold tracking-wider" style={{ color: '#E2E2E2', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{label}</span>
+            <div key={label} className="flex flex-col gap-1">
+              <span className="text-3xl font-headline font-black text-white">{num}</span>
+              <span className="text-[10px] font-bold tracking-widest text-[#E8D28A] uppercase">{label}</span>
             </div>
           ))}
         </motion.div>
