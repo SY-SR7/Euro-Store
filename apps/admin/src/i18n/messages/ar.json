@@ -543,5 +543,30 @@
     "redeem": "الاستبدال",
     "order50k": "طلب 50,000",
     "referral": "الإحالة"
+  },
+  "adminHomepage": {
+    "homepageTitle": "الواجهة الرئيسية",
+    "sectionsCount": "{count} قسم",
+    "newSection": "قسم جديد",
+    "sectionKeyHero": "Hero",
+    "sectionKeyFeatured": "منتجات مميزة",
+    "sectionKeyCategories": "شبكة التصنيفات",
+    "sectionKeyPromotions": "العروض",
+    "sectionKeyLoyalty": "الولاء",
+    "sectionKeyNewArrivals": "وصل حديثا",
+    "titleAr": "العنوان العربي",
+    "titleEn": "العنوان الإنجليزي",
+    "sortOrder": "الترتيب",
+    "addBtn": "إضافة",
+    "noSections": "لا توجد أقسام",
+    "section": "القسم",
+    "title": "العنوان",
+    "status": "الحالة",
+    "statusVisible": "مرئي",
+    "statusHidden": "مخفي",
+    "sectionType": "نوع القسم",
+    "deleteSection": "حذف القسم",
+    "confirmDelete": "حذف هذا القسم؟",
+    "failedToLoadSection": "تعذر فتح القسم"
   }
 }

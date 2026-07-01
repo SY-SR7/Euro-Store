@@ -543,5 +543,30 @@
     "redeem": "Redeem",
     "order50k": "50,000 Order",
     "referral": "Referral"
+  },
+  "adminHomepage": {
+    "homepageTitle": "Homepage",
+    "sectionsCount": "{count} sections",
+    "newSection": "New Section",
+    "sectionKeyHero": "Hero",
+    "sectionKeyFeatured": "Featured Products",
+    "sectionKeyCategories": "Categories Grid",
+    "sectionKeyPromotions": "Promotions",
+    "sectionKeyLoyalty": "Loyalty",
+    "sectionKeyNewArrivals": "New Arrivals",
+    "titleAr": "Arabic Title",
+    "titleEn": "English Title",
+    "sortOrder": "Sort Order",
+    "addBtn": "Add",
+    "noSections": "No sections found",
+    "section": "Section",
+    "title": "Title",
+    "status": "Status",
+    "statusVisible": "Visible",
+    "statusHidden": "Hidden",
+    "sectionType": "Section Type",
+    "deleteSection": "Delete Section",
+    "confirmDelete": "Delete this section?",
+    "failedToLoadSection": "Failed to open section"
   }
 }
