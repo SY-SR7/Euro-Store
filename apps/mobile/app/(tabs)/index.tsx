@@ -1,16 +1,49 @@
-import React from 'react';
-import { View, Text, ScrollView, ImageBackground, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, ScrollView, ImageBackground, TouchableOpacity, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native';
 import { ProductCard } from '../../components/ProductCard';
 import { LinearGradient } from 'expo-linear-gradient';
+import { supabase } from '../../utils/supabase';
 
-const MOCK_PRODUCTS = [
-  { id: '1', title: '????? ???? ??????? ????', price: 1500000, imageUrl: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800' },
-  { id: '2', title: '???? ?????? ?????', price: 2100000, imageUrl: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800' },
-  { id: '3', title: '????? ?? ?????', price: 750000, imageUrl: 'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=800' },
-  { id: '4', title: '???? ??????? ??????', price: 950000, imageUrl: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800' },
-];
+type ProductData = {
+  id: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+};
 
 export default function HomeScreen() {
+  const [products, setProducts] = useState<ProductData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, name_ar, product_variants(price_syp), product_images(url)')
+          .eq('is_active', true)
+          .limit(4);
+
+        if (error) throw error;
+
+        if (data) {
+          const formatted = data.map((p: any) => ({
+            id: p.id,
+            title: p.name_ar,
+            price: p.product_variants?.[0]?.price_syp || 0,
+            imageUrl: p.product_images?.[0]?.url || 'https://via.placeholder.com/300',
+          }));
+          setProducts(formatted);
+        }
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProducts();
+  }, []);
+
   return (
     <SafeAreaView className='flex-1 bg-background'>
       <StatusBar barStyle='light-content' />
@@ -28,11 +61,11 @@ export default function HomeScreen() {
               className='absolute inset-0 top-1/2'
             />
             <View className='absolute bottom-0 w-full p-6'>
-              <Text className='text-primary text-sm font-bold tracking-[0.2em] mb-2'>?????? ????? 2026</Text>
-              <Text className='text-white text-4xl font-bold mb-4'>??????? ???????{'\n'}?? ?????? ???</Text>
+              <Text className='text-primary text-sm font-bold tracking-[0.2em] mb-2'>مجموعة الصيف 2026</Text>
+              <Text className='text-white text-4xl font-bold mb-4'>الأناقة العصرية{'\n'}في متناول يدك</Text>
               
               <TouchableOpacity className='bg-primary self-start px-8 py-3 rounded-xl'>
-                <Text className='text-[#0F0F0F] font-bold'>???? ????</Text>
+                <Text className='text-[#0F0F0F] font-bold'>تسوق الآن</Text>
               </TouchableOpacity>
             </View>
           </ImageBackground>
@@ -41,17 +74,21 @@ export default function HomeScreen() {
         {/* Featured Products */}
         <View className='mt-8 px-6 mb-8'>
           <View className='flex-row justify-between items-center mb-4'>
-            <Text className='text-text-primary text-xl font-bold'>???? ????????</Text>
+            <Text className='text-text-primary text-xl font-bold'>أحدث الإضافات</Text>
             <TouchableOpacity>
-              <Text className='text-primary text-sm font-bold'>??? ????</Text>
+              <Text className='text-primary text-sm font-bold'>عرض الكل</Text>
             </TouchableOpacity>
           </View>
           
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className='overflow-visible' contentContainerStyle={{ paddingRight: 24 }}>
-            {MOCK_PRODUCTS.map(product => (
-              <ProductCard key={product.id} {...product} />
-            ))}
-          </ScrollView>
+          {loading ? (
+            <ActivityIndicator size="large" color="#B8860B" className="mt-4" />
+          ) : (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className='overflow-visible' contentContainerStyle={{ paddingRight: 24 }}>
+              {products.map(product => (
+                <ProductCard key={product.id} {...product} />
+              ))}
+            </ScrollView>
+          )}
         </View>
 
       </ScrollView>
