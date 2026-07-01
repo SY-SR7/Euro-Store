@@ -284,10 +284,24 @@ function buildCustomerNotifications(rows: Record<string, unknown>[], t: any): No
 }
 
 function buildAuditNotifications(rows: Record<string, unknown>[], t: any, locale: string): NotificationItem[] {
+  const ENTITY_MAP: Record<string, string> = {
+    'catalog/products': 'المنتجات',
+    'catalog/variants': 'متغيرات المنتجات',
+    'catalog/categories': 'التصنيفات',
+    'catalog/brands': 'العلامات التجارية',
+    'orders': 'الطلبات',
+    'customers': 'العملاء',
+    'discounts': 'الخصومات',
+    'exchanges': 'الاستبدال والترجيع',
+    'settings': 'الإعدادات',
+    'loyalty_settings': 'إعدادات الولاء'
+  };
+
   return rows.slice(0, 40).map((row) => {
     const id = getString(row, 'id', crypto.randomUUID());
     const action = getString(row, 'action_ar', getString(row, 'action', t('systemAction')));
-    const entity = getString(row, 'entity_label', getString(row, 'entity_type', t('systemEntity')));
+    const rawEntityType = getString(row, 'entity_type', t('systemEntity'));
+    const entity = getString(row, 'entity_label', ENTITY_MAP[rawEntityType] || rawEntityType);
     const createdAt = getString(row, 'created_at', new Date().toISOString());
     const actionRaw = getString(row, 'action', '');
     const danger = actionRaw.includes('delete');
