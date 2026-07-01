@@ -683,7 +683,7 @@
     "loyalty_redeem_points_per_syp": "نقاط كل ليرة",
     "loyalty_max_redeem_percent": "حد خصم النقاط",
     "loyalty_referral_bonus_points": "مكافأة الإحالة",
-    "referral_bonus_points": "إحالة قديمة",
+    "referral_bonus_points": "نقاط الإحالة الناجحة",
     "groupSystem": "النظام",
     "groupLoyalty": "الولاء",
     "unitSyp": "ل.س",
@@ -697,7 +697,15 @@
     "savedSuccessfully": "تم حفظ الإعدادات",
     "saveFailed": "فشل حفظ الإعدادات",
     "settingsLabel": "الإعدادات",
-    "saved": "تم الحفظ"
+    "saved": "تم الحفظ",
+    "groupContact": "معلومات التواصل",
+    "min_order_value_syp": "الحد الأدنى لقيمة الطلب",
+    "contact_whatsapp": "رقم واتساب التواصل",
+    "contact_email": "البريد الإلكتروني للدعم",
+    "loyalty_point_value_syp": "قيمة النقطة الواحدة بالليرة",
+    "loyalty_max_redemption_pct": "أقصى نسبة استبدال نقاط من الطلب (%)",
+    "loyalty_min_redemption_pts": "الحد الأدنى للنقاط للاسترداد",
+    "unitNone": ""
   },
   "adminLoyaltySettings": {
     "loyaltyTitle": "الولاء",
