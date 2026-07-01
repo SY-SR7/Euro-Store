@@ -56,7 +56,7 @@ export function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () =
                 {t('title') || 'حقيبة التسوق'} 
                 <span className="text-sm font-bold text-text-secondary">({totalItems()})</span>
               </h2>
-              <button onClick={onClose} className="rounded-full p-2 transition-colors hover:bg-background-secondary text-text-secondary hover:text-text-primary">
+              <button onClick={onClose} aria-label="Close cart drawer" className="rounded-full p-2 transition-colors hover:bg-background-secondary text-text-secondary hover:text-text-primary">
                 <X size={20} />
               </button>
             </div>
@@ -107,14 +107,14 @@ export function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () =
                         <span className="text-xs text-text-secondary mt-1">{item.sku}</span>
                         <div className="mt-auto flex items-center justify-between">
                           <div className="flex items-center rounded-lg border border-border bg-background-secondary p-1">
-                            <button onClick={() => updateQty(item.variantId, item.quantity - 1)} className="flex h-6 w-6 items-center justify-center rounded text-lg hover:bg-background-card">-</button>
+                            <button onClick={() => updateQty(item.variantId, item.quantity - 1)} aria-label="Decrease quantity" className="flex h-6 w-6 items-center justify-center rounded text-lg hover:bg-background-card">-</button>
                             <span className="w-8 text-center text-sm font-bold">{item.quantity}</span>
-                            <button onClick={() => updateQty(item.variantId, item.quantity + 1)} className="flex h-6 w-6 items-center justify-center rounded text-lg hover:bg-background-card">+</button>
+                            <button onClick={() => updateQty(item.variantId, item.quantity + 1)} aria-label="Increase quantity" className="flex h-6 w-6 items-center justify-center rounded text-lg hover:bg-background-card">+</button>
                           </div>
                           <span className="font-black text-primary">{formatPrice(item.priceSyp * item.quantity)}</span>
                         </div>
                       </div>
-                      <button onClick={() => removeItem(item.variantId)} className="self-start p-2 text-text-muted transition-colors hover:text-red-500">
+                      <button onClick={() => removeItem(item.variantId)} aria-label="Remove item" className="self-start p-2 text-text-muted transition-colors hover:text-red-500">
                         <Trash2 size={16} />
                       </button>
                     </motion.div>
