@@ -3,8 +3,11 @@ const fs = require('fs');
 const arPath = 'apps/admin/src/i18n/messages/ar.json';
 const enPath = 'apps/admin/src/i18n/messages/en.json';
 
-const ar = JSON.parse(fs.readFileSync(arPath, 'utf8'));
-const en = JSON.parse(fs.readFileSync(enPath, 'utf8'));
+const arContent = fs.readFileSync(arPath, 'utf8').replace(/^\uFEFF/, '');
+const enContent = fs.readFileSync(enPath, 'utf8').replace(/^\uFEFF/, '');
+
+const ar = JSON.parse(arContent);
+const en = JSON.parse(enContent);
 
 ar.common = ar.common || {};
 en.common = en.common || {};
