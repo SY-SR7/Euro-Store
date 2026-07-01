@@ -40,8 +40,8 @@ export function Header() {
             const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
             return (
               <Link key={link.href} href={link.href}
-                className={`rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-[#F5F5F4] hover:text-[#B8860B] ${
-                  isActive ? 'bg-[#F5F5F4] text-[#B8860B]' : 'text-[#57534E]'
+                className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 hover:bg-[#FACC15]/20 hover:text-[#B8860B] ${
+                  isActive ? 'bg-[#FACC15]/15 text-[#B8860B] ring-1 ring-[#B8860B]/30 shadow-sm' : 'text-[#57534E]'
                 }`}>
                 {t(link.key)}
               </Link>
@@ -49,25 +49,35 @@ export function Header() {
           })}
         </nav>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <Link href="/products" aria-label={t('search')}
-            className="hidden rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B] md:inline-flex">
+            className={`hidden rounded-full p-2.5 transition-all duration-200 hover:bg-[#FACC15]/20 hover:text-[#B8860B] md:inline-flex ${
+              pathname.startsWith('/products') ? 'bg-[#FACC15]/15 text-[#B8860B] ring-1 ring-[#B8860B]/30 shadow-sm' : 'text-[#57534E]'
+            }`}>
             <Search className="h-4 w-4" />
           </Link>
           <Link href="/loyalty" aria-label={t('loyalty')}
-            className="hidden rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B] sm:inline-flex">
+            className={`hidden rounded-full p-2.5 transition-all duration-200 hover:bg-[#FACC15]/20 hover:text-[#B8860B] sm:inline-flex ${
+              pathname.startsWith('/loyalty') ? 'bg-[#FACC15]/15 text-[#B8860B] ring-1 ring-[#B8860B]/30 shadow-sm' : 'text-[#57534E]'
+            }`}>
             <Star className="h-4 w-4" />
           </Link>
           <Link href="/exchange" aria-label={t('exchange')}
-            className="hidden rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B] sm:inline-flex">
+            className={`hidden rounded-full p-2.5 transition-all duration-200 hover:bg-[#FACC15]/20 hover:text-[#B8860B] sm:inline-flex ${
+              pathname.startsWith('/exchange') ? 'bg-[#FACC15]/15 text-[#B8860B] ring-1 ring-[#B8860B]/30 shadow-sm' : 'text-[#57534E]'
+            }`}>
             <RefreshCw className="h-4 w-4" />
           </Link>
           <Link href="/wishlist" aria-label={t('wishlist')}
-            className="hidden rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B] sm:inline-flex">
+            className={`hidden rounded-full p-2.5 transition-all duration-200 hover:bg-[#FACC15]/20 hover:text-[#B8860B] sm:inline-flex ${
+              pathname.startsWith('/wishlist') ? 'bg-[#FACC15]/15 text-[#B8860B] ring-1 ring-[#B8860B]/30 shadow-sm' : 'text-[#57534E]'
+            }`}>
             <Heart className="h-4 w-4" />
           </Link>
           <Link href="/account" aria-label={t('account')}
-            className="rounded-full p-2 text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B]">
+            className={`rounded-full p-2.5 transition-all duration-200 hover:bg-[#FACC15]/20 hover:text-[#B8860B] ${
+              pathname.startsWith('/account') ? 'bg-[#FACC15]/15 text-[#B8860B] ring-1 ring-[#B8860B]/30 shadow-sm' : 'text-[#57534E]'
+            }`}>
             <User className="h-4 w-4" />
           </Link>
           <CartBadge />
