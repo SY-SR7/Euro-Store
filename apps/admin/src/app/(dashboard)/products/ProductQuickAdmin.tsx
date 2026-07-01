@@ -1258,47 +1258,48 @@ export default function ProductQuickAdmin() {
                   </div>
                 </Section>
 
-                <Section title="بيانات المنتج">
+                <Section title={t('productDetails', { fallback: 'بيانات المنتج' })}>
                   <div className="space-y-2">
-                    <Field label="الاسم العربي">
-                      <InlineText value={activeProduct.name_ar} onSave={(value) => patchProduct({ name_ar: value })} />
+                    <Field label={t('productNameAr', { fallback: 'الاسم العربي' })}>
+                      <InlineText value={activeProduct.name_ar} dir={isAr ? "rtl" : "ltr"} onSave={(value) => patchProduct({ name_ar: value })} />
                     </Field>
-                    <Field label="الاسم الإنجليزي">
+                    <Field label={t('productNameEn', { fallback: 'الاسم الإنجليزي' })}>
                       <InlineText
                         value={activeProduct.name_en}
                         dir="ltr"
                         onSave={(value) => patchProduct({ name_en: value })}
                       />
                     </Field>
-                    <Field label="الرابط">
+                    <Field label={t('productSlug', { fallback: 'الرابط' })}>
                       <InlineText
                         value={activeProduct.slug}
                         dir="ltr"
                         onSave={(value) => patchProduct({ slug: value })}
                       />
                     </Field>
-                    <Field label="التصنيف">
+                    <Field label={t('category', { fallback: 'التصنيف' })}>
                       <InlineSelect
                         value={activeProduct.category_id ?? ''}
                         options={categoryOptions}
                         onSave={(value) => patchProduct({ category_id: value })}
                       />
                     </Field>
-                    <Field label="الماركة">
+                    <Field label={t('brand', { fallback: 'الماركة' })}>
                       <InlineSelect
                         value={activeProduct.brand_id ?? ''}
                         options={brandOptions}
                         onSave={(value) => patchProduct({ brand_id: value })}
                       />
                     </Field>
-                    <Field label="الوصف العربي">
+                    <Field label={t('descriptionAr', { fallback: 'الوصف العربي' })}>
                       <InlineText
                         value={productDetails?.description_ar ?? ''}
                         multiline
+                        dir={isAr ? "rtl" : "ltr"}
                         onSave={(value) => patchProduct({ description_ar: value })}
                       />
                     </Field>
-                    <Field label="الوصف الإنجليزي">
+                    <Field label={t('descriptionEn', { fallback: 'الوصف الإنجليزي' })}>
                       <InlineText
                         value={productDetails?.description_en ?? ''}
                         dir="ltr"
@@ -1306,22 +1307,22 @@ export default function ProductQuickAdmin() {
                         onSave={(value) => patchProduct({ description_en: value })}
                       />
                     </Field>
-                    <Field label="النشر">
+                    <Field label={t('visibility', { fallback: 'النشر' })}>
                       <ChoicePills
                         value={Boolean(activeProduct.is_active)}
                         options={[
-                          { value: true, label: 'نشط', activeClass: 'border-green-200 bg-green-50 text-green-700' },
-                          { value: false, label: 'معطّل', activeClass: 'border-red-200 bg-red-50 text-red-700' },
+                          { value: true, label: t('active', { fallback: 'نشط' }), activeClass: 'border-green-200 bg-green-50 text-green-700' },
+                          { value: false, label: t('inactive', { fallback: 'معطّل' }), activeClass: 'border-red-200 bg-red-50 text-red-700' },
                         ]}
                         onSave={(value) => patchProduct({ is_active: value })}
                       />
                     </Field>
-                    <Field label="التمييز">
+                    <Field label={t('highlighting', { fallback: 'التمييز' })}>
                       <ChoicePills
                         value={Boolean(activeProduct.is_featured)}
                         options={[
-                          { value: true, label: 'مميز', activeClass: 'border-amber-200 bg-amber-50 text-amber-700' },
-                          { value: false, label: 'عادي', activeClass: 'border-[#E5E0D8] bg-[#FAF7EF] text-[#57534E]' },
+                          { value: true, label: t('featured', { fallback: 'مميز' }), activeClass: 'border-amber-200 bg-amber-50 text-amber-700' },
+                          { value: false, label: t('normal', { fallback: 'عادي' }), activeClass: 'border-[#E5E0D8] bg-[#FAF7EF] text-[#57534E]' },
                         ]}
                         onSave={(value) => patchProduct({ is_featured: value })}
                       />
@@ -1332,21 +1333,21 @@ export default function ProductQuickAdmin() {
 
               <div className="grid gap-3 sm:grid-cols-3">
                 <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
-                  <p className="text-xs font-bold text-[#8B8172]">الخيارات</p>
+                  <p className="text-xs font-bold text-[#8B8172]">{t('variants', { fallback: 'الخيارات' })}</p>
                   <p className="mt-1 text-2xl font-black text-[#1C1917]">{variants.length}</p>
                 </div>
                 <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
-                  <p className="text-xs font-bold text-[#8B8172]">المخزون</p>
+                  <p className="text-xs font-bold text-[#8B8172]">{t('stock', { fallback: 'المخزون' })}</p>
                   <p className="mt-1 text-2xl font-black text-[#1C1917]">{totalStock}</p>
                 </div>
                 <div className="rounded-2xl border border-[#E5E0D8] bg-white px-4 py-3">
-                  <p className="text-xs font-bold text-[#8B8172]">أدنى سعر</p>
+                  <p className="text-xs font-bold text-[#8B8172]">{t('lowestPrice', { fallback: 'أدنى سعر' })}</p>
                   <p className="mt-1 text-lg font-black text-[#B8860B]">{minPrice ? formatSYP(minPrice) : '—'}</p>
                 </div>
               </div>
 
               <Section
-                title={`المتغيرات والأسعار (${variants.length})`}
+                title={`${t('variantsAndPrices', { fallback: 'المتغيرات والأسعار' })} (${variants.length})`}
                 action={
                   <button
                     type="button"
@@ -1354,7 +1355,7 @@ export default function ProductQuickAdmin() {
                     className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926]"
                   >
                     <Plus size={14} />
-                    خيار
+                    {t('addVariant', { fallback: 'خيار' })}
                   </button>
                 }
               >
@@ -1368,13 +1369,13 @@ export default function ProductQuickAdmin() {
                         dir="ltr"
                         className={`${inputClass} md:col-span-2`}
                       />
-                      <input
+                        <input
                         type="number"
                         value={newVariant.price_syp}
                         onChange={(event) =>
                           setNewVariant((draft) => ({ ...draft, price_syp: event.target.value }))
                         }
-                        placeholder="السعر"
+                        placeholder={t('price', { fallback: 'السعر' })}
                         className={inputClass}
                       />
                       <input
@@ -1383,7 +1384,7 @@ export default function ProductQuickAdmin() {
                         onChange={(event) =>
                           setNewVariant((draft) => ({ ...draft, compare_price_syp: event.target.value }))
                         }
-                        placeholder="المقارنة"
+                        placeholder={t('comparePrice', { fallback: 'المقارنة' })}
                         className={inputClass}
                       />
                       <input
@@ -1392,7 +1393,7 @@ export default function ProductQuickAdmin() {
                         onChange={(event) =>
                           setNewVariant((draft) => ({ ...draft, stock_quantity: event.target.value }))
                         }
-                        placeholder="المخزون"
+                        placeholder={t('stock', { fallback: 'المخزون' })}
                         className={inputClass}
                       />
                       <button
@@ -1401,14 +1402,14 @@ export default function ProductQuickAdmin() {
                         disabled={savingKey === 'variant:new' || !newVariant.sku.trim() || !newVariant.price_syp.trim()}
                         className="rounded-xl bg-[#B8860B] px-4 py-2 text-sm font-black text-white transition hover:bg-[#9A7209] disabled:opacity-50"
                       >
-                        إضافة
+                        {tCommon('add', { fallback: 'إضافة' })}
                       </button>
                     </div>
                     {attrTypes.length ? (
                       <div className="mt-3 space-y-2">
                         {attrTypes.map((type) => (
                           <div key={type.id} className="flex flex-wrap items-center gap-2">
-                            <span className="w-20 text-xs font-black text-[#8B8172]">{type.name_ar}</span>
+                            <span className="w-20 text-xs font-black text-[#8B8172]">{isAr ? type.name_ar : (type.name_en || type.name_ar)}</span>
                             {getAttrValues(type).map((value) => {
                               const checked = newVariantAttrIds.includes(value.id);
                               return (
@@ -1423,7 +1424,7 @@ export default function ProductQuickAdmin() {
                                   }`}
                                 >
                                   <ColorDot hex={value.hex_color} />
-                                  {value.value_ar}
+                                  {isAr ? value.value_ar : (value.value_en || value.value_ar)}
                                 </button>
                               );
                             })}
@@ -1436,7 +1437,7 @@ export default function ProductQuickAdmin() {
 
                 {variants.length === 0 ? (
                   <div className="rounded-xl border border-dashed border-[#E5E0D8] p-8 text-center text-sm font-bold text-[#8B8172]">
-                    لا توجد متغيرات
+                    {t('noVariants', { fallback: 'لا توجد متغيرات' })}
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -1459,12 +1460,12 @@ export default function ProductQuickAdmin() {
                                 options={[
                                   {
                                     value: true,
-                                    label: 'نشط',
+                                    label: t('active', { fallback: 'نشط' }),
                                     activeClass: 'border-green-200 bg-green-50 text-green-700',
                                   },
                                   {
                                     value: false,
-                                    label: 'معطّل',
+                                    label: t('inactive', { fallback: 'معطّل' }),
                                     activeClass: 'border-red-200 bg-red-50 text-red-700',
                                   },
                                 ]}
@@ -1472,7 +1473,7 @@ export default function ProductQuickAdmin() {
                               />
                               <button
                                 type="button"
-                                title="حذف الخيار"
+                                title={tCommon('delete', { fallback: 'حذف الخيار' })}
                                 onClick={() => void deleteVariant(variant)}
                                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-red-100 text-red-600 transition hover:bg-red-50"
                               >
@@ -1482,26 +1483,26 @@ export default function ProductQuickAdmin() {
                           </div>
 
                           <div className="grid gap-2 md:grid-cols-4">
-                            <Field label="السعر">
+                            <Field label={t('price', { fallback: 'السعر' })}>
                               <InlineNumber
                                 value={asNumber(variant.price_syp)}
                                 onSave={(value) => patchVariant(variant, { price_syp: asNumber(value) })}
                               />
                             </Field>
-                            <Field label="المقارنة">
+                            <Field label={t('comparePrice', { fallback: 'المقارنة' })}>
                               <InlineNumber
                                 value={variant.compare_price_syp}
                                 allowNull
                                 onSave={(value) => patchVariant(variant, { compare_price_syp: value })}
                               />
                             </Field>
-                            <Field label="المخزون">
+                            <Field label={t('stock', { fallback: 'المخزون' })}>
                               <InlineNumber
                                 value={asNumber(variant.stock_quantity)}
                                 onSave={(value) => patchVariant(variant, { stock_quantity: asNumber(value) })}
                               />
                             </Field>
-                            <Field label="الوزن">
+                            <Field label={t('weightGrams', { fallback: 'الوزن (غرام)' })}>
                               <InlineNumber
                                 value={variant.weight_grams ?? null}
                                 allowNull
@@ -1514,7 +1515,7 @@ export default function ProductQuickAdmin() {
                             <div className="mt-3 space-y-2">
                               {attrTypes.map((type) => (
                                 <div key={type.id} className="flex flex-wrap items-center gap-2">
-                                  <span className="w-20 text-xs font-black text-[#8B8172]">{type.name_ar}</span>
+                                  <span className="w-20 text-xs font-black text-[#8B8172]">{isAr ? type.name_ar : (type.name_en || type.name_ar)}</span>
                                   {getAttrValues(type).map((value) => {
                                     const checked = attrIds.includes(value.id);
                                     return (
@@ -1529,7 +1530,7 @@ export default function ProductQuickAdmin() {
                                         }`}
                                       >
                                         <ColorDot hex={value.hex_color} />
-                                        {value.value_ar}
+                                        {isAr ? value.value_ar : (value.value_en || value.value_ar)}
                                       </button>
                                     );
                                   })}
@@ -1545,7 +1546,7 @@ export default function ProductQuickAdmin() {
               </Section>
 
               <Section
-                title={`صور المنتج (${images.length})`}
+                title={`${t('productImages', { fallback: 'صور المنتج' })} (${images.length})`}
                 action={
                   <button
                     type="button"
@@ -1554,7 +1555,7 @@ export default function ProductQuickAdmin() {
                     className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926] disabled:opacity-50"
                   >
                     <ImagePlus size={14} />
-                    إضافة
+                    {tCommon('add', { fallback: 'إضافة' })}
                   </button>
                 }
               >
@@ -1562,7 +1563,7 @@ export default function ProductQuickAdmin() {
                   <input
                     value={newImageUrl}
                     onChange={(event) => setNewImageUrl(event.target.value)}
-                    placeholder="رابط الصورة"
+                    placeholder={t('imageUrl', { fallback: 'رابط الصورة' })}
                     dir="ltr"
                     className={inputClass}
                   />
@@ -1570,7 +1571,7 @@ export default function ProductQuickAdmin() {
 
                 {images.length === 0 ? (
                   <div className="rounded-xl border border-dashed border-[#E5E0D8] p-8 text-center text-sm font-bold text-[#8B8172]">
-                    لا توجد صور
+                    {t('noImages', { fallback: 'لا توجد صور' })}
                   </div>
                 ) : (
                   <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -1587,22 +1588,23 @@ export default function ProductQuickAdmin() {
                         >
                           <img src={image.url} alt={image.alt_ar ?? ''} className="aspect-video w-full object-cover" />
                           {image.is_primary ? (
-                            <span className="absolute right-2 top-2 rounded-full bg-[#B8860B] px-2 py-0.5 text-[10px] font-black text-white">
-                              رئيسية
+                            <span className={`absolute ${isAr ? "right-2" : "left-2"} top-2 rounded-full bg-[#B8860B] px-2 py-0.5 text-[10px] font-black text-white`}>
+                              {t('primary', { fallback: 'رئيسية' })}
                             </span>
                           ) : null}
                         </button>
                         <div className="space-y-2">
-                          <Field label="الرابط">
+                          <Field label={t('link', { fallback: 'الرابط' })}>
                             <InlineText
                               value={image.url}
                               dir="ltr"
                               onSave={(value) => patchImage(image, { url: value })}
                             />
                           </Field>
-                          <Field label="النص">
+                          <Field label={t('altText', { fallback: 'النص البديل' })}>
                             <InlineText
                               value={image.alt_ar ?? ''}
+                              dir={isAr ? "rtl" : "ltr"}
                               onSave={(value) => patchImage(image, { alt_ar: value })}
                             />
                           </Field>
