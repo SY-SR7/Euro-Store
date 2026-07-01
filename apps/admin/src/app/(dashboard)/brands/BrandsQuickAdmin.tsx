@@ -4,6 +4,7 @@ import { Plus, RefreshCw, Search, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type Brand = { id: string; name: string; slug: string | null; logo_url?: string | null; is_active: boolean | null };
 
@@ -29,7 +30,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
       <div className="w-full max-w-2xl rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" title="إغلاق" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]"><X size={17} /></button>
+          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]"><X size={17} /></button>
         </div>
         <div className="p-5">{children}</div>
       </div>
@@ -56,9 +57,10 @@ function InlineText({ value, onSave, dir = 'rtl' }: { value?: string | null; onS
 }
 
 function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolean) => void | Promise<void> }) {
+  const t = useTranslations('adminCatalog');
   return (
     <div className="flex gap-2">
-      {[{ v: true, l: 'نشط', c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: 'غير نشط', c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
+      {[{ v: true, l: t('active', { fallback: 'مفعّل' }), c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: t('inactive', { fallback: 'غير مفعّل' }), c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
         <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}>{option.l}</button>
       ))}
     </div>
@@ -81,6 +83,10 @@ export default function BrandsQuickAdmin() {
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState('');
   const [newSlug, setNewSlug] = useState('');
+  const t = useTranslations('adminCatalog');
+  const tCommon = useTranslations('common');
+  const locale = useLocale();
+  const isAr = locale === 'ar';
 
   const load = useCallback(() => {
     setLoading(true);
@@ -120,8 +126,8 @@ export default function BrandsQuickAdmin() {
         openBrand(brand, false);
         setAutoOpenedId(brandId);
       })
-      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح الماركة'));
-  }, [autoOpenedId, brands, openBrand, searchParams, selected?.id]);
+      .catch((error) => setMsg(error instanceof Error ? error.message : tCommon('error', { fallback: 'حدث خطأ' })));
+  }, [autoOpenedId, brands, openBrand, searchParams, selected?.id, tCommon]);
 
   const mergeBrand = (id: string, patch: Partial<Brand>) => {
     setBrands((current) => current.map((brand) => (brand.id === id ? { ...brand, ...patch } : brand)));
@@ -135,10 +141,10 @@ export default function BrandsQuickAdmin() {
     try {
       const updated = await fetchJson<Brand>(`/api/catalog/brands/${brand.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(patch) });
       mergeBrand(brand.id, updated);
-      setMsg('تم الحفظ');
+      setMsg(t('saveSuccess', { fallback: 'تم الحفظ بنجاح' }));
     } catch (error) {
       mergeBrand(previous.id, previous);
-      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+      setMsg(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل الحفظ' }));
     }
   };
 
@@ -154,44 +160,44 @@ export default function BrandsQuickAdmin() {
   const visible = brands.filter((brand) => !search || brand.name.toLowerCase().includes(search.toLowerCase()) || (brand.slug ?? '').toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-        <div><h1 className="text-2xl font-black text-[#1C1917]">العلامات التجارية</h1><p className="mt-1 text-sm text-[#A8A29E]">{brands.length} ماركة</p></div>
+        <div><h1 className="text-2xl font-black text-[#1C1917]">{t('brandsTitle', { fallback: 'إدارة العلامات التجارية' })}</h1><p className="mt-1 text-sm text-[#A8A29E]">{brands.length} {tCommon('items', { fallback: 'عنصر' })}</p></div>
         <div className="flex gap-2">
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"><RefreshCw size={15} />تحديث</button>
-          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]"><Plus size={15} />ماركة جديدة</button>
+          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"><RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}</button>
+          <button type="button" onClick={() => setShowCreate((value) => !value)} className="inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]"><Plus size={15} />{t('newBrand', { fallback: 'علامة تجارية جديدة' })}</button>
         </div>
       </div>
 
       {showCreate ? (
         <div className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row">
-            <input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="الاسم" className={`${inputClass} flex-1`} />
-            <input value={newSlug} onChange={(e) => setNewSlug(e.target.value)} placeholder="slug اختياري" className={`${inputClass} flex-1`} dir="ltr" />
-            <button type="button" onClick={() => void createBrand()} disabled={!newName.trim()} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50">إضافة</button>
+            <input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder={t('brandName', { fallback: 'الاسم' })} className={`${inputClass} flex-1`} dir={isAr ? "rtl" : "ltr"} />
+            <input value={newSlug} onChange={(e) => setNewSlug(e.target.value)} placeholder={t('brandSlug', { fallback: 'رابط العلامة' })} className={`${inputClass} flex-1`} dir="ltr" />
+            <button type="button" onClick={() => void createBrand()} disabled={!newName.trim()} className="rounded-xl bg-[#B8860B] px-5 py-2 text-sm font-bold text-white disabled:opacity-50">{t('saveBrand', { fallback: 'إضافة' })}</button>
           </div>
         </div>
       ) : null}
 
       <div className="flex overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm focus-within:border-[#B8860B]">
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="بحث..." className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm outline-none" />
-        <div className="flex w-12 items-center justify-center border-r border-[#E5E0D8] text-[#8B8172]"><Search size={17} /></div>
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={tCommon('searchPlaceholder', { fallback: 'بحث...' })} className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm outline-none" />
+        <div className={`flex w-12 items-center justify-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-[#8B8172]`}><Search size={17} /></div>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
-        : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد نتائج</p>
+        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+        : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noBrands', { fallback: 'لا توجد ماركات' })}</p>
         : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
-              <thead className="bg-[#F8F6F2]"><tr>{['الاسم','Slug','الحالة'].map((h,i)=><th key={h} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i===1?'hidden sm:table-cell':''}`}>{h}</th>)}</tr></thead>
+              <thead className="bg-[#F8F6F2]"><tr>{[t('brandName', { fallback: 'الاسم' }),'Slug',t('status', { fallback: 'الحالة' })].map((h,i)=><th key={h} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${i===1?'hidden sm:table-cell':''}`}>{h}</th>)}</tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {visible.map((brand) => (
                   <tr key={brand.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openBrand(brand)}>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{brand.name}</td>
                     <td className="hidden px-5 py-3 font-mono text-xs text-[#A8A29E] sm:table-cell">{brand.slug ?? ''}</td>
                     <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
-                      <button type="button" onClick={() => void patchBrand(brand, { is_active: !brand.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${brand.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{brand.is_active ? 'نشط' : 'غير نشط'}</button>
+                      <button type="button" onClick={() => void patchBrand(brand, { is_active: !brand.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${brand.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{brand.is_active ? t('active', { fallback: 'مفعّل' }) : t('inactive', { fallback: 'غير مفعّل' })}</button>
                     </td>
                   </tr>
                 ))}
@@ -204,13 +210,13 @@ export default function BrandsQuickAdmin() {
       {selected ? (
         <Modal title={selected.name} onClose={closeBrand}>
           <div className="space-y-4">
-            {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
+            {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === t('saveSuccess', { fallback: 'تم الحفظ بنجاح' }) ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
               <div className="space-y-2">
-                <Field label="الاسم"><InlineText value={selected.name} onSave={(name) => patchBrand(selected, { name })} /></Field>
-                <Field label="الرابط"><InlineText value={selected.slug ?? ''} dir="ltr" onSave={(slug) => patchBrand(selected, { slug })} /></Field>
-                <Field label="الشعار"><InlineText value={selected.logo_url ?? ''} dir="ltr" onSave={(logo_url) => patchBrand(selected, { logo_url })} /></Field>
-                <Field label="الحالة"><ActivePills value={Boolean(selected.is_active)} onSave={(is_active) => patchBrand(selected, { is_active })} /></Field>
+                <Field label={t('brandName', { fallback: 'الاسم' })}><InlineText value={selected.name} dir={isAr ? "rtl" : "ltr"} onSave={(name) => patchBrand(selected, { name })} /></Field>
+                <Field label={t('brandSlug', { fallback: 'رابط العلامة' })}><InlineText value={selected.slug ?? ''} dir="ltr" onSave={(slug) => patchBrand(selected, { slug })} /></Field>
+                <Field label={t('primaryImage', { fallback: 'الشعار' })}><InlineText value={selected.logo_url ?? ''} dir="ltr" onSave={(logo_url) => patchBrand(selected, { logo_url })} /></Field>
+                <Field label={t('status', { fallback: 'الحالة' })}><ActivePills value={Boolean(selected.is_active)} onSave={(is_active) => patchBrand(selected, { is_active })} /></Field>
               </div>
             </div>
           </div>
