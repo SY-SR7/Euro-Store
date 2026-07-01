@@ -19,13 +19,47 @@ async function run() {
   const { data: categories } = await supabase.from('categories').select('id');
   const { data: brands } = await supabase.from('brands').select('id');
   
-  if (!categories?.length || !brands?.length) {
-    console.error('Please ensure categories and brands exist.');
-    return;
+  if (!categories?.length) {
+    console.log('Seeding categories...');
+    await supabase.from('categories').insert([
+      { name_ar: 'تصنيف 1', name_en: 'Category 1', slug: 'cat-1' },
+      { name_ar: 'تصنيف 2', name_en: 'Category 2', slug: 'cat-2' }
+    ]);
+    const { data: c } = await supabase.from('categories').select('id');
+    categories.push(...c);
+  }
+  
+  if (!brands?.length) {
+    console.log('Seeding brands...');
+    await supabase.from('brands').insert([
+      { name: 'Brand A', slug: 'brand-a' },
+      { name: 'Brand B', slug: 'brand-b' }
+    ]);
+    const { data: b } = await supabase.from('brands').select('id');
+    brands.push(...b);
   }
 
   // Ensure attributes exist
-  const { data: attrTypes } = await supabase.from('attribute_types').select('id, slug, name_en');
+  let { data: attrTypes } = await supabase.from('attribute_types').select('id, slug, name_en');
+  if (!attrTypes?.length) {
+    console.log('Seeding attributes...');
+    await supabase.from('attribute_types').insert([
+      { name_ar: 'اللون', name_en: 'Color', slug: 'color' },
+      { name_ar: 'المقاس', name_en: 'Size', slug: 'size' }
+    ]);
+    const { data: a } = await supabase.from('attribute_types').select('id, slug, name_en');
+    attrTypes = a;
+    
+    // Seed values
+    let colorTypeId = attrTypes.find(a => a.slug === 'color')?.id;
+    let sizeTypeId = attrTypes.find(a => a.slug === 'size')?.id;
+    await supabase.from('attribute_values').insert([
+      { attribute_type_id: colorTypeId, value_ar: 'أحمر', value_en: 'Red', hex_color: '#FF0000' },
+      { attribute_type_id: colorTypeId, value_ar: 'أزرق', value_en: 'Blue', hex_color: '#0000FF' },
+      { attribute_type_id: sizeTypeId, value_ar: 'صغير', value_en: 'Small' },
+      { attribute_type_id: sizeTypeId, value_ar: 'كبير', value_en: 'Large' },
+    ]);
+  }
   const { data: attrValues } = await supabase.from('attribute_values').select('id, attribute_type_id, value_en');
   
   let colorTypeId = attrTypes.find(a => a.slug === 'color')?.id;
