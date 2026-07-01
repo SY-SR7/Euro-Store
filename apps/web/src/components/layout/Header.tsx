@@ -28,7 +28,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background-card/90 backdrop-blur-xl shadow-sm">
+    <header className="sticky top-0 z-50 border-b border-white/30 bg-white/85 backdrop-blur-xl shadow-sm">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
 
         <Link href="/" className="text-base font-black tracking-[0.18em] text-text-primary">
