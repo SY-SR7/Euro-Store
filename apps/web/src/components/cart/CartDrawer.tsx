@@ -94,11 +94,11 @@ export function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () =
                   {items.map((item) => (
                     <motion.div layout key={item.variantId} className="flex gap-4">
                       {item.imageUrl ? (
-                        <div className="h-24 w-20 shrink-0 overflow-hidden rounded-xl border border-border">
+                        <Link href={`/products/${item.productSlug}`} onClick={onClose} className="h-24 w-20 shrink-0 overflow-hidden rounded-xl border border-border transition-transform hover:scale-105 hover:shadow-md block">
                           <img src={item.imageUrl} alt={isAr ? item.nameAr : item.nameEn} className="h-full w-full object-cover" />
-                        </div>
+                        </Link>
                       ) : (
-                        <div className="h-24 w-20 shrink-0 rounded-xl bg-background-secondary" />
+                        <Link href={`/products/${item.productSlug}`} onClick={onClose} className="h-24 w-20 shrink-0 rounded-xl bg-background-secondary transition-transform hover:scale-105 hover:shadow-md block" />
                       )}
                       <div className="flex flex-1 flex-col py-1">
                         <Link href={`/products/${item.productSlug}`} onClick={onClose} className="font-bold hover:text-primary transition-colors line-clamp-1">

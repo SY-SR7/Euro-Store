@@ -130,7 +130,13 @@ export default async function OrderDetailPage({ params }: Props) {
                 <div key={item.id} className="border-b border-[#F0ECE6] pb-4 last:border-0 last:pb-0 space-y-2">
                   <div className="flex justify-between items-center text-sm">
                     <div>
-                      <p className="font-semibold text-text-primary">{isAr ? (item.product_snapshot?.name_ar ?? '—') : (item.product_snapshot?.name_en || item.product_snapshot?.name_ar || '—')}</p>
+                      {item.product_variants?.products?.slug ? (
+                        <Link href={`/products/${item.product_variants.products.slug}`} className="font-semibold text-text-primary hover:text-primary transition-colors hover:underline">
+                          {isAr ? (item.product_snapshot?.name_ar ?? '—') : (item.product_snapshot?.name_en || item.product_snapshot?.name_ar || '—')}
+                        </Link>
+                      ) : (
+                        <p className="font-semibold text-text-primary">{isAr ? (item.product_snapshot?.name_ar ?? '—') : (item.product_snapshot?.name_en || item.product_snapshot?.name_ar || '—')}</p>
+                      )}
                       <p className="text-xs text-text-muted font-mono">{item.product_snapshot?.sku} × {item.quantity}</p>
                     </div>
                     <p className="font-bold text-primary">{fmt(item.total_price_syp, locale)}</p>
