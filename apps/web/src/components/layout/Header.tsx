@@ -10,6 +10,7 @@ import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { ShoppingBag } from 'lucide-react';
+import { SmartSearch } from '@/components/layout/SmartSearch';
 
 const DESKTOP_LINKS = [
   { href:'/', key:'home' },
@@ -73,12 +74,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <Link href="/products" aria-label={t('search')}
-              className={`hidden rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary md:inline-flex ${
-                pathname.startsWith('/products') ? 'bg-primary/15 text-primary ring-1 ring-primary/30 shadow-sm' : 'text-text-secondary'
-              }`}>
-              <Search className="h-4 w-4" />
-            </Link>
+            <SmartSearch />
             <Link href="/wishlist" aria-label={t('wishlist')}
               className={`hidden rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary sm:inline-flex ${
                 pathname.startsWith('/wishlist') ? 'bg-primary/15 text-primary ring-1 ring-primary/30 shadow-sm' : 'text-text-secondary'
