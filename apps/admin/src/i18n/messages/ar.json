@@ -154,7 +154,8 @@
     "continue": "متابعة",
     "saved": "تم الحفظ",
     "saveFailed": "فشل الحفظ",
-    "searchByNamePhoneEmail": "بحث بالاسم أو الهاتف أو البريد..."
+    "searchByNamePhoneEmail": "بحث بالاسم أو الهاتف أو البريد...",
+    "unitSyp": "ل.س"
   },
   "productCount": "عدد المنتجات",
   "categories": {
@@ -181,7 +182,22 @@
     "settings": "الإعدادات",
     "home": "الرئيسية",
     "exchange": "الاستبدال",
-    "faq": "الأسئلة الشائعة"
+    "faq": "الأسئلة الشائعة",
+    "adminPanel": "لوحة التحكم",
+    "groupMain": "الرئيسية",
+    "notifications": "الإشعارات",
+    "groupSales": "المبيعات",
+    "exchanges": "طلبات الاستبدال",
+    "groupCatalog": "الكتالوج",
+    "homepage": "تنسيق الرئيسية",
+    "attributeTypes": "أنواع المتغيرات",
+    "groupCommerce": "التجارة",
+    "reviews": "التقييمات",
+    "shippingRates": "أسعار الشحن",
+    "loyaltySettings": "إعدادات الولاء",
+    "groupSystem": "النظام",
+    "subAdmins": "المشرفين",
+    "auditLogs": "سجلات النظام"
   },
   "adminCatalog": {
     "noCategories": "لا توجد تصنيفات",
@@ -783,5 +799,49 @@
     "exchangeStatusApproved": "مقبول",
     "exchangeStatusRejected": "مرفوض",
     "exchangeStatusCompleted": "مكتمل"
+  },
+  "adminOrders": {
+    "ordersTitle": "إدارة الطلبات",
+    "orderCount": "عدد الطلبات",
+    "allStatuses": "جميع الحالات",
+    "tablePayment": "حالة الدفع",
+    "tableStatus": "حالة الطلب",
+    "tableCustomer": "العميل",
+    "tableOrderNumber": "رقم الطلب",
+    "paymentStatus": {
+      "pending": "قيد الانتظار",
+      "paid": "مدفوع",
+      "failed": "فشل",
+      "refunded": "مسترجع"
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "processing": "قيد المعالجة",
+      "shipped": "تم الشحن",
+      "cancelled": "ملغي"
+    },
+    "orderModalTitle": "تفاصيل الطلب: ",
+    "orderStatusTitle": "حالة الطلب",
+    "paymentMethod": {
+      "sham_cash": "شام كاش",
+      "cash_on_delivery": "الدفع عند الاستلام"
+    },
+    "adminNotes": "ملاحظات الإدارة",
+    "shippingDetails": "تفاصيل الشحن",
+    "addressName": "اسم المستلم",
+    "addressPhone": "رقم الهاتف",
+    "addressGov": "المحافظة",
+    "addressCity": "المدينة",
+    "addressStreet": "الشارع",
+    "totalAmount": "المبلغ الإجمالي",
+    "shippingCost": "تكلفة الشحن",
+    "discount": "الخصم",
+    "subtotal": "المجموع الفرعي",
+    "productsList": "المنتجات",
+    "tableTotal": "المجموع",
+    "tablePrice": "السعر",
+    "tableQuantity": "الكمية",
+    "tableSKU": "SKU",
+    "tableProduct": "المنتج"
   }
 }

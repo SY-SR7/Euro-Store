@@ -154,7 +154,8 @@
     "continue": "Continue",
     "saved": "Saved",
     "saveFailed": "Save Failed",
-    "searchByNamePhoneEmail": "Search by name, phone or email..."
+    "searchByNamePhoneEmail": "Search by name, phone or email...",
+    "unitSyp": "SYP"
   },
   "productCount": "Product count",
   "categories": {
@@ -181,7 +182,22 @@
     "settings": "Settings",
     "home": "Home",
     "exchange": "Exchange",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "adminPanel": "Admin Panel",
+    "groupMain": "Main",
+    "notifications": "Notifications",
+    "groupSales": "Sales",
+    "exchanges": "Exchanges",
+    "groupCatalog": "Catalog",
+    "homepage": "Homepage Layout",
+    "attributeTypes": "Attribute Types",
+    "groupCommerce": "Commerce",
+    "reviews": "Reviews",
+    "shippingRates": "Shipping Rates",
+    "loyaltySettings": "Loyalty Settings",
+    "groupSystem": "System",
+    "subAdmins": "Sub-Admins",
+    "auditLogs": "Audit Logs"
   },
   "adminCatalog": {
     "noCategories": "No categories",
@@ -783,5 +799,49 @@
     "exchangeStatusApproved": "Approved",
     "exchangeStatusRejected": "Rejected",
     "exchangeStatusCompleted": "Completed"
+  },
+  "adminOrders": {
+    "ordersTitle": "Orders Management",
+    "orderCount": "Order Count",
+    "allStatuses": "All Statuses",
+    "tablePayment": "Payment Status",
+    "tableStatus": "Order Status",
+    "tableCustomer": "Customer",
+    "tableOrderNumber": "Order Number",
+    "paymentStatus": {
+      "pending": "Pending",
+      "paid": "Paid",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "cancelled": "Cancelled"
+    },
+    "orderModalTitle": "Order Details: ",
+    "orderStatusTitle": "Order Status",
+    "paymentMethod": {
+      "sham_cash": "Sham Cash",
+      "cash_on_delivery": "Cash on Delivery"
+    },
+    "adminNotes": "Admin Notes",
+    "shippingDetails": "Shipping Details",
+    "addressName": "Recipient Name",
+    "addressPhone": "Phone Number",
+    "addressGov": "Governorate",
+    "addressCity": "City",
+    "addressStreet": "Street",
+    "totalAmount": "Total Amount",
+    "shippingCost": "Shipping Cost",
+    "discount": "Discount",
+    "subtotal": "Subtotal",
+    "productsList": "Products",
+    "tableTotal": "Total",
+    "tablePrice": "Price",
+    "tableQuantity": "Quantity",
+    "tableSKU": "SKU",
+    "tableProduct": "Product"
   }
 }
