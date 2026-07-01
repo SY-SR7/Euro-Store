@@ -9,39 +9,57 @@ const enContent = fs.readFileSync(enPath, 'utf8').replace(/^\uFEFF/, '');
 const ar = JSON.parse(arContent);
 const en = JSON.parse(enContent);
 
-ar.adminShippingRates = {
-  shippingRatesTitle: "أسعار الشحن",
-  countGovernorates: "{count} محافظة",
-  tableGovernorate: "المحافظة",
-  tableShippingRate: "سعر الشحن",
-  tableFreeShippingOver: "مجاني فوق",
-  tableStatus: "الحالة",
+ar.adminSubAdmins = {
+  title: "المشرفون",
+  countAccounts: "{count} حساب",
+  newSubAdmin: "مشرف جديد",
+  failedToLoadAdmin: "تعذر فتح المشرف",
+  createdSuccessfully: "تم إنشاء الحساب",
+  creationFailed: "فشل الإنشاء",
+  formName: "الاسم",
+  formEmail: "email@example.com",
+  formPassword: "كلمة المرور",
+  formCreating: "جار الإنشاء...",
+  formCreate: "إنشاء",
+  noAccounts: "لا توجد حسابات",
+  tableHeaderName: "الاسم",
+  tableHeaderEmail: "البريد",
+  tableHeaderDate: "التاريخ",
+  tableHeaderStatus: "الحالة",
   statusActive: "نشط",
-  statusDisabled: "معطّل",
-  failedToLoadRate: "تعذر فتح سعر الشحن",
-  noShippingRates: "لا توجد أسعار شحن",
-  emptyField: "—",
-  freeShippingAbove: "شحن مجاني فوق",
-  unitSyp: "ل.س"
+  statusDisabled: "معطل",
+  fieldName: "الاسم",
+  fieldEmail: "البريد",
+  fieldStatus: "الحالة",
+  fieldCreatedAt: "تاريخ الإنشاء"
 };
 
-en.adminShippingRates = {
-  shippingRatesTitle: "Shipping Rates",
-  countGovernorates: "{count} Governorates",
-  tableGovernorate: "Governorate",
-  tableShippingRate: "Shipping Rate",
-  tableFreeShippingOver: "Free Over",
-  tableStatus: "Status",
+en.adminSubAdmins = {
+  title: "Sub-Admins",
+  countAccounts: "{count} accounts",
+  newSubAdmin: "New Sub-Admin",
+  failedToLoadAdmin: "Failed to load sub-admin",
+  createdSuccessfully: "Account created successfully",
+  creationFailed: "Failed to create",
+  formName: "Name",
+  formEmail: "email@example.com",
+  formPassword: "Password",
+  formCreating: "Creating...",
+  formCreate: "Create",
+  noAccounts: "No accounts found",
+  tableHeaderName: "Name",
+  tableHeaderEmail: "Email",
+  tableHeaderDate: "Date",
+  tableHeaderStatus: "Status",
   statusActive: "Active",
   statusDisabled: "Disabled",
-  failedToLoadRate: "Failed to load shipping rate",
-  noShippingRates: "No shipping rates",
-  emptyField: "—",
-  freeShippingAbove: "Free Shipping Above",
-  unitSyp: "SYP"
+  fieldName: "Name",
+  fieldEmail: "Email",
+  fieldStatus: "Status",
+  fieldCreatedAt: "Created At"
 };
 
 fs.writeFileSync(arPath, JSON.stringify(ar, null, 2));
 fs.writeFileSync(enPath, JSON.stringify(en, null, 2));
 
-console.log('Updated i18n files for ShippingRates');
+console.log('Updated i18n files for SubAdmins');
