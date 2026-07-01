@@ -1,6 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -29,12 +28,9 @@ const scaleIn = {
 };
 
 /**
- * HeroSection — Full-screen video background with animated overlaid content.
- * The video plays automatically, silently, in a loop showing a luxury boutique interior.
- * No scroll interaction needed — everything is visible at load time.
+ * HeroSection — Full-screen image background with animated overlaid content.
  */
 export function HeroSection() {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const prefersReduced = useReducedMotion();
   const t = useTranslations('home.hero');
 
@@ -44,30 +40,26 @@ export function HeroSection() {
       className="relative h-screen w-full overflow-hidden flex items-center justify-center"
       dir="rtl"
     >
-      {/* ── Background Video ── */}
-      <video
-        ref={videoRef}
+      {/* ── Background Image with subtle zoom ── */}
+      <motion.img
+        initial={{ scale: 1.05 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 10, ease: 'easeOut' }}
         className="absolute inset-0 w-full h-full object-cover"
-        src="/videos/silk-hero-4k.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        poster="/videos/silk-hero-4k-poster.jpg"
-        aria-hidden="true"
+        src="/images/hero-bg.png"
+        alt="Hero Background"
       />
 
       {/* ── Dark cinematic overlay with radial shading behind text ── */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 bg-black/50 sm:bg-transparent"
         style={{
-          background: 'radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%)',
+          background: 'radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%)',
         }}
       />
 
       {/* ── Content ── */}
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto w-full pt-10">
+      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto w-full pt-10 drop-shadow-2xl">
         
         {/* Pre-title label */}
         <motion.p
@@ -75,8 +67,8 @@ export function HeroSection() {
           initial="hidden"
           animate="visible"
           custom={0.1}
-          className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-5 opacity-90"
-          style={{ color: '#C9A84C' }}
+          className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase mb-5 opacity-90 drop-shadow-md"
+          style={{ color: '#E8D28A' }}
         >
           {t('collection', { fallback: 'مجموعة ٢٠٢٥' })}
         </motion.p>
@@ -85,11 +77,8 @@ export function HeroSection() {
         <motion.h1
           className="text-5xl md:text-7xl lg:text-8xl font-black leading-tight mb-6"
           style={{ 
-            background: 'linear-gradient(135deg, #FFF 0%, #E8D28A 50%, #C9A84C 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.8))'
+            color: '#FFFFFF',
+            textShadow: '0px 4px 20px rgba(0, 0, 0, 0.9)'
           }}
           initial="hidden"
           animate="visible"
@@ -118,8 +107,8 @@ export function HeroSection() {
           initial="hidden"
           animate="visible"
           custom={0.7}
-          className="text-base md:text-xl max-w-xl leading-relaxed mb-10 font-light"
-          style={{ color: '#E2E2E2', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}
+          className="text-base md:text-xl max-w-xl leading-relaxed mb-10 font-medium"
+          style={{ color: '#E2E2E2', textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}
         >
           {t('subtitle', { fallback: 'أزياء أوروبية راقية — من المصانع الأوروبية مباشرةً إلى يديك' })}
         </motion.p>
@@ -140,8 +129,8 @@ export function HeroSection() {
           >
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 px-10 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-full shadow-2xl"
-              style={{ background: 'linear-gradient(to right, #C9A84C, #A67C2E)', color: '#000' }}
+              className="inline-flex items-center gap-2 px-10 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-full shadow-xl"
+              style={{ background: 'linear-gradient(to right, #E8D28A, #C9A84C)', color: '#000' }}
             >
               {t('shopNow', { fallback: 'تسوق الآن' })}
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="rtl:rotate-180">
@@ -158,8 +147,8 @@ export function HeroSection() {
           >
             <Link
               href="/categories"
-              className="inline-flex items-center gap-2 border px-10 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-300 rounded-full"
-              style={{ borderColor: 'rgba(255,255,255,0.4)', color: '#FFFFFF', backgroundColor: 'rgba(255,255,255,0.05)' }}
+              className="inline-flex items-center gap-2 border px-10 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-300 rounded-full bg-black/20 backdrop-blur-sm"
+              style={{ borderColor: 'rgba(232, 210, 138, 0.4)', color: '#FFFFFF' }}
             >
               {t('explore', { fallback: 'استكشف الأقسام' })}
             </Link>
@@ -181,10 +170,10 @@ export function HeroSection() {
             { num: t('stats.categoriesNum', { fallback: '٤' }), label: t('stats.categories', { fallback: 'أقسام متنوعة' }) },
           ].map(({ num, label }) => (
             <div key={label} className="flex flex-col items-center gap-1">
-              <span className="text-3xl md:text-4xl font-black" style={{ color: '#C9A84C', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.5))' }}>
+              <span className="text-3xl md:text-4xl font-black" style={{ color: '#E8D28A', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.8))' }}>
                 {num}
               </span>
-              <span className="text-xs md:text-sm font-medium tracking-wider" style={{ color: 'rgba(255,255,255,0.7)' }}>{label}</span>
+              <span className="text-xs md:text-sm font-bold tracking-wider" style={{ color: '#E2E2E2', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>{label}</span>
             </div>
           ))}
         </motion.div>
@@ -195,14 +184,14 @@ export function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2, duration: 0.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none drop-shadow-lg"
       >
-        <span className="text-[10px] uppercase tracking-[0.25em]" style={{ color: 'rgba(255,255,255,0.4)' }}>{t('scrollDown', { fallback: 'مرر للأسفل' })}</span>
+        <span className="text-[10px] font-bold uppercase tracking-[0.25em]" style={{ color: 'rgba(255,255,255,0.8)' }}>{t('scrollDown', { fallback: 'مرر للأسفل' })}</span>
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
           className="w-px h-10"
-          style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.6), transparent)' }}
+          style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.8), transparent)' }}
         />
       </motion.div>
     </section>
