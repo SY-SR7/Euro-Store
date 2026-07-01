@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { Heart, Menu, RefreshCw, Search, Star, User, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 import { CartBadge } from '@/components/cart/CartBadge';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 
@@ -26,9 +27,26 @@ export function Header() {
   const t = useTranslations('nav');
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { scrollYProgress } = useScroll();
+  
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0.9]);
+  const headerBlur = useTransform(scrollYProgress, [0, 0.05], ["blur(10px)", "blur(20px)"]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/5 bg-white/80 backdrop-blur-xl shadow-sm">
+    <motion.header 
+      style={{ opacity: headerOpacity, backdropFilter: headerBlur }}
+      className="sticky top-0 z-50 border-b border-white/30 bg-white/85 shadow-sm transition-colors duration-300"
+    >
+      <motion.div 
+        className="absolute top-0 left-0 right-0 h-[2px] bg-primary origin-left z-50"
+        style={{ scaleX }}
+      />
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
 
         <Link href="/" className="text-base font-black tracking-[0.18em] text-text-primary">
@@ -108,6 +126,6 @@ export function Header() {
           </nav>
         </div>
       )}
-    </header>
+    </motion.header>
   );
 }
