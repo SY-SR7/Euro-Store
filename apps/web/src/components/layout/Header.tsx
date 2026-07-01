@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Heart, Menu, RefreshCw, Search, Star, User, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
