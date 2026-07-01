@@ -4,6 +4,7 @@ import { CheckCircle2, RefreshCw, Star, X, XCircle } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type Review = {
   id: string;
@@ -14,13 +15,6 @@ type Review = {
   products?: { name_ar?: string; name_en?: string; slug?: string } | null;
   customer_profiles?: { full_name?: string; email?: string } | null;
 };
-
-const TABS: { key: 'pending' | 'approved' | 'rejected' | 'all'; label: string }[] = [
-  { key: 'pending', label: 'بانتظار المراجعة' },
-  { key: 'approved', label: 'معتمدة' },
-  { key: 'rejected', label: 'مرفوضة' },
-  { key: 'all', label: 'الكل' },
-];
 
 const inputClass =
   'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
@@ -38,7 +32,7 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   return payload as T;
 }
 
-function Modal({ title, subtitle, onClose, children }: { title: string; subtitle?: string; onClose: () => void; children: ReactNode }) {
+function Modal({ title, subtitle, onClose, children, closeTitle }: { title: string; subtitle?: string; onClose: () => void; children: ReactNode; closeTitle?: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div
@@ -50,7 +44,7 @@ function Modal({ title, subtitle, onClose, children }: { title: string; subtitle
             <h2 className="truncate font-black text-[#1C1917]">{title}</h2>
             {subtitle ? <p className="mt-0.5 truncate text-xs text-[#8B8172]">{subtitle}</p> : null}
           </div>
-          <button type="button" title="إغلاق" onClick={onClose} className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 flex-none items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -74,11 +68,13 @@ function InlineText({
   onSave,
   dir = 'rtl',
   multiline = false,
+  fallbackText = '-',
 }: {
   value?: string | null;
   onSave: (value: string) => void | Promise<void>;
   dir?: 'rtl' | 'ltr';
   multiline?: boolean;
+  fallbackText?: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value ?? '');
@@ -129,12 +125,12 @@ function InlineText({
 
   return (
     <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">
-      {value?.trim() ? value : <span className="text-[#A8A29E]">لا يوجد تعليق</span>}
+      {value?.trim() ? value : <span className="text-[#A8A29E]">{fallbackText}</span>}
     </button>
   );
 }
 
-function StarPicker({ value, onSave }: { value: number; onSave: (value: number) => void | Promise<void> }) {
+function StarPicker({ value, onSave, starsLabel }: { value: number; onSave: (value: number) => void | Promise<void>; starsLabel: string }) {
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((n) => (
@@ -142,7 +138,7 @@ function StarPicker({ value, onSave }: { value: number; onSave: (value: number) 
           key={n}
           type="button"
           onClick={() => n !== value && void onSave(n)}
-          title={`${n} نجوم`}
+          title={starsLabel.replace('{count}', String(n))}
           className="rounded-lg p-1 transition hover:bg-[#FAF7EF]"
         >
           <Star size={20} className={n <= value ? 'fill-[#B8860B] text-[#B8860B]' : 'text-[#E5E0D8]'} />
@@ -152,11 +148,11 @@ function StarPicker({ value, onSave }: { value: number; onSave: (value: number) 
   );
 }
 
-function StatusPills({ value, onSave }: { value: Review['status']; onSave: (value: Review['status']) => void | Promise<void> }) {
+function StatusPills({ value, onSave, optionsLabels }: { value: Review['status']; onSave: (value: Review['status']) => void | Promise<void>; optionsLabels: Record<string, string> }) {
   const options: { value: Review['status']; label: string; cls: string }[] = [
-    { value: 'pending', label: 'بانتظار المراجعة', cls: 'border-amber-200 bg-amber-50 text-amber-700' },
-    { value: 'approved', label: 'معتمد', cls: 'border-green-200 bg-green-50 text-green-700' },
-    { value: 'rejected', label: 'مرفوض', cls: 'border-red-200 bg-red-50 text-red-700' },
+    { value: 'pending', label: optionsLabels.pending, cls: 'border-amber-200 bg-amber-50 text-amber-700' },
+    { value: 'approved', label: optionsLabels.approved, cls: 'border-green-200 bg-green-50 text-green-700' },
+    { value: 'rejected', label: optionsLabels.rejected, cls: 'border-red-200 bg-red-50 text-red-700' },
   ];
   return (
     <div className="flex flex-wrap gap-2">
@@ -187,25 +183,43 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-function StatusBadge({ status }: { status: Review['status'] }) {
+function StatusBadge({ status, optionsLabels }: { status: Review['status']; optionsLabels: Record<string, string> }) {
   const map = {
     pending: 'bg-amber-50 text-amber-700',
     approved: 'bg-green-50 text-green-700',
     rejected: 'bg-red-50 text-red-700',
   } as const;
-  const label = { pending: 'بانتظار المراجعة', approved: 'معتمد', rejected: 'مرفوض' }[status];
+  const label = optionsLabels[status];
   return <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${map[status]}`}>{label}</span>;
 }
 
 export default function ReviewsQuickAdmin() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+  const t = useTranslations('adminReviews');
+  const tCommon = useTranslations('common');
+
   const [tab, setTab] = useState<'pending' | 'approved' | 'rejected' | 'all'>('pending');
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Review | null>(null);
   const [msg, setMsg] = useState('');
   const [autoOpenedId, setAutoOpenedId] = useState('');
+
+  const TABS: { key: 'pending' | 'approved' | 'rejected' | 'all'; label: string }[] = [
+    { key: 'pending', label: t('pendingTab', { fallback: 'بانتظار المراجعة' }) },
+    { key: 'approved', label: t('approvedTab', { fallback: 'معتمدة' }) },
+    { key: 'rejected', label: t('rejectedTab', { fallback: 'مرفوضة' }) },
+    { key: 'all', label: t('allTab', { fallback: 'الكل' }) },
+  ];
+
+  const statusLabels = {
+    pending: t('statusPending', { fallback: 'بانتظار المراجعة' }),
+    approved: t('statusApproved', { fallback: 'معتمد' }),
+    rejected: t('statusRejected', { fallback: 'مرفوض' }),
+  };
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -266,40 +280,40 @@ export default function ReviewsQuickAdmin() {
         body: JSON.stringify(patch),
       });
       mergeReview(selected.id, updated);
-      setMsg('تم الحفظ');
+      setMsg(tCommon('saved', { fallback: 'تم الحفظ' }));
     } catch (error) {
       mergeReview(previous.id, previous);
-      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+      setMsg(error instanceof Error ? error.message : tCommon('saveFailed', { fallback: 'فشل الحفظ' }));
     }
   };
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-black text-[#1C1917]">تقييمات المنتجات</h1>
-          <p className="mt-1 text-sm text-[#8B8172]">مراجعة واعتماد تقييمات العملاء، وتعديل أي حقل بضغطة واحدة</p>
+          <h1 className="text-xl font-black text-[#1C1917]">{t('reviewsTitle', { fallback: 'تقييمات المنتجات' })}</h1>
+          <p className="mt-1 text-sm text-[#8B8172]">{t('reviewsDesc', { fallback: 'مراجعة واعتماد تقييمات العملاء، وتعديل أي حقل بضغطة واحدة' })}</p>
         </div>
         <button
           type="button"
           onClick={() => void load()}
           className="flex items-center gap-2 rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm font-bold text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]"
         >
-          <RefreshCw size={15} /> تحديث
+          <RefreshCw size={15} /> {tCommon('refresh', { fallback: 'تحديث' })}
         </button>
       </div>
 
       <div className="flex gap-2 border-b border-[#E5E0D8] pb-2">
-        {TABS.map((t) => (
+        {TABS.map((tItem) => (
           <button
-            key={t.key}
+            key={tItem.key}
             type="button"
-            onClick={() => setTab(t.key)}
+            onClick={() => setTab(tItem.key)}
             className={`rounded-xl px-3 py-1.5 text-sm font-bold transition-colors ${
-              tab === t.key ? 'bg-[#B8860B] text-white' : 'text-[#57534E] hover:bg-[#F8F6F2]'
+              tab === tItem.key ? 'bg-[#B8860B] text-white' : 'text-[#57534E] hover:bg-[#F8F6F2]'
             }`}
           >
-            {t.label}
+            {tItem.label}
           </button>
         ))}
       </div>
@@ -312,7 +326,7 @@ export default function ReviewsQuickAdmin() {
         </div>
       ) : reviews.length === 0 ? (
         <div className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E]">
-          لا توجد تقييمات في هذا القسم
+          {t('noReviews', { fallback: 'لا توجد تقييمات في هذا القسم' })}
         </div>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
@@ -325,14 +339,14 @@ export default function ReviewsQuickAdmin() {
               >
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate font-bold text-[#1C1917] group-hover:text-[#B8860B]">{r.products?.name_ar ?? '—'}</p>
+                    <p className="truncate font-bold text-[#1C1917] group-hover:text-[#B8860B]">{locale === 'ar' ? (r.products?.name_ar ?? t('emptyProduct')) : (r.products?.name_en || r.products?.name_ar || t('emptyProduct'))}</p>
                     <p className="mt-0.5 text-xs text-[#A8A29E]">
-                      {r.customer_profiles?.full_name ?? 'عميل'} · {new Date(r.created_at).toLocaleDateString('ar-SY')}
+                      {r.customer_profiles?.full_name ?? t('defaultCustomer', { fallback: 'عميل' })} · {new Date(r.created_at).toLocaleDateString(isAr ? 'ar-SY' : 'en-US')}
                     </p>
                   </div>
                   <div className="flex flex-none items-center gap-2">
                     <Stars rating={r.rating} />
-                    <StatusBadge status={r.status} />
+                    <StatusBadge status={r.status} optionsLabels={statusLabels} />
                   </div>
                 </div>
                 {r.comment && <p className="mt-3 line-clamp-2 rounded-xl bg-[#FAF7EF] p-3 text-sm text-[#3C352C]">{r.comment}</p>}
@@ -343,14 +357,14 @@ export default function ReviewsQuickAdmin() {
                       onClick={() => { openReview(r); void patchReview({ status: 'approved' }); }}
                       className="flex items-center gap-1.5 rounded-xl bg-green-600 px-4 py-2 text-xs font-bold text-white hover:bg-green-700"
                     >
-                      <CheckCircle2 size={14} /> اعتماد
+                      <CheckCircle2 size={14} /> {t('approveBtn', { fallback: 'اعتماد' })}
                     </button>
                     <button
                       type="button"
                       onClick={() => { openReview(r); void patchReview({ status: 'rejected' }); }}
                       className="flex items-center gap-1.5 rounded-xl border border-red-200 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50"
                     >
-                      <XCircle size={14} /> رفض
+                      <XCircle size={14} /> {t('rejectBtn', { fallback: 'رفض' })}
                     </button>
                   </div>
                 )}
@@ -361,37 +375,37 @@ export default function ReviewsQuickAdmin() {
       )}
 
       {selected ? (
-        <Modal title={selected.products?.name_ar ?? 'تقييم'} subtitle={selected.customer_profiles?.full_name ?? 'عميل'} onClose={closeReview}>
+        <Modal title={locale === 'ar' ? (selected.products?.name_ar ?? t('defaultProduct')) : (selected.products?.name_en || selected.products?.name_ar || t('defaultProduct'))} subtitle={selected.customer_profiles?.full_name ?? t('defaultCustomer')} onClose={closeReview} closeTitle={tCommon('close', { fallback: 'إغلاق' })}>
           <div className="space-y-4">
             {msg ? (
-              <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
+              <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved', { fallback: 'تم الحفظ' }) ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
                 {msg}
               </div>
             ) : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
               <div className="space-y-2">
-                <Field label="التقييم">
-                  <StarPicker value={selected.rating} onSave={(rating) => patchReview({ rating })} />
+                <Field label={t('ratingLabel', { fallback: 'التقييم' })}>
+                  <StarPicker value={selected.rating} starsLabel={t('starsCount', { fallback: '{count} نجوم' })} onSave={(rating) => patchReview({ rating })} />
                 </Field>
-                <Field label="التعليق">
-                  <InlineText value={selected.comment ?? ''} multiline onSave={(comment) => patchReview({ comment })} />
+                <Field label={t('commentLabel', { fallback: 'التعليق' })}>
+                  <InlineText value={selected.comment ?? ''} multiline fallbackText={t('noComment')} dir={isAr ? "rtl" : "ltr"} onSave={(comment) => patchReview({ comment })} />
                 </Field>
-                <Field label="الحالة">
-                  <StatusPills value={selected.status} onSave={(status) => patchReview({ status })} />
+                <Field label={t('statusLabel', { fallback: 'الحالة' })}>
+                  <StatusPills value={selected.status} optionsLabels={statusLabels} onSave={(status) => patchReview({ status })} />
                 </Field>
-                <Field label="المنتج">
+                <Field label={t('productLabel', { fallback: 'المنتج' })}>
                   <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
-                    {selected.products?.name_ar ?? '—'}
+                    {locale === 'ar' ? (selected.products?.name_ar ?? t('emptyProduct')) : (selected.products?.name_en || selected.products?.name_ar || t('emptyProduct'))}
                   </div>
                 </Field>
-                <Field label="العميل">
+                <Field label={t('customerLabel', { fallback: 'العميل' })}>
                   <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
-                    {selected.customer_profiles?.full_name ?? '—'} {selected.customer_profiles?.email ? `· ${selected.customer_profiles.email}` : ''}
+                    {selected.customer_profiles?.full_name ?? t('emptyProduct')} {selected.customer_profiles?.email ? `· ${selected.customer_profiles.email}` : ''}
                   </div>
                 </Field>
-                <Field label="تاريخ التقييم">
+                <Field label={t('dateLabel', { fallback: 'تاريخ التقييم' })}>
                   <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
-                    {new Date(selected.created_at).toLocaleDateString('ar-SY')}
+                    {new Date(selected.created_at).toLocaleDateString(isAr ? 'ar-SY' : 'en-US')}
                   </div>
                 </Field>
               </div>
