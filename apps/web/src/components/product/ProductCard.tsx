@@ -76,9 +76,9 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         </div>
 
         {/* Wishlist */}
-        <button className="absolute top-3 end-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-2.5 rounded-full bg-white/80 hover:bg-white backdrop-blur-md shadow-sm z-20 text-text-secondary hover:text-primary">
-          <Heart className="w-4 h-4" />
-        </button>
+        <div className="absolute top-3 end-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+          <WishlistButton productId={product.id} size="sm" />
+        </div>
       </div>
       
       <div className="p-5 text-center flex flex-col flex-grow justify-between bg-gradient-to-b from-transparent to-background-card/50">

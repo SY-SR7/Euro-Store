@@ -59,15 +59,12 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
     null;
 
   return (
-    <Link
-      href={`/products/${product.slug}`}
-      className="group flex min-h-full flex-col overflow-hidden rounded-2xl border border-border bg-background-card shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-md"
+    <div
+      className="group flex min-h-full flex-col overflow-hidden rounded-2xl border border-border bg-background-card shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-md relative"
     >
+      <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10" aria-label={productName || 'product'} />
       <div className="relative aspect-[4/3] overflow-hidden bg-[#F3EDE3]">
-        <div className="absolute left-2 top-2 z-10">
-          <WishlistButton productId={product.id} size="sm" />
-        </div>
-        <div className="absolute left-2 top-2 z-10">
+        <div className="absolute left-2 top-2 z-20">
           <WishlistButton productId={product.id} size="sm" />
         </div>
         <ImageWithFallback
@@ -132,6 +129,6 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
           )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
