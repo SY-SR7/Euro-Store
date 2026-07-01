@@ -138,10 +138,10 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
   };
 
   return (
-    <div className="flex gap-8" dir="rtl">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-8" dir="rtl">
       {/* ── Sidebar ────────────────────────────────────────────────────── */}
-      <aside className={`flex-none transition-all duration-200 ${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'}`}>
-        <div className="sticky top-24 space-y-6 min-w-[16rem]">
+      <aside className={`flex-none transition-all duration-200 ${sidebarOpen ? 'w-full md:w-64' : 'w-0 overflow-hidden hidden md:block'}`}>
+        <div className="md:sticky md:top-24 space-y-6 min-w-0 md:min-w-[16rem]">
 
           {/* header */}
           <div className="flex items-center justify-between">
