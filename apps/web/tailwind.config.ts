@@ -27,6 +27,14 @@ const config: Config = {
           DEFAULT: 'var(--color-border)',
           accent: 'var(--color-border-accent)',
         }
+      },
+      keyframes: {
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
+        }
+      },
+      animation: {
+        shimmer: 'shimmer 1.5s infinite',
       }
     },
   },

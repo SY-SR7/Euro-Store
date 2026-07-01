@@ -19,6 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+import { SmoothScroller } from '../components/layout/SmoothScroller';
+
 export default async function RootLayout({
   children
 }: Readonly<{
@@ -31,10 +33,12 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning className="overflow-x-hidden w-full">
       <body className="min-h-screen bg-background text-text-primary antialiased overflow-x-hidden w-full">
-<NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <SmoothScroller>
+            {children}
+          </SmoothScroller>
         </NextIntlClientProvider>
-</body>
+      </body>
     </html>
   );
 }

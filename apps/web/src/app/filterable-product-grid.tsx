@@ -333,9 +333,16 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
 
         {/* products grid */}
         {loading ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="h-64 rounded-2xl bg-[#F3EDE3] animate-pulse" />
+              <div key={i} className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-background-elevated border border-border/40 shadow-sm">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-[shimmer_1.5s_infinite] skew-x-12" />
+                <div className="h-full w-full flex flex-col justify-end p-4 gap-3 bg-background-secondary/50">
+                  <div className="h-3 w-1/3 bg-background-card rounded-full" />
+                  <div className="h-4 w-3/4 bg-background-card rounded-full" />
+                  <div className="h-4 w-1/2 bg-background-card rounded-full mt-2" />
+                </div>
+              </div>
             ))}
           </div>
         ) : !data?.products.length ? (
