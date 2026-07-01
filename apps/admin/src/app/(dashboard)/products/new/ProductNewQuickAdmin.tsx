@@ -56,6 +56,9 @@ export default function ProductNewQuickAdmin() {
     is_active: true,
     is_featured: false,
   });
+  const [files, setFiles] = useState<File[]>([]);
+  const [primaryFile, setPrimaryFile] = useState<File | null>(null);
+  
   const t = useTranslations('adminCatalog');
   const tCommon = useTranslations('common');
   const locale = useLocale();
@@ -79,6 +82,27 @@ export default function ProductNewQuickAdmin() {
     setSaving(true);
     setMsg('');
     try {
+      let media: { type: 'image' | 'video', url: string, isPrimary: boolean, originalName: string }[] = [];
+      if (files.length > 0) {
+        const formData = new FormData();
+        for (const file of files) {
+          formData.append('file', file);
+        }
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        if (!uploadRes.ok) {
+          const uErr = await uploadRes.json().catch(() => ({}));
+          throw new Error(uErr.error || 'Failed to upload media');
+        }
+        const uploadData = await uploadRes.json();
+        media = uploadData.files.map((f: any) => ({
+          ...f,
+          isPrimary: f.originalName === primaryFile?.name
+        }));
+      }
+
       const product = await fetchJson<{ id?: string }>('/api/catalog/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -92,6 +116,7 @@ export default function ProductNewQuickAdmin() {
           brand_id: form.brand_id || undefined,
           is_active: form.is_active,
           is_featured: form.is_featured,
+          media,
         }),
       });
       router.push(product.id ? `/products?open=${product.id}` : '/products');
@@ -119,8 +144,9 @@ export default function ProductNewQuickAdmin() {
       {msg ? <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">{msg}</div> : null}
 
       <form onSubmit={(event) => void submit(event)} className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
-          <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid content-start gap-5">
+          <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
+            <div className="grid gap-4 md:grid-cols-2">
             <label className="grid gap-1">
               <span className="text-xs font-black text-[#8B8172]">{t('productNameAr', { fallback: 'الاسم العربي' })}</span>
               <input value={form.name_ar} onChange={(event) => setForm((current) => ({ ...current, name_ar: event.target.value }))} className={inputClass} dir={isAr ? "rtl" : "ltr"} />
@@ -144,8 +170,53 @@ export default function ProductNewQuickAdmin() {
           </div>
         </section>
 
-        <aside className="space-y-5">
-          <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
+        <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
+          <div className="mb-4 text-sm font-black text-[#1C1917]">{t('media', { fallback: 'الوسائط (صور وفيديوهات)' })}</div>
+          <div className="grid gap-4">
+            <input 
+              type="file" 
+              multiple 
+              accept="image/*,video/*"
+              onChange={(e) => {
+                if (e.target.files) {
+                  const newFiles = Array.from(e.target.files);
+                  setFiles((prev) => {
+                    const combined = [...prev, ...newFiles];
+                    if (!primaryFile && combined.length > 0) setPrimaryFile(combined[0]);
+                    return combined;
+                  });
+                }
+              }} 
+              className={inputClass}
+            />
+            {files.length > 0 && (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+                {files.map((file, idx) => {
+                  const isImage = file.type.startsWith('image/');
+                  const url = URL.createObjectURL(file);
+                  const isPrimary = file === primaryFile;
+                  return (
+                    <div key={idx} className={`relative overflow-hidden rounded-lg border-2 ${isPrimary ? 'border-[#B8860B]' : 'border-transparent'}`}>
+                      {isImage ? (
+                        <img src={url} alt={file.name} className="h-24 w-full bg-gray-100 object-cover" />
+                      ) : (
+                        <video src={url} className="h-24 w-full bg-gray-100 object-cover" />
+                      )}
+                      <button type="button" onClick={() => setFiles(files.filter(f => f !== file))} className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-white shadow-sm">×</button>
+                      <button type="button" onClick={() => setPrimaryFile(file)} className={`absolute bottom-0 left-0 right-0 py-1 text-center text-[10px] font-bold text-white transition ${isPrimary ? 'bg-[#B8860B]' : 'bg-black/50 hover:bg-black/70'}`}>
+                        {isPrimary ? 'الرئيسية' : 'تعيين رئيسية'}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+
+      <aside className="space-y-5">
+        <section className="rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm">
             <div className="grid gap-4">
               <label className="grid gap-1">
                 <span className="text-xs font-black text-[#8B8172]">{t('category', { fallback: 'التصنيف' })}</span>
