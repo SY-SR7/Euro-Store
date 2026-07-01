@@ -3,6 +3,7 @@
 import { RefreshCw } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { KeyboardEvent } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type Setting = {
   key: string;
@@ -13,22 +14,22 @@ type Setting = {
 
 type SettingConfig = {
   key: string;
-  label: string;
-  group: string;
+  labelKey: string;
+  groupKey: string;
   fallback: string;
-  unit: string;
+  unitKey: string;
   type: 'number' | 'text';
 };
 
 const SETTINGS: SettingConfig[] = [
-  { key: 'usd_exchange_rate', label: 'سعر الدولار', group: 'النظام', fallback: '15000', unit: 'ل.س', type: 'number' },
-  { key: 'max_exchange_days', label: 'مدة الاستبدال', group: 'النظام', fallback: '7', unit: 'يوم', type: 'number' },
-  { key: 'loyalty_earn_amount_syp', label: 'مبلغ كسب النقاط', group: 'الولاء', fallback: '1000', unit: 'ل.س', type: 'number' },
-  { key: 'loyalty_earn_points', label: 'نقاط الكسب', group: 'الولاء', fallback: '10', unit: 'نقطة', type: 'number' },
-  { key: 'loyalty_redeem_points_per_syp', label: 'نقاط كل ليرة', group: 'الولاء', fallback: '1', unit: 'نقطة', type: 'number' },
-  { key: 'loyalty_max_redeem_percent', label: 'حد خصم النقاط', group: 'الولاء', fallback: '20', unit: '%', type: 'number' },
-  { key: 'loyalty_referral_bonus_points', label: 'مكافأة الإحالة', group: 'الولاء', fallback: '50', unit: 'نقطة', type: 'number' },
-  { key: 'referral_bonus_points', label: 'إحالة قديمة', group: 'الولاء', fallback: '50', unit: 'نقطة', type: 'number' },
+  { key: 'usd_exchange_rate', labelKey: 'usd_exchange_rate', groupKey: 'groupSystem', fallback: '15000', unitKey: 'unitSyp', type: 'number' },
+  { key: 'max_exchange_days', labelKey: 'max_exchange_days', groupKey: 'groupSystem', fallback: '7', unitKey: 'unitDays', type: 'number' },
+  { key: 'loyalty_earn_amount_syp', labelKey: 'loyalty_earn_amount_syp', groupKey: 'groupLoyalty', fallback: '1000', unitKey: 'unitSyp', type: 'number' },
+  { key: 'loyalty_earn_points', labelKey: 'loyalty_earn_points', groupKey: 'groupLoyalty', fallback: '10', unitKey: 'unitPoints', type: 'number' },
+  { key: 'loyalty_redeem_points_per_syp', labelKey: 'loyalty_redeem_points_per_syp', groupKey: 'groupLoyalty', fallback: '1', unitKey: 'unitPoints', type: 'number' },
+  { key: 'loyalty_max_redeem_percent', labelKey: 'loyalty_max_redeem_percent', groupKey: 'groupLoyalty', fallback: '20', unitKey: 'unitPercent', type: 'number' },
+  { key: 'loyalty_referral_bonus_points', labelKey: 'loyalty_referral_bonus_points', groupKey: 'groupLoyalty', fallback: '50', unitKey: 'unitPoints', type: 'number' },
+  { key: 'referral_bonus_points', labelKey: 'referral_bonus_points', groupKey: 'groupLoyalty', fallback: '50', unitKey: 'unitPoints', type: 'number' },
 ];
 
 const inputClass =
@@ -47,21 +48,23 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   return payload as T;
 }
 
-function formatDate(value?: string | null) {
+function formatDate(value?: string | null, locale = 'ar-SY') {
   if (!value) return '';
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return '';
-  return new Intl.DateTimeFormat('ar-SY', { dateStyle: 'medium', timeStyle: 'short' }).format(date);
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' }).format(date);
 }
 
 function InlineSetting({
   config,
   value,
   onSave,
+  unitLabel,
 }: {
   config: SettingConfig;
   value: string;
   onSave: (value: string) => void | Promise<void>;
+  unitLabel: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -92,7 +95,7 @@ function InlineSetting({
           }}
           className={inputClass}
         />
-        <span className="w-14 shrink-0 text-xs font-black text-[#8B8172]">{config.unit}</span>
+        <span className="w-14 shrink-0 text-xs font-black text-[#8B8172]">{unitLabel}</span>
       </div>
     );
   }
@@ -100,7 +103,7 @@ function InlineSetting({
   return (
     <button type="button" onClick={() => setEditing(true)} className="flex min-h-10 w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-start transition hover:bg-[#FAF7EF]">
       <span className="font-mono text-sm font-black text-[#1C1917]" dir="ltr">{value || '-'}</span>
-      <span className="shrink-0 text-xs font-black text-[#8B8172]">{config.unit}</span>
+      <span className="shrink-0 text-xs font-black text-[#8B8172]">{unitLabel}</span>
     </button>
   );
 }
@@ -109,6 +112,11 @@ export default function SettingsQuickAdmin() {
   const [settings, setSettings] = useState<Setting[]>([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState('');
+
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+  const t = useTranslations('adminSettings');
+  const tCommon = useTranslations('common');
 
   const load = useCallback(() => {
     setLoading(true);
@@ -130,55 +138,56 @@ export default function SettingsQuickAdmin() {
   const patchSetting = async (config: SettingConfig, value: string) => {
     const previous = settings;
     setMsg('');
+    const label = t(config.labelKey);
     setSettings((current) => {
       const exists = current.some((item) => item.key === config.key);
-      const updated: Setting = { key: config.key, value, description: config.label, updated_at: new Date().toISOString() };
+      const updated: Setting = { key: config.key, value, description: label, updated_at: new Date().toISOString() };
       return exists ? current.map((item) => (item.key === config.key ? { ...item, ...updated } : item)) : [...current, updated];
     });
     try {
       await fetchJson<{ updated: number }>('/api/settings', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: config.key, value, description: config.label }),
+        body: JSON.stringify({ key: config.key, value, description: label }),
       });
-      setMsg('تم الحفظ');
+      setMsg(tCommon('saved', { fallback: 'تم الحفظ' }));
     } catch (error) {
       setSettings(previous);
-      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+      setMsg(error instanceof Error ? error.message : tCommon('saveFailed', { fallback: 'فشل الحفظ' }));
     }
   };
 
-  const groups = [...new Set(SETTINGS.map((item) => item.group))];
+  const groups = [...new Set(SETTINGS.map((item) => item.groupKey))];
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <div className="flex flex-col gap-4 rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">إعدادات النظام</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">القيم العامة</p>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('settingsTitle', { fallback: 'إعدادات النظام' })}</h1>
+          <p className="mt-1 text-sm text-[#A8A29E]">{t('settingsDesc', { fallback: 'القيم العامة' })}</p>
         </div>
         <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]">
-          <RefreshCw size={15} />تحديث
+          <RefreshCw size={15} />{tCommon('refresh', { fallback: 'تحديث' })}
         </button>
       </div>
 
-      {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
+      {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved', { fallback: 'تم الحفظ' }) ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
 
-      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
+      {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-white p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
       : (
         <div className="grid gap-5 xl:grid-cols-2">
-          {groups.map((group) => (
-            <section key={group} className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
-              <h2 className="mb-4 text-sm font-black text-[#B8860B]">{group}</h2>
+          {groups.map((groupKey) => (
+            <section key={groupKey} className="rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
+              <h2 className="mb-4 text-sm font-black text-[#B8860B]">{t(groupKey)}</h2>
               <div className="divide-y divide-[#F0ECE6]">
-                {values.filter((item) => item.config.group === group).map(({ config, row, value }) => (
+                {values.filter((item) => item.config.groupKey === groupKey).map(({ config, row, value }) => (
                   <div key={config.key} className="grid gap-2 py-3 first:pt-0 last:pb-0 md:grid-cols-[190px_minmax(0,1fr)] md:items-center">
                     <div className="min-w-0">
-                      <p className="text-sm font-black text-[#1C1917]">{config.label}</p>
+                      <p className="text-sm font-black text-[#1C1917]">{t(config.labelKey)}</p>
                       <p className="mt-0.5 truncate font-mono text-[11px] text-[#A8A29E]" dir="ltr">{config.key}</p>
-                      {row?.updated_at ? <p className="mt-1 text-[11px] text-[#A8A29E]">{formatDate(row.updated_at)}</p> : null}
+                      {row?.updated_at ? <p className="mt-1 text-[11px] text-[#A8A29E]">{formatDate(row.updated_at, locale === 'ar' ? 'ar-SY' : 'en-US')}</p> : null}
                     </div>
-                    <InlineSetting config={config} value={value} onSave={(next) => patchSetting(config, next)} />
+                    <InlineSetting config={config} value={value} unitLabel={t(config.unitKey)} onSave={(next) => patchSetting(config, next)} />
                   </div>
                 ))}
               </div>
