@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import { NativeWindStyleSheet } from 'nativewind';
 import { I18nManager } from 'react-native';
+import '../global.css';
 
 I18nManager.forceRTL(true);
 I18nManager.allowRTL(true);
