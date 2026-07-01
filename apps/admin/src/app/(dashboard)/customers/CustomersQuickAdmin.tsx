@@ -4,6 +4,7 @@ import { RefreshCw, Search, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type Customer = {
   id: string;
@@ -32,7 +33,7 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   return payload as T;
 }
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+function Modal({ title, onClose, children, closeTitle }: { title: string; onClose: () => void; children: ReactNode; closeTitle?: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div
@@ -43,7 +44,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
           <h2 className="font-black text-[#1C1917]">{title}</h2>
           <button
             type="button"
-            title="إغلاق"
+            title={closeTitle || "Close"}
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]"
           >
@@ -128,9 +129,11 @@ function InlineText({
 function InlineNumber({
   value,
   onSave,
+  locale = 'ar-SY'
 }: {
   value?: number | null;
   onSave: (value: number) => Promise<void> | void;
+  locale?: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(String(value ?? 0));
@@ -176,7 +179,7 @@ function InlineNumber({
       onClick={() => setEditing(true)}
       className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-black text-[#B8860B] transition hover:bg-[#FAF7EF]"
     >
-      {Number(value ?? 0).toLocaleString('ar-SY')}
+      {Number(value ?? 0).toLocaleString(locale)}
     </button>
   );
 }
@@ -184,15 +187,17 @@ function InlineNumber({
 function StatusPills({
   blocked,
   onSave,
+  t,
 }: {
   blocked: boolean;
   onSave: (blocked: boolean) => Promise<void> | void;
+  t: any;
 }) {
   return (
     <div className="flex flex-wrap gap-2">
       {[
-        { value: false, label: 'نشط', cls: 'border-green-200 bg-green-50 text-green-700' },
-        { value: true, label: 'محظور', cls: 'border-red-200 bg-red-50 text-red-700' },
+        { value: false, label: t('statusActive', { fallback: 'نشط' }), cls: 'border-green-200 bg-green-50 text-green-700' },
+        { value: true, label: t('statusBlocked', { fallback: 'محظور' }), cls: 'border-red-200 bg-red-50 text-red-700' },
       ].map((option) => {
         const active = option.value === blocked;
         return (
@@ -217,6 +222,12 @@ function StatusPills({
 export default function CustomersQuickAdmin() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+  
+  const t = useTranslations('adminCustomers');
+  const tCommon = useTranslations('common');
+
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -266,8 +277,8 @@ export default function CustomersQuickAdmin() {
         openCustomer(customer, false);
         setAutoOpenedId(customerId);
       })
-      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح العميل'));
-  }, [autoOpenedId, customers, openCustomer, searchParams, selected?.id]);
+      .catch((error) => setMsg(error instanceof Error ? error.message : t('failedToOpenCustomer', { fallback: 'تعذر فتح العميل' })));
+  }, [autoOpenedId, customers, openCustomer, searchParams, selected?.id, t]);
 
   const mergeCustomer = (id: string, patch: Partial<Customer>) => {
     setCustomers((current) => current.map((customer) => (customer.id === id ? { ...customer, ...patch } : customer)));
@@ -285,10 +296,10 @@ export default function CustomersQuickAdmin() {
         body: JSON.stringify(patch),
       });
       mergeCustomer(customer.id, updated);
-      setMsg('تم الحفظ');
+      setMsg(tCommon('saved', { fallback: 'تم الحفظ' }));
     } catch (error) {
       mergeCustomer(previous.id, previous);
-      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+      setMsg(error instanceof Error ? error.message : tCommon('saveFailed', { fallback: 'فشل الحفظ' }));
     }
   };
 
@@ -305,22 +316,22 @@ export default function CustomersQuickAdmin() {
       const updated = await fetchJson<{ loyalty_points: number }>(`/api/customers/${customer.id}/loyalty`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ points: delta, reason: 'تعديل مباشر من لوحة العملاء' }),
+        body: JSON.stringify({ points: delta, reason: t('directEditFromPanel', { fallback: 'تعديل مباشر من لوحة العملاء' }) }),
       });
       mergeCustomer(customer.id, { loyalty_points: updated.loyalty_points });
-      setMsg('تم الحفظ');
+      setMsg(tCommon('saved', { fallback: 'تم الحفظ' }));
     } catch (error) {
       mergeCustomer(previous.id, previous);
-      setMsg(error instanceof Error ? error.message : 'فشل تعديل النقاط');
+      setMsg(error instanceof Error ? error.message : t('failedToUpdatePoints', { fallback: 'فشل تعديل النقاط' }));
     }
   };
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">العملاء</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{customers.length} عميل</p>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('customersTitle', { fallback: 'العملاء' })}</h1>
+          <p className="mt-1 text-sm text-[#A8A29E]">{t('customersCount', { count: customers.length, fallback: `${customers.length} عميل` })}</p>
         </div>
         <button
           type="button"
@@ -328,7 +339,7 @@ export default function CustomersQuickAdmin() {
           className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"
         >
           <RefreshCw size={15} />
-          تحديث
+          {tCommon('refresh', { fallback: 'تحديث' })}
         </button>
       </div>
 
@@ -336,28 +347,34 @@ export default function CustomersQuickAdmin() {
         <input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="بحث بالاسم أو الهاتف أو البريد..."
+          placeholder={tCommon('searchByNamePhoneEmail', { fallback: 'بحث بالاسم أو الهاتف أو البريد...' })}
           className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm outline-none"
         />
-        <div className="flex w-12 items-center justify-center border-r border-[#E5E0D8] text-[#8B8172]">
+        <div className={`flex w-12 items-center justify-center ${isAr ? "border-l" : "border-r"} border-[#E5E0D8] text-[#8B8172]`}>
           <Search size={17} />
         </div>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
         {loading ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
+          <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
         ) : customers.length === 0 ? (
-          <p className="p-10 text-center text-sm text-[#A8A29E]">لا يوجد عملاء</p>
+          <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noCustomers', { fallback: 'لا يوجد عملاء' })}</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]">
                 <tr>
-                  {['الاسم', 'الهاتف', 'النقاط', 'الحالة', 'تاريخ التسجيل'].map((heading, index) => (
+                  {[
+                    t('name', { fallback: 'الاسم' }),
+                    t('phone', { fallback: 'الهاتف' }),
+                    t('points', { fallback: 'النقاط' }),
+                    t('status', { fallback: 'الحالة' }),
+                    t('registrationDate', { fallback: 'تاريخ التسجيل' })
+                  ].map((heading, index) => (
                     <th
                       key={heading}
-                      className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${
+                      className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${
                         index === 2 || index === 4 ? 'hidden md:table-cell' : ''
                       }`}
                     >
@@ -376,7 +393,7 @@ export default function CustomersQuickAdmin() {
                     <td className="px-5 py-3 font-semibold text-[#1C1917] transition-colors group-hover:text-[#B8860B]">
                       {customer.full_name ?? '—'}
                     </td>
-                    <td className="px-5 py-3 text-[#57534E]" dir="ltr">
+                    <td className={`px-5 py-3 text-[#57534E] ${isAr ? "text-right" : "text-left"}`} dir="ltr">
                       {customer.phone ?? ''}
                     </td>
                     <td className="hidden px-5 py-3 font-bold text-[#B8860B] md:table-cell">
@@ -392,11 +409,11 @@ export default function CustomersQuickAdmin() {
                             : 'border-green-200 bg-green-50 text-green-700 hover:bg-red-50 hover:text-red-700'
                         }`}
                       >
-                        {customer.is_blocked ? 'محظور' : 'نشط'}
+                        {customer.is_blocked ? t('statusBlocked', { fallback: 'محظور' }) : t('statusActive', { fallback: 'نشط' })}
                       </button>
                     </td>
                     <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">
-                      {new Date(customer.created_at).toLocaleDateString('ar-SY')}
+                      {new Date(customer.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
                     </td>
                   </tr>
                 ))}
@@ -407,12 +424,12 @@ export default function CustomersQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={selected.full_name ?? 'عميل'} onClose={closeCustomer}>
+        <Modal title={selected.full_name ?? t('customerFallback', { fallback: 'عميل' })} onClose={closeCustomer} closeTitle={tCommon('close', { fallback: 'إغلاق' })}>
           <div className="space-y-4">
             {msg ? (
               <div
                 className={`rounded-xl border px-4 py-2 text-sm font-bold ${
-                  msg === 'تم الحفظ'
+                  msg === tCommon('saved', { fallback: 'تم الحفظ' })
                     ? 'border-green-200 bg-green-50 text-green-700'
                     : 'border-red-200 bg-red-50 text-red-700'
                 }`}
@@ -423,43 +440,45 @@ export default function CustomersQuickAdmin() {
 
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
               <div className="space-y-2">
-                <Field label="الاسم">
+                <Field label={t('name', { fallback: 'الاسم' })}>
                   <InlineText
                     value={selected.full_name ?? ''}
+                    dir={isAr ? "rtl" : "ltr"}
                     onSave={(value) => patchCustomer(selected, { full_name: value })}
                   />
                 </Field>
-                <Field label="الهاتف">
+                <Field label={t('phone', { fallback: 'الهاتف' })}>
                   <InlineText
                     value={selected.phone ?? ''}
                     dir="ltr"
                     onSave={(value) => patchCustomer(selected, { phone: value })}
                   />
                 </Field>
-                <Field label="البريد">
+                <Field label={t('email', { fallback: 'البريد' })}>
                   <InlineText
                     value={selected.email ?? ''}
                     dir="ltr"
                     onSave={(value) => patchCustomer(selected, { email: value })}
                   />
                 </Field>
-                <Field label="النقاط">
-                  <InlineNumber value={selected.loyalty_points ?? 0} onSave={(value) => setPoints(selected, value)} />
+                <Field label={t('points', { fallback: 'النقاط' })}>
+                  <InlineNumber value={selected.loyalty_points ?? 0} onSave={(value) => setPoints(selected, value)} locale={locale === 'ar' ? 'ar-SY' : 'en-US'} />
                 </Field>
-                <Field label="الحالة">
+                <Field label={t('status', { fallback: 'الحالة' })}>
                   <StatusPills
                     blocked={Boolean(selected.is_blocked)}
                     onSave={(blocked) => patchCustomer(selected, { is_blocked: blocked })}
+                    t={t}
                   />
                 </Field>
-                <Field label="كود الإحالة">
+                <Field label={t('referralCode', { fallback: 'كود الإحالة' })}>
                   <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
                     {selected.referral_code ?? '—'}
                   </div>
                 </Field>
-                <Field label="تاريخ التسجيل">
+                <Field label={t('registrationDate', { fallback: 'تاريخ التسجيل' })}>
                   <div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-[#1C1917]">
-                    {new Date(selected.created_at).toLocaleDateString('ar-SY')}
+                    {new Date(selected.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}
                   </div>
                 </Field>
               </div>
