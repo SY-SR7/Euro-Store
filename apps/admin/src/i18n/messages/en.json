@@ -525,5 +525,23 @@
     "unitDays": "Days",
     "unitPoints": "Pts",
     "unitPercent": "%"
+  },
+  "adminLoyaltySettings": {
+    "loyaltyTitle": "Loyalty",
+    "loyaltyDesc": "Important values only, each modified in place",
+    "loyalty_earn_amount_syp": "Points Earn Amount",
+    "loyalty_earn_points": "Earn Points",
+    "loyalty_redeem_points_per_syp": "Points per SYP Discount",
+    "loyalty_max_redeem_percent": "Max Points Discount",
+    "loyalty_referral_bonus_points": "Referral Bonus",
+    "unitSyp": "SYP",
+    "unitPoints": "Pts",
+    "unitPercent": "%",
+    "earn": "Earn",
+    "every": "Every {amount} = {points} pts",
+    "redeemLabel": "{points} pts = {amount}",
+    "redeem": "Redeem",
+    "order50k": "50,000 Order",
+    "referral": "Referral"
   }
 }

@@ -525,5 +525,23 @@
     "unitDays": "يوم",
     "unitPoints": "نقطة",
     "unitPercent": "%"
+  },
+  "adminLoyaltySettings": {
+    "loyaltyTitle": "الولاء",
+    "loyaltyDesc": "القيم المهمة فقط، وكل قيمة تتعدل من مكانها",
+    "loyalty_earn_amount_syp": "مبلغ كسب النقاط",
+    "loyalty_earn_points": "نقاط الكسب",
+    "loyalty_redeem_points_per_syp": "نقاط كل ليرة خصم",
+    "loyalty_max_redeem_percent": "أقصى خصم بالنقاط",
+    "loyalty_referral_bonus_points": "مكافأة الإحالة",
+    "unitSyp": "ل.س",
+    "unitPoints": "نقطة",
+    "unitPercent": "%",
+    "earn": "الكسب",
+    "every": "كل {amount} = {points} نقطة",
+    "redeemLabel": "{points} نقطة = {amount}",
+    "redeem": "الاستبدال",
+    "order50k": "طلب 50,000",
+    "referral": "الإحالة"
   }
 }
