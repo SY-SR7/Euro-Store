@@ -1067,7 +1067,13 @@
     "saveFailed": "Failed to save, please try again",
     "loadFailed": "Failed to load order details",
     "paymentStatusTitle": "Payment Status",
-    "paymentMethodTitle": "Payment Method"
+    "paymentMethodTitle": "Payment Method",
+    "refresh": "Refresh",
+    "search": "Search...",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of"
   },
   "adminProducts": {
     "title": "Products Management",
