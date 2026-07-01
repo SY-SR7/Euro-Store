@@ -1,7 +1,8 @@
-﻿'use client';
+'use client';
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { formatSYP } from '@eurostore/shared';
+import Link from 'next/link';
 
 interface Order {
   id: string; order_number: string; status: string;
@@ -59,7 +60,7 @@ export default function HelperDashboardPage() {
             <div key={o.id} className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
-                  <p className="font-mono text-primary font-bold">#{o.order_number}</p>
+                  <Link href={`/orders/${o.order_number}`} className="font-mono text-primary font-bold hover:underline">#{o.order_number}</Link>
                   <p className="text-[#E2E2E2] mt-1">{o.address_snapshot.full_name} â€” {o.address_snapshot.phone}</p>
                   <p className="text-sm text-[#9CA3AF]">{o.address_snapshot.governorate} â€” {o.address_snapshot.address}</p>
                   <p className="text-sm text-[#9CA3AF] mt-1">{formatSYP(Math.round(o.total_syp))}</p>
