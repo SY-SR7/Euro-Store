@@ -202,7 +202,7 @@ export default function HomepageQuickAdmin() {
   const SECTION_OPTIONS = [
     { value: 'hero', label: t('sectionKeyHero', { fallback: 'Hero' }) },
     { value: 'featured_products', label: t('sectionKeyFeatured', { fallback: 'منتجات مميزة' }) },
-    { value: 'categories_grid', label: t('sectionKeyCategories', { fallback: 'شبكة التصنيفات' }) },
+    { value: 'category_grid', label: t('sectionKeyCategories', { fallback: 'شبكة التصنيفات' }) },
     { value: 'promotions', label: t('sectionKeyPromotions', { fallback: 'العروض' }) },
     { value: 'loyalty_banner', label: t('sectionKeyLoyalty', { fallback: 'الولاء' }) },
     { value: 'new_arrivals', label: t('sectionKeyNewArrivals', { fallback: 'وصل حديثا' }) },
