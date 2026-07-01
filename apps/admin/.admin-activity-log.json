@@ -1,5 +1,18 @@
 [
   {
+    "id": "b4b0d2ae-49a0-4598-8a0b-b0c405468677",
+    "admin_email": "eurostore.private@gmail.com",
+    "action": "deactivate",
+    "action_ar": "تعطيل",
+    "entity_type": "catalog/homepage",
+    "entity_label": "catalog/homepage",
+    "entity_id": "94408b78-9b7a-419a-941e-f94008d41414",
+    "summary": "تعطيل في catalog/homepage — المعرّف: 94408b78-9b7a-419a-941e-f94008d41414 — نتيجة العملية: 401",
+    "source": "admin-ui",
+    "created_at": "2026-07-01T18:37:29.941Z",
+    "ip": "::1"
+  },
+  {
     "id": "836d4050-c65e-4cfb-92d9-d6f916549081",
     "admin_email": "eurostore.private@gmail.com",
     "action": "deactivate",
