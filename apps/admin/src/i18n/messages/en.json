@@ -67,7 +67,10 @@
     "errors": {
       "invalidCredentials": "Invalid credentials",
       "registered": "Account created successfully",
-      "loginFailed": "Login failed"
+      "loginFailed": "Login failed",
+      "missingCredentials": "Please enter email and password",
+      "cannotLogin": "Cannot login at this time",
+      "timeout": "Connection timed out"
     },
     "fullName": "Full Name",
     "createNewAccount": "Create new account",
@@ -80,7 +83,9 @@
     "loggingIn": "Logging in...",
     "loggingOut": "Logging out...",
     "registerTitle": "Create Account",
-    "noAccount": "No account?"
+    "noAccount": "No account?",
+    "show": "Show",
+    "hide": "Hide"
   },
   "englishShort": "EN",
   "helpSection": "Help",
@@ -170,7 +175,12 @@
     "imageFallback": {
       "alt": "Product Image",
       "error": "Image failed to load"
-    }
+    },
+    "openSidebar": "Open Sidebar",
+    "unitPoints": "pt(s)",
+    "notifications": "Notifications",
+    "emptyField": "—",
+    "savedSuccessfully": "Saved successfully"
   },
   "productCount": "Product count",
   "categories": {
@@ -212,7 +222,10 @@
     "loyaltySettings": "Loyalty Settings",
     "groupSystem": "System",
     "subAdmins": "Sub-Admins",
-    "auditLogs": "Audit Logs"
+    "auditLogs": "Audit Logs",
+    "loggingOut": "Logging out...",
+    "closeMenu": "Close Menu",
+    "openSidebar": "Open Sidebar"
   },
   "adminCatalog": {
     "noCategories": "No categories",
@@ -302,7 +315,59 @@
     "attrColor": "Color",
     "attrSize": "Size",
     "noAttr": "—",
-    "editVariantTitle": "Edit Variant"
+    "editVariantTitle": "Edit Variant",
+    "productsTitle": "Products Management",
+    "searchPlaceholder": "Search products...",
+    "productTitle": "Product Details",
+    "descriptionAr": "Description (Arabic)",
+    "descriptionEn": "Description (English)",
+    "category": "Category",
+    "brand": "Brand",
+    "weightGrams": "Weight (grams)",
+    "imageUrl": "Image URL",
+    "visibility": "Visibility",
+    "highlighting": "Highlighting",
+    "normal": "Normal",
+    "primary": "Primary",
+    "lowestPrice": "Lowest Price",
+    "variants": "Variants",
+    "variantsAndPrices": "Variants & Prices",
+    "productDetails": "Product Details",
+    "quickImages": "Quick Add Images",
+    "noImage": "No image",
+    "setAsPrimary": "Set as Primary",
+    "altText": "Alt Text",
+    "createProductBtn": "Create Product",
+    "saving": "Saving...",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "loadFailed": "Failed to load",
+    "refresh": "Refresh",
+    "search": "Search",
+    "filters": "Filters",
+    "showFilters": "Show Filters",
+    "hideFilters": "Hide Filters",
+    "clearFilters": "Clear Filters",
+    "clear": "Clear",
+    "from": "From",
+    "to": "To",
+    "all": "All",
+    "items": "item(s)",
+    "link": "Link",
+    "attributeTypesTitle": "Attribute Types",
+    "newAttributeType": "New Attribute Type",
+    "noAttributes": "No attribute types",
+    "attributeNameAr": "Attribute Name (Arabic)",
+    "attributeNameEn": "Attribute Name (English)",
+    "attributeSlug": "Slug",
+    "attributeValues": "Attribute Values",
+    "valueAr": "Value (Arabic)",
+    "valueEn": "Value (English)",
+    "addValue": "Add Value",
+    "saveAttribute": "Save Attribute",
+    "add": "Add",
+    "uncategorized": "Uncategorized",
+    "unbranded": "No brand"
   },
   "newArrivals": "New arrivals",
   "cart": {
@@ -504,7 +569,12 @@
     "customerDetails": "Customer Details",
     "editCustomer": "Edit Customer",
     "blockCustomer": "Block Customer",
-    "unblockCustomer": "Unblock Customer"
+    "unblockCustomer": "Unblock Customer",
+    "searchByNamePhoneEmail": "Search by name, phone or email",
+    "refresh": "Refresh",
+    "close": "Close",
+    "saved": "Saved",
+    "saveFailed": "Failed to save"
   },
   "adminDiscounts": {
     "discountsTitle": "Discounts",
@@ -541,7 +611,11 @@
     "loading": "Loading...",
     "active": "Active",
     "inactive": "Inactive",
-    "expired": "Expired"
+    "expired": "Expired",
+    "refresh": "Refresh",
+    "close": "Close",
+    "saved": "Saved",
+    "saveFailed": "Failed to save"
   },
   "adminExchanges": {
     "exchangesTitle": "Exchange Requests",
@@ -583,7 +657,11 @@
     "approve": "Approve",
     "reject": "Reject",
     "complete": "Complete",
-    "details": "Details"
+    "details": "Details",
+    "refresh": "Refresh",
+    "close": "Close",
+    "saved": "Saved",
+    "saveFailed": "Failed to save"
   },
   "adminSettings": {
     "settingsTitle": "System Settings",
@@ -607,7 +685,9 @@
     "storeEmail": "Store Email",
     "save": "Save Settings",
     "savedSuccessfully": "Settings saved",
-    "saveFailed": "Failed to save settings"
+    "saveFailed": "Failed to save settings",
+    "settingsLabel": "Settings",
+    "saved": "Saved"
   },
   "adminLoyaltySettings": {
     "loyaltyTitle": "Loyalty",
@@ -625,7 +705,11 @@
     "redeemLabel": "{points} pts = {amount}",
     "redeem": "Redeem",
     "order50k": "50,000 Order",
-    "referral": "Referral"
+    "referral": "Referral",
+    "loading": "Loading...",
+    "refresh": "Refresh",
+    "saved": "Saved",
+    "saveFailed": "Failed to save"
   },
   "adminHomepage": {
     "homepageTitle": "Homepage",
@@ -650,7 +734,12 @@
     "sectionType": "Section Type",
     "deleteSection": "Delete Section",
     "confirmDelete": "Delete this section?",
-    "failedToLoadSection": "Failed to open section"
+    "failedToLoadSection": "Failed to open section",
+    "loading": "Loading...",
+    "refresh": "Refresh",
+    "close": "Close",
+    "saved": "Saved",
+    "saveFailed": "Failed to save"
   },
   "adminReviews": {
     "reviewsTitle": "Product Reviews",
@@ -689,7 +778,9 @@
     "reject": "Reject",
     "pending": "Pending",
     "approved": "Approved",
-    "rejected": "Rejected"
+    "rejected": "Rejected",
+    "refresh": "Refresh",
+    "close": "Close"
   },
   "adminShippingRates": {
     "shippingRatesTitle": "Shipping Rates",
@@ -711,7 +802,10 @@
     "loading": "Loading...",
     "governorate": "Governorate",
     "price": "Price",
-    "freeFrom": "Free from"
+    "freeFrom": "Free from",
+    "refresh": "Refresh",
+    "saved": "Saved",
+    "saveFailed": "Failed to save"
   },
   "adminSubAdmins": {
     "title": "Sub-Admins Management",
@@ -742,7 +836,9 @@
     "tableEmail": "Email",
     "tableRole": "Role",
     "tableStatus": "Status",
-    "tableDate": "Date"
+    "tableDate": "Date",
+    "refresh": "Refresh",
+    "close": "Close"
   },
   "adminNotifications": {
     "title": "Notifications",
@@ -866,7 +962,9 @@
     "tableEntity": "Entity",
     "tableUser": "User",
     "tableDate": "Date",
-    "tableDetails": "Details"
+    "tableDetails": "Details",
+    "refresh": "Refresh",
+    "close": "Close"
   },
   "adminDashboard": {
     "title": "Dashboard",
@@ -913,7 +1011,9 @@
       "shipped": "Shipped",
       "delivered": "Delivered",
       "cancelled": "Cancelled"
-    }
+    },
+    "refresh": "Refresh",
+    "unitSyp": "SYP"
   },
   "adminOrders": {
     "ordersTitle": "Orders Management",

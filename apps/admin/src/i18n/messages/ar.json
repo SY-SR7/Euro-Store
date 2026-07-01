@@ -67,7 +67,10 @@
     "errors": {
       "invalidCredentials": "بيانات تسجيل الدخول غير صحيحة",
       "registered": "تم إنشاء الحساب بنجاح",
-      "loginFailed": "فشل تسجيل الدخول"
+      "loginFailed": "فشل تسجيل الدخول",
+      "missingCredentials": "يرجى إدخال البريد وكلمة المرور",
+      "cannotLogin": "لا يمكن تسجيل الدخول في الوقت الحالي",
+      "timeout": "انتهى وقت الاتصال"
     },
     "fullName": "الاسم الكامل",
     "createNewAccount": "إنشاء حساب جديد",
@@ -80,7 +83,9 @@
     "loggingIn": "جار تسجيل الدخول...",
     "loggingOut": "جار تسجيل الخروج...",
     "registerTitle": "إنشاء حساب",
-    "noAccount": "ليس لديك حساب؟"
+    "noAccount": "ليس لديك حساب؟",
+    "show": "إظهار",
+    "hide": "إخفاء"
   },
   "englishShort": "EN",
   "helpSection": "المساعدة",
@@ -170,7 +175,12 @@
     "imageFallback": {
       "alt": "صورة المنتج",
       "error": "تعذر تحميل الصورة"
-    }
+    },
+    "openSidebar": "فتح القائمة",
+    "unitPoints": "نقطة",
+    "notifications": "الإشعارات",
+    "emptyField": "—",
+    "savedSuccessfully": "تم الحفظ بنجاح"
   },
   "productCount": "عدد المنتجات",
   "categories": {
@@ -212,7 +222,10 @@
     "loyaltySettings": "إعدادات الولاء",
     "groupSystem": "النظام",
     "subAdmins": "المشرفين",
-    "auditLogs": "سجلات النظام"
+    "auditLogs": "سجلات النظام",
+    "loggingOut": "جار تسجيل الخروج...",
+    "closeMenu": "إغلاق القائمة",
+    "openSidebar": "فتح القائمة"
   },
   "adminCatalog": {
     "noCategories": "لا توجد تصنيفات",
@@ -302,7 +315,59 @@
     "attrColor": "اللون",
     "attrSize": "المقاس",
     "noAttr": "—",
-    "editVariantTitle": "تعديل الخيار"
+    "editVariantTitle": "تعديل الخيار",
+    "productsTitle": "إدارة المنتجات",
+    "searchPlaceholder": "بحث في المنتجات...",
+    "productTitle": "تفاصيل المنتج",
+    "descriptionAr": "الوصف (عربي)",
+    "descriptionEn": "الوصف (إنجليزي)",
+    "category": "الفئة",
+    "brand": "العلامة التجارية",
+    "weightGrams": "الوزن (غرام)",
+    "imageUrl": "رابط الصورة",
+    "visibility": "الظهور",
+    "highlighting": "التمييز",
+    "normal": "عادي",
+    "primary": "رئيسية",
+    "lowestPrice": "أدنى سعر",
+    "variants": "المتغيرات",
+    "variantsAndPrices": "المتغيرات والأسعار",
+    "productDetails": "تفاصيل المنتج",
+    "quickImages": "إضافة صور سريعة",
+    "noImage": "لا توجد صورة",
+    "setAsPrimary": "تعيين كرئيسية",
+    "altText": "النص البديل",
+    "createProductBtn": "إنشاء المنتج",
+    "saving": "جار الحفظ...",
+    "loading": "جار التحميل...",
+    "error": "حدث خطأ",
+    "loadFailed": "تعذر التحميل",
+    "refresh": "تحديث",
+    "search": "بحث",
+    "filters": "التصفية",
+    "showFilters": "إظهار الفلاتر",
+    "hideFilters": "إخفاء الفلاتر",
+    "clearFilters": "مسح الفلاتر",
+    "clear": "مسح",
+    "from": "من",
+    "to": "إلى",
+    "all": "الكل",
+    "items": "عنصر",
+    "link": "رابط",
+    "attributeTypesTitle": "أنواع المتغيرات",
+    "newAttributeType": "نوع متغير جديد",
+    "noAttributes": "لا توجد أنواع متغيرات",
+    "attributeNameAr": "اسم المتغير (عربي)",
+    "attributeNameEn": "اسم المتغير (إنجليزي)",
+    "attributeSlug": "الرابط المختصر",
+    "attributeValues": "قيم المتغير",
+    "valueAr": "القيمة (عربي)",
+    "valueEn": "القيمة (إنجليزي)",
+    "addValue": "إضافة قيمة",
+    "saveAttribute": "حفظ المتغير",
+    "add": "إضافة",
+    "uncategorized": "غير مصنف",
+    "unbranded": "بدون علامة تجارية"
   },
   "newArrivals": "وصل حديثاً",
   "cart": {
@@ -504,7 +569,12 @@
     "customerDetails": "تفاصيل العميل",
     "editCustomer": "تعديل العميل",
     "blockCustomer": "حظر العميل",
-    "unblockCustomer": "رفع الحظر"
+    "unblockCustomer": "رفع الحظر",
+    "searchByNamePhoneEmail": "بحث بالاسم أو الهاتف أو البريد",
+    "refresh": "تحديث",
+    "close": "إغلاق",
+    "saved": "تم الحفظ",
+    "saveFailed": "فشل الحفظ"
   },
   "adminDiscounts": {
     "discountsTitle": "الخصومات",
@@ -541,7 +611,11 @@
     "loading": "جار التحميل...",
     "active": "نشط",
     "inactive": "غير نشط",
-    "expired": "منتهي"
+    "expired": "منتهي",
+    "refresh": "تحديث",
+    "close": "إغلاق",
+    "saved": "تم الحفظ",
+    "saveFailed": "فشل الحفظ"
   },
   "adminExchanges": {
     "exchangesTitle": "طلبات الاستبدال",
@@ -583,7 +657,11 @@
     "approve": "قبول",
     "reject": "رفض",
     "complete": "إتمام",
-    "details": "التفاصيل"
+    "details": "التفاصيل",
+    "refresh": "تحديث",
+    "close": "إغلاق",
+    "saved": "تم الحفظ",
+    "saveFailed": "فشل الحفظ"
   },
   "adminSettings": {
     "settingsTitle": "إعدادات النظام",
@@ -607,7 +685,9 @@
     "storeEmail": "البريد الإلكتروني",
     "save": "حفظ الإعدادات",
     "savedSuccessfully": "تم حفظ الإعدادات",
-    "saveFailed": "فشل حفظ الإعدادات"
+    "saveFailed": "فشل حفظ الإعدادات",
+    "settingsLabel": "الإعدادات",
+    "saved": "تم الحفظ"
   },
   "adminLoyaltySettings": {
     "loyaltyTitle": "الولاء",
@@ -625,7 +705,11 @@
     "redeemLabel": "{points} نقطة = {amount}",
     "redeem": "الاستبدال",
     "order50k": "طلب 50,000",
-    "referral": "الإحالة"
+    "referral": "الإحالة",
+    "loading": "جار التحميل...",
+    "refresh": "تحديث",
+    "saved": "تم الحفظ",
+    "saveFailed": "فشل الحفظ"
   },
   "adminHomepage": {
     "homepageTitle": "الواجهة الرئيسية",
@@ -650,7 +734,12 @@
     "sectionType": "نوع القسم",
     "deleteSection": "حذف القسم",
     "confirmDelete": "حذف هذا القسم؟",
-    "failedToLoadSection": "تعذر فتح القسم"
+    "failedToLoadSection": "تعذر فتح القسم",
+    "loading": "جار التحميل...",
+    "refresh": "تحديث",
+    "close": "إغلاق",
+    "saved": "تم الحفظ",
+    "saveFailed": "فشل الحفظ"
   },
   "adminReviews": {
     "reviewsTitle": "تقييمات المنتجات",
@@ -689,7 +778,9 @@
     "reject": "رفض",
     "pending": "قيد الانتظار",
     "approved": "مقبول",
-    "rejected": "مرفوض"
+    "rejected": "مرفوض",
+    "refresh": "تحديث",
+    "close": "إغلاق"
   },
   "adminShippingRates": {
     "shippingRatesTitle": "أسعار الشحن",
@@ -711,7 +802,10 @@
     "loading": "جار التحميل...",
     "governorate": "المحافظة",
     "price": "السعر",
-    "freeFrom": "مجاني من"
+    "freeFrom": "مجاني من",
+    "refresh": "تحديث",
+    "saved": "تم الحفظ",
+    "saveFailed": "فشل الحفظ"
   },
   "adminSubAdmins": {
     "title": "إدارة المشرفين",
@@ -742,7 +836,9 @@
     "tableEmail": "البريد",
     "tableRole": "الدور",
     "tableStatus": "الحالة",
-    "tableDate": "التاريخ"
+    "tableDate": "التاريخ",
+    "refresh": "تحديث",
+    "close": "إغلاق"
   },
   "adminNotifications": {
     "title": "الإشعارات",
@@ -866,7 +962,9 @@
     "tableEntity": "القسم",
     "tableUser": "المستخدم",
     "tableDate": "التاريخ",
-    "tableDetails": "التفاصيل"
+    "tableDetails": "التفاصيل",
+    "refresh": "تحديث",
+    "close": "إغلاق"
   },
   "adminDashboard": {
     "title": "لوحة التحكم",
@@ -913,7 +1011,9 @@
       "shipped": "تم الشحن",
       "delivered": "تم التوصيل",
       "cancelled": "ملغي"
-    }
+    },
+    "refresh": "تحديث",
+    "unitSyp": "ل.س"
   },
   "adminOrders": {
     "ordersTitle": "إدارة الطلبات",
