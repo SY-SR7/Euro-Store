@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-server';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin

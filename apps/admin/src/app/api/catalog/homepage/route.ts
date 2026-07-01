@@ -11,6 +11,9 @@ const sectionSchema = z.object({
   sort_order:  z.number().int().min(0).default(0),
 });
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.from('homepage_sections').select('*').order('sort_order');

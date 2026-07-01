@@ -13,6 +13,9 @@ const schema = z.object({
   attribute_value_ids: z.array(z.string().uuid()).optional(),
 });
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const product_id = searchParams.get('product_id') ?? '';

@@ -1,4 +1,4 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { requireAdminContext, writeAuditLog } from '@/supabase-server';
 import { z } from 'zod';
 
@@ -32,6 +32,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
   }
 }
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
   const ctx = await requireAdminContext();

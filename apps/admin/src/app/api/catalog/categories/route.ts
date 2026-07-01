@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminContext, writeAuditLog } from '@/supabase-server';
 
 function normalizeSlug(value: string) {
@@ -10,6 +10,9 @@ function normalizeSlug(value: string) {
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
 }
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
   const ctx = await requireAdminContext();

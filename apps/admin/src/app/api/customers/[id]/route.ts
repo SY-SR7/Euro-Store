@@ -3,6 +3,9 @@ import { createAdminSupabaseClient, requireAdminContext, writeAuditLog } from '@
 
 interface RouteParams { params: { id: string } }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(_req: Request, { params }: RouteParams) {
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin

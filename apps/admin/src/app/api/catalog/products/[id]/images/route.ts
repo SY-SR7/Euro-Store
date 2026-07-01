@@ -7,6 +7,9 @@ interface RouteParams { params: { id: string } }
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
 const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(_req: Request, { params }: RouteParams) {
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
