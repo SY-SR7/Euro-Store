@@ -602,8 +602,8 @@
     "login": "Login",
     "howItWorks": "How it works?",
     "earnOnPurchase": "Earn points on purchase",
-    "forEvery": "you get points",
-    "youSpendYouGet": "For every",
+    "forEvery": "For every",
+    "youSpendYouGet": "you spend, you get",
     "point": "point",
     "usePointsAsDiscount": "Use points as discount",
     "every": "Every",
@@ -660,7 +660,4 @@
     "addToCart": "Add to Cart",
     "chooseVariantFirst": "Choose variant first",
     "category": "Category:"
-  },
-  "forEvery": "For every",
-  "youSpendYouGet": "you spend, you get"
-}
+  }
