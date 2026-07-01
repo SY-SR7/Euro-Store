@@ -4,6 +4,7 @@ import { RefreshCw, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type Rate = {
   id: string;
@@ -17,8 +18,8 @@ type Rate = {
 const inputClass =
   'w-full rounded-xl border border-[#E5E0D8] bg-white px-3 py-2 text-sm text-[#1C1917] outline-none transition focus:border-[#B8860B]';
 
-function money(value?: number | null) {
-  return value == null ? '—' : `${Number(value).toLocaleString('ar-SY')} ل.س`;
+function money(value: number | null | undefined, locale: string, currencySymbol: string) {
+  return value == null ? '—' : `${Number(value).toLocaleString(locale)} ${currencySymbol}`;
 }
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
@@ -34,13 +35,13 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   return payload as T;
 }
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+function Modal({ title, onClose, children, closeTitle }: { title: string; onClose: () => void; children: ReactNode; closeTitle?: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="w-full max-w-xl rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" title="إغلاق" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -59,23 +60,27 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function InlineText({ value, onSave, dir = 'rtl' }: { value?: string | null; onSave: (value: string) => Promise<void> | void; dir?: 'rtl' | 'ltr' }) {
+function InlineText({ value, onSave, dir = 'rtl', emptyField = '—' }: { value?: string | null; onSave: (value: string) => Promise<void> | void; dir?: 'rtl' | 'ltr'; emptyField?: string }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value ?? '');
   useEffect(() => { if (!editing) setDraft(value ?? ''); }, [editing, value]);
   const commit = () => { const next = draft.trim(); setEditing(false); if (next !== (value ?? '')) void onSave(next); };
   if (editing) return <input autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
-  return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">{value || <span className="text-[#A8A29E]">—</span>}</button>;
+  return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-[#1C1917] transition hover:bg-[#FAF7EF]">{value || <span className="text-[#A8A29E]">{emptyField}</span>}</button>;
 }
 
 function InlineNumber({
   value,
   nullable = false,
   onSave,
+  locale = 'ar-SY',
+  currencySymbol = 'ل.س'
 }: {
   value?: number | null;
   nullable?: boolean;
   onSave: (value: number | null) => Promise<void> | void;
+  locale?: string;
+  currencySymbol?: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value == null ? '' : String(value));
@@ -113,16 +118,16 @@ function InlineNumber({
   }
 
   return (
-    <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-[#1C1917] transition hover:bg-[#FAF7EF]">
-      {money(value)}
+    <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-[#1C1917] transition hover:bg-[#FAF7EF]" dir="ltr">
+      {money(value, locale, currencySymbol)}
     </button>
   );
 }
 
-function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolean) => Promise<void> | void }) {
+function ActivePills({ value, onSave, labelActive, labelDisabled }: { value: boolean; onSave: (value: boolean) => Promise<void> | void; labelActive: string; labelDisabled: string }) {
   return (
     <div className="flex gap-2">
-      {[{ v: true, l: 'نشط', c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: 'معطّل', c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
+      {[{ v: true, l: labelActive, c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: labelDisabled, c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
         <button key={option.l} type="button" onClick={() => option.v !== value && void onSave(option.v)} className={`rounded-full border px-3 py-1 text-xs font-black ${option.v === value ? option.c : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#8B8172] hover:border-[#B8860B]'}`}>
           {option.l}
         </button>
@@ -134,6 +139,14 @@ function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolea
 export default function ShippingRatesQuickAdmin() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+  const t = useTranslations('adminShippingRates');
+  const tCommon = useTranslations('common');
+
+  const formatLoc = isAr ? 'ar-SY' : 'en-US';
+  const currencySymbol = t('unitSyp');
+
   const [rates, setRates] = useState<Rate[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Rate | null>(null);
@@ -178,8 +191,8 @@ export default function ShippingRatesQuickAdmin() {
         openRate(rate, false);
         setAutoOpenedId(rateId);
       })
-      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر فتح سعر الشحن'));
-  }, [autoOpenedId, openRate, rates, searchParams, selected?.id]);
+      .catch((error) => setMsg(error instanceof Error ? error.message : t('failedToLoadRate')));
+  }, [autoOpenedId, openRate, rates, searchParams, selected?.id, t]);
 
   const mergeRate = (id: string, patch: Partial<Rate>) => {
     setRates((current) => current.map((rate) => (rate.id === id ? { ...rate, ...patch } : rate)));
@@ -197,38 +210,38 @@ export default function ShippingRatesQuickAdmin() {
         body: JSON.stringify(patch),
       });
       mergeRate(rate.id, updated);
-      setMsg('تم الحفظ');
+      setMsg(tCommon('saved'));
     } catch (error) {
       mergeRate(previous.id, previous);
-      setMsg(error instanceof Error ? error.message : 'فشل الحفظ');
+      setMsg(error instanceof Error ? error.message : tCommon('saveFailed'));
     }
   };
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <div className="flex items-center justify-between rounded-2xl border border-[#E5E0D8] bg-white p-5 shadow-sm">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">أسعار الشحن</h1>
-          <p className="mt-1 text-sm text-[#A8A29E]">{rates.length} محافظة</p>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('shippingRatesTitle')}</h1>
+          <p className="mt-1 text-sm text-[#A8A29E]">{t('countGovernorates', { count: rates.length })}</p>
         </div>
-        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"><RefreshCw size={15} />تحديث</button>
+        <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-semibold text-[#57534E] hover:border-[#B8860B]"><RefreshCw size={15} />{tCommon('refresh')}</button>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
-        : rates.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد أسعار شحن</p>
+        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading')}</p>
+        : rates.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noShippingRates')}</p>
         : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
-              <thead className="bg-[#F8F6F2]"><tr>{['المحافظة','سعر الشحن','مجاني فوق','الحالة'].map((h,i)=><th key={h} className={`px-5 py-3 text-right text-xs font-black text-[#A8A29E] ${i>=2?'hidden md:table-cell':''}`}>{h}</th>)}</tr></thead>
+              <thead className="bg-[#F8F6F2]"><tr>{[t('tableGovernorate'), t('tableShippingRate'), t('tableFreeShippingOver'), t('tableStatus')].map((h,i)=><th key={h} className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-[#A8A29E] ${i>=2?'hidden md:table-cell':''}`}>{h}</th>)}</tr></thead>
               <tbody className="divide-y divide-[#F0ECE6]">
                 {rates.map((rate) => (
                   <tr key={rate.id} className="group cursor-pointer transition-colors hover:bg-[#FFFBF0]" onClick={() => openRate(rate)}>
                     <td className="px-5 py-3 font-semibold text-[#1C1917] group-hover:text-[#B8860B]">{rate.governorate}</td>
-                    <td className="px-5 py-3 font-bold text-[#B8860B]">{money(rate.base_rate_syp)}</td>
-                    <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell">{money(rate.free_shipping_threshold_syp)}</td>
+                    <td className="px-5 py-3 font-bold text-[#B8860B]" dir="ltr">{money(rate.base_rate_syp, formatLoc, currencySymbol)}</td>
+                    <td className="hidden px-5 py-3 text-xs text-[#A8A29E] md:table-cell" dir="ltr">{money(rate.free_shipping_threshold_syp, formatLoc, currencySymbol)}</td>
                     <td className="hidden px-5 py-3 md:table-cell" onClick={(event) => event.stopPropagation()}>
-                      <button type="button" onClick={() => void patchRate(rate, { is_active: !rate.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${rate.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{rate.is_active ? 'نشط' : 'معطّل'}</button>
+                      <button type="button" onClick={() => void patchRate(rate, { is_active: !rate.is_active })} className={`rounded-full border px-3 py-1 text-xs font-bold ${rate.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{rate.is_active ? t('statusActive') : t('statusDisabled')}</button>
                     </td>
                   </tr>
                 ))}
@@ -239,15 +252,15 @@ export default function ShippingRatesQuickAdmin() {
       </div>
 
       {selected ? (
-        <Modal title={selected.governorate} onClose={closeRate}>
+        <Modal title={selected.governorate} onClose={closeRate} closeTitle={tCommon('close')}>
           <div className="space-y-4">
-            {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === 'تم الحفظ' ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
+            {msg ? <div className={`rounded-xl border px-4 py-2 text-sm font-bold ${msg === tCommon('saved') ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{msg}</div> : null}
             <div className="rounded-2xl border border-[#E5E0D8] bg-white p-4 shadow-sm">
               <div className="space-y-2">
-                <Field label="المحافظة"><InlineText value={selected.governorate} onSave={(governorate) => patchRate(selected, { governorate })} /></Field>
-                <Field label="سعر الشحن"><InlineNumber value={selected.base_rate_syp} onSave={(base_rate_syp) => patchRate(selected, { base_rate_syp: Number(base_rate_syp ?? 0) })} /></Field>
-                <Field label="شحن مجاني فوق"><InlineNumber value={selected.free_shipping_threshold_syp ?? null} nullable onSave={(free_shipping_threshold_syp) => patchRate(selected, { free_shipping_threshold_syp })} /></Field>
-                <Field label="الحالة"><ActivePills value={selected.is_active} onSave={(is_active) => patchRate(selected, { is_active })} /></Field>
+                <Field label={t('tableGovernorate')}><InlineText value={selected.governorate} dir={isAr ? "rtl" : "ltr"} emptyField={t('emptyField')} onSave={(governorate) => patchRate(selected, { governorate })} /></Field>
+                <Field label={t('tableShippingRate')}><InlineNumber value={selected.base_rate_syp} locale={formatLoc} currencySymbol={currencySymbol} onSave={(base_rate_syp) => patchRate(selected, { base_rate_syp: Number(base_rate_syp ?? 0) })} /></Field>
+                <Field label={t('freeShippingAbove')}><InlineNumber value={selected.free_shipping_threshold_syp ?? null} nullable locale={formatLoc} currencySymbol={currencySymbol} onSave={(free_shipping_threshold_syp) => patchRate(selected, { free_shipping_threshold_syp })} /></Field>
+                <Field label={t('tableStatus')}><ActivePills value={selected.is_active} labelActive={t('statusActive')} labelDisabled={t('statusDisabled')} onSave={(is_active) => patchRate(selected, { is_active })} /></Field>
               </div>
             </div>
           </div>
