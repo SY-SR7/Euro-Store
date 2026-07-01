@@ -25,6 +25,7 @@ const MOBILE_LINKS = [
 export function Header() {
   const t = useTranslations('nav');
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#E7E3DC] bg-white/90 backdrop-blur-xl shadow-sm">
@@ -35,12 +36,17 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {DESKTOP_LINKS.map(link => (
-            <Link key={link.href} href={link.href}
-              className="rounded-lg px-3 py-2 text-sm font-semibold text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B]">
-              {t(link.key)}
-            </Link>
-          ))}
+          {DESKTOP_LINKS.map(link => {
+            const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+            return (
+              <Link key={link.href} href={link.href}
+                className={`rounded-lg px-3 py-2 text-sm font-semibold transition hover:bg-[#F5F5F4] hover:text-[#B8860B] ${
+                  isActive ? 'bg-[#F5F5F4] text-[#B8860B]' : 'text-[#57534E]'
+                }`}>
+                {t(link.key)}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-1">
@@ -76,12 +82,17 @@ export function Header() {
       {open && (
         <div className="border-t border-[#E7E3DC] bg-white px-4 py-3 md:hidden">
           <nav className="grid grid-cols-2 gap-1">
-            {MOBILE_LINKS.map(link => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
-                className="rounded-xl px-3 py-2.5 text-sm font-semibold text-[#57534E] transition hover:bg-[#F5F5F4] hover:text-[#B8860B]">
-                {t(link.key)}
-              </Link>
-            ))}
+            {MOBILE_LINKS.map(link => {
+              const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+              return (
+                <Link key={link.href} href={link.href} onClick={() => setOpen(false)}
+                  className={`rounded-xl px-3 py-2.5 text-sm font-semibold transition hover:bg-[#F5F5F4] hover:text-[#B8860B] ${
+                    isActive ? 'bg-[#F5F5F4] text-[#B8860B]' : 'text-[#57534E]'
+                  }`}>
+                  {t(link.key)}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       )}
