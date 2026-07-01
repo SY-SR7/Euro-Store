@@ -1,7 +1,20 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { useCartStore } from '../store/cartStore';
 
-export function ProductCard({ title, price, imageUrl }: { title: string; price: number; imageUrl: string }) {
+export function ProductCard({ id, title, price, imageUrl }: { id: string; title: string; price: number; imageUrl: string }) {
+  const addItem = useCartStore((state) => state.addItem);
+
+  const handleAddToCart = () => {
+    addItem({
+      productId: id,
+      title,
+      price,
+      quantity: 1,
+      imageUrl,
+    });
+  };
+
   return (
     <TouchableOpacity className='w-40 mr-4 bg-background-card rounded-2xl overflow-hidden border border-border shadow-sm'>
       <View className='h-48 w-full bg-background-secondary'>
@@ -21,6 +34,12 @@ export function ProductCard({ title, price, imageUrl }: { title: string; price: 
         <Text className='text-primary font-bold mt-1'>
           {price.toLocaleString('ar-SY')} ?.?
         </Text>
+        <TouchableOpacity 
+          className='mt-3 bg-primary/10 border border-primary/20 py-2 rounded-lg items-center'
+          onPress={handleAddToCart}
+        >
+          <Text className='text-primary font-bold text-xs'>??? ?????</Text>
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
