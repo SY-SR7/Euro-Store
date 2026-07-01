@@ -593,5 +593,20 @@
     "dateLabel": "تاريخ التقييم",
     "defaultProduct": "تقييم",
     "emptyProduct": "—"
+  },
+  "adminShippingRates": {
+    "shippingRatesTitle": "أسعار الشحن",
+    "countGovernorates": "{count} محافظة",
+    "tableGovernorate": "المحافظة",
+    "tableShippingRate": "سعر الشحن",
+    "tableFreeShippingOver": "مجاني فوق",
+    "tableStatus": "الحالة",
+    "statusActive": "نشط",
+    "statusDisabled": "معطّل",
+    "failedToLoadRate": "تعذر فتح سعر الشحن",
+    "noShippingRates": "لا توجد أسعار شحن",
+    "emptyField": "—",
+    "freeShippingAbove": "شحن مجاني فوق",
+    "unitSyp": "ل.س"
   }
 }

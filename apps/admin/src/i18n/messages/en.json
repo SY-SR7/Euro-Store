@@ -593,5 +593,20 @@
     "dateLabel": "Date",
     "defaultProduct": "Review",
     "emptyProduct": "—"
+  },
+  "adminShippingRates": {
+    "shippingRatesTitle": "Shipping Rates",
+    "countGovernorates": "{count} Governorates",
+    "tableGovernorate": "Governorate",
+    "tableShippingRate": "Shipping Rate",
+    "tableFreeShippingOver": "Free Over",
+    "tableStatus": "Status",
+    "statusActive": "Active",
+    "statusDisabled": "Disabled",
+    "failedToLoadRate": "Failed to load shipping rate",
+    "noShippingRates": "No shipping rates",
+    "emptyField": "—",
+    "freeShippingAbove": "Free Shipping Above",
+    "unitSyp": "SYP"
   }
 }
