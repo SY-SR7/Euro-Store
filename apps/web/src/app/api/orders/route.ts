@@ -110,7 +110,7 @@ export async function POST(request: Request) {
 
     // ── Check & Deduct Inventory ──────────────────────────────────────────────
     const stockItems = items.map(i => ({ variant_id: i.variant_id, quantity: i.quantity }));
-    const stockResult = await supabase.rpc('decrement_stock', { p_items: JSON.stringify(stockItems) });
+    const stockResult = await supabase.rpc('decrement_stock', { p_items: stockItems });
     if (stockResult.error) {
       console.error('[orders/POST] decrement_stock error:', stockResult.error);
       return NextResponse.json({ error: 'out_of_stock', details: stockResult.error.message }, { status: 400 });
