@@ -395,12 +395,12 @@ function CategorySection({
           )}
 
           <div className="mt-6 text-left">
-            <a
+            <Link
               href={`/categories/${section.category.slug}`}
               className="inline-flex rounded-xl border border-primary px-5 py-3 text-sm font-black text-primary transition hover:bg-primary hover:text-[#1F1B16]"
             >
               {t('viewAllProducts')} {isAr ? section.category.name_ar : (section.category.name_en || section.category.name_ar)}
-            </a>
+            </Link>
           </div>
         </div>
       </div>
