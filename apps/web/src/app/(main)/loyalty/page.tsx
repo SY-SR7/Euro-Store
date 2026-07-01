@@ -126,7 +126,7 @@ export default async function LoyaltyPage() {
               <div>
                 <p className="font-bold text-[#1F1B16]">{t('usePointsAsDiscount')}</p>
                 <p className="text-[#6F6658] mt-1">
-                  {t('every')} <strong className="text-[#C9A84C]">1</strong> {t('point')} = <strong className="text-[#C9A84C]">{settings.loyalty_point_value_syp}</strong> {t('syp')} {t('discountAtCheckout', { percent: settings.loyalty_max_redemption_pct, fallback: `خصم عند الدفع (بحد أقصى ${settings.loyalty_max_redemption_pct}% من قيمة الطلب)` })}
+                  {t('every')} <strong className="text-[#C9A84C]">1</strong> {t('point')} = <strong className="text-[#C9A84C]">{settings.loyalty_point_value_syp}</strong> {t('discountAtCheckout', { percent: settings.loyalty_max_redemption_pct, fallback: `ل.س خصم عند الدفع (بحد أقصى ${settings.loyalty_max_redemption_pct}% من قيمة الطلب)` })}
                 </p>
               </div>
             </div>
