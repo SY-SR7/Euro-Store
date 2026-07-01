@@ -9,59 +9,55 @@ const enContent = fs.readFileSync(enPath, 'utf8').replace(/^\uFEFF/, '');
 const ar = JSON.parse(arContent);
 const en = JSON.parse(enContent);
 
-ar.adminDiscounts = {
-  discountsTitle: "الخصومات",
-  discountsCount: "{count} كود خصم",
-  newDiscount: "كود جديد",
-  code: "الكود",
-  type: "النوع",
-  typePercentage: "نسبة %",
-  typeFixed: "مبلغ ثابت",
-  value: "القيمة",
-  minOrder: "الحد الأدنى",
-  validFrom: "صالح من",
-  validUntil: "صالح حتى",
-  maxUses: "أقصى استخدام",
-  createBtn: "إنشاء",
-  noDiscounts: "لا توجد أكواد خصم",
-  statusActive: "نشط",
-  statusInactive: "معطّل",
-  uses: "الاستخدامات",
+ar.adminExchanges = {
+  exchangesTitle: "طلبات الاستبدال",
+  exchangesCount: "{count} طلب",
+  all: "الكل",
+  noExchanges: "لا توجد طلبات استبدال",
+  id: "الرقم",
+  reason: "السبب",
   status: "الحالة",
-  discountCodeHeader: "كود: {code}",
-  dateRange: "النطاق",
-  failedToOpenCode: "تعذر فتح الكود",
-  percentage: "نسبة",
-  fixed: "ثابت"
+  requestDate: "تاريخ الطلب",
+  exchangeRequestHeader: "طلب استبدال #{id}",
+  statusPending: "قيد الانتظار",
+  statusApproved: "تمت الموافقة",
+  statusRejected: "مرفوض",
+  statusCompleted: "مكتمل",
+  reasonAr: "السبب العربي",
+  reasonEn: "السبب الإنجليزي",
+  adminNotes: "ملاحظات الإدارة",
+  orderId: "رقم الطلب",
+  customerImages: "صور العميل",
+  noImages: "لا توجد صور",
+  imageFallback: "صورة {index}",
+  failedToLoadDetails: "تعذر تحميل التفاصيل"
 };
 
-en.adminDiscounts = {
-  discountsTitle: "Discounts",
-  discountsCount: "{count} discount codes",
-  newDiscount: "New Code",
-  code: "Code",
-  type: "Type",
-  typePercentage: "Percentage %",
-  typeFixed: "Fixed Amount",
-  value: "Value",
-  minOrder: "Min Order",
-  validFrom: "Valid From",
-  validUntil: "Valid Until",
-  maxUses: "Max Uses",
-  createBtn: "Create",
-  noDiscounts: "No discount codes found",
-  statusActive: "Active",
-  statusInactive: "Disabled",
-  uses: "Uses",
+en.adminExchanges = {
+  exchangesTitle: "Exchange Requests",
+  exchangesCount: "{count} requests",
+  all: "All",
+  noExchanges: "No exchange requests found",
+  id: "ID",
+  reason: "Reason",
   status: "Status",
-  discountCodeHeader: "Code: {code}",
-  dateRange: "Range",
-  failedToOpenCode: "Failed to open code",
-  percentage: "Percentage",
-  fixed: "Fixed"
+  requestDate: "Request Date",
+  exchangeRequestHeader: "Exchange Request #{id}",
+  statusPending: "Pending",
+  statusApproved: "Approved",
+  statusRejected: "Rejected",
+  statusCompleted: "Completed",
+  reasonAr: "Reason (Arabic)",
+  reasonEn: "Reason (English)",
+  adminNotes: "Admin Notes",
+  orderId: "Order ID",
+  customerImages: "Customer Images",
+  noImages: "No images",
+  imageFallback: "Image {index}",
+  failedToLoadDetails: "Failed to load details"
 };
 
 fs.writeFileSync(arPath, JSON.stringify(ar, null, 2));
 fs.writeFileSync(enPath, JSON.stringify(en, null, 2));
 
-console.log('Updated i18n files for Discounts');
+console.log('Updated i18n files for Exchanges');
