@@ -602,8 +602,8 @@
     "login": "تسجيل الدخول",
     "howItWorks": "كيف يعمل البرنامج؟",
     "earnOnPurchase": "اكسب النقاط عند الشراء",
-    "forEvery": "تحصل على نقاط",
-    "youSpendYouGet": "مقابل كل",
+    "forEvery": "لكل",
+    "youSpendYouGet": "تشتري بها، تحصل على",
     "point": "نقطة",
     "usePointsAsDiscount": "استخدم النقاط كخصم",
     "every": "كل",
@@ -660,7 +660,4 @@
     "addToCart": "أضف إلى السلة",
     "chooseVariantFirst": "اختر المتغير أولاً",
     "category": "التصنيف:"
-  },
-  "forEvery": "لكل",
-  "youSpendYouGet": "تشتري بها، تحصل على"
-}
+  }
