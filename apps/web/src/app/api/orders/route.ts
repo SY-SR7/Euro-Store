@@ -168,19 +168,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: itemsErr.message }, { status: 500 });
     }
 
-    // ¢‚¬¢‚¬ Increment discount code usage ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
+    // ── Increment discount code usage ──────────────────────────────────────────
     if (discount_id) {
-      // استخدام RPC إن وُجدت، أو UPDATE مباشر — ليس كليهما
-      const rpcResult = await supabase.rpc('increment_discount_usage' as never, { p_discount_id: discount_id });
+      const rpcResult = await supabase.rpc('increment_discount_usage', { p_discount_id: discount_id });
       if (rpcResult.error) {
-        // fallback: قراءة القيمة الحالية ثم رفعها بمقدار 1
-        const { data: cur } = await supabase.from('discount_codes').select('used_count').eq('id', discount_id).single() as any;
-        const newCount = ((cur as any)?.used_count ?? 0) + 1;
-        await supabase.from('discount_codes').update({ used_count: newCount } as never).eq('id', discount_id);
+        console.error('Failed to increment discount usage:', rpcResult.error);
+        // It's not a fatal error for checkout if incrementing fails, but we should log it.
       }
     }
 
-    // ¢‚¬¢‚¬ Award loyalty points (10 pts per 1000 SYP) ¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬¢‚¬
+    // ¢ ‚¬¢ ‚¬ Award loyalty points (10 pts per 1000 SYP) ¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬¢ ‚¬
     if (user && total_syp > 0) {
       const systemSettings = await supabase
         .from('system_settings')
