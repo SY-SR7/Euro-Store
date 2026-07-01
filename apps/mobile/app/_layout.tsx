@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import { NativeWindStyleSheet } from 'nativewind';
 import { I18nManager } from 'react-native';
+import { AuthProvider } from '../contexts/AuthContext';
 import '../global.css';
 
 I18nManager.forceRTL(true);
@@ -12,13 +13,16 @@ NativeWindStyleSheet.setOutput({
 
 export default function RootLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: '#0F0F0F' }
-      }}
-    >
-      <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-    </Stack>
+    <AuthProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: '#0F0F0F' }
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ headerShown: false, presentation: 'modal' }} />
+      </Stack>
+    </AuthProvider>
   );
 }
