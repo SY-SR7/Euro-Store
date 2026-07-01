@@ -180,7 +180,9 @@
     "unitPoints": "pt(s)",
     "notifications": "Notifications",
     "emptyField": "—",
-    "savedSuccessfully": "Saved successfully"
+    "savedSuccessfully": "Saved successfully",
+    "clear": "Clear",
+    "filters": "Filters"
   },
   "productCount": "Product count",
   "categories": {

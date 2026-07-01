@@ -180,7 +180,9 @@
     "unitPoints": "نقطة",
     "notifications": "الإشعارات",
     "emptyField": "—",
-    "savedSuccessfully": "تم الحفظ بنجاح"
+    "savedSuccessfully": "تم الحفظ بنجاح",
+    "clear": "مسح",
+    "filters": "تصفية"
   },
   "productCount": "عدد المنتجات",
   "categories": {
