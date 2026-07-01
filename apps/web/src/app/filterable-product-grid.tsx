@@ -63,7 +63,13 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
 
   const [data,    setData]    = useState<FilterData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+      setSidebarOpen(true);
+    }
+  }, []);
 
   // ── build URL params & fetch ─────────────────────────────────────────
   const buildParams = useCallback(() => {
@@ -144,13 +150,26 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
         <div className="md:sticky md:top-24 space-y-6 min-w-0 md:min-w-[16rem]">
 
           {/* header */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-sm font-black text-[#1F1B16] uppercase tracking-wider">{t('filters')}</h3>
-            {hasActiveFilters && (
-              <button onClick={clearAll} className="text-xs text-primary font-bold hover:underline">
-                {t('clearAll')}
+            <div className="flex items-center gap-3">
+              {hasActiveFilters && (
+                <button onClick={clearAll} className="text-xs text-primary font-bold hover:underline">
+                  {t('clearAll')}
+                </button>
+              )}
+              {/* Mobile Close Button */}
+              <button
+                onClick={() => setSidebarOpen(false)}
+                className="md:hidden flex items-center gap-1 rounded-lg border border-border bg-background-card px-2 py-1 text-xs font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+                {t('hideFilters')}
               </button>
-            )}
+            </div>
           </div>
 
           {/* search */}
