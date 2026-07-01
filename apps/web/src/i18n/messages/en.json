@@ -36,7 +36,16 @@
     "attrCount": "Attribute",
     "loading": "Loading...",
     "noProducts": "No products match the selected filters",
-    "clearAllFilters": "Clear all filters"
+    "clearAllFilters": "Clear all filters",
+    "featured": "Featured",
+    "details": "Details",
+    "startsFrom": "Starts from",
+    "customerReviews": "Customer Reviews",
+    "noReviews": "No reviews yet",
+    "only": "Only",
+    "productImage": "Product Image",
+    "variant": "Variant",
+    "priceInDetails": "Price in details"
   },
   "home": {
     "categoriesTitle": "Shop by category",
@@ -65,7 +74,16 @@
         "categories": "Shopping Depts"
       },
       "scrollDown": "Scroll Down"
-    }
+    },
+    "shoes": {
+      "beat5": {
+        "title": "Walk with confidence",
+        "subtitle": "Shoes designed for ultimate comfort and modern style",
+        "CTA": "Shop Shoes"
+      }
+    },
+    "noCategoryProducts": "No products in this category currently.",
+    "viewAllProducts": "View all products"
   },
   "faq": {
     "title": "FAQ"
@@ -309,20 +327,23 @@
   "rightsReserved": "All rights reserved",
   "catalogTag": "Catalog",
   "exchange": {
-    "newRequest": "New exchange request",
+    "newRequest": "New Exchange Request",
     "submitBtn": "Submit request",
     "reasonPlaceholder": "Write the request reason",
     "newRequestDesc": "Submit a new request and we will review it",
     "loginPrompt": "Login to track your requests",
-    "title": "Exchange requests",
+    "title": "Exchange Requests",
     "reason": "Reason",
     "continueShopping": "Continue shopping",
     "backToStore": "Back to store",
     "orderNumber": "Order number",
     "submitRequest": "Submit request",
-    "policy": "Exchange policy",
+    "policy": "Exchange Policy",
     "submit": "Submit request",
-    "login": "Login"
+    "login": "Login",
+    "home": "Home",
+    "loginToTrack": "Login to track and submit exchange requests.",
+    "noRequests": "No previous exchange requests."
   },
   "admin": {
     "products": "Product management",
@@ -337,11 +358,37 @@
   "all": "All",
   "loyalty": {
     "referrals": "Referrals",
-    "points": "Points",
+    "points": "points",
     "earnDesc": "Earn points with every order and unlock exclusive rewards",
     "learnMore": "Learn more",
     "title": "Loyalty program",
-    "learnDesc": "Earn points with every order and unlock exclusive rewards"
+    "learnDesc": "Earn points with every order and unlock exclusive rewards",
+    "home": "Home",
+    "rewardsProgram": "Rewards Program",
+    "loyaltyPoints": "Loyalty Points",
+    "pointsYouHave": "Points you have:",
+    "equalsTo": "Equals to",
+    "syp": "SYP",
+    "discountWhenShopping": "discount when shopping",
+    "yourReferralCode": "Your referral code:",
+    "shareCodeGet": "Share this code and get",
+    "pointsPerReferral": "points for every friend.",
+    "viewOrders": "View Orders",
+    "loginToView": "Login to view points",
+    "loginMsg": "You must login to view and use your points.",
+    "login": "Login",
+    "howItWorks": "How it works?",
+    "earnOnPurchase": "Earn points on purchase",
+    "forEvery": "you get points",
+    "youSpendYouGet": "For every",
+    "point": "point",
+    "usePointsAsDiscount": "Use points as discount",
+    "every": "Every",
+    "discountAtCheckout": "SYP discount at checkout",
+    "getReferralBonus": "Referral bonus",
+    "shareCodeAndGet": "Share code and get",
+    "pointsWhenRegistered": "points when friends register",
+    "storeBonusTip": "Tip: The store may give you an extra bonus upon activation."
   },
   "exchangePolicy": "Exchange policy",
   "productDetails": {

@@ -2,7 +2,7 @@
   "catalog": {
     "addToCart": "أضف إلى السلة",
     "categories": "التصنيفات",
-    "outOfStock": "غير متوفر",
+    "outOfStock": "نفذ المخزون",
     "products": "المنتجات",
     "searchBtn": "بحث",
     "title": "المنتجات",
@@ -36,7 +36,16 @@
     "attrCount": "خاصية",
     "loading": "جارٍ التحميل...",
     "noProducts": "لا توجد منتجات تطابق الفلاتر المحددة",
-    "clearAllFilters": "مسح جميع الفلاتر"
+    "clearAllFilters": "مسح جميع الفلاتر",
+    "featured": "مميز",
+    "details": "التفاصيل",
+    "startsFrom": "يبدأ من",
+    "customerReviews": "تقييمات العملاء",
+    "noReviews": "لا توجد تقييمات حتى الآن",
+    "only": "فقط",
+    "productImage": "صورة المنتج",
+    "variant": "متغير",
+    "priceInDetails": "السعر في التفاصيل"
   },
   "home": {
     "categoriesTitle": "تسوق حسب التصنيف",
@@ -65,7 +74,16 @@
         "categories": "قسم للتسوق"
       },
       "scrollDown": "مرر للأسفل"
-    }
+    },
+    "shoes": {
+      "beat5": {
+        "title": "خطواتك بثقة",
+        "subtitle": "أحذية مصممة لتجمع بين الراحة المطلقة والأناقة المعاصرة",
+        "CTA": "تسوق الأحذية"
+      }
+    },
+    "noCategoryProducts": "لا توجد منتجات في هذا القسم حالياً.",
+    "viewAllProducts": "تصفح كل المنتجات"
   },
   "faq": {
     "title": "الأسئلة الشائعة"
@@ -322,7 +340,10 @@
     "submitRequest": "إرسال الطلب",
     "policy": "سياسة الاستبدال",
     "submit": "إرسال الطلب",
-    "login": "تسجيل الدخول"
+    "login": "تسجيل الدخول",
+    "home": "الرئيسية",
+    "loginToTrack": "سجل الدخول لتتمكن من تقديم وتتبع طلبات الاستبدال.",
+    "noRequests": "لا توجد طلبات استبدال سابقة."
   },
   "admin": {
     "products": "إدارة المنتجات",
@@ -337,11 +358,37 @@
   "all": "الكل",
   "loyalty": {
     "referrals": "الإحالات",
-    "points": "النقاط",
+    "points": "نقاط",
     "earnDesc": "اكسب نقاطاً مع كل طلب واستفد من مكافآت حصرية",
     "learnMore": "اعرف المزيد",
     "title": "برنامج الولاء",
-    "learnDesc": "اكسب نقاطاً مع كل طلب واستفد من مكافآت حصرية"
+    "learnDesc": "اكسب نقاطاً مع كل طلب واستفد من مكافآت حصرية",
+    "home": "الرئيسية",
+    "rewardsProgram": "برنامج المكافآت",
+    "loyaltyPoints": "نقاط الولاء",
+    "pointsYouHave": "النقاط المتوفرة لديك:",
+    "equalsTo": "تعادل",
+    "syp": "ل.س",
+    "discountWhenShopping": "خصم عند التسوق",
+    "yourReferralCode": "كود الإحالة الخاص بك:",
+    "shareCodeGet": "شارك هذا الكود مع أصدقائك واحصل على",
+    "pointsPerReferral": "نقطة عن كل صديق يسجل ويطلب.",
+    "viewOrders": "تصفح طلباتك",
+    "loginToView": "سجل دخولك لرؤية النقاط",
+    "loginMsg": "يجب عليك تسجيل الدخول لتتمكن من رؤية واستخدام نقاطك.",
+    "login": "تسجيل الدخول",
+    "howItWorks": "كيف يعمل البرنامج؟",
+    "earnOnPurchase": "اكسب النقاط عند الشراء",
+    "forEvery": "تحصل على نقاط",
+    "youSpendYouGet": "مقابل كل",
+    "point": "نقطة",
+    "usePointsAsDiscount": "استخدم النقاط كخصم",
+    "every": "كل",
+    "discountAtCheckout": "ل.س خصم عند الدفع",
+    "getReferralBonus": "مكافأة الإحالة",
+    "shareCodeAndGet": "شارك كود الإحالة واحصل على",
+    "pointsWhenRegistered": "نقطة عند تسجيل أصدقائك",
+    "storeBonusTip": "تلميح: قد يعطيك المتجر مكافأة إضافية عند تفعيل حسابك."
   },
   "exchangePolicy": "سياسة الاستبدال",
   "productDetails": {
