@@ -198,6 +198,7 @@ function SidebarContent({
   mobile?: boolean;
 }) {
   const t = useTranslations('nav');
+  const tCommon = useTranslations('common');
   const navItems = useMemo(() => getNavItems(t), [t]);
   const groups = useMemo(() => getGroups(t), [t]);
 
@@ -230,7 +231,7 @@ function SidebarContent({
             type="button"
             onClick={onNavigate}
             className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F4EFE6] text-xl text-[#57534E]"
-            aria-label="إغلاق القائمة"
+            aria-label={tCommon('closeMenu', { fallback: 'إغلاق القائمة' })}
           >
             <X size={18} />
           </button>
@@ -271,6 +272,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
   const pathname = usePathname() || '/dashboard';
   const [mobileOpen, setMobileOpen] = useState(false);
   const t = useTranslations('nav');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
   const isAr = locale === 'ar';
 
@@ -289,7 +291,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
               type="button"
               onClick={() => setMobileOpen(true)}
               className="grid h-10 w-10 place-items-center rounded-xl border border-[#E7DDCC] bg-white text-xl text-[#57534E] shadow-sm transition hover:border-[#B8860B] hover:text-[#B8860B] lg:hidden"
-              aria-label="فتح السايدبار"
+              aria-label={tCommon('openSidebar', { fallback: 'فتح السايدبار' })}
             >
               <Menu size={19} />
             </button>
@@ -308,7 +310,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
                   ? 'border-[#B8860B] text-[#B8860B]'
                   : 'border-[#E7DDCC] text-[#57534E] hover:border-[#B8860B] hover:text-[#B8860B]',
               ].join(' ')}
-              aria-label="الإشعارات"
+              aria-label={tCommon('notifications', { fallback: 'الإشعارات' })}
             >
               <Bell size={18} />
               <span className="absolute -left-1 -top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-500" />
@@ -322,11 +324,11 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
         </div>
       </header>
 
-      <aside className="fixed right-0 top-[64px] z-[90] hidden h-[calc(100vh-64px)] w-[250px] border-l border-[#E7DDCC] shadow-sm lg:block">
+      <aside className={`fixed ${isAr ? "right-0" : "left-0"} top-[64px] z-[90] hidden h-[calc(100vh-64px)] w-[250px] ${isAr ? "border-l" : "border-r"} border-[#E7DDCC] shadow-sm lg:block`}>
         <SidebarContent pathname={pathname} />
       </aside>
 
-      <main className="min-h-screen pt-[82px] lg:pr-[250px]">
+      <main className={`min-h-screen pt-[82px] ${isAr ? "lg:pr-[250px]" : "lg:pl-[250px]"}`}>
         <div className="mx-auto w-full max-w-[1920px] px-4 pb-8 sm:px-5 lg:px-6">
           <AdminActivityProvider>{children}</AdminActivityProvider>
         </div>
@@ -336,7 +338,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
         <div className="fixed inset-0 z-[130] lg:hidden">
           <div className="absolute inset-0 bg-black/45 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
 
-          <aside className="absolute right-0 top-0 h-full w-[min(86vw,20rem)] overflow-hidden border-l border-[#E7DDCC] bg-[#FBF8F1] shadow-2xl">
+          <aside className={`absolute ${isAr ? "right-0 border-l" : "left-0 border-r"} top-0 h-full w-[min(86vw,20rem)] overflow-hidden border-[#E7DDCC] bg-[#FBF8F1] shadow-2xl`}>
             <SidebarContent
               pathname={pathname}
               mobile
