@@ -144,33 +144,38 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 md:gap-8" dir="rtl">
-      {/* ── Sidebar ────────────────────────────────────────────────────── */}
-      <aside className={`flex-none transition-all duration-200 ${sidebarOpen ? 'w-full md:w-64' : 'w-0 overflow-hidden hidden md:block'}`}>
-        <div className="md:sticky md:top-24 space-y-6 min-w-0 md:min-w-[16rem]">
+    <div className="flex flex-col gap-4 md:gap-8" dir="rtl">
+      {/* Mobile Toggle Button (Above Filters) */}
+      <div className="md:hidden flex items-center justify-between">
+        <button
+          onClick={() => setSidebarOpen(v => !v)}
+          className="flex items-center gap-2 rounded-lg border border-border bg-background-card px-4 py-2 text-sm font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors w-full justify-center"
+        >
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+          {sidebarOpen ? t('hideFilters') : t('showFilters')}
+        </button>
+      </div>
 
-          {/* header */}
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-sm font-black text-[#1F1B16] uppercase tracking-wider">{t('filters')}</h3>
-            <div className="flex items-center gap-3">
-              {hasActiveFilters && (
-                <button onClick={clearAll} className="text-xs text-primary font-bold hover:underline">
-                  {t('clearAll')}
-                </button>
-              )}
-              {/* Mobile Close Button */}
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="md:hidden flex items-center gap-1 rounded-lg border border-border bg-background-card px-2 py-1 text-xs font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors"
-              >
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-                {t('hideFilters')}
-              </button>
+      <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+        {/* ── Sidebar ────────────────────────────────────────────────────── */}
+        <aside className={`flex-none transition-all duration-200 ${sidebarOpen ? 'w-full md:w-64' : 'w-0 overflow-hidden hidden md:block'}`}>
+          <div className="md:sticky md:top-24 space-y-6 min-w-0 md:min-w-[16rem]">
+
+            {/* header */}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="text-sm font-black text-[#1F1B16] uppercase tracking-wider">{t('filters')}</h3>
+              <div className="flex items-center gap-3">
+                {hasActiveFilters && (
+                  <button onClick={clearAll} className="text-xs text-primary font-bold hover:underline">
+                    {t('clearAll')}
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
 
           {/* search */}
           <form onSubmit={handleSearch} className="flex gap-2">
@@ -381,6 +386,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }
