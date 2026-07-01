@@ -568,5 +568,30 @@
     "deleteSection": "Delete Section",
     "confirmDelete": "Delete this section?",
     "failedToLoadSection": "Failed to open section"
+  },
+  "adminReviews": {
+    "reviewsTitle": "Product Reviews",
+    "reviewsDesc": "Review and approve customer reviews, and edit any field with one click",
+    "pendingTab": "Pending",
+    "approvedTab": "Approved",
+    "rejectedTab": "Rejected",
+    "allTab": "All",
+    "noComment": "No comment",
+    "starsCount": "{count} stars",
+    "statusPending": "Pending",
+    "statusApproved": "Approved",
+    "statusRejected": "Rejected",
+    "noReviews": "No reviews in this section",
+    "defaultCustomer": "Customer",
+    "approveBtn": "Approve",
+    "rejectBtn": "Reject",
+    "ratingLabel": "Rating",
+    "commentLabel": "Comment",
+    "statusLabel": "Status",
+    "productLabel": "Product",
+    "customerLabel": "Customer",
+    "dateLabel": "Date",
+    "defaultProduct": "Review",
+    "emptyProduct": "—"
   }
 }

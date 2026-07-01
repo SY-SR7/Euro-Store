@@ -568,5 +568,30 @@
     "deleteSection": "حذف القسم",
     "confirmDelete": "حذف هذا القسم؟",
     "failedToLoadSection": "تعذر فتح القسم"
+  },
+  "adminReviews": {
+    "reviewsTitle": "تقييمات المنتجات",
+    "reviewsDesc": "مراجعة واعتماد تقييمات العملاء، وتعديل أي حقل بضغطة واحدة",
+    "pendingTab": "بانتظار المراجعة",
+    "approvedTab": "معتمدة",
+    "rejectedTab": "مرفوضة",
+    "allTab": "الكل",
+    "noComment": "لا يوجد تعليق",
+    "starsCount": "{count} نجوم",
+    "statusPending": "بانتظار المراجعة",
+    "statusApproved": "معتمد",
+    "statusRejected": "مرفوض",
+    "noReviews": "لا توجد تقييمات في هذا القسم",
+    "defaultCustomer": "عميل",
+    "approveBtn": "اعتماد",
+    "rejectBtn": "رفض",
+    "ratingLabel": "التقييم",
+    "commentLabel": "التعليق",
+    "statusLabel": "الحالة",
+    "productLabel": "المنتج",
+    "customerLabel": "العميل",
+    "dateLabel": "تاريخ التقييم",
+    "defaultProduct": "تقييم",
+    "emptyProduct": "—"
   }
 }
