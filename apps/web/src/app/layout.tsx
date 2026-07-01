@@ -21,6 +21,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 import { SmoothScroller } from '../components/layout/SmoothScroller';
 
+import { CustomCursor } from '../components/layout/CustomCursor';
+
 export default async function RootLayout({
   children
 }: Readonly<{
@@ -35,6 +37,7 @@ export default async function RootLayout({
       <body className="min-h-screen bg-background text-text-primary antialiased overflow-x-hidden w-full">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SmoothScroller>
+            <CustomCursor />
             {children}
           </SmoothScroller>
         </NextIntlClientProvider>
