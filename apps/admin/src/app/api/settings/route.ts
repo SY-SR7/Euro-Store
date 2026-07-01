@@ -1,13 +1,14 @@
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
 const ALLOWED_KEYS = [
-  'usd_exchange_rate','max_exchange_days',
+  'usd_exchange_rate','max_exchange_days','min_order_value_syp',
+  'contact_whatsapp','contact_email',
   'loyalty_earn_amount_syp','loyalty_earn_points',
-  'loyalty_redeem_points_per_syp','loyalty_max_redeem_percent',
-  'loyalty_referral_bonus_points','referral_bonus_points',
+  'loyalty_point_value_syp','loyalty_max_redemption_pct','loyalty_min_redemption_pts',
+  'referral_bonus_points',
 ];
 
 export async function GET() {
