@@ -246,7 +246,6 @@ export default function LoyaltySettingsQuickAdmin() {
                 <div className="mb-2 flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-black text-[#1C1917]">{t(field.labelKey)}</p>
-                    <p className="mt-0.5 font-mono text-[11px] text-[#A8A29E]" dir="ltr">{field.key}</p>
                   </div>
                   <span className="rounded-full border border-[#E5E0D8] bg-white px-2 py-1 text-[11px] font-black text-[#8B8172]">{t(field.unitKey)}</span>
                 </div>
