@@ -1,7 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const env = {};
-fs.readFileSync('apps/web/.env.local', 'utf8').split('\n').forEach(l => {
+fs.readFileSync('.env.local', 'utf8').split('\n').forEach(l => {
   const m = l.match(/^([^=]+)=(.*)/);
   if (m) env[m[1]] = m[2].trim();
 });
