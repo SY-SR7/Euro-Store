@@ -4,6 +4,7 @@ import { useRef, useCallback } from 'react';
 import { useScroll, useTransform, useSpring, motion, useReducedMotion, useAnimationFrame, useMotionValue } from 'framer-motion';
 import { CanvasScrollSequence } from './CanvasScrollSequence';
 import { useLocale, useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 export interface StoryBeat {
   /** 0–1 متى يبدأ */
@@ -97,18 +98,22 @@ function ScrollBeat({
 
         {/* CTA Button */}
         {beat.ctaLabel && beat.ctaHref && (
-          <motion.a
-            href={beat.ctaHref}
-            className={`pointer-events-auto mt-6 inline-flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors duration-300 rounded-lg ${
-              isLightBg 
-                ? 'bg-black text-text-primary hover:bg-black/80' 
-                : 'bg-background-card text-text-primary hover:bg-gray-200'
-            }`}
+          <motion.div
+            className="mt-6 inline-block"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
-            {beat.ctaLabel}
-          </motion.a>
+            <Link
+              href={beat.ctaHref}
+              className={`pointer-events-auto inline-flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors duration-300 rounded-lg ${
+                isLightBg 
+                  ? 'bg-black text-text-primary hover:bg-black/80' 
+                  : 'bg-background-card text-text-primary hover:bg-gray-200'
+              }`}
+            >
+              {beat.ctaLabel}
+            </Link>
+          </motion.div>
         )}
       </div>
     </motion.div>
