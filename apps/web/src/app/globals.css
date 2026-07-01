@@ -5,21 +5,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
 
 :root {
-  --color-primary:        #C9A84C;
-  --color-primary-dark:   #A67C2E;
-  --color-primary-light:  #E8D28A;
+  /* Brand Gold */
+  --color-primary:        #B8860B;
+  --color-primary-dark:   #9A7209;
+  --color-primary-light:  #D4AF37;
   
-  --color-bg:             #121414;
-  --color-bg-secondary:   #1A1C1C;
-  --color-bg-card:        #1E2020;
-  --color-bg-elevated:    #242424;
+  /* Light Backgrounds */
+  --color-bg:             #FAF7EF;
+  --color-bg-secondary:   #F3EEE3;
+  --color-bg-card:        #FFFDF8;
+  --color-bg-elevated:    #FFFFFF;
   
-  --color-text-primary:   #E2E2E2;
-  --color-text-secondary: #9CA3AF;
-  --color-text-muted:     #6B7280;
+  /* Dark text for light theme */
+  --color-text-primary:   #1C1917;
+  --color-text-secondary: #57534E;
+  --color-text-muted:     #A8A29E;
   
-  --color-border:         #2E2E2E;
-  --color-border-accent:  #4D4637;
+  /* Subtle borders */
+  --color-border:         #E8DCC3;
+  --color-border-accent:  #D7BE79;
+
+  /* Semantic */
+  --color-error:          #DC2626;
+  --color-success:        #15803D;
+  --color-warning:        #F59E0B;
 }
 
 body {
@@ -38,4 +47,4 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
 
 :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
-::selection    { background: rgba(201,168,76,0.2); }
+::selection    { background: rgba(184,134,11,0.18); }
