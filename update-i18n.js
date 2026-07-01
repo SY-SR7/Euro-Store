@@ -9,59 +9,59 @@ const enContent = fs.readFileSync(enPath, 'utf8').replace(/^\uFEFF/, '');
 const ar = JSON.parse(arContent);
 const en = JSON.parse(enContent);
 
-ar.adminHomepage = {
-  homepageTitle: "الواجهة الرئيسية",
-  sectionsCount: "{count} قسم",
-  newSection: "قسم جديد",
-  sectionKeyHero: "Hero",
-  sectionKeyFeatured: "منتجات مميزة",
-  sectionKeyCategories: "شبكة التصنيفات",
-  sectionKeyPromotions: "العروض",
-  sectionKeyLoyalty: "الولاء",
-  sectionKeyNewArrivals: "وصل حديثا",
-  titleAr: "العنوان العربي",
-  titleEn: "العنوان الإنجليزي",
-  sortOrder: "الترتيب",
-  addBtn: "إضافة",
-  noSections: "لا توجد أقسام",
-  section: "القسم",
-  title: "العنوان",
-  status: "الحالة",
-  statusVisible: "مرئي",
-  statusHidden: "مخفي",
-  sectionType: "نوع القسم",
-  deleteSection: "حذف القسم",
-  confirmDelete: "حذف هذا القسم؟",
-  failedToLoadSection: "تعذر فتح القسم"
+ar.adminReviews = {
+  reviewsTitle: "تقييمات المنتجات",
+  reviewsDesc: "مراجعة واعتماد تقييمات العملاء، وتعديل أي حقل بضغطة واحدة",
+  pendingTab: "بانتظار المراجعة",
+  approvedTab: "معتمدة",
+  rejectedTab: "مرفوضة",
+  allTab: "الكل",
+  noComment: "لا يوجد تعليق",
+  starsCount: "{count} نجوم",
+  statusPending: "بانتظار المراجعة",
+  statusApproved: "معتمد",
+  statusRejected: "مرفوض",
+  noReviews: "لا توجد تقييمات في هذا القسم",
+  defaultCustomer: "عميل",
+  approveBtn: "اعتماد",
+  rejectBtn: "رفض",
+  ratingLabel: "التقييم",
+  commentLabel: "التعليق",
+  statusLabel: "الحالة",
+  productLabel: "المنتج",
+  customerLabel: "العميل",
+  dateLabel: "تاريخ التقييم",
+  defaultProduct: "تقييم",
+  emptyProduct: "—"
 };
 
-en.adminHomepage = {
-  homepageTitle: "Homepage",
-  sectionsCount: "{count} sections",
-  newSection: "New Section",
-  sectionKeyHero: "Hero",
-  sectionKeyFeatured: "Featured Products",
-  sectionKeyCategories: "Categories Grid",
-  sectionKeyPromotions: "Promotions",
-  sectionKeyLoyalty: "Loyalty",
-  sectionKeyNewArrivals: "New Arrivals",
-  titleAr: "Arabic Title",
-  titleEn: "English Title",
-  sortOrder: "Sort Order",
-  addBtn: "Add",
-  noSections: "No sections found",
-  section: "Section",
-  title: "Title",
-  status: "Status",
-  statusVisible: "Visible",
-  statusHidden: "Hidden",
-  sectionType: "Section Type",
-  deleteSection: "Delete Section",
-  confirmDelete: "Delete this section?",
-  failedToLoadSection: "Failed to open section"
+en.adminReviews = {
+  reviewsTitle: "Product Reviews",
+  reviewsDesc: "Review and approve customer reviews, and edit any field with one click",
+  pendingTab: "Pending",
+  approvedTab: "Approved",
+  rejectedTab: "Rejected",
+  allTab: "All",
+  noComment: "No comment",
+  starsCount: "{count} stars",
+  statusPending: "Pending",
+  statusApproved: "Approved",
+  statusRejected: "Rejected",
+  noReviews: "No reviews in this section",
+  defaultCustomer: "Customer",
+  approveBtn: "Approve",
+  rejectBtn: "Reject",
+  ratingLabel: "Rating",
+  commentLabel: "Comment",
+  statusLabel: "Status",
+  productLabel: "Product",
+  customerLabel: "Customer",
+  dateLabel: "Date",
+  defaultProduct: "Review",
+  emptyProduct: "—"
 };
 
 fs.writeFileSync(arPath, JSON.stringify(ar, null, 2));
 fs.writeFileSync(enPath, JSON.stringify(en, null, 2));
 
-console.log('Updated i18n files for Homepage');
+console.log('Updated i18n files for Reviews');
