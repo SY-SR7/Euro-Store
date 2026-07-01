@@ -18,16 +18,16 @@ interface WishlistItem {
   in_stock: boolean;
 }
 
-function fmt(n: number | null) {
-  if (n == null) return '—';
-  return Number(n).toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US') + (locale === 'ar' ? ' ل.س' : ' SYP');
-}
-
 export default function WishlistPage() {
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(true);
   const locale = useLocale();
+
+  function fmt(n: number | null) {
+    if (n == null) return '—';
+    return Number(n).toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US') + (locale === 'ar' ? ' ل.س' : ' SYP');
+  }
   const t = useTranslations('catalog');
   const isAr = locale === 'ar';
 
