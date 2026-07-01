@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type Product = {
   id: string;
@@ -168,7 +169,6 @@ function Modal({
           </div>
           <button
             type="button"
-            title="إغلاق"
             onClick={onClose}
             className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-[#E5E0D8] bg-[#FAF7EF] text-[#57534E] transition hover:border-[#B8860B] hover:text-[#1C1917]"
           >
@@ -546,6 +546,11 @@ export default function ProductQuickAdmin() {
   const [savingKey, setSavingKey] = useState('');
   const [autoOpenedId, setAutoOpenedId] = useState('');
 
+  const t = useTranslations('adminCatalog');
+  const tCommon = useTranslations('common');
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+
   const [showAddVariant, setShowAddVariant] = useState(false);
   const [newVariant, setNewVariant] = useState({
     sku: '',
@@ -568,13 +573,13 @@ export default function ProductQuickAdmin() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const categoryOptions = useMemo(
-    () => [{ value: '', label: 'بدون تصنيف' }, ...allCategories.map((c) => ({ value: c.id, label: c.name_ar }))],
-    [allCategories],
+    () => [{ value: '', label: t('uncategorized', { fallback: 'بدون تصنيف' }) }, ...allCategories.map((c) => ({ value: c.id, label: isAr ? c.name_ar : (c.name_en || c.name_ar) }))],
+    [allCategories, isAr, t],
   );
 
   const brandOptions = useMemo(
-    () => [{ value: '', label: 'بدون ماركة' }, ...allBrands.map((b) => ({ value: b.id, label: b.name }))],
-    [allBrands],
+    () => [{ value: '', label: t('unbranded', { fallback: 'بدون ماركة' }) }, ...allBrands.map((b) => ({ value: b.id, label: b.name }))],
+    [allBrands, t],
   );
 
   const buildQuery = useCallback(() => {
@@ -602,7 +607,7 @@ export default function ProductQuickAdmin() {
       setAllCategories(Array.isArray(cats) ? cats : []);
       setAllBrands(Array.isArray(brands) ? brands : []);
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : 'تعذر تحميل المنتجات');
+      setNotice(error instanceof Error ? error.message : t('loadFailed', { fallback: 'تعذر تحميل المنتجات' }));
     } finally {
       setLoading(false);
     }
@@ -631,7 +636,7 @@ export default function ProductQuickAdmin() {
       setAttrTypes(Array.isArray(attrPayload) ? attrPayload : []);
       setSelected((current) => (current?.id === product.id ? { ...current, ...product } : current));
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : 'تعذر تحميل تفاصيل المنتج');
+      setNotice(error instanceof Error ? error.message : t('loadFailed', { fallback: 'تعذر تحميل تفاصيل المنتج' }));
     } finally {
       if (!quiet) setModalLoading(false);
     }
@@ -680,7 +685,7 @@ export default function ProductQuickAdmin() {
     const existing = filterData?.products.find((product) => product.id === productId);
     openProduct(existing ?? {
       id: productId,
-      name_ar: 'جار تحميل المنتج...',
+      name_ar: t('loading', { fallback: 'جار تحميل المنتج...' }),
       name_en: '',
       slug: '',
       is_active: false,
@@ -728,7 +733,7 @@ export default function ProductQuickAdmin() {
       setProductDetails(previousDetails);
       setSelected(previousSelected);
       if (previousSelected) updateListProduct(productId, previousSelected);
-      setNotice(error instanceof Error ? error.message : 'فشل حفظ المنتج');
+      setNotice(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل حفظ المنتج' }));
     } finally {
       setSavingKey('');
     }
@@ -757,7 +762,7 @@ export default function ProductQuickAdmin() {
       void load();
     } catch (error) {
       setVariants(previous);
-      setNotice(error instanceof Error ? error.message : 'فشل حفظ الخيار');
+      setNotice(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل حفظ الخيار' }));
     } finally {
       setSavingKey('');
     }
@@ -800,14 +805,14 @@ export default function ProductQuickAdmin() {
       await loadProductBundle(selected.id, true);
       void load();
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : 'فشل إضافة الخيار');
+      setNotice(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل إضافة الخيار' }));
     } finally {
       setSavingKey('');
     }
   };
 
   const deleteVariant = async (variant: ProductVariant) => {
-    if (!confirm(`حذف الخيار "${variant.sku}"؟`) || !selected) return;
+    if (!confirm(tCommon('confirmDelete', { fallback: 'تأكيد الحذف؟' })) || !selected) return;
 
     const previous = variants;
     setSavingKey(`variant:${variant.id}:delete`);
@@ -819,7 +824,7 @@ export default function ProductQuickAdmin() {
       void load();
     } catch (error) {
       setVariants(previous);
-      setNotice(error instanceof Error ? error.message : 'فشل حذف الخيار');
+      setNotice(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل حذف الخيار' }));
     } finally {
       setSavingKey('');
     }
@@ -872,7 +877,7 @@ export default function ProductQuickAdmin() {
       void load();
     } catch (error) {
       setImages(previous);
-      setNotice(error instanceof Error ? error.message : 'فشل حفظ الصورة');
+      setNotice(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل حفظ الصورة' }));
     } finally {
       setSavingKey('');
     }
@@ -898,14 +903,14 @@ export default function ProductQuickAdmin() {
       await loadProductBundle(selected.id, true);
       void load();
     } catch (error) {
-      setNotice(error instanceof Error ? error.message : 'فشل إضافة الصورة');
+      setNotice(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل إضافة الصورة' }));
     } finally {
       setSavingKey('');
     }
   };
 
   const deleteImage = async (image: ProductImage) => {
-    if (!confirm('حذف هذه الصورة؟') || !selected) return;
+    if (!confirm(tCommon('confirmDelete', { fallback: 'تأكيد الحذف؟' })) || !selected) return;
 
     const previous = images;
     setSavingKey(`image:${image.id}:delete`);
@@ -917,7 +922,7 @@ export default function ProductQuickAdmin() {
       void load();
     } catch (error) {
       setImages(previous);
-      setNotice(error instanceof Error ? error.message : 'فشل حذف الصورة');
+      setNotice(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل حذف الصورة' }));
     } finally {
       setSavingKey('');
     }
@@ -934,30 +939,30 @@ export default function ProductQuickAdmin() {
     : 0;
 
   return (
-    <div className="flex h-full gap-0" dir="rtl">
+    <div className="flex h-full gap-0" dir={isAr ? "rtl" : "ltr"}>
       {sidebarOpen ? (
-        <aside className="flex-none w-60 space-y-3 overflow-y-auto border-l border-[#EFE7DA] bg-[#FAF7EF] p-4">
+        <aside className={`flex-none w-60 space-y-3 overflow-y-auto ${isAr ? "border-l" : "border-r"} border-[#EFE7DA] bg-[#FAF7EF] p-4`}>
           <div className="flex items-center justify-between gap-2">
             <span className="inline-flex items-center gap-2 text-xs font-black text-[#8B8172]">
               <SlidersHorizontal size={14} />
-              الفلاتر
+              {tCommon('filters', { fallback: 'الفلاتر' })}
             </span>
             <button
               type="button"
               onClick={clearAll}
               className="rounded-full px-2 py-1 text-[11px] font-black text-[#B8860B] transition hover:bg-white"
             >
-              مسح
+              {tCommon('clear', { fallback: 'مسح' })}
             </button>
           </div>
 
           <div className="grid grid-cols-2 gap-1">
             {(
               [
-                ['all', 'الكل'],
-                ['active', 'نشط'],
-                ['inactive', 'معطّل'],
-                ['featured', 'مميز'],
+                ['all', tCommon('all', { fallback: 'الكل' })],
+                ['active', t('active', { fallback: 'نشط' })],
+                ['inactive', t('inactive', { fallback: 'معطّل' })],
+                ['featured', t('featured', { fallback: 'مميز' })],
               ] as const
             ).map(([key, label]) => (
               <button
@@ -976,7 +981,7 @@ export default function ProductQuickAdmin() {
           </div>
 
           {facets && facets.categories.length > 0 ? (
-            <FilterSection title="التصنيفات">
+            <FilterSection title={t('categories', { fallback: 'التصنيفات' })}>
               {facets.categories.map((category) => (
                 <CheckItem
                   key={category.id}
@@ -990,7 +995,7 @@ export default function ProductQuickAdmin() {
           ) : null}
 
           {facets && facets.brands.length > 0 ? (
-            <FilterSection title="الماركات">
+            <FilterSection title={t('brands', { fallback: 'الماركات' })}>
               {facets.brands.map((brand) => (
                 <CheckItem
                   key={brand.id}
@@ -1004,7 +1009,7 @@ export default function ProductQuickAdmin() {
           ) : null}
 
           {facets?.attributes.map((type) => (
-            <FilterSection key={type.id} title={type.name_ar} defaultOpen={false}>
+            <FilterSection key={type.id} title={isAr ? type.name_ar : (type.name_en || type.name_ar)} defaultOpen={false}>
               <div className={type.slug === 'color' ? 'flex flex-wrap gap-1.5 p-1' : 'space-y-0.5'}>
                 {getAttrValues(type).map((value) => {
                   const attrKey = `${type.slug}:${value.slug ?? value.id}`;
@@ -1041,7 +1046,7 @@ export default function ProductQuickAdmin() {
           ))}
 
           {facets && facets.priceRange.max > 0 ? (
-            <FilterSection title="السعر" defaultOpen={false}>
+            <FilterSection title={t('price', { fallback: 'السعر' })} defaultOpen={false}>
               <div className="space-y-2">
                 <div className="grid grid-cols-2 gap-1">
                   <input
@@ -1050,8 +1055,9 @@ export default function ProductQuickAdmin() {
                     onChange={(event) =>
                       setPriceMin(event.target.value ? Number(event.target.value) : null)
                     }
-                    placeholder="من"
+                    placeholder={t('from', { fallback: 'من' })}
                     className="min-w-0 rounded-lg border border-[#E5E0D8] px-2 py-1 text-[11px] outline-none focus:border-[#B8860B]"
+                    dir="ltr"
                   />
                   <input
                     type="number"
@@ -1059,8 +1065,9 @@ export default function ProductQuickAdmin() {
                     onChange={(event) =>
                       setPriceMax(event.target.value ? Number(event.target.value) : null)
                     }
-                    placeholder="إلى"
+                    placeholder={t('to', { fallback: 'إلى' })}
                     className="min-w-0 rounded-lg border border-[#E5E0D8] px-2 py-1 text-[11px] outline-none focus:border-[#B8860B]"
+                    dir="ltr"
                   />
                 </div>
                 <div className="flex justify-between text-[9px] text-[#8B8172]">
@@ -1078,14 +1085,14 @@ export default function ProductQuickAdmin() {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              title={sidebarOpen ? 'إخفاء الفلاتر' : 'إظهار الفلاتر'}
+              title={sidebarOpen ? tCommon('hideFilters', { fallback: 'إخفاء الفلاتر' }) : tCommon('showFilters', { fallback: 'إظهار الفلاتر' })}
               onClick={() => setSidebarOpen((current) => !current)}
               className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E0D8] bg-white text-[#57534E] transition hover:border-[#B8860B]"
             >
               <SlidersHorizontal size={17} />
             </button>
             <h1 className="text-xl font-black text-[#1C1917]">
-              المنتجات
+              {t('productsTitle', { fallback: 'المنتجات' })}
               {filterData ? (
                 <span className="mr-2 text-sm font-semibold text-[#8B8172]">({filterData.total})</span>
               ) : null}
@@ -1103,13 +1110,13 @@ export default function ProductQuickAdmin() {
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="بحث..."
+                placeholder={tCommon('search', { fallback: 'بحث...' })}
                 className="min-w-[180px] bg-transparent px-3 py-2 text-sm outline-none"
               />
               <button
                 type="submit"
-                title="بحث"
-                className="flex w-10 items-center justify-center border-r border-[#E5E0D8] text-[#57534E] transition hover:bg-[#FAF7EF] hover:text-[#1C1917]"
+                title={tCommon('search', { fallback: 'بحث' })}
+                className={`flex w-10 items-center justify-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-[#57534E] transition hover:bg-[#FAF7EF] hover:text-[#1C1917]`}
               >
                 <Search size={16} />
               </button>
@@ -1119,7 +1126,7 @@ export default function ProductQuickAdmin() {
               className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#1C1917] px-4 text-sm font-black text-white transition hover:bg-[#2D2926]"
             >
               <Plus size={16} />
-              منتج جديد
+              {t('newProduct', { fallback: 'منتج جديد' })}
             </Link>
           </div>
         </div>
@@ -1138,13 +1145,13 @@ export default function ProductQuickAdmin() {
           </div>
         ) : products.length === 0 ? (
           <div className="rounded-2xl border border-[#E5E0D8] bg-white p-14 text-center text-[#8B8172]">
-            <p className="text-lg font-black">لا توجد منتجات</p>
+            <p className="text-lg font-black">{t('noProducts', { fallback: 'لا توجد منتجات' })}</p>
             <button
               type="button"
               onClick={clearAll}
               className="mt-3 rounded-xl border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#B8860B] hover:bg-[#FAF7EF]"
             >
-              مسح الفلاتر
+              {t('clearFilters', { fallback: 'مسح الفلاتر' })}
             </button>
           </div>
         ) : (
@@ -1160,18 +1167,18 @@ export default function ProductQuickAdmin() {
                   {product.image_url ? (
                     <img
                       src={product.image_url}
-                      alt={product.name_ar}
+                      alt={isAr ? product.name_ar : (product.name_en || product.name_ar)}
                       className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-xs font-bold text-[#A8A29E]">
-                      لا توجد صورة
+                      {t('noImage', { fallback: 'لا توجد صورة' })}
                     </div>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black text-[#1C1917]">{product.name_ar}</p>
-                  <p className="truncate text-xs text-[#8B8172]">{product.name_en}</p>
+                  <p className="truncate text-sm font-black text-[#1C1917]">{isAr ? product.name_ar : (product.name_en || product.name_ar)}</p>
+                  <p className="truncate text-xs text-[#8B8172]">{isAr ? product.name_en : product.name_ar}</p>
                   {product.minPrice ? (
                     <p className="mt-1 text-xs font-black text-[#B8860B]">{formatSYP(product.minPrice)}</p>
                   ) : null}
@@ -1182,12 +1189,12 @@ export default function ProductQuickAdmin() {
                       product.is_active ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
                     }`}
                   >
-                    {product.is_active ? 'نشط' : 'معطّل'}
+                    {product.is_active ? t('active', { fallback: 'نشط' }) : t('inactive', { fallback: 'معطّل' })}
                   </span>
                   {product.is_featured ? (
                     <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-black text-amber-700">
                       <Star size={10} fill="currentColor" />
-                      مميز
+                      {t('featured', { fallback: 'مميز' })}
                     </span>
                   ) : null}
                 </div>
@@ -1198,7 +1205,7 @@ export default function ProductQuickAdmin() {
       </div>
 
       {activeProduct ? (
-        <Modal title={activeProduct.name_ar || 'منتج'} subtitle={activeProduct.slug} onClose={closeProduct}>
+        <Modal title={isAr ? (activeProduct.name_ar || t('productTitle', { fallback: 'منتج' })) : (activeProduct.name_en || activeProduct.name_ar || t('productTitle', { fallback: 'منتج' }))} subtitle={activeProduct.slug} onClose={closeProduct}>
           {modalLoading ? (
             <div className="grid gap-4 lg:grid-cols-[1fr_1.1fr]">
               <div className="h-80 rounded-2xl bg-[#F1E8DA] animate-pulse" />
@@ -1213,17 +1220,17 @@ export default function ProductQuickAdmin() {
               ) : null}
 
               <div className="grid gap-4 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,1.05fr)]">
-                <Section title="الصور السريعة">
+                <Section title={t('quickImages', { fallback: 'الصور السريعة' })}>
                   <div className="overflow-hidden rounded-2xl border border-[#EFE7DA] bg-[#F8F3EA]">
                     {primaryImage ? (
                       <img
                         src={primaryImage.url}
-                        alt={primaryImage.alt_ar ?? activeProduct.name_ar}
+                        alt={primaryImage.alt_ar ?? (isAr ? activeProduct.name_ar : (activeProduct.name_en || activeProduct.name_ar))}
                         className="aspect-[4/3] w-full object-cover"
                       />
                     ) : (
                       <div className="flex aspect-[4/3] items-center justify-center text-sm font-bold text-[#8B8172]">
-                        لا توجد صورة
+                        {t('noImage', { fallback: 'لا توجد صورة' })}
                       </div>
                     )}
                   </div>
@@ -1232,7 +1239,7 @@ export default function ProductQuickAdmin() {
                       <button
                         key={image.id}
                         type="button"
-                        title="تعيين كصورة رئيسية"
+                        title={t('setAsPrimary', { fallback: 'تعيين كصورة رئيسية' })}
                         onClick={() => {
                           if (!image.is_primary) void patchImage(image, { is_primary: true });
                         }}
@@ -1242,8 +1249,8 @@ export default function ProductQuickAdmin() {
                       >
                         <img src={image.url} alt={image.alt_ar ?? ''} className="aspect-square w-full object-cover" />
                         {image.is_primary ? (
-                          <span className="absolute right-1 top-1 rounded-full bg-[#B8860B] px-1.5 py-0.5 text-[9px] font-black text-white">
-                            رئيسية
+                          <span className={`absolute ${isAr ? "right-1" : "left-1"} top-1 rounded-full bg-[#B8860B] px-1.5 py-0.5 text-[9px] font-black text-white`}>
+                            {t('primary', { fallback: 'رئيسية' })}
                           </span>
                         ) : null}
                       </button>
