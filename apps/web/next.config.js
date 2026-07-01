@@ -12,6 +12,15 @@ const nextConfig = {
     '@eurostore/config',
     '@eurostore/adapters'
   ],
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'picsum.photos' },
+      { protocol: 'https', hostname: 'loremflickr.com' },
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      { protocol: 'https', hostname: 'plus.unsplash.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+    ],
+  },
   async headers() {
     return [
       {
