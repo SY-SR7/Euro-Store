@@ -1,9 +1,14 @@
-﻿import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 type ClientOptions = Parameters<typeof createClient>[2];
 
 const clientOptions: ClientOptions = {
-  auth: { persistSession: false, autoRefreshToken: false }
+  auth: { persistSession: false, autoRefreshToken: false },
+  global: {
+    // Prevent Next.js data cache from serving stale Supabase responses
+    fetch: (url, options) =>
+      fetch(url, { ...options, cache: 'no-store' }),
+  },
 };
 
 function envValue(name: string, fallback?: string): string {
