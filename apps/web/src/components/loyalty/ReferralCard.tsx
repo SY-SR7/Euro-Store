@@ -1,5 +1,6 @@
 'use client';
 import { useTranslations } from 'next-intl';
+import { Copy } from 'lucide-react';
 
 interface ReferralCardProps { referralCode: string; }
 export function ReferralCard({ referralCode }: ReferralCardProps) {
@@ -19,7 +20,9 @@ export function ReferralCard({ referralCode }: ReferralCardProps) {
       <p className="text-sm text-[#6F6658] mb-4">{t('referralDescription')}</p>
       <div className="flex items-center gap-2">
         <span className="font-mono text-[#1F1B16] bg-[#1C1C1C] px-3 py-2 rounded text-sm flex-1">{referralCode}</span>
-        <button onClick={copy} title={t('copyCode')} className="p-2 text-primary hover:text-[#D8B95F] transition-colors"></button>
+        <button onClick={copy} title={t('copyCode')} aria-label={t('copyCode')} className="p-2 text-primary hover:text-[#D8B95F] transition-colors">
+          <Copy className="h-4 w-4" />
+        </button>
       </div>
       <button onClick={share} className="mt-4 flex items-center gap-2 text-sm text-primary hover:text-[#D8B95F] transition-colors">
         <span>{t('share')}</span>
