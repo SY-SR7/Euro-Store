@@ -1,5 +1,18 @@
 [
   {
+    "id": "10b8b367-5c44-4c19-9fdf-435890616a80",
+    "admin_email": "eurostore.private@gmail.com",
+    "action": "update",
+    "action_ar": "تعديل",
+    "entity_type": "settings",
+    "entity_label": "الإعدادات",
+    "entity_id": "settings",
+    "summary": "تعديل في الإعدادات — المعرّف: settings — نتيجة العملية: 200",
+    "source": "admin-ui",
+    "created_at": "2026-07-01T19:02:45.225Z",
+    "ip": "::1"
+  },
+  {
     "id": "7590036e-abe7-49ae-b64a-526f1549d369",
     "admin_email": "eurostore.private@gmail.com",
     "action": "update",
