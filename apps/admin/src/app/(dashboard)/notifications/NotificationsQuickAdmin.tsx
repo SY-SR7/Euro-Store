@@ -5,6 +5,7 @@ import { AlertTriangle, Bell, CheckCircle2, ClipboardList, Percent, RefreshCw, S
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 
 type Tone = 'danger' | 'warning' | 'success' | 'info' | 'neutral';
 type Source = 'orders' | 'exchanges' | 'customers' | 'discounts' | 'audit' | 'system';
@@ -25,33 +26,6 @@ type NotificationItem = {
 };
 
 const STORAGE_KEY = 'eurostore-admin-read-notifications-v2';
-
-const SOURCE_AR: Record<Source, string> = {
-  orders: 'الطلبات',
-  exchanges: 'الاستبدالات',
-  customers: 'العملاء',
-  discounts: 'الخصومات',
-  audit: 'السجل',
-  system: 'النظام',
-};
-
-const ORDER_STATUS: Record<string, string> = {
-  pending: 'قيد الانتظار',
-  confirmed: 'مؤكد',
-  processing: 'جار التجهيز',
-  shipped: 'تم الشحن',
-  delivered: 'تم التسليم',
-  cancelled: 'ملغى',
-};
-
-const EXCHANGE_STATUS: Record<string, string> = {
-  pending: 'قيد الانتظار',
-  requested: 'قيد الانتظار',
-  approved: 'مقبول',
-  rejected: 'مرفوض',
-  completed: 'مكتمل',
-  cancelled: 'ملغى',
-};
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -98,13 +72,13 @@ function safeDate(value?: string) {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
-function dateText(value?: string) {
+function dateText(value: string | undefined, locale: string) {
   const date = safeDate(value);
   if (!date) return '-';
-  return new Intl.DateTimeFormat('ar-SY', { dateStyle: 'medium', timeStyle: 'short' }).format(date);
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' }).format(date);
 }
 
-function relative(value?: string) {
+function relative(value: string | undefined, t: any) {
   const date = safeDate(value);
   if (!date) return '-';
   const diff = Date.now() - date.getTime();
@@ -112,14 +86,14 @@ function relative(value?: string) {
   const hour = minute * 60;
   const day = hour * 24;
   const abs = Math.abs(diff);
-  if (abs < minute) return 'الآن';
-  if (abs < hour) return `منذ ${Math.max(1, Math.round(abs / minute))} دقيقة`;
-  if (abs < day) return `منذ ${Math.max(1, Math.round(abs / hour))} ساعة`;
-  return `منذ ${Math.max(1, Math.round(abs / day))} يوم`;
+  if (abs < minute) return t('timeNow');
+  if (abs < hour) return t('timeMinsAgo', { count: Math.max(1, Math.round(abs / minute)) });
+  if (abs < day) return t('timeHoursAgo', { count: Math.max(1, Math.round(abs / hour)) });
+  return t('timeDaysAgo', { count: Math.max(1, Math.round(abs / day)) });
 }
 
-function money(value: number) {
-  return `${Number(value || 0).toLocaleString('ar-SY')} ل.س`;
+function money(value: number, locale: string, unit: string) {
+  return `${Number(value || 0).toLocaleString(locale)} ${unit}`;
 }
 
 async function fetchJson(path: string): Promise<unknown> {
@@ -150,7 +124,7 @@ function toneClass(tone: Tone) {
   return 'border-[#E5E0D8] bg-[#F8F6F2] text-[#57534E]';
 }
 
-function buildOrderNotifications(rows: Record<string, unknown>[]): NotificationItem[] {
+function buildOrderNotifications(rows: Record<string, unknown>[], t: any, locale: string, orderStatusMap: Record<string, string>, unitSyp: string): NotificationItem[] {
   return rows.slice(0, 60).map((row) => {
     const id = getString(row, 'id', crypto.randomUUID());
     const orderNumber = getString(row, 'order_number', id.slice(0, 8));
@@ -158,20 +132,20 @@ function buildOrderNotifications(rows: Record<string, unknown>[]): NotificationI
     const total = getNumber(row, 'total_syp', 0);
     const createdAt = getString(row, 'created_at', new Date().toISOString());
     const address = nested(row, 'address_snapshot');
-    const customer = getString(address, 'full_name', 'عميل غير محدد');
+    const customer = getString(address, 'full_name', t('unspecifiedCustomer'));
     const phone = getString(address, 'phone', '');
 
     let tone: Tone = 'neutral';
     let priority = 30;
-    let title = `طلب ${ORDER_STATUS[status] ?? status}`;
+    let title = t('orderTitle', { status: orderStatusMap[status] ?? status });
     if (status === 'pending') {
       tone = 'warning';
       priority = 95;
-      title = 'طلب جديد';
+      title = t('newOrder');
     } else if (status === 'cancelled') {
       tone = 'danger';
       priority = 75;
-      title = 'طلب ملغى';
+      title = t('cancelledOrder');
     } else if (status === 'confirmed' || status === 'processing') {
       tone = 'info';
       priority = 70;
@@ -183,28 +157,28 @@ function buildOrderNotifications(rows: Record<string, unknown>[]): NotificationI
       tone,
       priority,
       title,
-      description: `#${orderNumber} - ${customer} - ${money(total)}`,
+      description: `#${orderNumber} - ${customer} - ${money(total, locale, unitSyp)}`,
       createdAt,
       actionHref: `/orders?open=${id}`,
-      actionLabel: 'فتح الطلب',
-      badge: ORDER_STATUS[status] ?? status,
+      actionLabel: t('openOrder'),
+      badge: orderStatusMap[status] ?? status,
       meta: [
-        ['رقم الطلب', orderNumber],
-        ['العميل', customer],
-        ['الهاتف', phone || '-'],
-        ['المجموع', money(total)],
-        ['الحالة', ORDER_STATUS[status] ?? status],
+        [t('metaOrderNumber'), orderNumber],
+        [t('metaCustomer'), customer],
+        [t('metaPhone'), phone || '-'],
+        [t('metaTotal'), money(total, locale, unitSyp)],
+        [t('metaStatus'), orderStatusMap[status] ?? status],
       ],
     };
   });
 }
 
-function buildExchangeNotifications(rows: Record<string, unknown>[]): NotificationItem[] {
+function buildExchangeNotifications(rows: Record<string, unknown>[], t: any, exchangeStatusMap: Record<string, string>): NotificationItem[] {
   return rows.slice(0, 60).map((row) => {
     const id = getString(row, 'id', crypto.randomUUID());
     const status = getString(row, 'status', 'pending');
     const createdAt = getString(row, 'created_at', new Date().toISOString());
-    const reason = getString(row, 'reason_ar', getString(row, 'reason', 'بدون سبب'));
+    const reason = getString(row, 'reason_ar', getString(row, 'reason', t('noReason')));
     const orderId = getString(row, 'order_id', '');
 
     let tone: Tone = 'neutral';
@@ -228,23 +202,23 @@ function buildExchangeNotifications(rows: Record<string, unknown>[]): Notificati
       source: 'exchanges',
       tone,
       priority,
-      title: 'طلب استبدال',
-      description: `${EXCHANGE_STATUS[status] ?? status} - ${reason}`,
+      title: t('exchangeRequest'),
+      description: `${exchangeStatusMap[status] ?? status} - ${reason}`,
       createdAt,
       actionHref: `/exchanges?open=${id}`,
-      actionLabel: 'فتح الاستبدال',
-      badge: EXCHANGE_STATUS[status] ?? status,
+      actionLabel: t('openExchange'),
+      badge: exchangeStatusMap[status] ?? status,
       meta: [
-        ['المعرف', id],
-        ['الطلب المرتبط', orderId || '-'],
-        ['الحالة', EXCHANGE_STATUS[status] ?? status],
-        ['السبب', reason],
+        [t('metaId'), id],
+        [t('metaLinkedOrder'), orderId || '-'],
+        [t('metaStatus'), exchangeStatusMap[status] ?? status],
+        [t('metaReason'), reason],
       ],
     };
   });
 }
 
-function buildDiscountNotifications(rows: Record<string, unknown>[]): NotificationItem[] {
+function buildDiscountNotifications(rows: Record<string, unknown>[], t: any, locale: string): NotificationItem[] {
   const items: NotificationItem[] = [];
   for (const row of rows.slice(0, 60)) {
     const id = getString(row, 'id', getString(row, 'code', crypto.randomUUID()));
@@ -262,30 +236,30 @@ function buildDiscountNotifications(rows: Record<string, unknown>[]): Notificati
       source: 'discounts',
       tone: expired || usedUp ? 'danger' : 'neutral',
       priority: expired || usedUp ? 72 : 28,
-      title: expired ? 'كود منتهي' : usedUp ? 'كود مستنفد' : 'كود معطل',
+      title: expired ? t('codeExpired') : usedUp ? t('codeExhausted') : t('codeDisabled'),
       description: code,
       createdAt: validUntil || new Date().toISOString(),
       actionHref: `/discounts?open=${id}`,
-      actionLabel: 'فتح الخصومات',
-      badge: expired ? 'منتهي' : usedUp ? 'مستنفد' : 'معطل',
+      actionLabel: t('openDiscounts'),
+      badge: expired ? t('badgeExpired') : usedUp ? t('badgeExhausted') : t('badgeDisabled'),
       meta: [
-        ['الكود', code],
-        ['الاستخدام', maxUses ? `${usedCount}/${maxUses}` : String(usedCount)],
-        ['ينتهي', validUntil ? dateText(validUntil) : '-'],
+        [t('metaCode'), code],
+        [t('metaUsage'), maxUses ? `${usedCount}/${maxUses}` : String(usedCount)],
+        [t('metaExpires'), validUntil ? dateText(validUntil, locale) : '-'],
       ],
     });
   }
   return items;
 }
 
-function buildCustomerNotifications(rows: Record<string, unknown>[]): NotificationItem[] {
+function buildCustomerNotifications(rows: Record<string, unknown>[], t: any): NotificationItem[] {
   const twoDays = 2 * 24 * 60 * 60 * 1000;
   return rows.slice(0, 60).filter((row) => {
     const date = safeDate(getString(row, 'created_at', ''));
     return date ? Date.now() - date.getTime() <= twoDays : false;
   }).map((row) => {
     const id = getString(row, 'id', crypto.randomUUID());
-    const name = getString(row, 'full_name', 'عميل جديد');
+    const name = getString(row, 'full_name', t('newCustomer'));
     const email = getString(row, 'email', '');
     const phone = getString(row, 'phone', '');
     const createdAt = getString(row, 'created_at', new Date().toISOString());
@@ -294,26 +268,26 @@ function buildCustomerNotifications(rows: Record<string, unknown>[]): Notificati
       source: 'customers',
       tone: 'success',
       priority: 42,
-      title: 'عميل جديد',
+      title: t('newCustomer'),
       description: name,
       createdAt,
       actionHref: `/customers?open=${id}`,
-      actionLabel: 'فتح العميل',
-      badge: 'جديد',
+      actionLabel: t('openCustomer'),
+      badge: t('badgeNew'),
       meta: [
-        ['الاسم', name],
-        ['البريد', email || '-'],
-        ['الهاتف', phone || '-'],
+        [t('metaName'), name],
+        [t('metaEmail'), email || '-'],
+        [t('metaPhone'), phone || '-'],
       ],
     } satisfies NotificationItem;
   });
 }
 
-function buildAuditNotifications(rows: Record<string, unknown>[]): NotificationItem[] {
+function buildAuditNotifications(rows: Record<string, unknown>[], t: any, locale: string): NotificationItem[] {
   return rows.slice(0, 40).map((row) => {
     const id = getString(row, 'id', crypto.randomUUID());
-    const action = getString(row, 'action_ar', getString(row, 'action', 'حركة'));
-    const entity = getString(row, 'entity_label', getString(row, 'entity_type', 'النظام'));
+    const action = getString(row, 'action_ar', getString(row, 'action', t('systemAction')));
+    const entity = getString(row, 'entity_label', getString(row, 'entity_type', t('systemEntity')));
     const createdAt = getString(row, 'created_at', new Date().toISOString());
     const actionRaw = getString(row, 'action', '');
     const danger = actionRaw.includes('delete');
@@ -326,12 +300,12 @@ function buildAuditNotifications(rows: Record<string, unknown>[]): NotificationI
       description: entity,
       createdAt,
       actionHref: `/audit-logs?open=${id}`,
-      actionLabel: 'فتح السجل',
+      actionLabel: t('openAudit'),
       badge: entity,
       meta: [
-        ['العملية', action],
-        ['القسم', entity],
-        ['الوقت', dateText(createdAt)],
+        [t('metaAction'), action],
+        [t('metaSection'), entity],
+        [t('metaTime'), dateText(createdAt, locale)],
       ],
     };
   });
@@ -341,13 +315,13 @@ function systemErrors(payloads: unknown[]) {
   return payloads.flatMap((payload) => isRecord(payload) && typeof payload.__error === 'string' ? [payload.__error] : []);
 }
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+function Modal({ title, onClose, children, closeTitle }: { title: string; onClose: () => void; children: ReactNode; closeTitle?: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
       <div className="w-full max-w-2xl overflow-hidden rounded-lg border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-white px-5 py-4">
           <h2 className="font-black text-[#1C1917]">{title}</h2>
-          <button type="button" title="إغلاق" onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
+          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg bg-[#F8F6F2] text-[#57534E] hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -360,6 +334,40 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
 export default function NotificationsQuickAdmin() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
+  const isAr = locale === 'ar';
+  const t = useTranslations('adminNotifications');
+  const tCommon = useTranslations('common');
+  
+  const formatLoc = isAr ? 'ar-SY' : 'en-US';
+
+  const sourceMap: Record<Source, string> = {
+    orders: t('sourceOrders'),
+    exchanges: t('sourceExchanges'),
+    customers: t('sourceCustomers'),
+    discounts: t('sourceDiscounts'),
+    audit: t('sourceAudit'),
+    system: t('sourceSystem'),
+  };
+
+  const orderStatusMap: Record<string, string> = {
+    pending: t('orderStatusPending'),
+    confirmed: t('orderStatusConfirmed'),
+    processing: t('orderStatusProcessing'),
+    shipped: t('orderStatusShipped'),
+    delivered: t('orderStatusDelivered'),
+    cancelled: t('orderStatusCancelled'),
+  };
+
+  const exchangeStatusMap: Record<string, string> = {
+    pending: t('exchangeStatusPending'),
+    requested: t('exchangeStatusRequested'),
+    approved: t('exchangeStatusApproved'),
+    rejected: t('exchangeStatusRejected'),
+    completed: t('exchangeStatusCompleted'),
+    cancelled: t('exchangeStatusCancelled'),
+  };
+
   const [items, setItems] = useState<NotificationItem[]>([]);
   const [readIds, setReadIds] = useState<string[]>([]);
   const [tab, setTab] = useState<TabKey>('all');
@@ -401,29 +409,29 @@ export default function NotificationsQuickAdmin() {
       .then(([ordersPayload, exchangesPayload, customersPayload, discountsPayload, auditPayload]) => {
         const errors = systemErrors([ordersPayload, exchangesPayload, customersPayload, discountsPayload, auditPayload]);
         const next = [
-          ...buildOrderNotifications(pickArray(ordersPayload, ['orders', 'data', 'items'])),
-          ...buildExchangeNotifications(pickArray(exchangesPayload, ['exchanges', 'data', 'items'])),
-          ...buildCustomerNotifications(pickArray(customersPayload, ['customers', 'data', 'items'])),
-          ...buildDiscountNotifications(pickArray(discountsPayload, ['discounts', 'data', 'items'])),
-          ...buildAuditNotifications(pickArray(auditPayload, ['logs', 'data', 'items'])),
+          ...buildOrderNotifications(pickArray(ordersPayload, ['orders', 'data', 'items']), t, formatLoc, orderStatusMap, tCommon('unitSyp', { fallback: 'ل.س' })),
+          ...buildExchangeNotifications(pickArray(exchangesPayload, ['exchanges', 'data', 'items']), t, exchangeStatusMap),
+          ...buildCustomerNotifications(pickArray(customersPayload, ['customers', 'data', 'items']), t),
+          ...buildDiscountNotifications(pickArray(discountsPayload, ['discounts', 'data', 'items']), t, formatLoc),
+          ...buildAuditNotifications(pickArray(auditPayload, ['logs', 'data', 'items']), t, formatLoc),
           ...errors.map((error, index) => ({
             id: `system:${index}:${error}`,
             source: 'system' as const,
             tone: 'warning' as const,
             priority: 85,
-            title: 'مصدر بيانات غير متاح',
+            title: t('systemDataSourceUnavailable'),
             description: error,
             createdAt: new Date().toISOString(),
             actionHref: '/settings',
-            actionLabel: 'الإعدادات',
-            badge: 'اتصال',
+            actionLabel: t('settingsLabel'),
+            badge: t('connectionBadge'),
           })),
         ].sort((a, b) => b.priority - a.priority || ((safeDate(b.createdAt)?.getTime() ?? 0) - (safeDate(a.createdAt)?.getTime() ?? 0)));
         setItems(next);
       })
-      .catch((error) => setMsg(error instanceof Error ? error.message : 'تعذر تحميل الإشعارات'))
+      .catch((error) => setMsg(error instanceof Error ? error.message : t('failedToLoadNotifications')))
       .finally(() => setLoading(false));
-  }, []);
+  }, [t, formatLoc, orderStatusMap, tCommon, exchangeStatusMap]);
 
   useEffect(() => {
     load();
@@ -432,15 +440,15 @@ export default function NotificationsQuickAdmin() {
   const unread = useMemo(() => new Set(items.filter((item) => !readIds.includes(item.id)).map((item) => item.id)), [items, readIds]);
 
   const tabs = useMemo<{ key: TabKey; label: string; count: number }[]>(() => [
-    { key: 'all', label: 'الكل', count: items.length },
-    { key: 'unread', label: 'غير مقروء', count: unread.size },
-    { key: 'orders', label: 'الطلبات', count: items.filter((item) => item.source === 'orders').length },
-    { key: 'exchanges', label: 'الاستبدالات', count: items.filter((item) => item.source === 'exchanges').length },
-    { key: 'customers', label: 'العملاء', count: items.filter((item) => item.source === 'customers').length },
-    { key: 'discounts', label: 'الخصومات', count: items.filter((item) => item.source === 'discounts').length },
-    { key: 'audit', label: 'السجل', count: items.filter((item) => item.source === 'audit').length },
-    { key: 'system', label: 'النظام', count: items.filter((item) => item.source === 'system').length },
-  ], [items, unread.size]);
+    { key: 'all', label: t('allTab'), count: items.length },
+    { key: 'unread', label: t('unreadTab'), count: unread.size },
+    { key: 'orders', label: t('ordersTab'), count: items.filter((item) => item.source === 'orders').length },
+    { key: 'exchanges', label: t('sourceExchanges'), count: items.filter((item) => item.source === 'exchanges').length },
+    { key: 'customers', label: t('sourceCustomers'), count: items.filter((item) => item.source === 'customers').length },
+    { key: 'discounts', label: t('sourceDiscounts'), count: items.filter((item) => item.source === 'discounts').length },
+    { key: 'audit', label: t('sourceAudit'), count: items.filter((item) => item.source === 'audit').length },
+    { key: 'system', label: t('sourceSystem'), count: items.filter((item) => item.source === 'system').length },
+  ], [items, unread.size, t]);
 
   const visible = useMemo(() => {
     const text = query.trim().toLowerCase();
@@ -448,9 +456,9 @@ export default function NotificationsQuickAdmin() {
       if (tab === 'unread' && !unread.has(item.id)) return false;
       if (tab !== 'all' && tab !== 'unread' && item.source !== tab) return false;
       if (!text) return true;
-      return `${item.title} ${item.description} ${item.badge ?? ''} ${SOURCE_AR[item.source]}`.toLowerCase().includes(text);
+      return `${item.title} ${item.description} ${item.badge ?? ''} ${sourceMap[item.source]}`.toLowerCase().includes(text);
     });
-  }, [items, query, tab, unread]);
+  }, [items, query, tab, unread, sourceMap]);
 
   const openItem = useCallback((item: NotificationItem, updateUrl = true) => {
     if (!readIds.includes(item.id)) saveRead([item.id, ...readIds]);
@@ -478,18 +486,18 @@ export default function NotificationsQuickAdmin() {
   const resetRead = () => saveRead([]);
 
   return (
-    <div className="space-y-5" dir="rtl">
+    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
       <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-white p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-[#1C1917]">الإشعارات</h1>
-          <p className="mt-1 text-sm text-[#8B8172]">{unread.size.toLocaleString('ar-SY')} غير مقروء</p>
+          <h1 className="text-2xl font-black text-[#1C1917]">{t('title')}</h1>
+          <p className="mt-1 text-sm text-[#8B8172]">{t('unreadCount', { count: unread.size })}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button type="button" onClick={markAllRead} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-[#57534E] hover:border-[#B8860B]">
-            <CheckCircle2 size={16} /> مقروء
+            <CheckCircle2 size={16} /> {t('markAllRead')}
           </button>
           <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#B8860B]">
-            <RefreshCw size={16} /> تحديث
+            <RefreshCw size={16} /> {tCommon('refresh')}
           </button>
         </div>
       </section>
@@ -498,16 +506,16 @@ export default function NotificationsQuickAdmin() {
 
       <section className="grid gap-3 md:grid-cols-4">
         {[
-          ['الكل', items.length, Bell],
-          ['غير مقروء', unread.size, AlertTriangle],
-          ['عاجل', items.filter((item) => item.tone === 'danger' || item.priority >= 85).length, AlertTriangle],
-          ['طلبات', items.filter((item) => item.source === 'orders').length, ShoppingBag],
+          [t('allTab'), items.length, Bell],
+          [t('unreadTab'), unread.size, AlertTriangle],
+          [t('urgentTab'), items.filter((item) => item.tone === 'danger' || item.priority >= 85).length, AlertTriangle],
+          [t('ordersTab'), items.filter((item) => item.source === 'orders').length, ShoppingBag],
         ].map(([label, value, Icon]) => {
           const IconComponent = Icon as typeof Bell;
           return (
             <div key={String(label)} className="rounded-lg border border-[#E5E0D8] bg-white p-4 shadow-sm">
               <IconComponent size={16} className="text-[#B8860B]" />
-              <p className="mt-3 text-2xl font-black text-[#1C1917]">{Number(value).toLocaleString('ar-SY')}</p>
+              <p className="mt-3 text-2xl font-black text-[#1C1917]" dir="ltr">{Number(value).toLocaleString(formatLoc)}</p>
               <p className="mt-1 text-xs font-black text-[#8B8172]">{String(label)}</p>
             </div>
           );
@@ -519,23 +527,23 @@ export default function NotificationsQuickAdmin() {
           <div className="flex gap-2 overflow-x-auto pb-1">
             {tabs.map((item) => (
               <button key={item.key} type="button" onClick={() => setTab(item.key)} className={`whitespace-nowrap rounded-lg border px-3 py-2 text-xs font-black ${tab === item.key ? 'border-[#B8860B] bg-[#B8860B] text-white' : 'border-[#E5E0D8] bg-[#FAF7EF] text-[#57534E] hover:border-[#B8860B]'}`}>
-                {item.label} <span className="ms-1">{item.count.toLocaleString('ar-SY')}</span>
+                {item.label} <span className="ms-1" dir="ltr">{item.count.toLocaleString(formatLoc)}</span>
               </button>
             ))}
           </div>
           <div className="flex gap-2">
             <div className="flex overflow-hidden rounded-lg border border-[#E5E0D8] bg-[#FAFAF8] focus-within:border-[#B8860B]">
-              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="بحث..." className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm outline-none" />
-              <span className="grid w-10 place-items-center border-r border-[#E5E0D8] text-[#8B8172]"><Search size={16} /></span>
+              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('searchPlaceholder')} className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm outline-none" dir={isAr ? "rtl" : "ltr"} />
+              <span className={`grid w-10 place-items-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-[#8B8172]`}><Search size={16} /></span>
             </div>
-            <button type="button" onClick={resetRead} className="rounded-lg border border-[#E5E0D8] px-3 py-2 text-xs font-bold text-[#57534E] hover:border-[#B8860B]">إظهار</button>
+            <button type="button" onClick={resetRead} className="rounded-lg border border-[#E5E0D8] px-3 py-2 text-xs font-bold text-[#57534E] hover:border-[#B8860B]">{t('showBtn')}</button>
           </div>
         </div>
       </section>
 
       <section className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-white shadow-sm">
-        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">جار التحميل...</p>
-        : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">لا توجد إشعارات</p>
+        {loading ? <p className="p-10 text-center text-sm text-[#A8A29E]">{tCommon('loading')}</p>
+        : visible.length === 0 ? <p className="p-10 text-center text-sm text-[#A8A29E]">{t('noNotifications')}</p>
         : (
           <div className="divide-y divide-[#F0ECE6]">
             {visible.map((item) => {
@@ -545,22 +553,22 @@ export default function NotificationsQuickAdmin() {
                   <button type="button" onClick={() => openItem(item)} className={`grid h-10 w-10 place-items-center rounded-lg border ${toneClass(item.tone)}`}>
                     {sourceIcon(item.source)}
                   </button>
-                  <button type="button" onClick={() => openItem(item)} className="min-w-0 text-right">
+                  <button type="button" onClick={() => openItem(item)} className={`min-w-0 ${isAr ? "text-right" : "text-left"}`}>
                     <span className="flex flex-wrap items-center gap-2">
                       {!read ? <span className="h-2 w-2 rounded-full bg-[#B8860B]" /> : null}
                       <span className="font-black text-[#1C1917]">{item.title}</span>
-                      <span className={`rounded-full border px-2 py-1 text-[11px] font-bold ${toneClass(item.tone)}`}>{item.badge ?? SOURCE_AR[item.source]}</span>
+                      <span className={`rounded-full border px-2 py-1 text-[11px] font-bold ${toneClass(item.tone)}`}>{item.badge ?? sourceMap[item.source]}</span>
                     </span>
                     <span className="mt-1 block truncate text-sm text-[#57534E]">{item.description}</span>
-                    <span className="mt-1 block text-xs text-[#A8A29E]">{dateText(item.createdAt)} - {relative(item.createdAt)}</span>
+                    <span className="mt-1 block text-xs text-[#A8A29E]">{dateText(item.createdAt, formatLoc)} - {relative(item.createdAt, t)}</span>
                   </button>
                   <div className="flex gap-2">
                     <button type="button" onClick={() => saveRead(read ? readIds.filter((id) => id !== item.id) : [item.id, ...readIds])} className="rounded-lg border border-[#E5E0D8] px-3 py-2 text-xs font-bold text-[#57534E] hover:border-[#B8860B]">
-                      {read ? 'غير مقروء' : 'مقروء'}
+                      {read ? t('btnUnread') : t('btnRead')}
                     </button>
                     {item.actionHref ? (
                       <Link href={item.actionHref} onClick={() => !read && saveRead([item.id, ...readIds])} className="rounded-lg bg-[#1C1917] px-3 py-2 text-xs font-black text-white hover:bg-[#B8860B]">
-                        {item.actionLabel ?? 'فتح'}
+                        {item.actionLabel ?? t('openBtn')}
                       </Link>
                     ) : null}
                   </div>
@@ -572,14 +580,14 @@ export default function NotificationsQuickAdmin() {
       </section>
 
       {selected ? (
-        <Modal title={selected.title} onClose={closeItem}>
+        <Modal title={selected.title} onClose={closeItem} closeTitle={tCommon('close')}>
           <div className="space-y-4">
             <div className="rounded-lg border border-[#E5E0D8] bg-white p-4">
               <div className="flex items-center gap-2">
                 <span className={`grid h-9 w-9 place-items-center rounded-lg border ${toneClass(selected.tone)}`}>{sourceIcon(selected.source)}</span>
                 <div>
                   <p className="text-sm font-black text-[#1C1917]">{selected.description}</p>
-                  <p className="mt-1 text-xs text-[#8B8172]">{SOURCE_AR[selected.source]} - {dateText(selected.createdAt)}</p>
+                  <p className="mt-1 text-xs text-[#8B8172]">{sourceMap[selected.source]} - {dateText(selected.createdAt, formatLoc)}</p>
                 </div>
               </div>
             </div>
@@ -589,7 +597,7 @@ export default function NotificationsQuickAdmin() {
                 {selected.meta.map(([label, value]) => (
                   <div key={`${label}:${value}`} className="flex items-start justify-between gap-4 border-b border-[#F0ECE6] px-4 py-3 text-sm last:border-b-0">
                     <span className="text-[#8B8172]">{label}</span>
-                    <span className="max-w-[65%] break-words text-left font-black text-[#1C1917]" dir="auto">{value}</span>
+                    <span className={`max-w-[65%] break-words ${isAr ? "text-left" : "text-right"} font-black text-[#1C1917]`} dir="auto">{value}</span>
                   </div>
                 ))}
               </div>
@@ -598,11 +606,11 @@ export default function NotificationsQuickAdmin() {
             <div className="flex flex-col gap-2 sm:flex-row">
               {selected.actionHref ? (
                 <Link href={selected.actionHref} onClick={() => setSelected(null)} className="flex-1 rounded-lg bg-[#B8860B] px-4 py-3 text-center text-sm font-black text-white hover:bg-[#9A7209]">
-                  {selected.actionLabel ?? 'فتح'}
+                  {selected.actionLabel ?? t('openBtn')}
                 </Link>
               ) : null}
               <button type="button" onClick={closeItem} className="rounded-lg border border-[#E5E0D8] px-4 py-3 text-sm font-bold text-[#57534E] hover:border-[#B8860B]">
-                إغلاق
+                {tCommon('close')}
               </button>
             </div>
           </div>
