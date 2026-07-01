@@ -1,0 +1,59 @@
+apps\web\src\app\(main)\account\page.tsx:36 -> <main className="min-h-screen bg-background px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\cart\page.tsx:20 -> <main className="min-h-screen bg-background px-4 py-20" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\cart\page.tsx:38 -> <main className="min-h-screen bg-background px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\categories\page.tsx:22 -> <main className="min-h-screen bg-background text-[#1F1B16] px-6 py-12">
+apps\web\src\app\(main)\categories\page.tsx:34 -> <div className="rounded-md border border-border bg-background-card p-12 text-center text-[#6F6658]">
+apps\web\src\app\(main)\categories\[slug]\page.tsx:37 -> <main className={`min-h-screen bg-background px-6 py-12 text-[#1F1B16]`} dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\checkout\page.tsx:191 -> <main className="min-h-screen bg-background px-6 py-20" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\checkout\page.tsx:208 -> <main className="min-h-screen bg-background px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\checkout\success\page.tsx:29 -> <div className="max-w-md w-full rounded-3xl border border-black/5 bg-background-card p-10 text-center shadow-xl">
+apps\web\src\app\(main)\contact\page.tsx:36 -> <main className="min-h-screen bg-background text-[#1F1B16] px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\exchange\new\page.tsx:71 -> <main className="min-h-screen bg-background px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\exchange\new\page.tsx:81 -> <main className="min-h-screen bg-background px-6 py-12 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\exchange\page.tsx:35 -> <main className="min-h-screen bg-background px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\faq\page.tsx:20 -> <main className="min-h-screen bg-background text-[#1F1B16] px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\loyalty\page.tsx:98 -> <main className="min-h-screen bg-background px-4 py-12" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\orders\page.tsx:34 -> <main className="min-h-screen bg-background px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\orders\page.tsx:42 -> <div className="rounded-2xl border border-border bg-background-card p-10 text-center shadow-sm">
+apps\web\src\app\(main)\orders\[orderNumber]\page.tsx:75 -> <main className="min-h-screen bg-background px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\products\page.tsx:25 -> <main className="min-h-screen bg-background px-4 py-12 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\products\[slug]\page.tsx:207 -> <div className="mx-auto max-w-6xl px-4 py-10" dir="rtl">
+apps\web\src\app\(main)\wishlist\page.tsx:54 -> <main className={`min-h-screen bg-background px-4 py-10`} dir={isAr ? "rtl" : "ltr"}>
+apps\web\src\app\(main)\wishlist\page.tsx:70 -> <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center shadow-sm">
+apps\web\src\app\(main)\wishlist\page.tsx:80 -> <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center shadow-sm">
+apps\web\src\app\filterable-product-grid.tsx:143 -> <aside className={`flex-none transition-all duration-200 ${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'}`}>
+apps\web\src\app\filterable-product-grid.tsx:342 -> <div className="rounded-2xl border border-border bg-background-card p-16 text-center">
+apps\web\src\components\home\HeroSection.tsx:138 -> className="inline-flex items-center gap-2 px-10 py-4 text-sm font-black uppercase tracking-widest hover:opacity-90 transition-opacity duration-300 rounded-full shadow-xl"
+apps\web\src\components\home\HeroSection.tsx:156 -> className="inline-flex items-center gap-2 border px-10 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-300 rounded-full bg-black/20 backdrop-blur-sm"
+apps\web\src\components\home\ScrollCategoryShowcase.tsx:347 -> className="relative min-h-[240vh] border-t border-border py-10 md:py-16"
+apps\web\src\components\home\ScrollCategoryShowcase.tsx:380 -> <div className="rounded-2xl border border-border bg-background p-10 text-center text-[#6F6658]">
+apps\admin\src\app\(dashboard)\attribute-types\AttributeTypesQuickAdmin.tsx:371 -> {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted xl:col-span-2">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+apps\admin\src\app\(dashboard)\attribute-types\AttributeTypesQuickAdmin.tsx:372 -> : types.length === 0 ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted xl:col-span-2">{t('noAttributes', { fallback: 'لا توجد صفات' })}</p>
+apps\admin\src\app\(dashboard)\audit-logs\AuditLogsQuickAdmin.tsx:298 -> {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+apps\admin\src\app\(dashboard)\audit-logs\AuditLogsQuickAdmin.tsx:299 -> : filtered.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noLogs')}</p>
+apps\admin\src\app\(dashboard)\brands\BrandsQuickAdmin.tsx:194 -> {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+apps\admin\src\app\(dashboard)\brands\BrandsQuickAdmin.tsx:195 -> : visible.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noBrands', { fallback: 'لا توجد ماركات' })}</p>
+apps\admin\src\app\(dashboard)\categories\CategoriesQuickAdmin.tsx:199 -> {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+apps\admin\src\app\(dashboard)\categories\CategoriesQuickAdmin.tsx:200 -> : categories.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noCategories', { fallback: 'لا توجد تصنيفات' })}</p>
+apps\admin\src\app\(dashboard)\customers\CustomersQuickAdmin.tsx:366 -> <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+apps\admin\src\app\(dashboard)\customers\CustomersQuickAdmin.tsx:368 -> <p className="p-10 text-center text-sm text-text-muted">{t('noCustomers', { fallback: 'لا يوجد عملاء' })}</p>
+apps\admin\src\app\(dashboard)\discounts\DiscountsQuickAdmin.tsx:264 -> {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+apps\admin\src\app\(dashboard)\discounts\DiscountsQuickAdmin.tsx:265 -> : discounts.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noDiscounts', { fallback: 'لا توجد أكواد خصم' })}</p>
+apps\admin\src\app\(dashboard)\exchanges\ExchangesQuickAdmin.tsx:342 -> <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+apps\admin\src\app\(dashboard)\exchanges\ExchangesQuickAdmin.tsx:344 -> <p className="p-10 text-center text-sm text-text-muted">{t('noExchanges', { fallback: 'لا توجد طلبات استبدال' })}</p>
+apps\admin\src\app\(dashboard)\homepage\HomepageQuickAdmin.tsx:351 -> {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+apps\admin\src\app\(dashboard)\homepage\HomepageQuickAdmin.tsx:352 -> : sections.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noSections', { fallback: 'لا توجد أقسام' })}</p>
+apps\admin\src\app\(dashboard)\loyalty-settings\LoyaltySettingsQuickAdmin.tsx:246 -> {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+apps\admin\src\app\(dashboard)\notifications\NotificationsQuickAdmin.tsx:559 -> {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+apps\admin\src\app\(dashboard)\notifications\NotificationsQuickAdmin.tsx:560 -> : visible.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noNotifications')}</p>
+apps\admin\src\app\(dashboard)\orders\OrdersQuickAdmin.tsx:429 -> <p className="p-10 text-center text-sm text-text-muted">{t('loading', { fallback: 'جار التحميل...' })}</p>
+apps\admin\src\app\(dashboard)\orders\OrdersQuickAdmin.tsx:431 -> <p className="p-10 text-center text-sm text-text-muted">{t('noOrders', { fallback: 'لا توجد طلبات' })}</p>
+apps\admin\src\app\(dashboard)\reviews\ReviewsQuickAdmin.tsx:334 -> <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted">
+apps\admin\src\app\(dashboard)\settings\SettingsQuickAdmin.tsx:188 -> {loading ? <p className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center text-sm text-text-muted">{tCommon('loading', { fallback: 'جار التحميل...' })}</p>
+apps\admin\src\app\(dashboard)\shipping-rates\ShippingRatesQuickAdmin.tsx:237 -> {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+apps\admin\src\app\(dashboard)\shipping-rates\ShippingRatesQuickAdmin.tsx:238 -> : rates.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noShippingRates')}</p>
+apps\admin\src\app\(dashboard)\sub-admins\SubAdminsQuickAdmin.tsx:281 -> {loading ? <p className="p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
+apps\admin\src\app\(dashboard)\sub-admins\SubAdminsQuickAdmin.tsx:282 -> : subAdmins.length === 0 ? <p className="p-10 text-center text-sm text-text-muted">{t('noAccounts')}</p>
+apps\admin\src\app\login\page.tsx:83 -> <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 relative" dir={isAr ? "rtl" : "ltr"}>
+apps\admin\src\app\totp\setup\page.tsx:14 -> <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
+apps\admin\src\app\totp\verify\page.tsx:17 -> <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
