@@ -333,19 +333,33 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
         </div>
       </main>
 
-      {mobileOpen && (
-        <div className="fixed inset-0 z-[130] lg:hidden">
-          <div className="absolute inset-0 bg-black/45 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+      {/* Mobile Sidebar Overlay — uses opacity/pointer-events so main content stays visible */}
+      <div
+        className={`fixed inset-0 z-[130] lg:hidden transition-all duration-300 ${
+          mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        {/* Backdrop — only captures clicks when open */}
+        <div
+          className="absolute inset-0 bg-black/45 backdrop-blur-sm"
+          onClick={() => setMobileOpen(false)}
+        />
 
-          <aside className={`absolute ${isAr ? "right-0 border-l" : "left-0 border-r"} top-0 h-full w-[min(86vw,20rem)] overflow-hidden border-[#E7DDCC] bg-[#FBF8F1] shadow-2xl`}>
-            <SidebarContent
-              pathname={pathname}
-              mobile
-              onNavigate={() => setMobileOpen(false)}
-            />
-          </aside>
-        </div>
-      )}
+        {/* Sidebar panel — slides in/out */}
+        <aside
+          className={`absolute ${isAr ? "right-0 border-l" : "left-0 border-r"} top-0 h-full w-[min(86vw,20rem)] overflow-hidden border-[#E7DDCC] bg-[#FBF8F1] shadow-2xl transition-transform duration-300 ${
+            mobileOpen
+              ? 'translate-x-0'
+              : isAr ? 'translate-x-full' : '-translate-x-full'
+          }`}
+        >
+          <SidebarContent
+            pathname={pathname}
+            mobile
+            onNavigate={() => setMobileOpen(false)}
+          />
+        </aside>
+      </div>
     </div>
   );
 }
