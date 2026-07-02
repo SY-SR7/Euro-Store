@@ -481,6 +481,18 @@ export default function ProductPage({ params }: { params: any }) {
           <ReviewsSection productId={product.id} />
         </div>
       )}
+
+      {product?.id && category?.id && (
+        <div className="mt-4">
+          <SimilarProducts categoryId={category.id} currentProductId={product.id} />
+        </div>
+      )}
+
+      {product?.id && (
+        <div className="mt-4">
+          <RecommendedProducts currentProductId={product.id} />
+        </div>
+      )}
       
       {/* Recently Viewed Products */}
       <RecentlyViewed />
