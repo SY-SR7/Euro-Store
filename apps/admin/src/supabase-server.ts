@@ -54,10 +54,20 @@ export async function writeAuditLog({
   afterState?: any;
 }) {
   try {
-    await adminClient.from('audit_logs').insert({
+    await admin.from('audit_logs').insert({
       action,
-      details,
-      user_id: userId || null
+      entity_type: entityType,
+      entity_id: entityId,
+      actor_id: actorId,
+      actor_role: actorRole,
+      before_state: beforeState,
+      after_state: afterState,
+      details: {
+        entityType,
+        entityId,
+        beforeState,
+        afterState
+      }
     });
   } catch (err) {
     console.error('Failed to write audit log', err);
