@@ -273,6 +273,13 @@
   "shopSection": "Shop",
   "euroStore": "Euro Store",
   "auth": {
+    "myAccount": "My Account",
+    "myOrders": "My Orders",
+    "orderWord": "Order",
+    "loyaltyPoints": "Loyalty Points",
+    "pointWord": "Point",
+    "exchangeRequests": "Exchange & Return Requests",
+    "referralCode": "Referral Code",
     "logout": "Log out",
     "login": "Login",
     "password": "Password",

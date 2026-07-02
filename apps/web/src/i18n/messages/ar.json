@@ -273,6 +273,13 @@
   "shopSection": "المتجر",
   "euroStore": "Euro Store",
   "auth": {
+    "myAccount": "حسابي",
+    "myOrders": "طلباتي",
+    "orderWord": "طلب",
+    "loyaltyPoints": "نقاط الولاء",
+    "pointWord": "نقطة",
+    "exchangeRequests": "طلبات التبديل والاسترجاع",
+    "referralCode": "رمز الدعوة",
     "logout": "تسجيل الخروج",
     "login": "تسجيل الدخول",
     "password": "كلمة المرور",
