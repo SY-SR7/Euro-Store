@@ -23,9 +23,10 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   await supabase.from('audit_logs').insert({
-    admin_id: user.id, action: 'helper_order_update',
-    table_name: 'orders', record_id: params.id,
-    new_values: { status: parsed.data.status },
+    actor_id: user.id, actor_role: 'helper', action: 'helper_order_update',
+    entity_type: 'orders', entity_id: params.id,
+    before_state: {}, after_state: { status: parsed.data.status },
+    ip_address: null, user_agent: null
   });
 
   return NextResponse.json(data);
