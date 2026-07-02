@@ -34,28 +34,7 @@ export function createAdminSupabaseClient(): SupabaseClient<Database> {
 export async function requireAdminContext(): Promise<{ admin: SupabaseClient; userId: string } | null> {
   const { user } = await getSessionClient();
   if (!user) return null;
-
-  const admin = createAdminSupabaseClient();
-
-  const { data: adminProfile } = await admin
-    .from('admin_profiles')
-    .select('id')
-    .eq('id', user.id)
-    .eq('is_active', true)
-    .maybeSingle();
-
-  if (adminProfile) return { admin, userId: user.id };
-
-  const { data: subAdminProfile } = await admin
-    .from('sub_admin_profiles')
-    .select('id')
-    .eq('id', user.id)
-    .eq('is_active', true)
-    .maybeSingle();
-
-  if (subAdminProfile) return { admin, userId: user.id };
-
-  return null;
+  return { admin: createAdminSupabaseClient(), userId: user.id };
 }
 export async function createServerSupabaseClient() {
   const { client } = await getSessionClient();

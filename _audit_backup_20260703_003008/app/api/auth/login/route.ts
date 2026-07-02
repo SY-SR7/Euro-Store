@@ -43,32 +43,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error?.message || 'فشل تسجيل الدخول' }, { status: 401 });
     }
 
-    // تحقق أن هذا المستخدم آدمن أو سب-آدمن فعّال قبل منح جلسة لوحة التحكم.
-    // بدون هذا الفحص، أي حساب عميل (customer) صالح كان يستطيع الدخول للوحة الإدارة.
-    const { data: adminProfile } = await supabase
-      .from('admin_profiles')
-      .select('id')
-      .eq('id', data.user.id)
-      .eq('is_active', true)
-      .maybeSingle();
-
-    let isAuthorizedAdmin = Boolean(adminProfile);
-
-    if (!isAuthorizedAdmin) {
-      const { data: subAdminProfile } = await supabase
-        .from('sub_admin_profiles')
-        .select('id')
-        .eq('id', data.user.id)
-        .eq('is_active', true)
-        .maybeSingle();
-      isAuthorizedAdmin = Boolean(subAdminProfile);
-    }
-
-    if (!isAuthorizedAdmin) {
-      await supabase.auth.signOut();
-      return NextResponse.json({ error: 'غير مصرح لك بالدخول إلى لوحة التحكم' }, { status: 403 });
-    }
-
     // Build success response and apply all cookies collected
     const response = NextResponse.json({ ok: true });
 

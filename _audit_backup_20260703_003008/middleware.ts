@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
-const PUBLIC_PATHS = ['/login', '/api/auth/login', '/totp/setup', '/totp/verify'];
+const PUBLIC_PATHS = ['/login', '/api/auth/login', '/totp/setup', '/totp/verify', '/api/test-db'];
 
 function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.includes(pathname) || pathname.startsWith('/_next/') || pathname.startsWith('/favicon');
