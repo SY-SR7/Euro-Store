@@ -131,7 +131,12 @@ export default function ProductNewQuickAdmin() {
       });
       router.push(product.id ? `/products?open=${product.id}` : '/products');
     } catch (error) {
-      setMsg(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل الحفظ' }));
+      const errMessage = error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل الحفظ' });
+      if (errMessage === 'product_exists') {
+        setMsg(isAr ? 'هذا الرابط (slug) مستخدم لمنتج آخر، يرجى اختيار رابط مختلف.' : 'This link (slug) is already in use, please choose a different one.');
+      } else {
+        setMsg(errMessage);
+      }
     } finally {
       setSaving(false);
     }
