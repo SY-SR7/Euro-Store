@@ -6,6 +6,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
 import { getSessionClient } from '@/supabase-server';
 import { WriteReviewForm } from '@/components/product/WriteReviewForm';
+import { DroneDelivery } from '@/components/orders/DroneDelivery';
 
 export const dynamic = 'force-dynamic';
 
@@ -114,6 +115,7 @@ export default async function OrderDetailPage({ params }: Props) {
                 </div>
               )}
             </div>
+            <DroneDelivery status={order.status} />
           </div>
         )}
 
