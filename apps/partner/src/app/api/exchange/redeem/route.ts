@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     if (!token) return NextResponse.json({ error: 'Token required' }, { status: 400 });
 
     // Verify JWT signature + expiry
-    let payload: { exchange_request_id: string; customer_id: string };
+    let payload: import('@eurostore/shared').ExchangeQRPayload;
     try {
       payload = verifyExchangeQRToken(token, process.env.QR_SECRET ?? "");
     } catch (e) {
