@@ -65,13 +65,13 @@ export function EuroConcierge() {
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4" data-lenis-prevent="true">
               {chat.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
                   <div className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${
                     msg.role === 'user' 
                       ? 'bg-primary text-[#0F0F0F] rounded-br-sm' 
-                      : 'bg-background-elevated text-white border border-border/50 rounded-bl-sm'
+                      : 'bg-background-elevated text-text-primary border border-border/50 rounded-bl-sm'
                   }`}>
                     {msg.text}
                   </div>
@@ -87,7 +87,7 @@ export function EuroConcierge() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="اسألني عن الماركات..."
-                  className="w-full bg-background border border-border/50 rounded-full py-3 pr-4 pl-12 text-white text-sm focus:outline-none focus:border-primary/50 transition-colors"
+                  className="w-full bg-background border border-border/50 rounded-full py-3 pr-4 pl-12 text-text-primary text-sm focus:outline-none focus:border-primary/50 transition-colors"
                 />
                 <button
                   type="submit"
