@@ -1,4 +1,4 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 'use client';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -46,7 +46,7 @@ export default function PartnerExchangePage() {
           <textarea
             className="rounded-md border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-xs font-mono text-[#E2E2E2] h-32 resize-none focus:border-primary focus:outline-none"
             value={token}
-            onChange={(e) => setToken((e.target as HTMLInputElement).value)}
+            onChange={(e) => setToken((e.target as HTMLTextAreaElement).value)}
             placeholder={t('partner.tokenPlaceholder')}
           />
           <button
