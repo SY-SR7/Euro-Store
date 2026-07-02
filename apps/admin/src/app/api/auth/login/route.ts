@@ -17,7 +17,15 @@ function anonKey() {
   return envValue('NEXT_PUBLIC_SUPABASE_ANON_KEY', process.env.SUPABASE_ANON_KEY);
 }
 
+import { authRatelimit } from '@/lib/ratelimit';
+
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') ?? 'anonymous';
+  const { success } = await authRatelimit.limit(ip);
+  if (!success) {
+    return NextResponse.json({ error: 'too_many_requests' }, { status: 429 });
+  }
+
   try {
     const body = await req.json().catch(() => null) as { email?: string; password?: string } | null;
 

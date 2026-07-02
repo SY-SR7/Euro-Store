@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -9,7 +9,15 @@ const applyDiscountSchema = z.object({
   subtotal: z.number().min(0),
 });
 
+import { discountRatelimit } from '@/lib/ratelimit';
+
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') ?? 'anonymous';
+  const { success } = await discountRatelimit.limit(ip);
+  if (!success) {
+    return NextResponse.json({ error: 'too_many_requests' }, { status: 429 });
+  }
+
   try {
     const body = await req.json();
     const parsed = applyDiscountSchema.safeParse(body);

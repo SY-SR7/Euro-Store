@@ -22,7 +22,14 @@ const DEFAULTS: Record<string, number> = {
   referral_bonus_points: 50,
 };
 
+import { getSessionClient } from '@/supabase-server';
+
 export async function GET() {
+  const { user } = await getSessionClient();
+  if (!user) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+
   const result = { ...DEFAULTS };
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
