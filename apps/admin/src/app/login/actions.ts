@@ -16,7 +16,7 @@ export async function loginAdminAction(formData: FormData): Promise<void> {
     redirect('/login?status=invalid');
   }
 
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
 
   if (error || !data.session) {

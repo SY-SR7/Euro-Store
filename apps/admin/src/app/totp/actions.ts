@@ -40,7 +40,7 @@ async function updateTotpProfile(access: AdminAccess, values: { totp_secret?: st
 }
 
 export async function getOrCreateTotpSetup(): Promise<TotpSetupState> {
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const access = await getAdminAccess(supabase);
 
   if (!access) {
@@ -76,7 +76,7 @@ export async function verifyTotpAction(formData: FormData): Promise<void> {
     redirect('/totp/verify?status=invalid');
   }
 
-  const supabase = createServerSupabaseClient();
+  const supabase = await createServerSupabaseClient();
   const access = await getAdminAccess(supabase);
 
   if (!access) {

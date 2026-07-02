@@ -49,7 +49,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       .upload(storagePath, buffer, { contentType: file.type, upsert: false });
 
     if (uploadErr || !uploaded)
-      return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+      return NextResponse.json({ error: uploadErr?.message || 'database_error' }, { status: 500 });
 
     const { data: { publicUrl } } = supabase.storage
       .from('product-images')
@@ -65,7 +65,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       .select('id, url, is_primary')
       .single();
 
-    if (dbErr) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+    if (dbErr) return NextResponse.json({ error: dbErr?.message || 'database_error' }, { status: 500 });
     return NextResponse.json(img, { status: 201 });
   } catch {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
