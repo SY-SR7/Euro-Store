@@ -1,4 +1,4 @@
-﻿'use server';
+'use server';
 
 import { getFormString, loginSchema } from '@eurostore/shared';
 import { redirect } from 'next/navigation';
@@ -33,5 +33,5 @@ export async function loginHelperAction(formData: FormData): Promise<void> {
 }
 
 
-export { helperLogin as loginAction };
+export { loginHelperAction as loginAction };
 
