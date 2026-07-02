@@ -63,7 +63,7 @@ export async function getSessionClient(): Promise<{ client: SupabaseClient; user
     await client.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).catch(() => {});
   }
 
-  const { data: { user } } = await client.auth.getUser();
+  const { data: { user } } = await client.auth.getUser(accessToken);
   return { client, user };
 }
 
