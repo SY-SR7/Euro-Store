@@ -56,7 +56,7 @@ function Modal({ title, onClose, children, closeTitle }: { title: string; onClos
             <X size={17} />
           </button>
         </div>
-        <div className="max-h-[78vh] overflow-y-auto p-5">{children}</div>
+        <div className="max-h-[75dvh] overflow-y-auto p-5">{children}</div>
       </div>
     </div>
   );
