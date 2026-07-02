@@ -21,7 +21,7 @@ export default async function PartnerExchangeHistoryPage() {
   // Get audit logs for this partner's redemptions
   const { data: logs } = await admin
     .from('audit_logs')
-    .select('id, action, entity_id, metadata, created_at')
+    .select('id, action, entity_id, created_at')
     .eq('actor_id', user.id)
     .eq('actor_role', 'partner')
     .eq('action', 'exchange.qr.redeemed')
