@@ -23,8 +23,10 @@ export function QuickViewModal({ isOpen, onClose, product }: QuickViewModalProps
       nameAr: product.name_ar,
       nameEn: product.name_en,
       priceSyp: product.base_price,
-      quantity: 1,
-      imageUrl: product.primary_image_url
+      imageUrl: product.primary_image_url,
+      sku: product.sku || '',
+      productSlug: product.slug,
+      comparePriceSyp: product.compare_at_price
     });
     onClose();
   };
