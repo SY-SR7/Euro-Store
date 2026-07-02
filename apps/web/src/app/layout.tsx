@@ -38,6 +38,8 @@ import { WhatsAppButton } from '@/components/common/WhatsAppButton';
 import { EuroConcierge } from '@/components/common/EuroConcierge';
 import { KonamiCode } from '@/components/common/KonamiCode';
 import { Credits } from '@/components/common/Credits';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export default async function RootLayout({
   children
@@ -62,6 +64,8 @@ export default async function RootLayout({
           <EuroConcierge />
           <KonamiCode />
           <Credits />
+          <Analytics />
+          <SpeedInsights />
         </NextIntlClientProvider>
       </body>
     </html>
