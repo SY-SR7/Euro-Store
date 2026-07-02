@@ -1,0 +1,33 @@
+project_name: EuroStore
+tech_stack:
+  frontend:
+    - Next.js 14 (App Router)
+    - React
+    - Tailwind CSS
+    - Framer Motion
+    - Zustand
+  mobile:
+    - React Native
+    - Expo Router
+    - NativeWind
+    - Zustand
+  backend:
+    - Supabase (PostgreSQL, Auth, Storage)
+  admin:
+    - Refine framework (Next.js)
+features:
+  - User Authentication (Email/Password via Supabase Auth)
+  - Product Catalog (Categories, Brands, Products, Variants)
+  - Full-Text Smart Search with Arabic support
+  - Shopping Cart with persistent state
+  - End-to-End Checkout Flow
+  - Customer Order Tracking
+  - Real-time Loyalty Points system
+  - Referrals System
+  - Partner App (Sales Agents)
+  - Helper App (Warehouse Management)
+  - Admin Dashboard
+  - Arabic/English Localization (i18n)
+  - Wishlist
+  - WhatsApp Integration
+
