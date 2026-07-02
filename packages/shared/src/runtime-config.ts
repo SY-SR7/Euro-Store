@@ -65,7 +65,18 @@ function parsePublicProvider<T extends z.ZodEnum<[string, ...string[]]>>(
 }
 
 function readFirstRequiredUrl(env: EnvSource, keys: readonly string[]): string {
-  const value = keys.map((key) => env[key]?.trim()).find((candidate) => Boolean(candidate));
+  const staticEnvs: Record<string, string | undefined> = {
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    EXPO_PUBLIC_APP_URL: process.env.EXPO_PUBLIC_APP_URL,
+    NEXT_PUBLIC_ADMIN_URL: process.env.NEXT_PUBLIC_ADMIN_URL,
+    EXPO_PUBLIC_ADMIN_URL: process.env.EXPO_PUBLIC_ADMIN_URL,
+    NEXT_PUBLIC_HELPER_URL: process.env.NEXT_PUBLIC_HELPER_URL,
+    EXPO_PUBLIC_HELPER_URL: process.env.EXPO_PUBLIC_HELPER_URL,
+    NEXT_PUBLIC_PARTNER_URL: process.env.NEXT_PUBLIC_PARTNER_URL,
+    EXPO_PUBLIC_PARTNER_URL: process.env.EXPO_PUBLIC_PARTNER_URL,
+  };
+
+  const value = keys.map((key) => env[key]?.trim() ?? staticEnvs[key]?.trim()).find((candidate) => Boolean(candidate));
 
   if (!value) {
     throw new Error(`Missing required environment variable: ${keys.join(' or ')}`);
