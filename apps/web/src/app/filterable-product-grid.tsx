@@ -65,11 +65,6 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
-      setSidebarOpen(true);
-    }
-  }, []);
 
   // ── build URL params & fetch ─────────────────────────────────────────
   const buildParams = useCallback(() => {

@@ -574,7 +574,7 @@ export default function ProductQuickAdmin() {
   const [priceMax, setPriceMax] = useState<number | null>(null);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'all' | 'active' | 'inactive' | 'featured'>('all');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const categoryOptions = useMemo(
     () => [{ value: '', label: t('uncategorized', { fallback: 'بدون تصنيف' }) }, ...allCategories.map((c) => ({ value: c.id, label: isAr ? c.name_ar : (c.name_en || c.name_ar) }))],
