@@ -1,13 +1,13 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 export function Footer() {
   const t = useTranslations('footer');
   const tCommon = useTranslations('common');
   return (
-    <footer className="border-t border-border bg-[#F8F6F2] pt-14 pb-8">
+    <footer className="border-t border-border/50 bg-background-elevated pt-14 pb-8">
       <div className="mx-auto max-w-6xl px-6">
-        <div className="grid gap-10 sm:grid-cols-3 mb-10">
+        <div className="grid gap-10 sm:grid-cols-3 mb-10" dir="rtl">
           <div>
             <p className="text-lg font-black tracking-widest text-primary mb-3">{tCommon('appName')}</p>
             <p className="text-sm leading-7 text-text-muted">{t('description')}</p>
