@@ -54,9 +54,14 @@ export default function Error({
           <h2 className="text-3xl font-bold text-white mt-8 mb-4">
             عذراً، حدث خطأ غير متوقع في الخادم!
           </h2>
-          <p className="text-text-secondary text-lg mb-12 leading-relaxed max-w-xl mx-auto">
+          <p className="text-text-secondary text-lg mb-4 leading-relaxed max-w-xl mx-auto">
             يبدو أن هناك عطلاً مؤقتاً في أنظمتنا يمنعنا من تلبية طلبك حالياً. فريقنا التقني تم إبلاغه وجاري العمل على حله.
           </p>
+          <div className="bg-red-900/20 border border-red-500/50 p-4 rounded-xl text-left mb-8 max-w-2xl mx-auto overflow-auto max-h-48 text-red-200 font-mono text-sm" dir="ltr">
+            <strong>Error Details:</strong>
+            <pre className="mt-2 whitespace-pre-wrap">{error.message}</pre>
+            {error.digest && <div className="mt-2 text-red-400 text-xs">Digest: {error.digest}</div>}
+          </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button 
