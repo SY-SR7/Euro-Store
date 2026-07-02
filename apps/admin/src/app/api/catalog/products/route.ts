@@ -68,7 +68,10 @@ const { admin, userId } = ctx;
       .insert(productData as never)
       .select('id, name_ar, name_en, slug')
       .single();
-    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+    if (error) {
+      console.error('Database error when creating product:', error);
+      return NextResponse.json({ error: error.message || 'database_error' }, { status: 500 });
+    }
 
     // Create the default variant so the product shows up on the frontend
     const { error: variantError } = await admin
