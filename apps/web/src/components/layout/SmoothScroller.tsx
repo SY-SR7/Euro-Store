@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Lenis from 'lenis';
+import { usePathname } from 'next/navigation';
 
 export function SmoothScroller({ children }: { children: React.ReactNode }): React.ReactElement {
   const lenisRef = useRef<Lenis | null>(null);
@@ -25,6 +26,13 @@ export function SmoothScroller({ children }: { children: React.ReactNode }): Rea
       console.error('Lenis error:', e);
     }
   }, []);
+
+  const pathname = usePathname();
+  useEffect(() => {
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    }
+  }, [pathname]);
 
   return <>{children}</>;
 }
