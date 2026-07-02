@@ -1,10 +1,12 @@
+'use client';
+
 import React from 'react';
 import { motion } from 'framer-motion';
 
 export function WhatsAppButton() {
   const phoneNumber = '963900000000'; // Placeholder, ideally fetched from settings
   const message = encodeURIComponent('?????? ???? ????? ????? ??? ?????? ????? ????????.');
-  const whatsappUrl = \https://wa.me/\?text=\\;
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
   return (
     <motion.a
