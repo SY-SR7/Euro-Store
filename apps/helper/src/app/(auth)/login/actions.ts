@@ -19,8 +19,8 @@ export async function loginHelperAction(formData: FormData): Promise<void> {
   const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
   const access = getHelperAccess(data?.user);
 
-  if (!access) {
-    await supabase.auth.signOut();
+  if (error || !access) {
+    if (!error) await supabase.auth.signOut();
     redirect('/login?status=failed');
   }
 
