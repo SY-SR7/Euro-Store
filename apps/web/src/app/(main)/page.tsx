@@ -56,7 +56,7 @@ export default async function HomePage() {
       <CinematicShowcaseSection
         frameSrcPattern="/frames/shoes/frame_{index:04d}.jpg"
         frameCount={120}
-        scrollHeight="150vh"
+        scrollHeight="250vh"
         storyBeats={SHOES_STORY_BEATS}
         bgColor="#dfdcd3"
       />
@@ -65,7 +65,7 @@ export default async function HomePage() {
       <CinematicShowcaseSection
         frameSrcPattern="/frames/men/frame_{index:04d}.jpg"
         frameCount={FRAME_COUNT}
-        scrollHeight="150vh"
+        scrollHeight="250vh"
         storyBeats={MEN_STORY_BEATS}
         bgColor="#0F1012"
       />
@@ -74,7 +74,7 @@ export default async function HomePage() {
       <CinematicShowcaseSection
         frameSrcPattern="/frames/women/frame_{index:04d}.jpg"
         frameCount={FRAME_COUNT}
-        scrollHeight="150vh"
+        scrollHeight="250vh"
         storyBeats={WOMEN_STORY_BEATS}
         bgColor="#120A0B"
       />
@@ -83,7 +83,7 @@ export default async function HomePage() {
       <CinematicShowcaseSection
         frameSrcPattern="/frames/kids/frame_{index:04d}.jpg"
         frameCount={FRAME_COUNT}
-        scrollHeight="150vh"
+        scrollHeight="250vh"
         storyBeats={KIDS_STORY_BEATS}
         bgColor="#0A0F11"
       />

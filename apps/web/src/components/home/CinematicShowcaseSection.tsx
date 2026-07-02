@@ -230,7 +230,7 @@ export function CinematicShowcaseSection({
             progress={0}
             quality="high"
             className="absolute inset-0"
-            smoothProgress={smoothProgress}
+            smoothProgress={adjustedProgress}
           />
         </div>
 
