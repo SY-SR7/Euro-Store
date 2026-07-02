@@ -121,6 +121,17 @@ export async function POST(request: Request) {
     // ── 3. Server-Side Loyalty Discount ──
     let server_loyalty_discount_syp = 0;
     let actualPointsUsed = 0;
+    
+    // Unconditionally load settings if user is authenticated (needed for both earn and redeem)
+    let settings: Record<string, number> = {};
+    if (user) {
+      const { data: sysSet } = await supabase.from('system_settings').select('key, value').in('key', [
+        'loyalty_redeem_value_syp', 'loyalty_redeem_points',
+        'loyalty_earn_amount_syp', 'loyalty_earn_points'
+      ]);
+      settings = Object.fromEntries(((sysSet ?? []) as { key: string; value: string }[]).map((s) => [s.key, Number(s.value)]));
+    }
+
     if (loyalty_points_used > 0 && user) {
       const { data: profile } = await supabase
         .from('customer_profiles')
@@ -133,9 +144,6 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'insufficient_loyalty_points' }, { status: 400 });
       }
 
-      const { data: sysSet } = await supabase.from('system_settings').select('key, value').in('key', ['loyalty_redeem_value_syp', 'loyalty_redeem_points']);
-      const settings = Object.fromEntries(((sysSet ?? []) as { key: string; value: string }[]).map((s) => [s.key, Number(s.value)]));
-      
       const redeemValue = settings['loyalty_redeem_value_syp'] ?? 1000;
       const redeemPoints = settings['loyalty_redeem_points'] ?? 100;
       
@@ -170,86 +178,32 @@ export async function POST(request: Request) {
     }
     const orderNumber = orderNum as string;
 
-    // ── Check & Deduct Inventory ──
-    const stockItems = items.map(i => ({ variant_id: i.variant_id, quantity: i.quantity }));
-    const stockResult = await supabase.rpc('decrement_stock', { p_items: stockItems });
-    if (stockResult.error) {
-      console.error('[orders/POST] decrement_stock error:', stockResult.error);
-      return NextResponse.json({ error: 'out_of_stock', details: stockResult.error.message }, { status: 400 });
-    }
+    // ── Check if Customer is required ──
+    // Guests can checkout if we allow it, but we should make sure we don't leak anything.
+    // If guest checkout is allowed, customer_id will be null.
 
-    // ── Insert order using Server calculations ──
-    const { data: order, error: orderErr } = await supabase
-      .from('orders')
-      .insert({
-        order_number:         orderNumber,
-        customer_id:          user?.id ?? null,
-        address_snapshot,
-        subtotal_syp:         server_subtotal_syp,
-        discount_syp:         server_discount_syp,
-        discount_code_id:     discount_id ?? null,
-        loyalty_discount_syp: server_loyalty_discount_syp,
-        loyalty_points_used:  actualPointsUsed,
-        shipping_syp:         server_shipping_syp,
-        total_syp:            server_total_syp,
-        notes:                notes ?? null,
-        status:               'pending',
-        payment_status:       'pending',
-        payment_method:       'cash_on_delivery',
-      })
-      .select('id')
-      .single();
+    // ── Execute Atomic Checkout RPC ──
+    const rpcPayload = {
+      p_order_number:         orderNumber,
+      p_customer_id:          user?.id ?? null,
+      p_address_snapshot:     address_snapshot,
+      p_subtotal_syp:         server_subtotal_syp,
+      p_discount_syp:         server_discount_syp,
+      p_discount_code_id:     discount_id ?? null,
+      p_loyalty_discount_syp: server_loyalty_discount_syp,
+      p_loyalty_points_used:  actualPointsUsed,
+      p_shipping_syp:         server_shipping_syp,
+      p_total_syp:            server_total_syp,
+      p_notes:                notes ?? null,
+      p_items:                server_items,
+      p_points_earned:        user && server_total_syp > 0 ? (Math.floor(server_total_syp / (settings?.['loyalty_earn_amount_syp'] ?? 1000)) * (settings?.['loyalty_earn_points'] ?? 10)) : 0
+    };
 
-    if (orderErr || !order) {
+    const { data: orderId, error: orderErr } = await supabase.rpc('place_order_atomic', rpcPayload);
+
+    if (orderErr || !orderId) {
+      console.error('[orders/POST] RPC error:', orderErr);
       return NextResponse.json({ error: orderErr?.message ?? 'order_failed' }, { status: 500 });
-    }
-
-    const orderId = (order as { id: string }).id;
-
-    const orderItemsToInsert = server_items.map((i) => ({ ...i, order_id: orderId }));
-    const { error: itemsErr } = await supabase.from('order_items').insert(orderItemsToInsert);
-    if (itemsErr) {
-      // Best-effort manual rollback if items fail
-      await supabase.from('orders').delete().eq('id', orderId);
-      return NextResponse.json({ error: itemsErr.message }, { status: 500 });
-    }
-
-    // ── Increment discount code usage ──
-    if (discount_id) {
-      const rpcResult = await supabase.rpc('increment_discount_usage', { p_discount_id: discount_id });
-      if (rpcResult.error) console.error('Failed to increment discount usage:', rpcResult.error);
-    }
-
-    // ── Award & Deduct Loyalty Points ──
-    if (user && server_total_syp > 0) {
-      const systemSettings = await supabase.from('system_settings').select('key, value').in('key', ['loyalty_earn_amount_syp', 'loyalty_earn_points']);
-      const settings = Object.fromEntries(((systemSettings.data ?? []) as { key: string; value: string }[]).map((s) => [s.key, Number(s.value)]));
-      const earnAmount = settings['loyalty_earn_amount_syp'] ?? 1000;
-      const earnPoints = settings['loyalty_earn_points'] ?? 10;
-      const pointsEarned = Math.floor(server_total_syp / earnAmount) * earnPoints;
-
-      if (pointsEarned > 0) {
-        await supabase.rpc('award_loyalty_points', {
-          p_customer_id:      user.id,
-          p_points:           pointsEarned,
-          p_type:             'earned_purchase',
-          p_reference_id:     orderId,
-          p_processed_by_id:  user.id,
-          p_processed_by_role:'customer' as never,
-        });
-        await supabase.from('orders').update({ loyalty_points_earned: pointsEarned }).eq('id', orderId);
-      }
-
-      if (actualPointsUsed > 0) {
-        await supabase.rpc('award_loyalty_points', {
-          p_customer_id:      user.id,
-          p_points:           -actualPointsUsed,
-          p_type:             'redeemed',
-          p_reference_id:     orderId,
-          p_processed_by_id:  user.id,
-          p_processed_by_role:'customer' as never,
-        });
-      }
     }
 
     // ── Send order confirmation email (best-effort, non-blocking) ──
