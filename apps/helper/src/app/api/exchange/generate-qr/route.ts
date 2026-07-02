@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString();
 
     await admin.from('exchange_qr_tokens').upsert(
-      { exchange_request_id: exReq.id, customer_id: exReq.customer_id as string, token_hash: hash, expires_at: expiresAt },
+      { exchange_request_id: exReq.id, customer_id: exReq.customer_id as string, token_hash: hash, expires_at: expiresAt, created_at: new Date().toISOString() },
       { onConflict: 'exchange_request_id' },
     );
 
