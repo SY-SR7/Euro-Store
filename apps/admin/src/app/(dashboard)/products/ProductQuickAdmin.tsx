@@ -913,6 +913,53 @@ export default function ProductQuickAdmin() {
     }
   };
 
+  const uploadImages = async (files: FileList | null) => {
+    if (!selected || !files || files.length === 0) return;
+
+    setSavingKey('image:upload');
+    setNotice('');
+
+    try {
+      const formData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        formData.append('file', files[i]);
+      }
+      
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!uploadRes.ok) {
+        const uErr = await uploadRes.json().catch(() => ({}));
+        throw new Error(uErr.error || 'Failed to upload media');
+      }
+      
+      const uploadData = await uploadRes.json();
+      
+      let isPrimary = images.length === 0;
+      for (const f of uploadData.files) {
+        await fetchJson<{ id: string }>('/api/catalog/images', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            product_id: selected.id,
+            url: f.url,
+            is_primary: isPrimary,
+          }),
+        });
+        isPrimary = false;
+      }
+      
+      await loadProductBundle(selected.id, true);
+      void load();
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل إضافة الصورة' }));
+    } finally {
+      setSavingKey('');
+    }
+  };
+
   const deleteImage = async (image: ProductImage) => {
     if (!confirm(tCommon('confirmDelete', { fallback: 'تأكيد الحذف؟' })) || !selected) return;
 
@@ -1551,26 +1598,37 @@ export default function ProductQuickAdmin() {
 
               <Section
                 title={`${t('productImages', { fallback: 'صور المنتج' })} (${images.length})`}
-                action={
-                  <button
-                    type="button"
-                    onClick={addImage}
-                    disabled={savingKey === 'image:new' || !newImageUrl.trim()}
-                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926] disabled:opacity-50"
-                  >
-                    <ImagePlus size={14} />
-                    {tCommon('add', { fallback: 'إضافة' })}
-                  </button>
-                }
               >
-                <div className="mb-3">
-                  <input
-                    value={newImageUrl}
-                    onChange={(event) => setNewImageUrl(event.target.value)}
-                    placeholder={t('imageUrl', { fallback: 'رابط الصورة' })}
-                    dir="ltr"
-                    className={inputClass}
-                  />
+                <div className="mb-3 flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <input 
+                      type="file" 
+                      multiple 
+                      accept="image/*,video/*"
+                      onChange={(e) => uploadImages(e.target.files)}
+                      disabled={savingKey === 'image:upload'}
+                      className={inputClass}
+                    />
+                    {savingKey === 'image:upload' && <span className="text-xs font-bold text-primary animate-pulse whitespace-nowrap">جاري الرفع...</span>}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      value={newImageUrl}
+                      onChange={(event) => setNewImageUrl(event.target.value)}
+                      placeholder={t('imageUrl', { fallback: 'أو أضف رابط الصورة هنا...' })}
+                      dir="ltr"
+                      className={`${inputClass} flex-1`}
+                    />
+                    <button
+                      type="button"
+                      onClick={addImage}
+                      disabled={savingKey === 'image:new' || !newImageUrl.trim()}
+                      className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926] disabled:opacity-50 whitespace-nowrap"
+                    >
+                      <ImagePlus size={14} />
+                      {tCommon('add', { fallback: 'إضافة' })}
+                    </button>
+                  </div>
                 </div>
 
                 {images.length === 0 ? (
