@@ -42,7 +42,10 @@ export async function POST(req: NextRequest) {
       action    : 'loyalty.points.granted',
       entity_type: 'loyalty_points',
       entity_id  : body.customer_id,
+      before_state: null,
       after_state: { points: body.points },
+      ip_address: null,
+      user_agent: null
     });
 
     return NextResponse.json({ success: true });
