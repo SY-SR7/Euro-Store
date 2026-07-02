@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 
 const PUBLIC_PATHS = ['/login', '/totp/setup', '/totp/verify'];
 
@@ -30,19 +30,17 @@ export async function middleware(request: NextRequest) {
   const supabaseAnon = process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'] ?? '';
 
   if (supabaseUrl && supabaseAnon) {
-    const supabase = createServerClient(supabaseUrl, supabaseAnon, {
-      cookies: {
-        get(name)  { return request.cookies.get(name)?.value; },
-        set(name, value, options) {
-          request.cookies.set({ name, value, ...options });
-          response.cookies.set({ name, value, ...options });
-        },
-        remove(name, options) {
-          request.cookies.set({ name, value: '', ...options });
-          response.cookies.set({ name, value: '', ...options });
-        },
-      },
+    const supabase = createClient(supabaseUrl, supabaseAnon, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }) }
     });
+
+    const accessToken = request.cookies.get('sb-access-token')?.value;
+    const refreshToken = request.cookies.get('sb-refresh-token')?.value;
+
+    if (accessToken && refreshToken) {
+      await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).catch(() => {});
+    }
 
     // Check session with Supabase
     const { data: { session } } = await supabase.auth.getSession();
