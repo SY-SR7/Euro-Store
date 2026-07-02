@@ -96,10 +96,6 @@ export function Header() {
             <LanguageSwitcher />
             
             {/* Mobile buttons */}
-            <button onClick={() => setIsCartOpen(true)} aria-label="Open Cart" className="relative md:hidden rounded-full p-2 text-text-secondary transition hover:bg-background-secondary">
-              <ShoppingBag className="h-4 w-4" />
-            </button>
-
             <button onClick={() => setOpen(v => !v)} aria-label="Toggle Mobile Menu"
               className="relative z-50 rounded-full p-2 text-text-secondary transition hover:bg-background-secondary md:hidden">
               {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
