@@ -10,14 +10,14 @@ export default function ProfileScreen() {
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      Alert.alert('???', '??? ??? ????? ????? ??????');
+      Alert.alert('خطأ', 'حدث خطأ أثناء تسجيل الخروج');
     }
   };
 
   return (
     <SafeAreaView className='flex-1 bg-background'>
       <View className='px-6 py-4 border-b border-border'>
-        <Text className='text-2xl font-bold text-primary'>?????</Text>
+        <Text className='text-2xl font-bold text-primary'>حسابي</Text>
       </View>
 
       <View className='flex-1 p-6'>
@@ -28,7 +28,7 @@ export default function ProfileScreen() {
             </Text>
           </View>
           <Text className='text-white font-bold text-lg mb-1'>{user?.email}</Text>
-          <Text className='text-text-secondary text-sm'>???? ????</Text>
+          <Text className='text-text-secondary text-sm'>عميل مميز</Text>
         </View>
 
         <View className='space-y-4 flex-1'>
@@ -36,7 +36,7 @@ export default function ProfileScreen() {
             className='bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3'
             onPress={() => router.push('/orders')}
           >
-            <Text className='text-white font-bold text-base'>??????</Text>
+            <Text className='text-white font-bold text-base'>طلباتي</Text>
             <Text className='text-text-secondary font-bold'>{'<'}</Text>
           </TouchableOpacity>
           <TouchableOpacity 
@@ -56,10 +56,9 @@ export default function ProfileScreen() {
           className='bg-error/10 border border-error/50 p-4 rounded-xl mb-4'
           onPress={handleSignOut}
         >
-          <Text className='text-error font-bold text-center text-lg'>????? ??????</Text>
+          <Text className='text-error font-bold text-center text-lg'>تسجيل الخروج</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
-
