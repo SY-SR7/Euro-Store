@@ -114,14 +114,12 @@ export default function ProductPage({ params }: { params: any }) {
     (async () => {
       setLoading(true);
 
-      const { data: prod, error } = await supabase
+      const { data: prod } = await supabase
         .from('products')
-        .select('id,name_ar,name_en,slug,description_ar,category_id,brand_id,image_url,is_featured')
+        .select('id,name_ar,name_en,slug,description_ar,category_id,brand_id,is_featured')
         .eq('slug', slug)
         .eq('is_active', true)
         .maybeSingle();
-
-      if (error) console.error('Product fetch error:', error);
 
       if (!alive) return;
 
@@ -174,7 +172,6 @@ export default function ProductPage({ params }: { params: any }) {
       setMainImage(
         iList.find((i: any) => i.is_primary)?.url ??
         iList[0]?.url ??
-        prod.image_url ??
         null
       );
 
