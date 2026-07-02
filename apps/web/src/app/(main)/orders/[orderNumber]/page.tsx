@@ -7,6 +7,7 @@ import { createAdminSupabaseClient } from '@/supabase-server';
 import { getSessionClient } from '@/supabase-server';
 import { WriteReviewForm } from '@/components/product/WriteReviewForm';
 import { DroneDelivery } from '@/components/orders/DroneDelivery';
+import { TimeTravelDelivery } from '@/components/orders/TimeTravelDelivery';
 
 export const dynamic = 'force-dynamic';
 
@@ -116,6 +117,7 @@ export default async function OrderDetailPage({ params }: Props) {
               )}
             </div>
             <DroneDelivery status={order.status} />
+            <TimeTravelDelivery />
           </div>
         )}
 
