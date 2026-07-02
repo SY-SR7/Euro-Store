@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../utils/supabase';
+import { router } from 'expo-router';
 
 export default function ProfileScreen() {
   const { user } = useAuth();
@@ -27,21 +28,24 @@ export default function ProfileScreen() {
             </Text>
           </View>
           <Text className='text-white font-bold text-lg mb-1'>{user?.email}</Text>
-          <Text className='text-text-secondary text-sm'>??? ????</Text>
+          <Text className='text-text-secondary text-sm'>???? ????</Text>
         </View>
 
         <View className='space-y-4 flex-1'>
-          <TouchableOpacity className='bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3'>
+          <TouchableOpacity 
+            className='bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3'
+            onPress={() => router.push('/orders')}
+          >
             <Text className='text-white font-bold text-base'>??????</Text>
-            <Text className='text-text-secondary'>{'<'}</Text>
+            <Text className='text-text-secondary font-bold'>{'<'}</Text>
           </TouchableOpacity>
           <TouchableOpacity className='bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3'>
-            <Text className='text-white font-bold text-base'>???????? ????????</Text>
-            <Text className='text-text-secondary'>{'<'}</Text>
+            <Text className='text-white font-bold text-base'>????????? ???????</Text>
+            <Text className='text-text-secondary font-bold'>{'<'}</Text>
           </TouchableOpacity>
           <TouchableOpacity className='bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-6'>
-            <Text className='text-white font-bold text-base'>?????????</Text>
-            <Text className='text-text-secondary'>{'<'}</Text>
+            <Text className='text-white font-bold text-base'>????? ????</Text>
+            <Text className='text-text-secondary font-bold'>{'<'}</Text>
           </TouchableOpacity>
         </View>
 
@@ -55,3 +59,4 @@ export default function ProfileScreen() {
     </SafeAreaView>
   );
 }
+
