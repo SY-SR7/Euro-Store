@@ -95,62 +95,9 @@ export function Header() {
 
             <LanguageSwitcher />
             
-            {/* Mobile buttons */}
-            <button onClick={() => setOpen(v => !v)} aria-label="Toggle Mobile Menu"
-              className="relative z-50 rounded-full p-2 text-text-secondary transition hover:bg-background-secondary md:hidden">
-              {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
-            </button>
           </div>
         </div>
 
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-              animate={{ opacity: 1, backdropFilter: 'blur(20px)' }}
-              exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-              transition={{ duration: 0.4 }}
-              className="fixed inset-0 z-40 bg-background/95 md:hidden flex flex-col pt-24 px-6 overflow-hidden"
-            >
-              <motion.nav 
-                initial="closed"
-                animate="open"
-                exit="closed"
-                variants={{
-                  open: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
-                  closed: { transition: { staggerChildren: 0.05, staggerDirection: -1 } }
-                }}
-                className="flex flex-col gap-6"
-              >
-                {MOBILE_LINKS.map(link => {
-                  const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
-                  return (
-                    <motion.div
-                      key={link.href}
-                      variants={{
-                        closed: { opacity: 0, y: 30, scale: 0.95 },
-                        open: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 24 } }
-                      }}
-                    >
-                      <Link href={link.href} onClick={() => setOpen(false)}
-                        className={`block text-3xl font-headline font-black transition-colors ${
-                          isActive ? 'text-[#C9A84C]' : 'text-text-primary hover:text-primary'
-                        }`}>
-                        {t(link.key)}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </motion.nav>
-
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-                className="mt-auto pb-10"
-              >
-                <div className="h-px w-full bg-border/50 mb-6" />
-                <div className="flex items-center gap-6">
                   <LanguageSwitcher />
                   <span className="text-xs font-bold tracking-widest uppercase text-text-secondary">Euro Store © 2025</span>
                 </div>
