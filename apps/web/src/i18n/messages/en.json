@@ -64,6 +64,23 @@
     "shopNow": "Shop now",
     "categoriesTag": "Categories",
     "tagline": "European fashion delivered to your door",
+    "features": {
+      "title": "The EuroStore",
+      "titleHighlight": "Difference",
+      "subtitle": "Experience luxury shopping tailored to your absolute convenience.",
+      "bento1": {
+        "title": "Immersive Cinematic Shopping",
+        "description": "Every scroll reveals a story. Our state-of-the-art cinematic sequences let you experience fashion before you even wear it."
+      },
+      "bento2": {
+        "title": "Next-Day Delivery",
+        "description": "Exclusive VIP shipping available on all premium orders."
+      },
+      "bento3": {
+        "title": "Luxury Packaging",
+        "description": "Unbox perfection with our signature aesthetic packaging."
+      }
+    },
     "hero": {
       "collection": "EuroStore Collection",
       "words": [
