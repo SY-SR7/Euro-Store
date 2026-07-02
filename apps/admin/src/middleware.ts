@@ -30,22 +30,27 @@ export async function middleware(request: NextRequest) {
   const supabaseAnon = process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'] ?? '';
 
   if (supabaseUrl && supabaseAnon) {
-    const supabase = createClient(supabaseUrl, supabaseAnon, {
-      auth: { persistSession: false, autoRefreshToken: false },
-      global: { fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }) }
-    });
-
     const accessToken = request.cookies.get('sb-access-token')?.value;
     const refreshToken = request.cookies.get('sb-refresh-token')?.value;
 
+    const supabase = createClient(supabaseUrl, supabaseAnon, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: {
+        fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
+        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+      }
+    });
+
+    let isValidSession = false;
+
     if (accessToken && refreshToken) {
-      await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).catch(() => {});
+      const { data, error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+      if (!error && data.session) {
+        isValidSession = true;
+      }
     }
 
-    // Check session with Supabase
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
+    if (!isValidSession) {
       if (pathname.startsWith('/api/')) {
         return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
       }

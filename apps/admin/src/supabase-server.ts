@@ -51,7 +51,13 @@ export async function getSessionClient(): Promise<{ client: SupabaseClient; user
   const accessToken  = jar.get('sb-access-token')?.value;
   const refreshToken = jar.get('sb-refresh-token')?.value;
 
-  const client = createClient(supabaseUrl(), anonKey(), clientOptions);
+  const client = createClient(supabaseUrl(), anonKey(), {
+    ...clientOptions,
+    global: {
+      ...clientOptions.global,
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+    }
+  });
 
   if (accessToken && refreshToken) {
     await client.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).catch(() => {});
