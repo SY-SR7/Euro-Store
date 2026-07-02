@@ -132,7 +132,7 @@ function JsonBlock({ title, value }: { title: string; value: unknown }) {
   return (
     <div className="rounded-lg border border-[#E5E0D8] bg-background-card p-4">
       <h3 className="mb-3 text-xs font-black text-[#8B8172]">{title}</h3>
-      <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-[#121414] p-3 text-left text-xs leading-6 text-[#DDEBD2]" dir="ltr">
+      <pre className="max-h-64 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-[#E5E0D8] bg-[#F8F6F2] p-3 text-left text-xs leading-6 text-[#1C1917]" dir="ltr">
         {pretty(value)}
       </pre>
     </div>
