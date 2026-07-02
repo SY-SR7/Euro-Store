@@ -1,57 +1,110 @@
-/* eslint-disable */
-// @ts-nocheck
+'use client';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
-import { getTranslations, getLocale } from 'next-intl/server';
 
-export default async function FaqPage(): Promise<JSX.Element> {
-  const t = await getTranslations();
-  const locale = await getLocale();
-  const isAr = locale === 'ar';
+const FAQ_DATA = [
+  {
+    question: 'ما هي طرق الدفع المتوفرة؟',
+    answer: 'في الوقت الحالي، نوفر الدفع نقداً عند الاستلام (Cash on Delivery) لضمان راحتك وثقتك بمنتجاتنا. نعمل على إضافة الدفع بالبطاقات البنكية قريباً.'
+  },
+  {
+    question: 'ما هي سياسة الاستبدال والاسترجاع؟',
+    answer: 'يمكنك استبدال أي منتج خلال 14 يوماً من تاريخ الاستلام بشرط أن يكون بحالته الأصلية مع الغلاف والبطاقات (Tags). نعتذر عن قبول الاسترجاع إلا في حال وجود عيب مصنعي.'
+  },
+  {
+    question: 'كم تستغرق عملية التوصيل؟',
+    answer: 'لطلبات دمشق، يتم التوصيل خلال 24 إلى 48 ساعة. لباقي المحافظات السورية، يستغرق التوصيل من 2 إلى 4 أيام عمل عبر شركات الشحن المعتمدة.'
+  },
+  {
+    question: 'هل المنتجات المعروضة أصلية؟',
+    answer: 'بالتأكيد. جميع المنتجات المعروضة في يورو ستور أصلية 100% ومستوردة مباشرة من الوكلاء المعتمدين في أوروبا (إسبانيا، إيطاليا، وألمانيا).'
+  },
+  {
+    question: 'كيف يمكنني تتبع طلبي؟',
+    answer: 'بمجرد تأكيد الطلب، يمكنك الدخول إلى "حسابي" ثم "طلباتي" لتتبع حالة الطلب (قيد التجهيز، تم الشحن، تم التوصيل). كما سنرسل لك إشعارات عند كل تحديث.'
+  }
+];
 
-  const FAQ_ITEMS = [
-    { q: t('faq.q1'), a: t('faq.a1', { fallback: 'بعد تأكيد طلبك ستتلقى رسالة تأكيد. يمكنك متابعة حالة الطلب من صفحة "طلباتي" في حسابك.' }) },
-    { q: t('faq.q2'), a: t('faq.a2') },
-    { q: t('faq.q3'), a: t('faq.a3') },
-    { q: t('faq.q4'), a: t('faq.a4') },
-    { q: t('faq.q5'), a: t('faq.a5') },
-    { q: t('faq.q6'), a: t('faq.a6') },
-  ];
+export default function FAQPage() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
   return (
-    <main className="min-h-screen bg-background text-[#1F1B16] px-6 py-12" dir={isAr ? "rtl" : "ltr"}>
-      <div className="mx-auto max-w-2xl">
-        <nav className="mb-8">
-          <Link href="/" className="text-primary text-sm hover:underline">
-             {t('common.appName')}
-          </Link>
-        </nav>
+    <main className="min-h-screen py-20 px-4 bg-background" dir="rtl">
+      <div className="max-w-3xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-16"
+        >
+          <h1 className="text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-wider">
+            الأسئلة الشائعة
+          </h1>
+          <p className="text-lg text-text-secondary">
+            كل ما تحتاج لمعرفته عن التسوق معنا في يورو ستور
+          </p>
+        </motion.div>
 
-        <h1 className="text-2xl font-semibold mb-2">{t('footer.faq')}</h1>
-        <p className="text-[#6F6658] text-sm mb-10">{t('faq.subtitle')}</p>
-
-        <div className="flex flex-col gap-4">
-          {FAQ_ITEMS.map((item, i) => (
-            <details
-              key={i}
-              className="group rounded-md border border-border bg-background-card open:border-primary/30"
-            >
-              <summary className="flex cursor-pointer items-center justify-between px-5 py-4 text-sm font-medium text-[#1F1B16] marker:hidden list-none">
-                {item.q}
-                <span className="text-primary text-lg transition-transform group-open:rotate-45">+</span>
-              </summary>
-              <p className="px-5 pb-5 text-sm leading-7 text-[#6F6658]">{item.a}</p>
-            </details>
-          ))}
+        <div className="space-y-4">
+          {FAQ_DATA.map((faq, index) => {
+            const isOpen = openIndex === index;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-background-elevated border border-border/50 rounded-2xl overflow-hidden"
+              >
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className="w-full px-6 py-6 flex items-center justify-between hover:bg-white/5 transition-colors"
+                >
+                  <h3 className={`text-lg font-bold text-right transition-colors ${isOpen ? 'text-primary' : 'text-white'}`}>
+                    {faq.question}
+                  </h3>
+                  <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                    className={`shrink-0 ml-4 ${isOpen ? 'text-primary' : 'text-text-muted'}`}
+                  >
+                    <ChevronDown size={24} />
+                  </motion.div>
+                </button>
+                
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+                    >
+                      <div className="px-6 pb-6 text-text-secondary leading-relaxed">
+                        <div className="h-px w-full bg-border/50 mb-6" />
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            );
+          })}
         </div>
 
-        <div className="mt-10 text-center">
-          <p className="text-sm text-[#6F6658] mb-4">{t('faq.anotherQuestion')}</p>
-          <Link
-            href="/contact"
-            className="inline-block rounded-sm border border-primary px-6 py-2.5 text-sm text-primary hover:bg-primary hover:text-text-primary transition-colors"
-          >
-            {t('footer.contact')}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="mt-16 text-center bg-primary/10 border border-primary/20 rounded-2xl p-8"
+        >
+          <h4 className="text-xl font-bold text-white mb-4">لم تجد إجابة لسؤالك؟</h4>
+          <p className="text-text-secondary mb-6">فريق خدمة العملاء لدينا جاهز دائماً لمساعدتك.</p>
+          <Link href="/contact" className="inline-block bg-primary text-[#0F0F0F] font-black py-3 px-8 rounded-xl hover:bg-primary/90 transition-colors">
+            تواصل معنا
           </Link>
-        </div>
+        </motion.div>
       </div>
     </main>
   );
