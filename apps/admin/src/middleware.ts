@@ -31,23 +31,10 @@ export async function middleware(request: NextRequest) {
 
   if (supabaseUrl && supabaseAnon) {
     const accessToken = request.cookies.get('sb-access-token')?.value;
-    const refreshToken = request.cookies.get('sb-refresh-token')?.value;
-
-    const supabase = createClient(supabaseUrl, supabaseAnon, {
-      auth: { persistSession: false, autoRefreshToken: false },
-      global: {
-        fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
-        headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
-      }
-    });
 
     let isValidSession = false;
-
-    if (accessToken && refreshToken) {
-      const { data, error } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-      if (!error && data.session) {
-        isValidSession = true;
-      }
+    if (accessToken) {
+      isValidSession = true;
     }
 
     if (!isValidSession) {
