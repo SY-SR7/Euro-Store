@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     if (exReq.status !== 'approved')
       return NextResponse.json({ error: 'Exchange request must be approved first' }, { status: 400 });
 
-    const token    = generateExchangeQRToken({ exchange_request_id: exReq.id, customer_id: exReq.customer_id as string });
+    const token    = generateExchangeQRToken({ exchangeId: exReq.id, customerId: exReq.customer_id as string }, process.env.QR_SECRET ?? "");
     const hash     = crypto.createHash('sha256').update(token).digest('hex');
     const expiresAt = new Date(Date.now() + 72 * 60 * 60 * 1000).toISOString();
 
