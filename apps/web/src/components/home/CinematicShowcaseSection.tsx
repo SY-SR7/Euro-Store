@@ -55,9 +55,9 @@ function ScrollBeat({
       Math.max(0, beat.from - 0.05),
       beat.from,
       beat.to,
-      Math.min(1, beat.to + 0.05),
+      beat.to >= 1.0 ? 1.5 : Math.min(1, beat.to + 0.05),
     ],
-    [0, 1, 1, 0],
+    [0, 1, 1, beat.to >= 1.0 ? 1 : 0],
   );
 
   const y = useTransform(
