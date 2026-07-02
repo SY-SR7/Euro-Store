@@ -9,6 +9,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: '#CFA63D',
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -17,7 +18,6 @@ export async function generateMetadata(): Promise<Metadata> {
     title: t('appName'),
     description: t('appDescription'),
     manifest: '/manifest.json',
-    themeColor: '#CFA63D',
     appleWebApp: {
       capable: true,
       statusBarStyle: 'black-translucent',
