@@ -50,7 +50,7 @@ export async function generateMetadata(
   const supabase = createServerSupabaseClient();
   const { data: product } = await supabase
     .from('products')
-    .select('name_ar, name_en, description_ar, description_en, image_url, primary_image_url')
+    .select('name_ar, name_en, description_ar, description_en')
     .eq('slug', slug)
     .single();
 
@@ -58,7 +58,6 @@ export async function generateMetadata(
 
   const title = product.name_ar || product.name_en;
   const description = product.description_ar || product.description_en;
-  const image = product.primary_image_url || product.image_url;
 
   return {
     title: `${title} | EuroStore`,
