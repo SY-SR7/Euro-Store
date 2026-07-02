@@ -38,7 +38,7 @@ export default function FAQPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-wider">
+          <h1 className="text-4xl md:text-5xl font-black text-text-primary mb-6 uppercase tracking-wider">
             الأسئلة الشائعة
           </h1>
           <p className="text-lg text-text-secondary">
@@ -59,9 +59,9 @@ export default function FAQPage() {
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="w-full px-6 py-6 flex items-center justify-between hover:bg-white/5 transition-colors"
+                  className="w-full px-6 py-6 flex items-center justify-between hover:bg-primary/5 transition-colors"
                 >
-                  <h3 className={`text-lg font-bold text-right transition-colors ${isOpen ? 'text-primary' : 'text-white'}`}>
+                  <h3 className={`text-lg font-bold text-right transition-colors ${isOpen ? 'text-primary' : 'text-text-primary'}`}>
                     {faq.question}
                   </h3>
                   <motion.div
