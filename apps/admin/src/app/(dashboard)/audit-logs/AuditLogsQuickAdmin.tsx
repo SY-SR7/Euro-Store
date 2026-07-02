@@ -115,7 +115,7 @@ function ActionIcon({ action }: { action?: string }) {
 function Modal({ title, onClose, children, closeTitle }: { title: string; onClose: () => void; children: ReactNode; closeTitle?: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
-      <div className="flex max-h-[92vh] w-full max-w-4xl flex-col rounded-lg border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
+      <div className="flex max-h-[85dvh] w-full max-w-4xl flex-col rounded-lg border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
           <h2 className="font-black text-text-primary">{title}</h2>
           <button type="button" title={closeTitle || "Close"} onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
