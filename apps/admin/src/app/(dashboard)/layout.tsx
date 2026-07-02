@@ -237,7 +237,7 @@ function SidebarContent({
         )}
       </div>
 
-      <nav className="flex-1 px-3 py-2">
+      <nav className="flex-1 overflow-y-auto px-3 py-2">
         <div className="space-y-2">
           {groupedItems.map((entry) => (
             <section key={entry.group}>
@@ -339,7 +339,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
 
       {/* Mobile Sidebar Overlay */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[130] lg:hidden">
+        <div className="fixed inset-0 h-[100dvh] z-[130] lg:hidden">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/45 backdrop-blur-sm"
@@ -350,7 +350,7 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
           <aside
             className={`absolute ${
               isAr ? 'right-0 border-l' : 'left-0 border-r'
-            } top-0 h-full w-[min(86vw,20rem)] overflow-hidden border-[#E7DDCC] bg-[#FBF8F1] shadow-2xl`}
+            } top-0 h-[100dvh] w-[min(86vw,20rem)] overflow-hidden border-[#E7DDCC] bg-[#FBF8F1] shadow-2xl`}
           >
             <SidebarContent
               pathname={pathname}
