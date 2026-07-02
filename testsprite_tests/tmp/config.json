@@ -1,0 +1,13 @@
+{
+  "status": "init",
+  "executionArgs": {
+    "projectName": "Euro Store",
+    "projectPath": "d:\\Files\\Programming_Projects\\Euro Store",
+    "testIds": [],
+    "additionalInstruction": "",
+    "serverMode": "development",
+    "envs": {
+      "API_KEY": "sk-user-7zJzlSumBgevM7SsXglxLgRr1H64Yl6SU1BmPs_zx3c4WmZtBBzhRGqg0WA4m0RqGHaOLcRfEyZ5ChHPK3HgymJ1V2ho2Y1qsC8UEYrAJPiIeQ1PpXlpRSErXVOjdpAHuCM"
+    }
+  }
+}
