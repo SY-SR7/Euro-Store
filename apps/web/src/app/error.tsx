@@ -69,7 +69,7 @@ export default function Error({
             
             <Link 
               href="/"
-              className="w-full sm:w-auto bg-background-elevated border border-border/50 text-white font-bold py-4 px-8 rounded-xl hover:border-primary/50 transition-colors flex items-center justify-center gap-2"
+              className="w-full sm:w-auto bg-background-elevated border border-border/50 text-text-primary font-bold py-4 px-8 rounded-xl hover:border-primary/50 transition-colors flex items-center justify-center gap-2"
             >
               <Home size={20} />
               العودة للرئيسية
