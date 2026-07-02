@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, X, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -75,7 +77,7 @@ export function SmartSearch() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label={t('search')}
-        className={hidden rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary md:inline-flex }
+        className='hidden rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary md:inline-flex'
       >
         {isOpen ? <X className='h-4 w-4' /> : <Search className='h-4 w-4' />}
       </button>
@@ -94,7 +96,7 @@ export function SmartSearch() {
               {results.map((product) => (
                 <Link
                   key={product.id}
-                  href={/products/}
+                  href={`/products/${product.id}`}
                   onClick={() => setIsOpen(false)}
                   className='flex items-center gap-3 p-2 hover:bg-background-secondary rounded-xl transition'
                 >
