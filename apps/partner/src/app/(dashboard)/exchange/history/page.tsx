@@ -21,7 +21,7 @@ export default async function PartnerExchangeHistoryPage() {
   // Get audit logs for this partner's redemptions
   const { data: logs } = await admin
     .from('audit_logs')
-    .select('id, action, target_id, metadata, created_at')
+    .select('id, action, entity_id, metadata, created_at')
     .eq('actor_id', user.id)
     .eq('actor_role', 'partner')
     .eq('action', 'exchange.qr.redeemed')
@@ -48,7 +48,7 @@ export default async function PartnerExchangeHistoryPage() {
               <tbody className="divide-y divide-[#2E2E2E]">
                 {rows.map((log) => (
                   <tr key={log.id}>
-                    <td className="px-4 py-3 font-mono text-xs text-primary">{String(log.target_id).slice(0, 8)}…</td>
+                    <td className="px-4 py-3 font-mono text-xs text-primary">{String(log.entity_id).slice(0, 8)}…</td>
                     <td className="px-4 py-3 text-[#D6D3C7]">{new Date(log.created_at as string).toLocaleDateString('ar-SY')}</td>
                   </tr>
                 ))}
