@@ -1,0 +1,1 @@
+EuroStore is a high-end luxury e-commerce platform. It features a Next.js App Router frontend, Expo React Native mobile app, and a Refine admin dashboard. Features include Smart Search, Push Notifications, Authentication, Wishlist, WhatsApp Integration, and a Loyalty Points program. Database is Supabase (PostgreSQL).
