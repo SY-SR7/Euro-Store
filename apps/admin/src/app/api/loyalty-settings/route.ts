@@ -24,7 +24,7 @@ const { admin } = ctx;
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
   for (const key of LOYALTY_KEYS) {
     if (body[key] !== undefined) {
-      await admin.from('system_settings').upsert({ key, value: String(body[key]), updated_at: new Date().toISOString() } as never, { onConflict: 'key' });
+      await admin.from('system_settings').upsert({ key, value: String(body[key]), updated_at: new Date().toISOString() }, { onConflict: 'key' });
     }
   }
   return NextResponse.json({ ok: true });

@@ -28,7 +28,7 @@ const { admin } = ctx;
   if (typeof body.is_active === 'boolean') update.is_active = body.is_active;
   if (typeof body.logo_url === 'string') update.logo_url = body.logo_url || null;
   if (Object.keys(update).length === 0) return NextResponse.json({ error: 'No valid fields' }, { status: 400 });
-  const { data, error } = await admin.from('brands').update(update as never).eq('id', params.id).select().single();
+  const { data, error } = await admin.from('brands').update(update).eq('id', params.id).select().single();
   if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json(data);
 }

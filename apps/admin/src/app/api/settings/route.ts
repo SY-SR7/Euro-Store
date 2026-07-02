@@ -46,7 +46,7 @@ const { admin } = ctx;
       value: String(row.value),
       description: typeof row.description === 'string' ? row.description : undefined,
       updated_at: new Date().toISOString()
-    } as never, { onConflict: 'key' });
+    }, { onConflict: 'key' });
   }
   return NextResponse.json({ updated: allowed.length });
 }

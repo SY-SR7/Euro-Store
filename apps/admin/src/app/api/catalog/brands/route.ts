@@ -18,7 +18,7 @@ const { admin, userId } = ctx;
     const parsed = schema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
 
-    const { data, error } = await admin.from('brands').insert(parsed.data as never).select('id, name, slug, is_active').single();
+    const { data, error } = await admin.from('brands').insert(parsed.data).select('id, name, slug, is_active').single();
     if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
 
     await writeAuditLog({

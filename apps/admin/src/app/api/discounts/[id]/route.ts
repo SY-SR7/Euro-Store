@@ -32,7 +32,7 @@ const { admin } = ctx;
   if (typeof body.valid_from === 'string' || body.valid_from === null) update.valid_from = body.valid_from;
   if (typeof body.valid_until === 'string' || body.valid_until === null) update.valid_until = body.valid_until;
   if (Object.keys(update).length === 0) return NextResponse.json({ error: 'No valid fields' }, { status: 400 });
-  const { data, error } = await admin.from('discount_codes').update(update as never).eq('id', params.id).select().single();
+  const { data, error } = await admin.from('discount_codes').update(update).eq('id', params.id).select().single();
   if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json(data);
 }

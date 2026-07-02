@@ -42,7 +42,7 @@ const { admin, userId } = ctx;
 
     const { data, error } = await admin
       .from('product_reviews')
-      .update(update as never)
+      .update(update)
       .eq('id', params.id)
       .select()
       .single();

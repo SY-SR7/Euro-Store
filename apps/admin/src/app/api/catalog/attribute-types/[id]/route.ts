@@ -46,7 +46,7 @@ const body = await request.json().catch(() => null) as Record<string, unknown> |
 
   const { data, error } = await ctx.admin
     .from('attribute_types')
-    .update(update as never)
+    .update(update)
     .eq('id', params.id)
     .select('id, name_ar, name_en, slug, attribute_values(id, value_ar, value_en, hex_color, sort_order)')
     .single();

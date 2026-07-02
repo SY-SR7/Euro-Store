@@ -59,7 +59,7 @@ const { admin, userId } = ctx;
 
     const { data, error } = await admin
       .from('products')
-      .insert(productData as never)
+      .insert(productData)
       .select('id, name_ar, name_en, slug')
       .single();
     if (error) {
@@ -78,7 +78,7 @@ const { admin, userId } = ctx;
         price_syp: base_price_syp,
         sku: sku || data.slug,
         is_active: true,
-      } as never);
+      });
     if (variantError) console.error('Failed to create default variant:', variantError);
 
     if (media && media.length > 0) {
@@ -89,14 +89,14 @@ const { admin, userId } = ctx;
         sort_order: index,
         alt_en: m.originalName
       }));
-      if (images.length) await admin.from('product_images').insert(images as never);
+      if (images.length) await admin.from('product_images').insert(images);
 
       const videos = media.filter(m => m.type === 'video').map((m) => ({
         product_id: data.id,
         url: m.url,
         thumbnail_url: m.url // Fallback
       }));
-      if (videos.length) await admin.from('product_videos').insert(videos as never);
+      if (videos.length) await admin.from('product_videos').insert(videos);
     }
 
     await writeAuditLog({

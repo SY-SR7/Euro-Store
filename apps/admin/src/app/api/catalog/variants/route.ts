@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     const { attribute_value_ids, ...variantData } = parsed.data;
     const { data: newVariant, error } = await admin
       .from('product_variants')
-      .insert(variantData as never)
+      .insert(variantData)
       .select('id')
       .single();
     if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
         variant_id: newVariant.id,
         attribute_value_id: avid,
       }));
-      const { error: attrErr } = await admin.from('variant_attributes').insert(attrs as never);
+      const { error: attrErr } = await admin.from('variant_attributes').insert(attrs);
       if (attrErr) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     }
     return NextResponse.json(newVariant, { status: 201 });

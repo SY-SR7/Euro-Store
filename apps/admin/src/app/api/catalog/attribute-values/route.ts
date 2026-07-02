@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       value_en: body.value_en ?? body.value_ar,
       hex_color: body.hex_color ?? null,
       sort_order: Number(body.sort_order) || 0,
-    } as never)
+    })
     .select('id')
     .single();
   if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });

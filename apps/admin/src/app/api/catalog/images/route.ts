@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     const admin = createAdminSupabaseClient();
     // If is_primary, unset other primaries first
     if (body.is_primary) {
-      await admin.from('product_images').update({ is_primary: false } as never).eq('product_id', body.product_id);
+      await admin.from('product_images').update({ is_primary: false }).eq('product_id', body.product_id);
     }
     const { data: maxOrder } = await admin.from('product_images').select('sort_order').eq('product_id', body.product_id).order('sort_order', { ascending: false }).limit(1).maybeSingle();
     const nextOrder = ((maxOrder as any)?.sort_order ?? 0) + 1;
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       alt_ar: body.alt_ar ?? '',
       is_primary: body.is_primary ?? false,
       sort_order: nextOrder,
-    } as never).select('id').single();
+    }).select('id').single();
     if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     return NextResponse.json(data, { status: 201 });
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }

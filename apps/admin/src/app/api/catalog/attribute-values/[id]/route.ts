@@ -24,7 +24,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
   const { data, error } = await admin
     .from('attribute_values')
-    .update(update as never)
+    .update(update)
     .eq('id', params.id)
     .select()
     .single();

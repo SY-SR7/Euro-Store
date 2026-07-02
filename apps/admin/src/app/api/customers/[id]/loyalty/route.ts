@@ -17,7 +17,7 @@ const { admin, userId } = ctx;
   const newPoints = Math.max(0, current + body.points);
 
   const { error: updateErr } = await admin
-    .from('customer_profiles').update({ loyalty_points: newPoints } as never).eq('id', params.id);
+    .from('customer_profiles').update({ loyalty_points: newPoints }).eq('id', params.id);
   if (updateErr) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
 
   // سجّل في loyalty_transactions بدون تعطيل تعديل النقاط إذا فشل السجل الثانوي.
@@ -28,7 +28,7 @@ const { admin, userId } = ctx;
     notes: body.reason ?? 'تعديل يدوي بواسطة الادمن',
     processed_by_id: userId,
     processed_by_role: 'admin',
-  } as never);
+  });
 
   return NextResponse.json({ loyalty_points: newPoints });
 }

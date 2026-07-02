@@ -45,7 +45,7 @@ const { admin } = ctx;
       valid_from: parsed.data.valid_from ? new Date(parsed.data.valid_from).toISOString() : now,
       valid_until: parsed.data.valid_until ? new Date(parsed.data.valid_until).toISOString() : in90,
       used_count: 0,
-    } as never).select().single();
+    }).select().single();
     if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     return NextResponse.json(data, { status: 201 });
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }

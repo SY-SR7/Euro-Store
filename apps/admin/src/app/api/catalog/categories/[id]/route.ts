@@ -32,7 +32,7 @@ const { admin } = ctx;
   if (typeof body.image_url === 'string') update.image_url = body.image_url || null;
   if (Object.keys(update).length === 0) return NextResponse.json({ error: 'No valid fields' }, { status: 400 });
 
-  const { data, error } = await admin.from('categories').update(update as never).eq('id', params.id).select().single();
+  const { data, error } = await admin.from('categories').update(update).eq('id', params.id).select().single();
   if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json(data);
 }

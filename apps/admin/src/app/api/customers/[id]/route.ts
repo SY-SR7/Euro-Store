@@ -46,7 +46,7 @@ const { admin, userId } = ctx;
 
   const { data, error } = await admin
     .from('customer_profiles')
-    .update(update as never)
+    .update(update)
     .eq('id', params.id)
     .select('id,full_name,phone,email,created_at,loyalty_points,referral_code,is_blocked')
     .single();

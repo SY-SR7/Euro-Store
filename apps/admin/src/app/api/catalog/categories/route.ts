@@ -64,7 +64,7 @@ const { admin, userId } = ctx;
 
   const { data, error } = await admin
     .from('categories')
-    .insert(record as never)
+    .insert(record)
     .select('id, name_ar, name_en, slug, sort_order, is_active, created_at')
     .single();
 

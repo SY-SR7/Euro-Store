@@ -21,7 +21,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     if (typeof body.weight_grams === 'number') update.weight_grams = body.weight_grams;
 
     if (Object.keys(update).length > 0) {
-      const { error } = await admin.from('product_variants').update(update as never).eq('id', params.id);
+      const { error } = await admin.from('product_variants').update(update).eq('id', params.id);
       if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     }
 
@@ -33,7 +33,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
           variant_id: params.id,
           attribute_value_id: avid,
         }));
-        const { error: attrErr } = await admin.from('variant_attributes').insert(attrs as never);
+        const { error: attrErr } = await admin.from('variant_attributes').insert(attrs);
         if (attrErr) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
       }
     }

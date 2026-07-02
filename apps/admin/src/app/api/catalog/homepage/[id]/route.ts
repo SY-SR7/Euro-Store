@@ -46,7 +46,7 @@ const { admin, userId } = ctx;
 
   const { data, error } = await admin
     .from('homepage_sections')
-    .update(update as never)
+    .update(update)
     .eq('id', params.id)
     .select()
     .single();

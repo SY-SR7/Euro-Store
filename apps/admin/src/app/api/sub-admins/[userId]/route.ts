@@ -70,7 +70,7 @@ export async function PATCH(request: Request, { params }: Params) {
 
     const { data, error } = await admin
       .from('sub_admin_profiles')
-      .update(update as never)
+      .update(update)
       .eq('id', params.userId)
       .select('id, full_name, email, is_active, created_at')
       .single();

@@ -32,7 +32,7 @@ const body = await request.json().catch(() => null) as Record<string, unknown> |
 
   const { data, error } = await ctx.admin
     .from('attribute_types')
-    .insert({ name_ar: nameAr, name_en: nameEn, slug } as never)
+    .insert({ name_ar: nameAr, name_en: nameEn, slug })
     .select('id, name_ar, name_en, slug, attribute_values(id, value_ar, value_en, hex_color, sort_order)')
     .single();
 

@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
       .from('exchange_requests')
       .select('id,order_id,customer_id,reason_ar,reason_en,status,created_at,notes')
       .order('created_at', { ascending: false }).limit(100);
-    if (status) query = query.eq('status', status as never);
+    if (status) query = query.eq('status', status);
     const { data, error } = await query;
     if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     const mapped = (data ?? []).map(r => ({ ...r, reason: r.reason_ar ?? r.reason_en ?? '' }));

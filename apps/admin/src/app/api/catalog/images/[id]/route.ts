@@ -14,7 +14,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     if (!body) return NextResponse.json({ error: 'Invalid body' }, { status: 400 });
     // If setting as primary, unset others first
     if (body.is_primary && body.product_id) {
-      await admin.from('product_images').update({ is_primary: false } as never).eq('product_id', body.product_id);
+      await admin.from('product_images').update({ is_primary: false }).eq('product_id', body.product_id);
     }
     const update: Record<string, unknown> = {};
     if (typeof body.url === 'string') update.url = body.url.trim();
@@ -22,7 +22,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     if (typeof body.alt_ar === 'string') update.alt_ar = body.alt_ar;
     if (typeof body.sort_order === 'number') update.sort_order = body.sort_order;
     if (Object.keys(update).length === 0) return NextResponse.json({ ok: true });
-    const { data, error } = await admin.from('product_images').update(update as never).eq('id', params.id).select().single();
+    const { data, error } = await admin.from('product_images').update(update).eq('id', params.id).select().single();
     if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     return NextResponse.json(data);
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
