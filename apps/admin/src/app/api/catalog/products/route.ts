@@ -55,13 +55,7 @@ const { admin, userId } = ctx;
 
     const { media, base_price_syp, sku, ...productData } = parsed.data;
 
-    // Find primary image URL
-    const primaryImage = media?.find(m => m.type === 'image' && m.isPrimary)?.url 
-                      || media?.find(m => m.type === 'image')?.url;
 
-    if (primaryImage) {
-      (productData as any).image_url = primaryImage;
-    }
 
     const { data, error } = await admin
       .from('products')
