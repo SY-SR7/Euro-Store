@@ -15,7 +15,7 @@ export async function GET(_req: Request, { params }: RouteParams) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
-  const supabase = createServerSupabaseClient();
+  const { admin: supabase } = ctx;
   const { data, error } = await supabase
     .from('product_images')
     .select('id, url, alt_ar, alt_en, sort_order, is_primary')
@@ -38,7 +38,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     if (file.size > MAX_SIZE)
       return NextResponse.json({ error: 'file_too_large' }, { status: 400 });
 
-    const supabase = createServerSupabaseClient();
+    const { admin: supabase } = ctx;
 
     const ext = file.name.split('.').pop() ?? 'jpg';
     const storagePath = `${params.id}/${Date.now()}.${ext}`;
