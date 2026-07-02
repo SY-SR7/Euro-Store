@@ -1,11 +1,12 @@
 import { CinematicShowcaseSection, type StoryBeat } from '@/components/home/CinematicShowcaseSection';
 import { HeroSection } from '@/components/home/HeroSection';
 import { BentoFeatures } from '@/components/home/BentoFeatures';
+import { FeaturedCategoryProducts } from '@/components/home/FeaturedCategoryProducts';
 import { getLocale, getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';
 
-const FRAME_COUNT  = 100; // Because the new scripts extract 100 frames
+const FRAME_COUNT  = 100;
 
 export default async function HomePage() {
   const t = await getTranslations('home');
@@ -60,6 +61,11 @@ export default async function HomePage() {
         storyBeats={SHOES_STORY_BEATS}
         bgColor="#dfdcd3"
       />
+      <FeaturedCategoryProducts 
+        categorySlugs={['shoes']} 
+        title={isAr ? 'أحذية مميزة' : 'Featured Shoes'} 
+        bgColor="#0C0C0C"
+      />
 
       {/* 2. MEN */}
       <CinematicShowcaseSection
@@ -68,6 +74,11 @@ export default async function HomePage() {
         scrollHeight="250vh"
         storyBeats={MEN_STORY_BEATS}
         bgColor="#0F1012"
+      />
+      <FeaturedCategoryProducts 
+        categorySlugs={['men-shirts']} 
+        title={isAr ? 'أزياء رجالية مميزة' : 'Featured Men'} 
+        bgColor="#0C0C0C"
       />
 
       {/* 3. WOMEN (Dresses & Abayas) */}
@@ -78,6 +89,11 @@ export default async function HomePage() {
         storyBeats={WOMEN_STORY_BEATS}
         bgColor="#120A0B"
       />
+      <FeaturedCategoryProducts 
+        categorySlugs={['women-dresses', 'modest-wear']} 
+        title={isAr ? 'أزياء نسائية مميزة' : 'Featured Women'} 
+        bgColor="#0C0C0C"
+      />
 
       {/* 4. KIDS */}
       <CinematicShowcaseSection
@@ -86,6 +102,11 @@ export default async function HomePage() {
         scrollHeight="250vh"
         storyBeats={KIDS_STORY_BEATS}
         bgColor="#0A0F11"
+      />
+      <FeaturedCategoryProducts 
+        categorySlugs={['kids']} 
+        title={isAr ? 'أزياء أطفال مميزة' : 'Featured Kids'} 
+        bgColor="#0C0C0C"
       />
     </main>
   );
