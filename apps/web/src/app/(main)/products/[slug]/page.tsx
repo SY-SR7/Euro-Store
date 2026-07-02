@@ -11,6 +11,8 @@ import { WishlistButton } from '@/components/wishlist/WishlistButton';
 import { ReviewsSection } from '@/components/product/ReviewsSection';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import { Layers3, Package, Palette, Ruler, Barcode, Boxes, Info, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
+import { useRecentStore } from '@/lib/recentStore';
+import { RecentlyViewed } from '@/components/product/RecentlyViewed';
 
 function formatSYP(n: number) {
   return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
@@ -38,6 +40,8 @@ export default function ProductPage({ params }: { params: any }) {
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
+  
+  const addRecent = useRecentStore((s) => s.addRecent);
   const locale = useLocale();
   const t = useTranslations('catalog');
   const td = useTranslations('productDetails');
@@ -130,6 +134,18 @@ export default function ProductPage({ params }: { params: any }) {
         null
       );
 
+      // Add to recent store
+      const basePrice = first?.price_syp ?? prod.base_price_syp ?? 0;
+      addRecent({
+        id: prod.id,
+        slug: prod.slug,
+        nameAr: prod.name_ar,
+        nameEn: prod.name_en,
+        priceSyp: basePrice,
+        imageUrl: prod.image_url,
+        brandName: brRes.data?.name
+      });
+
       setLoading(false);
     })();
 
@@ -204,7 +220,7 @@ export default function ProductPage({ params }: { params: any }) {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10" dir="rtl">
+    <main className="mx-auto max-w-6xl px-4 py-10" dir="rtl">
       <nav className="mb-6 flex flex-wrap items-center gap-2 text-xs text-[#6F6658]">
         <Link href="/" className="hover:text-primary">{td('home')}</Link>
         <span>/</span>
@@ -420,10 +436,13 @@ export default function ProductPage({ params }: { params: any }) {
       </div>
 
       {product?.id && (
-        <div className="mx-auto mt-8 max-w-4xl px-4 pb-10">
+        <div className="mt-16">
           <ReviewsSection productId={product.id} />
         </div>
       )}
-    </div>
+      
+      {/* Recently Viewed Products */}
+      <RecentlyViewed />
+    </main>
   );
 }
