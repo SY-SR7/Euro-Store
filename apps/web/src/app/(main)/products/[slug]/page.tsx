@@ -31,6 +31,7 @@ function stockState(qty: number, td: any) {
   return { text: `${td('available')} ${qty}`, Icon: CheckCircle2, cls: 'bg-green-50 border-green-200 text-green-700' };
 }
 
+/*
 export async function generateMetadata(
   { params }: { params: any },
   parent: ResolvingMetadata
