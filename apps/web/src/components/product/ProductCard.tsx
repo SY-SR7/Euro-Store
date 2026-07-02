@@ -4,10 +4,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Heart } from 'lucide-react';
+import { Heart, Eye } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
 import { useCartStore } from '@/lib/cart/cartStore';
+import { QuickViewModal } from '@/components/product/QuickViewModal';
+import { useState } from 'react';
 import type { Database } from '@eurostore/database';
 
 type Product = Database['public']['Tables']['products']['Row'];
@@ -40,8 +42,10 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
   const t = useTranslations('catalog');
   const isAr = locale === 'ar';
   const productName = isAr ? product.name_ar : (product.name_en || product.name_ar);
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   return (
+    <>
     <motion.div
       variants={tiltVariants}
       initial="rest"
@@ -62,6 +66,17 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
             {t('noImage')}
           </div>
         )}
+        
+        {/* Hover Actions */}
+        <div className="absolute inset-x-0 bottom-4 flex justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0 px-4">
+          <button 
+            onClick={(e) => { e.preventDefault(); setIsQuickViewOpen(true); }}
+            className="flex-1 bg-white/95 text-text-primary backdrop-blur-md font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2"
+          >
+            <Eye size={18} />
+            <span className="text-sm">{isAr ? 'نظرة سريعة' : 'Quick View'}</span>
+          </button>
+        </div>
         
         {/* Badges */}
         <div className="absolute top-3 start-3 flex flex-col gap-2 z-10">
@@ -133,6 +148,13 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         </button>
       </div>
     </motion.div>
+    
+    <QuickViewModal 
+      isOpen={isQuickViewOpen} 
+      onClose={() => setIsQuickViewOpen(false)} 
+      product={product} 
+    />
+    </>
   );
 }
 
