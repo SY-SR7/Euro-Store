@@ -3,7 +3,7 @@
   command = "pnpm run build"
   
   # We specify the publish directory for the main web application
-  publish = "apps/web/.next"
+  publish = ".next"
 
 [build.environment]
   # Tell Netlify to use pnpm (matches the package manager in package.json)

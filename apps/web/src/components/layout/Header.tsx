@@ -74,7 +74,9 @@ export function Header({ loyaltyPoints = null }: { loyaltyPoints?: number | null
           </nav>
 
           <div className="flex items-center gap-1.5">
-            <SmartSearch />
+            {(pathname === '/' || pathname.startsWith('/products') || pathname.startsWith('/categories')) && (
+              <SmartSearch />
+            )}
             <Link href="/wishlist" aria-label={t('wishlist')}
               className={`hidden rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary sm:inline-flex ${
                 pathname.startsWith('/wishlist') ? 'bg-primary/15 text-primary ring-1 ring-primary/30 shadow-sm' : 'text-text-secondary'
