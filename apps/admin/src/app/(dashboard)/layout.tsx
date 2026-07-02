@@ -275,6 +275,10 @@ export default function AdminDashboardLayout({ children }: { children: ReactNode
   const locale = useLocale();
   const isAr = locale === 'ar';
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
+
   const navItems = useMemo(() => getNavItems(t), [t]);
 
   const title = useMemo(() => {
