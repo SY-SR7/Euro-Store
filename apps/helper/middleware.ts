@@ -1,4 +1,4 @@
-﻿import { createSupabaseServerClientFromEnv } from '@eurostore/database';
+import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getHelperAccess } from './src/auth';
 
@@ -36,7 +36,8 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
       response.cookies.set({ name, value: '', ...options, maxAge: 0 });
     },
   });
-  const access = await getHelperAccess(supabase);
+  const { data: { user } } = await supabase.auth.getUser();
+  const access = getHelperAccess(user);
 
   if (!access) {
     return pathname === LOGIN_PATH ? response : redirectTo(request, LOGIN_PATH);
