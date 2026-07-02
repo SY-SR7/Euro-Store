@@ -37,6 +37,7 @@ import { Toaster } from 'sonner';
 import { WhatsAppButton } from '@/components/common/WhatsAppButton';
 import { EuroConcierge } from '@/components/common/EuroConcierge';
 import { KonamiCode } from '@/components/common/KonamiCode';
+import { Credits } from '@/components/common/Credits';
 
 export default async function RootLayout({
   children
@@ -60,6 +61,7 @@ export default async function RootLayout({
           <WhatsAppButton />
           <EuroConcierge />
           <KonamiCode />
+          <Credits />
         </NextIntlClientProvider>
       </body>
     </html>
