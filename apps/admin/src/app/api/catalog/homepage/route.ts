@@ -29,8 +29,7 @@ export async function POST(request: Request) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
-  const admin = await requireAdminClient();
-  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const { admin } = ctx;
   const body: unknown = await request.json();
   const parsed = sectionSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
