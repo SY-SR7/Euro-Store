@@ -91,9 +91,6 @@ export function Header() {
             {/* Cart Button */}
             <button onClick={() => setIsCartOpen(true)} aria-label="Open Cart" className="relative hidden md:flex items-center justify-center rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary text-text-secondary">
               <ShoppingBag className="h-4 w-4" />
-              <div className="absolute -top-1 -right-1 pointer-events-none scale-75">
-                <CartBadge />
-              </div>
             </button>
 
             <LanguageSwitcher />
@@ -101,9 +98,6 @@ export function Header() {
             {/* Mobile buttons */}
             <button onClick={() => setIsCartOpen(true)} aria-label="Open Cart" className="relative md:hidden rounded-full p-2 text-text-secondary transition hover:bg-background-secondary">
               <ShoppingBag className="h-4 w-4" />
-              <div className="absolute top-0 right-0 pointer-events-none scale-50">
-                <CartBadge />
-              </div>
             </button>
 
             <button onClick={() => setOpen(v => !v)} aria-label="Toggle Mobile Menu"
