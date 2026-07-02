@@ -27,7 +27,7 @@ export function EuroConcierge() {
     <>
       <motion.button
         onClick={() => setIsOpen(true)}
-        className='fixed bottom-6 left-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:scale-110 transition-all duration-300'
+        className='fixed bottom-24 md:bottom-6 left-4 md:left-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:scale-110 transition-all duration-300'
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 1.2 }}
@@ -44,7 +44,7 @@ export function EuroConcierge() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed bottom-24 left-6 z-50 w-80 sm:w-96 bg-background border border-border/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className="fixed bottom-40 md:bottom-24 left-4 md:left-6 z-50 w-[calc(100vw-32px)] sm:w-96 bg-background border border-border/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
             dir="rtl"
             style={{ height: '500px', maxHeight: 'calc(100vh - 120px)' }}
           >
