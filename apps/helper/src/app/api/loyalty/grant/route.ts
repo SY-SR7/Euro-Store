@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     const { error } = await admin.rpc('award_loyalty_points', {
       p_customer_id : body.customer_id,
       p_points      : body.points,
-      p_type        : 'admin_grant',
+      p_type        : 'adjusted_admin',
       p_description : body.description ?? 'منح نقاط من المندوب',
       p_reference_id: null,
     });
@@ -40,8 +40,9 @@ export async function POST(req: NextRequest) {
       actor_id  : user.id,
       actor_role: 'helper',
       action    : 'loyalty.points.granted',
+      entity_type: 'loyalty_points',
       entity_id  : body.customer_id,
-      metadata  : { points: body.points },
+      after_state: { points: body.points },
     });
 
     return NextResponse.json({ success: true });

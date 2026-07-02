@@ -1,4 +1,4 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 export interface SupabasePublicEnv {
   supabaseUrl: string;
   supabaseAnonKey: string;
@@ -23,7 +23,18 @@ function readRequiredEnv(env: EnvSource, key: string): string {
 }
 
 function readFirstRequiredEnv(env: EnvSource, keys: readonly string[]): string {
-  const value = keys.map((key) => env[key]?.trim()).find((candidate) => Boolean(candidate));
+  // Webpack statically replaces explicit process.env.NEXT_PUBLIC_* accesses in Client Components.
+  // Dynamic property access like env[key] fails, so we provide an explicit mapping fallback.
+  const staticEnvs: Record<string, string | undefined> = {
+    NEXT_PUBLIC_EUROSTORE_DATABASE_PROVIDER: process.env.NEXT_PUBLIC_EUROSTORE_DATABASE_PROVIDER,
+    EXPO_PUBLIC_EUROSTORE_DATABASE_PROVIDER: process.env.EXPO_PUBLIC_EUROSTORE_DATABASE_PROVIDER,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    EXPO_PUBLIC_SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    EXPO_PUBLIC_SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+  };
+
+  const value = keys.map((key) => env[key]?.trim() ?? staticEnvs[key]?.trim()).find((candidate) => Boolean(candidate));
 
   if (!value) {
     throw new Error(`Missing required environment variable: ${keys.join(' or ')}`);

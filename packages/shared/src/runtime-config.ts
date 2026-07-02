@@ -50,7 +50,12 @@ function parsePublicProvider<T extends z.ZodEnum<[string, ...string[]]>>(
   expoPublicKey: string,
   env: EnvSource
 ): z.infer<T> {
-  const value = env[serverKey]?.trim() ?? env[nextPublicKey]?.trim() ?? env[expoPublicKey]?.trim();
+  const staticEnvs: Record<string, string | undefined> = {
+    NEXT_PUBLIC_EUROSTORE_DEPLOYMENT_PROVIDER: process.env.NEXT_PUBLIC_EUROSTORE_DEPLOYMENT_PROVIDER,
+    EXPO_PUBLIC_EUROSTORE_DEPLOYMENT_PROVIDER: process.env.EXPO_PUBLIC_EUROSTORE_DEPLOYMENT_PROVIDER,
+  };
+
+  const value = env[serverKey]?.trim() ?? env[nextPublicKey]?.trim() ?? staticEnvs[nextPublicKey]?.trim() ?? env[expoPublicKey]?.trim() ?? staticEnvs[expoPublicKey]?.trim();
 
   if (!value) {
     throw new Error(`Missing required environment variable: ${serverKey} or ${nextPublicKey} or ${expoPublicKey}`);
