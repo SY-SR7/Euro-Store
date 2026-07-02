@@ -24,7 +24,7 @@ export async function GET(request: Request) {
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
-    if (status) query = query.eq('status', status);
+    if (status) query = query.eq('status', status as any);
     if (search) query = query.or(`order_number.ilike.%${search}%,address_snapshot->>full_name.ilike.%${search}%`);
 
     const { data, error, count } = await query;

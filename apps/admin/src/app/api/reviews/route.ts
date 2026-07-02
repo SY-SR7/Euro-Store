@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       .order('created_at', { ascending: false });
 
     if (status && ['pending', 'approved', 'rejected'].includes(status)) {
-      query = query.eq('status', status);
+      query = query.eq('status', status as 'pending' | 'approved' | 'rejected');
     }
 
     const { data, error } = await query;

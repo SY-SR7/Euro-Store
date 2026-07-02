@@ -60,8 +60,10 @@ try {
     for (const t of allAttrTypes) { attrTypeBySlug[t.slug] = t; }
     for (const v of allAttrValues) {
       attrValueById[v.id] = v;
-      if (!attrValuesByTypeId[v.attribute_type_id]) attrValuesByTypeId[v.attribute_type_id] = [];
-      attrValuesByTypeId[v.attribute_type_id].push(v);
+      if (v.attribute_type_id) {
+        if (!attrValuesByTypeId[v.attribute_type_id]) attrValuesByTypeId[v.attribute_type_id] = [];
+        attrValuesByTypeId[v.attribute_type_id].push(v);
+      }
     }
 
     const selectedCatIds   = categorySlugList.map(s => catBySlug[s]?.id).filter(Boolean);
@@ -98,7 +100,7 @@ try {
     type NormProduct = {
       id: string; name_ar: string; name_en: string; slug: string;
       image_url: string; is_active: boolean; is_featured: boolean;
-      category_id: string; brand_id: string; created_at: string;
+      category_id: string | null; brand_id: string | null; created_at: string;
       minPrice: number; maxPrice: number;
       attrValueIds: Set<string>;
     };
