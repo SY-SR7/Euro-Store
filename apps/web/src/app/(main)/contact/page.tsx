@@ -70,7 +70,7 @@ export default async function ContactPage() {
         </div>
 
         <ContactForm
-          t_submit={t('auth.submit')}
+          t_submit={t('common.submit')}
           t_name={t('contact.name')}
           t_namePlaceholder={t('contact.namePlaceholder')}
           t_email={t('auth.email')}
