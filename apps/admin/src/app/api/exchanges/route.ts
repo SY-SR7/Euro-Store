@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
       .order('created_at', { ascending: false }).limit(100);
     if (status) query = query.eq('status', status as never);
     const { data, error } = await query;
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     const mapped = (data ?? []).map(r => ({ ...r, reason: r.reason_ar ?? r.reason_en ?? '' }));
     return NextResponse.json(mapped);
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }

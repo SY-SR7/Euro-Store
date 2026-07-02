@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       .select('id')
       .single();
 
-    if (reqErr) return NextResponse.json({ error: reqErr.message }, { status: 500 });
+    if (reqErr) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
     if (parsed.data.items && parsed.data.items.length > 0) {
       await admin.from('exchange_items').insert(

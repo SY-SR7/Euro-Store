@@ -36,7 +36,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     .eq('id', params.id)
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
   return NextResponse.json(data);
 }
@@ -107,7 +107,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
   await writeAuditLog({
     admin,

@@ -15,7 +15,7 @@ export async function GET() {
     .select('id, full_name, email, is_active, created_at')
     .order('created_at', { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
   // Map to shape expected by the frontend
   const mapped = (data ?? []).map((p) => ({
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   });
 
   if (authErr || !authData.user) {
-    return NextResponse.json({ error: authErr?.message ?? 'auth_failed' }, { status: 500 });
+    return NextResponse.json({ error: 'database_error' }, { status: 500 });
   }
 
   // Insert into sub_admin_profiles (id = auth user id)
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
 
   if (profileErr) {
     await supabase.auth.admin.deleteUser(authData.user.id);
-    return NextResponse.json({ error: profileErr.message }, { status: 500 });
+    return NextResponse.json({ error: 'database_error' }, { status: 500 });
   }
 
   return NextResponse.json({ user_id: authData.user.id }, { status: 201 });

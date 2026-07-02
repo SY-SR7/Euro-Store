@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     if (!parsed.success) return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
 
     const { data, error } = await admin.from('brands').insert(parsed.data as never).select('id, name, slug, is_active').single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
     await writeAuditLog({
       admin, actorId: userId, actorRole: 'admin',
@@ -48,6 +48,6 @@ export async function GET() {
   const { admin } = ctx;
 
   const { data, error } = await admin.from('brands').select('id, name, slug, is_active').order('name');
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json(data);
 }

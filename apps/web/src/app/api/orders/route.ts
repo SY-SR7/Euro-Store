@@ -203,7 +203,7 @@ export async function POST(request: Request) {
 
     if (orderErr || !orderId) {
       console.error('[orders/POST] RPC error:', orderErr);
-      return NextResponse.json({ error: orderErr?.message ?? 'order_failed' }, { status: 500 });
+      return NextResponse.json({ error: 'database_error' }, { status: 500 });
     }
 
     // ── Send order confirmation email (best-effort, non-blocking) ──
@@ -212,13 +212,9 @@ export async function POST(request: Request) {
       try {
         const resendKey  = process.env['RESEND_API_KEY'] ?? '';
         const fromEmail  = process.env['EMAIL_FROM'] ?? 'orders@eurostore.com';
-        if (!resendKey) return;
-
-        // Note: the original schema doesn't collect user email unless they are logged in.
-        // We will try to fetch the email from the user profile if possible.
-        let toEmail = (body as any)?.email; // If frontend passed it
-        if (!toEmail && user) toEmail = user.email;
-        if (!toEmail) return;
+        
+        const toEmail = user?.email;
+        if (!toEmail || !resendKey) return;
 
         const { ResendEmailAdapter } = await import('@eurostore/adapters');
         const { buildOrderConfirmationHtml } = await import('@eurostore/shared/email/orderConfirmation');

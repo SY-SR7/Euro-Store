@@ -50,7 +50,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       .select()
       .single();
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
     await writeAuditLog({
       admin,

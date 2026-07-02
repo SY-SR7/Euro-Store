@@ -33,7 +33,7 @@ export async function GET(_req: Request, { params }: RouteParams) {
     .eq('id', params.id)
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 404 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 404 });
 
   return NextResponse.json(data);
 }
@@ -79,7 +79,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
   await writeAuditLog({
     admin,
@@ -115,7 +115,7 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
     .delete({ count: 'exact' })
     .eq('id', params.id);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
   if ((count ?? 0) === 0) {
     return NextResponse.json({ error: 'Product not found or already deleted' }, { status: 404 });

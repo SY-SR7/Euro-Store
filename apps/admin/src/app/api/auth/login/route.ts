@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
 
     if (error || !data.session || !data.user) {
       return NextResponse.json(
-        { error: error?.message || 'فشل تسجيل الدخول' },
+        { error: 'database_error' || 'فشل تسجيل الدخول' },
         { status: 401 }
       );
     }
@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
     return response;
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'server_error' },
+      { error: 'database_error' },
       { status: 500 }
     );
   }

@@ -14,14 +14,14 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
   const { data: profile, error: fetchErr } = await admin
     .from('customer_profiles').select('loyalty_points').eq('id', params.id).single();
-  if (fetchErr) return NextResponse.json({ error: fetchErr.message }, { status: 404 });
+  if (fetchErr) return NextResponse.json({ error: 'database_error' }, { status: 404 });
 
   const current = (profile as { loyalty_points: number }).loyalty_points ?? 0;
   const newPoints = Math.max(0, current + body.points);
 
   const { error: updateErr } = await admin
     .from('customer_profiles').update({ loyalty_points: newPoints } as never).eq('id', params.id);
-  if (updateErr) return NextResponse.json({ error: updateErr.message }, { status: 500 });
+  if (updateErr) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
   // سجّل في loyalty_transactions بدون تعطيل تعديل النقاط إذا فشل السجل الثانوي.
   await admin.from('loyalty_transactions').insert({

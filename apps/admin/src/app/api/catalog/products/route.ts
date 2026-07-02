@@ -34,7 +34,7 @@ export async function GET() {
       .from('products')
       .select('id, name_ar, name_en, slug, is_featured, is_active, created_at, category_id, brand_id')
       .order('created_at', { ascending: false });
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     return NextResponse.json(data ?? []);
   } catch {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
       .insert(productData as never)
       .select('id, name_ar, name_en, slug')
       .single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
     // Create the default variant so the product shows up on the frontend
     const { error: variantError } = await admin

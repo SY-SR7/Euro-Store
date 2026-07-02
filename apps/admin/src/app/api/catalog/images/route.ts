@@ -15,7 +15,7 @@ export async function GET(request: Request) {
   let query = admin.from('product_images').select('id,product_id,url,alt_ar,is_primary,sort_order').order('sort_order');
   if (product_id) query = query.eq('product_id', product_id);
   const { data, error } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json(data ?? []);
 }
 
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       is_primary: body.is_primary ?? false,
       sort_order: nextOrder,
     } as never).select('id').single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     return NextResponse.json(data, { status: 201 });
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }

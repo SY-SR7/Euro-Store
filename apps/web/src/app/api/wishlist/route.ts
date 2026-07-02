@@ -22,7 +22,7 @@ export async function GET() {
       .eq('customer_id', user.id)
       .order('created_at', { ascending: false });
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
     const items = (data ?? []).map((row: any) => {
       const product = row.products;
@@ -79,14 +79,14 @@ export async function POST(request: Request) {
         .from('wishlist_items')
         .delete()
         .eq('id', existing.id);
-      if (delErr) return NextResponse.json({ error: delErr.message }, { status: 500 });
+      if (delErr) return NextResponse.json({ error: 'database_error' }, { status: 500 });
       return NextResponse.json({ in_wishlist: false });
     }
 
     const { error: insErr } = await supabase
       .from('wishlist_items')
       .insert({ customer_id: user.id, product_id });
-    if (insErr) return NextResponse.json({ error: insErr.message }, { status: 500 });
+    if (insErr) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     return NextResponse.json({ in_wishlist: true });
   } catch {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });

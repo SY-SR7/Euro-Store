@@ -28,7 +28,7 @@ export async function GET() {
     .order('sort_order', { ascending: true })
     .order('created_at', { ascending: false });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json(data ?? []);
 }
 
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
     .select('id, name_ar, name_en, slug, sort_order, is_active, created_at')
     .single();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 400 });
 
   await writeAuditLog({
     admin, actorId: userId, actorRole: 'admin',

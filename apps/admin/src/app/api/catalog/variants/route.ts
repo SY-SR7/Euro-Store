@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     .order('price_syp');
   if (product_id) query = query.eq('product_id', product_id);
   const { data, error } = await query;
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json(data ?? []);
 }
 
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       .insert(variantData as never)
       .select('id')
       .single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     // Insert variant_attributes if provided
     if (attribute_value_ids && attribute_value_ids.length > 0) {
       const attrs = attribute_value_ids.map(avid => ({
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
         attribute_value_id: avid,
       }));
       const { error: attrErr } = await admin.from('variant_attributes').insert(attrs as never);
-      if (attrErr) return NextResponse.json({ error: attrErr.message }, { status: 500 });
+      if (attrErr) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     }
     return NextResponse.json(newVariant, { status: 201 });
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }

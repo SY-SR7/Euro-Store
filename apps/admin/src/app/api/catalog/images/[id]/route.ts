@@ -23,7 +23,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     if (typeof body.sort_order === 'number') update.sort_order = body.sort_order;
     if (Object.keys(update).length === 0) return NextResponse.json({ ok: true });
     const { data, error } = await admin.from('product_images').update(update as never).eq('id', params.id).select().single();
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     return NextResponse.json(data);
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }
@@ -35,7 +35,7 @@ export async function DELETE(_: Request, { params }: RouteParams) {
   try {
     const admin = createAdminSupabaseClient();
     const { error } = await admin.from('product_images').delete().eq('id', params.id);
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     return NextResponse.json({ ok: true });
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }

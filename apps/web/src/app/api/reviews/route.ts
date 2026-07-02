@@ -30,7 +30,7 @@ export async function GET(request: Request) {
       .eq('status', 'approved')
       .order('created_at', { ascending: false });
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
     const reviews = (data ?? []) as any[];
     const count = reviews.length;
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
       if (insertErr.code === '23505') {
         return NextResponse.json({ error: 'already_reviewed' }, { status: 409 });
       }
-      return NextResponse.json({ error: insertErr.message }, { status: 500 });
+      return NextResponse.json({ error: 'database_error' }, { status: 500 });
     }
 
     return NextResponse.json(review, { status: 201 });

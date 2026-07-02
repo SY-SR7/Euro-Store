@@ -40,7 +40,7 @@ export async function POST(request: Request) {
 
       if (error) {
         console.error('Upload error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'database_error' }, { status: 500 });
       }
 
       const { data: publicUrlData } = adminClient.storage
