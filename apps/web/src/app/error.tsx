@@ -40,8 +40,8 @@ export default function Error({
             transition={{ delay: 0.4 }}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full"
           >
-            <div className="bg-background/80 backdrop-blur-md border border-red-900/50 py-3 px-8 rounded-2xl shadow-2xl rotate-[-5deg]">
-              <p className="text-xl font-black text-white tracking-widest uppercase">System Error</p>
+            <div className="bg-background-card/80 backdrop-blur-md border border-border/50 py-3 px-8 rounded-2xl shadow-2xl rotate-[5deg]">
+              <p className="text-xl font-black text-text-primary tracking-widest uppercase">System Error</p>
             </div>
           </motion.div>
         </motion.div>
@@ -51,24 +51,20 @@ export default function Error({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <h2 className="text-3xl font-bold text-white mt-8 mb-4">
-            عذراً، حدث خطأ غير متوقع في الخادم!
+          <h2 className="text-3xl font-bold text-text-primary mt-8 mb-4">
+            عذراً، حدث خطأ غير متوقع!
           </h2>
-          <p className="text-text-secondary text-lg mb-4 leading-relaxed max-w-xl mx-auto">
-            يبدو أن هناك عطلاً مؤقتاً في أنظمتنا يمنعنا من تلبية طلبك حالياً. فريقنا التقني تم إبلاغه وجاري العمل على حله.
+          <p className="text-text-secondary text-lg mb-12 leading-relaxed max-w-xl mx-auto">
+            نعتذر عن هذا الخلل. فريقنا التقني تم إبلاغه بالمشكلة ويعمل على حلها. 
+            يرجى المحاولة مرة أخرى أو العودة للصفحة الرئيسية.
           </p>
-          <div className="bg-red-900/20 border border-red-500/50 p-4 rounded-xl text-left mb-8 max-w-2xl mx-auto overflow-auto max-h-48 text-red-200 font-mono text-sm" dir="ltr">
-            <strong>Error Details:</strong>
-            <pre className="mt-2 whitespace-pre-wrap">{error.message}</pre>
-            {error.digest && <div className="mt-2 text-red-400 text-xs">Digest: {error.digest}</div>}
-          </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <button 
               onClick={() => reset()}
               className="w-full sm:w-auto bg-primary text-[#0F0F0F] font-black py-4 px-8 rounded-xl hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
             >
-              <RefreshCcw size={20} />
+              <RefreshCw size={20} />
               حاول مرة أخرى
             </button>
             

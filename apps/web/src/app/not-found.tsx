@@ -28,8 +28,8 @@ export default function NotFound() {
             transition={{ delay: 0.4 }}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full"
           >
-            <div className="bg-background/80 backdrop-blur-md border border-border/50 py-3 px-8 rounded-2xl shadow-2xl rotate-[-5deg]">
-              <p className="text-2xl font-black text-white tracking-widest uppercase">Page Not Found</p>
+            <div className="bg-background-card/80 backdrop-blur-md border border-border/50 py-3 px-8 rounded-2xl shadow-2xl rotate-[-5deg]">
+              <p className="text-2xl font-black text-text-primary tracking-widest uppercase">Page Not Found</p>
             </div>
           </motion.div>
         </motion.div>
@@ -39,7 +39,7 @@ export default function NotFound() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
         >
-          <h2 className="text-3xl font-bold text-white mt-8 mb-4">
+          <h2 className="text-3xl font-bold text-text-primary mt-8 mb-4">
             عذراً، لم نتمكن من العثور على ما تبحث عنه!
           </h2>
           <p className="text-text-secondary text-lg mb-12 leading-relaxed max-w-xl mx-auto">
@@ -58,7 +58,7 @@ export default function NotFound() {
             
             <Link 
               href="/products"
-              className="w-full sm:w-auto bg-background-elevated border border-border/50 text-white font-bold py-4 px-8 rounded-xl hover:border-primary/50 transition-colors flex items-center justify-center gap-2"
+              className="w-full sm:w-auto bg-background-elevated border border-border/50 text-text-primary font-bold py-4 px-8 rounded-xl hover:border-primary/50 transition-colors flex items-center justify-center gap-2"
             >
               <ShoppingBag size={20} />
               تسوق الآن
