@@ -51,7 +51,11 @@ export async function POST(req: NextRequest) {
       actor_role: 'helper',
       action    : 'exchange.qr.generated',
       entity_id  : exReq.id,
-      entity_type: 'exchange_request'
+      entity_type: 'exchange_request',
+      before_state: null,
+      after_state: null,
+      ip_address: null,
+      user_agent: null
     });
 
     return NextResponse.json({ token, expires_at: expiresAt });

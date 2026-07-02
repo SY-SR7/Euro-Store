@@ -61,7 +61,10 @@ export async function POST(req: NextRequest) {
       action: 'exchange.qr.redeemed',
       entity_type: 'exchange_request',
       entity_id: payload.exchangeId,
-      metadata: { customer_id: payload.customerId },
+      before_state: null,
+      after_state: null,
+      ip_address: null,
+      user_agent: null
     });
 
     return NextResponse.json({ success: true, exchange_request_id: payload.exchangeId });
