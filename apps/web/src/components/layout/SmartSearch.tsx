@@ -68,7 +68,7 @@ export function SmartSearch() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('searchPlaceholder', { fallback: 'ابحث عن منتج...' })}
-              className='flex-1 bg-transparent border-none outline-none text-text-primary text-sm placeholder:text-text-secondary w-full rtl'
+              className='flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 focus:border-transparent text-text-primary text-sm placeholder:text-text-secondary w-full rtl'
               dir={isAr ? 'rtl' : 'ltr'}
             />
             {isLoading && <Loader2 className='h-4 w-4 text-primary animate-spin' />}
