@@ -41,7 +41,18 @@ export async function createServerSupabaseClient() {
   return client;
 }
 
-export async function writeAuditLog(adminClient: SupabaseClient, action: string, details: any, userId?: string) {
+export async function writeAuditLog({
+  admin, action, actorId, actorRole, entityType, entityId, beforeState, afterState
+}: {
+  admin: SupabaseClient;
+  action: string;
+  actorId?: string;
+  actorRole?: string;
+  entityType?: string;
+  entityId?: string;
+  beforeState?: any;
+  afterState?: any;
+}) {
   try {
     await adminClient.from('audit_logs').insert({
       action,
