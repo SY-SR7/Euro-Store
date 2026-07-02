@@ -161,10 +161,10 @@ try {
 
     // Facets
     const catCounts: Record<string, number> = {};
-    for (const p of products) if (matchesFilters(p, { skipCategory: true })) catCounts[p.category_id] = (catCounts[p.category_id] ?? 0) + 1;
+    for (const p of products) if (matchesFilters(p, { skipCategory: true }) && p.category_id) catCounts[p.category_id] = (catCounts[p.category_id] ?? 0) + 1;
 
     const brandCounts: Record<string, number> = {};
-    for (const p of products) if (matchesFilters(p, { skipBrand: true })) brandCounts[p.brand_id] = (brandCounts[p.brand_id] ?? 0) + 1;
+    for (const p of products) if (matchesFilters(p, { skipBrand: true }) && p.brand_id) brandCounts[p.brand_id] = (brandCounts[p.brand_id] ?? 0) + 1;
 
     const categoriesFacet = allCats.filter(c => catCounts[c.id]).map(c => ({ ...c, count: catCounts[c.id] ?? 0, selected: selectedCatIds.includes(c.id) }));
     const brandsFacet     = allBrands.filter(b => brandCounts[b.id]).map(b => ({ ...b, count: brandCounts[b.id] ?? 0, selected: selectedBrandIds.includes(b.slug) }));
