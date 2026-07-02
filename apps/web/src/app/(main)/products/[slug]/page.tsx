@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { createBrowserClient } from '@supabase/ssr';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { useCartStore } from '@/lib/cart/cartStore';
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
 import { ReviewsSection } from '@/components/product/ReviewsSection';
@@ -13,6 +14,7 @@ import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import { Layers3, Package, Palette, Ruler, Barcode, Boxes, Info, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 import { useRecentStore } from '@/lib/recentStore';
 import { RecentlyViewed } from '@/components/product/RecentlyViewed';
+import type { Metadata, ResolvingMetadata } from 'next';
 
 function formatSYP(n: number) {
   return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
@@ -27,6 +29,44 @@ function stockState(qty: number, td: any) {
   if (qty <= 0) return { text: td('outOfStockLong'), Icon: XCircle, cls: 'bg-red-50 border-red-200 text-red-700' };
   if (qty <= 5) return { text: `${td('lowStock')} ${qty}`, Icon: AlertTriangle, cls: 'bg-amber-50 border-amber-200 text-amber-700' };
   return { text: `${td('available')} ${qty}`, Icon: CheckCircle2, cls: 'bg-green-50 border-green-200 text-green-700' };
+}
+
+export async function generateMetadata(
+  { params }: { params: any },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const slug = params?.slug;
+  if (!slug) return {};
+
+  const supabase = createServerSupabaseClient();
+  const { data: product } = await supabase
+    .from('products')
+    .select('name_ar, name_en, description_ar, description_en, image_url, primary_image_url')
+    .eq('slug', slug)
+    .single();
+
+  if (!product) return {};
+
+  const title = product.name_ar || product.name_en;
+  const description = product.description_ar || product.description_en;
+  const image = product.primary_image_url || product.image_url;
+
+  return {
+    title: `${title} | EuroStore`,
+    description: description?.substring(0, 160),
+    openGraph: {
+      title: `${title} | EuroStore`,
+      description: description?.substring(0, 160),
+      images: image ? [image] : [],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | EuroStore`,
+      description: description?.substring(0, 160),
+      images: image ? [image] : [],
+    },
+  };
 }
 
 export default function ProductPage({ params }: { params: any }) {
