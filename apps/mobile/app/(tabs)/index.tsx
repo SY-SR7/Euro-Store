@@ -3,6 +3,8 @@ import { View, Text, ScrollView, ImageBackground, TouchableOpacity, SafeAreaView
 import { ProductCard } from '../../components/ProductCard';
 import { LinearGradient } from 'expo-linear-gradient';
 import { supabase } from '../../utils/supabase';
+import { useNotificationStore } from '../../store/notificationStore';
+import { router } from 'expo-router';
 
 type ProductData = {
   id: string;
@@ -14,6 +16,7 @@ type ProductData = {
 export default function HomeScreen() {
   const [products, setProducts] = useState<ProductData[]>([]);
   const [loading, setLoading] = useState(true);
+  const unreadCount = useNotificationStore((state) => state.unreadCount());
 
   useEffect(() => {
     async function fetchProducts() {
@@ -51,6 +54,23 @@ export default function HomeScreen() {
         
         {/* Cinematic Hero Section */}
         <View className='h-[60vh] w-full relative'>
+          
+          {/* Top Bar Overlay */}
+          <View className='absolute top-12 left-0 right-0 px-6 flex-row justify-between items-center z-10'>
+            <Text className='text-2xl font-black text-white tracking-widest' style={{ fontFamily: 'serif' }}>EUROSTORE</Text>
+            <TouchableOpacity 
+              className='w-10 h-10 bg-background/50 rounded-full items-center justify-center relative'
+              onPress={() => router.push('/notifications')}
+            >
+              <Text className='text-white text-lg'>🔔</Text>
+              {unreadCount > 0 && (
+                <View className='absolute -top-1 -right-1 bg-error w-5 h-5 rounded-full items-center justify-center border border-background'>
+                  <Text className='text-white text-[10px] font-bold'>{unreadCount}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+
           <ImageBackground
             source={{ uri: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200' }}
             className='w-full h-full'
