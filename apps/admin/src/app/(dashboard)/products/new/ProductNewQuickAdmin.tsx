@@ -116,10 +116,10 @@ export default function ProductNewQuickAdmin() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name_ar: form.name_ar.trim(),
-          name_en: form.name_en.trim(),
-          slug: form.slug.trim() || slugify(form.name_en),
+          name_en: form.name_en.trim() || form.name_ar.trim(),
+          slug: form.slug.trim() || slugify(form.name_en) || `product-${Math.random().toString(36).substring(2, 8)}`,
           description_ar: form.description_ar.trim() || form.name_ar.trim(),
-          description_en: form.description_en.trim() || form.name_en.trim(),
+          description_en: form.description_en.trim() || form.name_en.trim() || form.name_ar.trim(),
           category_id: form.category_id || undefined,
           brand_id: form.brand_id || undefined,
           is_active: form.is_active,
