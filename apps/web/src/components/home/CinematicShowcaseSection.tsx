@@ -193,10 +193,13 @@ export function CinematicShowcaseSection({
     offset: ['start start', 'end end'],
   });
 
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: prefersReduced ? 1000 : 120,
-    damping: prefersReduced ? 100 : 30,
-    mass: prefersReduced ? 0.01 : 0.08,
+  // تسريع الفيديو وجعله ينتهي قبل انتهاء السكرول بـ 15% لكي لا يختفي قبل أن يكتمل
+  const adjustedProgress = useTransform(scrollYProgress, [0, 0.85], [0, 1]);
+
+  const smoothProgress = useSpring(adjustedProgress, {
+    stiffness: prefersReduced ? 1000 : 300,
+    damping: prefersReduced ? 100 : 40,
+    mass: prefersReduced ? 0.01 : 0.1,
   });
 
   // Progress bar
