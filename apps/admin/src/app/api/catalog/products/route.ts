@@ -70,6 +70,9 @@ const { admin, userId } = ctx;
       .single();
     if (error) {
       console.error('Database error when creating product:', error);
+      if (error.code === '23505') {
+        return NextResponse.json({ error: 'product_exists' }, { status: 400 });
+      }
       return NextResponse.json({ error: error.message || 'database_error' }, { status: 500 });
     }
 
