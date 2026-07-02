@@ -52,18 +52,19 @@ export async function POST(req: NextRequest) {
     const now = new Date().toISOString();
     await Promise.all([
       admin.from('exchange_qr_tokens').update({ redeemed_at: now }).eq('id', tokenRecord.id),
-      admin.from('exchange_requests').update({ status: 'completed' }).eq('id', payload.exchange_request_id),
+      admin.from('exchange_requests').update({ status: 'completed' }).eq('id', payload.exchangeId),
     ]);
 
     await admin.from('audit_logs').insert({
-      actor_id  : user.id,
+      actor_id: user.id,
       actor_role: 'partner',
-      action    : 'exchange.qr.redeemed',
-      entity_id  : payload.exchange_request_id,
-      metadata  : { customer_id: payload.customer_id },
+      action: 'exchange.qr.redeemed',
+      entity_type: 'exchange_request',
+      entity_id: payload.exchangeId,
+      metadata: { customer_id: payload.customerId },
     });
 
-    return NextResponse.json({ success: true, exchange_request_id: payload.exchange_request_id });
+    return NextResponse.json({ success: true, exchange_request_id: payload.exchangeId });
   } catch (err) {
     console.error('Redeem QR error:', err);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
