@@ -34,7 +34,6 @@ import { SmoothScroller } from '../components/layout/SmoothScroller';
 import { PageTransitionProvider } from '../components/layout/PageTransitionProvider';
 
 import { Toaster } from 'sonner';
-import { WhatsAppButton } from '@/components/common/WhatsAppButton';
 import { EuroConcierge } from '@/components/common/EuroConcierge';
 import { KonamiCode } from '@/components/common/KonamiCode';
 import { Credits } from '@/components/common/Credits';
@@ -59,8 +58,7 @@ export default async function RootLayout({
               {children}
             </PageTransitionProvider>
           </SmoothScroller>
-          <Toaster position="bottom-right" />
-          <WhatsAppButton />
+          <Toaster position="bottom-center" toastOptions={{ style: { background: '#1F1B16', color: '#F7F0DF', border: '1px solid #332C24' } }} />
           <EuroConcierge />
           <KonamiCode />
           <Credits />
