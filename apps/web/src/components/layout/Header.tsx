@@ -27,7 +27,7 @@ const MOBILE_LINKS = [
   { href:'/account', key:'account' },
 ] as const;
 
-export function Header() {
+export function Header({ loyaltyPoints = null }: { loyaltyPoints?: number | null }) {
   const t = useTranslations('nav');
   const [open, setOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -92,6 +92,13 @@ export function Header() {
             <button onClick={() => setIsCartOpen(true)} aria-label="Open Cart" className="relative hidden md:flex items-center justify-center rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary text-text-secondary">
               <ShoppingBag className="h-4 w-4" />
             </button>
+
+            {loyaltyPoints !== null && (
+              <Link href="/loyalty" className="hidden md:flex items-center gap-1.5 bg-[#FEF3C7] text-primary px-3 py-1.5 rounded-full border border-primary/20 shadow-sm transition-transform hover:scale-105" title={t('loyalty')}>
+                <Star className="h-3.5 w-3.5 fill-primary" />
+                <span className="text-xs font-black">{loyaltyPoints}</span>
+              </Link>
+            )}
 
             <LanguageSwitcher />
             
