@@ -40,14 +40,16 @@ export async function FeaturedCategoryProducts({
   }
 
   const { data: rawProducts } = await productsQuery;
+  const productList: any[] = rawProducts ? [...rawProducts] : [];
 
-  if (!rawProducts || rawProducts.length === 0) {
+  if (productList.length === 0) {
     // Fallback: just fetch ANY featured products if no products match the specific category
     const { data: fallbackProducts } = await supabase
       .from('products')
       .select(`
         id, name_ar, name_en, slug, description_ar, category_id, brand_id, is_featured, is_active,
         product_images(url, is_primary),
+        categories(slug),
         product_variants!inner(
           id, price_syp, compare_price_syp, stock_quantity, is_active,
           variant_attributes(attribute_values(attribute_types(name_ar, name_en)))
@@ -58,16 +60,19 @@ export async function FeaturedCategoryProducts({
       .eq('is_featured', true)
       .limit(limit);
 
-    if (!fallbackProducts || fallbackProducts.length === 0) return null;
-    rawProducts.push(...fallbackProducts);
+    if (fallbackProducts && fallbackProducts.length > 0) {
+      productList.push(...fallbackProducts);
+    }
   }
 
+  if (productList.length === 0) return null;
+
   // Shuffle and pick 4
-  const shuffled = rawProducts.sort(() => 0.5 - Math.random()).slice(0, limit);
+  const shuffled = productList.sort(() => 0.5 - Math.random()).slice(0, limit);
 
   const formattedProducts = shuffled.map((p: any) => {
     const variants = Array.isArray(p.product_variants) ? p.product_variants : [];
-    const prices = variants.map((v: any) => Number(v.price_syp)).filter(n => !isNaN(n));
+    const prices = variants.map((v: any) => Number(v.price_syp)).filter((n: number) => !isNaN(n));
     const images = Array.isArray(p.product_images) ? p.product_images : [];
     const primaryImage = images.find((i: any) => i.is_primary) || images[0];
 
@@ -80,7 +85,7 @@ export async function FeaturedCategoryProducts({
       is_featured: p.is_featured,
       minPrice: Math.min(...prices),
       variants_count: variants.length,
-      total_stock: variants.reduce((acc, v) => acc + (v.stock_quantity ?? 0), 0),
+      total_stock: variants.reduce((acc: number, v: any) => acc + (v.stock_quantity ?? 0), 0),
     };
   });
 
