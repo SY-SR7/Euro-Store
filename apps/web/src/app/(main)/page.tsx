@@ -1,6 +1,7 @@
 import { CinematicShowcaseSection, type StoryBeat } from '@/components/home/CinematicShowcaseSection';
 import { HeroSection } from '@/components/home/HeroSection';
 import { FeaturedCategoryProducts } from '@/components/home/FeaturedCategoryProducts';
+import { BrandsMarquee } from '@/components/home/BrandsMarquee';
 import { getLocale, getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-dynamic';

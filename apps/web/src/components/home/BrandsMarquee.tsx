@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { createServerSupabaseClient } from '@/supabase-server';
 import { getLocale } from 'next-intl/server';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -7,6 +7,7 @@ export async function BrandsMarquee() {
   const locale = await getLocale();
   const isAr = locale === 'ar';
 
+  const supabase = createServerSupabaseClient();
   const { data: brands } = await supabase
     .from('brands')
     .select('id, name, slug, logo_url')
