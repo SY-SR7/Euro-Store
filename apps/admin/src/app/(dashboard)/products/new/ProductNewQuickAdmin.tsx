@@ -9,6 +9,9 @@ import { useLocale, useTranslations } from 'next-intl';
 
 type Category = { id: string; name_ar: string; name_en?: string | null };
 type Brand = { id: string; name: string };
+type MediaItem = 
+  | { type: 'file'; id: string; file: File; isImage: boolean }
+  | { type: 'url'; id: string; url: string };
 
 const inputClass =
   'w-full rounded-lg border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
@@ -64,8 +67,9 @@ export default function ProductNewQuickAdmin() {
     base_price_syp: '',
     sku: '',
   });
-  const [files, setFiles] = useState<File[]>([]);
-  const [primaryFile, setPrimaryFile] = useState<File | null>(null);
+  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+  const [primaryMediaId, setPrimaryMediaId] = useState<string | null>(null);
+  const [newUrl, setNewUrl] = useState('');
   
   const t = useTranslations('adminCatalog');
   const tCommon = useTranslations('common');
@@ -91,10 +95,13 @@ export default function ProductNewQuickAdmin() {
     setMsg('');
     try {
       let media: { type: 'image' | 'video', url: string, isPrimary: boolean, originalName: string }[] = [];
-      if (files.length > 0) {
+      const fileItems = mediaItems.filter((m): m is { type: 'file'; id: string; file: File; isImage: boolean } => m.type === 'file');
+      const urlItems = mediaItems.filter((m): m is { type: 'url'; id: string; url: string } => m.type === 'url');
+
+      if (fileItems.length > 0) {
         const formData = new FormData();
-        for (const file of files) {
-          formData.append('file', file);
+        for (const item of fileItems) {
+          formData.append('file', item.file);
         }
         const uploadRes = await fetch('/api/upload', {
           method: 'POST',
@@ -105,10 +112,22 @@ export default function ProductNewQuickAdmin() {
           throw new Error(uErr.error || 'Failed to upload media');
         }
         const uploadData = await uploadRes.json();
-        media = uploadData.files.map((f: any) => ({
-          ...f,
-          isPrimary: f.originalName === primaryFile?.name
+        media.push(...uploadData.files.map((f: any) => {
+          const matchItem = fileItems.find(fi => fi.file.name === f.originalName);
+          return {
+            ...f,
+            isPrimary: matchItem ? matchItem.id === primaryMediaId : false
+          };
         }));
+      }
+
+      for (const item of urlItems) {
+        media.push({
+          type: 'image',
+          url: item.url,
+          isPrimary: item.id === primaryMediaId,
+          originalName: item.url.split('/').pop() || 'image_from_url',
+        });
       }
 
       const product = await fetchJson<{ id?: string }>('/api/catalog/products', {
@@ -207,37 +226,71 @@ export default function ProductNewQuickAdmin() {
         <section className="rounded-lg border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
           <div className="mb-4 text-sm font-black text-text-primary">{t('media', { fallback: 'الوسائط (صور وفيديوهات)' })}</div>
           <div className="grid gap-4">
-            <input 
-              type="file" 
-              multiple 
-              accept="image/*,video/*"
-              onChange={(e) => {
-                if (e.target.files) {
-                  const newFiles = Array.from(e.target.files);
-                  setFiles((prev) => {
-                    const combined = [...prev, ...newFiles];
-                    if (!primaryFile && combined.length > 0) setPrimaryFile(combined[0]);
-                    return combined;
-                  });
-                }
-              }} 
-              className={inputClass}
-            />
-            {files.length > 0 && (
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input 
+                type="file" 
+                multiple 
+                accept="image/*,video/*"
+                onChange={(e) => {
+                  if (e.target.files) {
+                    const newFiles = Array.from(e.target.files).map((f) => ({
+                      type: 'file' as const,
+                      id: Math.random().toString(36).substring(2),
+                      file: f,
+                      isImage: f.type.startsWith('image/')
+                    }));
+                    setMediaItems((prev) => {
+                      const combined = [...prev, ...newFiles];
+                      if (!primaryMediaId && combined.length > 0) setPrimaryMediaId(combined[0].id);
+                      return combined;
+                    });
+                  }
+                }} 
+                className={inputClass}
+              />
+              <div className="flex gap-2 flex-1">
+                <input 
+                  type="text" 
+                  value={newUrl}
+                  onChange={e => setNewUrl(e.target.value)}
+                  placeholder={isAr ? "أو أضف رابط صورة هنا..." : "Or paste image URL here..."}
+                  dir="ltr"
+                  className={inputClass}
+                />
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    if (!newUrl.trim()) return;
+                    const newItem = { type: 'url' as const, id: Math.random().toString(36).substring(2), url: newUrl.trim() };
+                    setMediaItems((prev) => {
+                      const combined = [...prev, newItem];
+                      if (!primaryMediaId) setPrimaryMediaId(newItem.id);
+                      return combined;
+                    });
+                    setNewUrl('');
+                  }}
+                  className="rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-[#9A7209] whitespace-nowrap"
+                >
+                  {tCommon('add', { fallback: 'إضافة' })}
+                </button>
+              </div>
+            </div>
+            {mediaItems.length > 0 && (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
-                {files.map((file, idx) => {
-                  const isImage = file.type.startsWith('image/');
-                  const url = URL.createObjectURL(file);
-                  const isPrimary = file === primaryFile;
+                {mediaItems.map((item) => {
+                  const isPrimary = item.id === primaryMediaId;
+                  const displayUrl = item.type === 'file' ? URL.createObjectURL(item.file) : item.url;
+                  const isImage = item.type === 'file' ? item.isImage : true;
+                  
                   return (
-                    <div key={idx} className={`relative overflow-hidden rounded-lg border-2 ${isPrimary ? 'border-primary' : 'border-transparent'}`}>
+                    <div key={item.id} className={`relative overflow-hidden rounded-lg border-2 ${isPrimary ? 'border-primary' : 'border-transparent'}`}>
                       {isImage ? (
-                        <img src={url} alt={file.name} className="h-24 w-full bg-gray-100 object-cover" />
+                        <img src={displayUrl} alt="media" className="h-24 w-full bg-gray-100 object-cover" />
                       ) : (
-                        <video src={url} className="h-24 w-full bg-gray-100 object-cover" />
+                        <video src={displayUrl} className="h-24 w-full bg-gray-100 object-cover" />
                       )}
-                      <button type="button" onClick={() => setFiles(files.filter(f => f !== file))} className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-text-primary shadow-sm">×</button>
-                      <button type="button" onClick={() => setPrimaryFile(file)} className={`absolute bottom-0 left-0 right-0 py-1 text-center text-[10px] font-bold text-text-primary transition ${isPrimary ? 'bg-primary' : 'bg-black/50 hover:bg-black/70'}`}>
+                      <button type="button" onClick={() => setMediaItems(mediaItems.filter(f => f.id !== item.id))} className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-text-primary shadow-sm">×</button>
+                      <button type="button" onClick={() => setPrimaryMediaId(item.id)} className={`absolute bottom-0 left-0 right-0 py-1 text-center text-[10px] font-bold text-text-primary transition ${isPrimary ? 'bg-primary' : 'bg-black/50 hover:bg-black/70'}`}>
                         {isPrimary ? 'الرئيسية' : 'تعيين رئيسية'}
                       </button>
                     </div>
