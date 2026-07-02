@@ -49,7 +49,8 @@ export default async function HomePage() {
       {/* 0. HERO — Full-screen autoplay video with animated content */}
       <HeroSection />
 
-
+      {/* 0.5 BRANDS MARQUEE */}
+      <BrandsMarquee />
 
       {/* 1. SHOES (scroll-driven cinematic sequence) */}
       <CinematicShowcaseSection
