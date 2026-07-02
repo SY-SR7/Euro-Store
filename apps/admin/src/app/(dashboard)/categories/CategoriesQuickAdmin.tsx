@@ -167,7 +167,11 @@ export default function CategoriesQuickAdmin() {
 
   const createCategory = async () => {
     if (!newForm.name_ar) return;
-    await fetchJson<Category>('/api/catalog/categories', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...newForm, sort_order: Number(newForm.sort_order) || 0 }) });
+    const finalNameEn = newForm.name_en.trim() || newForm.name_ar.trim();
+    const generatedSlug = newForm.name_en.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    const finalSlug = newForm.slug.trim() || generatedSlug || `cat-${Math.random().toString(36).substring(2, 8)}`;
+
+    await fetchJson<Category>('/api/catalog/categories', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...newForm, name_en: finalNameEn, slug: finalSlug, sort_order: Number(newForm.sort_order) || 0 }) });
     setNewForm({ name_ar: '', name_en: '', slug: '', sort_order: '0' });
     setShowCreate(false);
     load();
