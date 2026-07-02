@@ -330,6 +330,82 @@ export interface Database {
         Update: Partial<Database['public']['Tables']['product_videos']['Insert']>;
         Relationships: [];
       };
+      wishlist_items: {
+        Row: {
+          id: string;
+          customer_id: string;
+          product_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          customer_id: string;
+          product_id: string;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['wishlist_items']['Insert']>;
+        Relationships: [
+          {
+            foreignKeyName: "wishlist_items_customer_id_fkey"
+            columns: ["customer_id"]
+            referencedRelation: "customer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wishlist_items_product_id_fkey"
+            columns: ["product_id"]
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          }
+        ];
+      };
+      product_reviews: {
+        Row: {
+          id: string;
+          product_id: string;
+          customer_id: string;
+          order_id: string;
+          rating: number;
+          comment: string | null;
+          status: 'pending' | 'approved' | 'rejected';
+          moderated_by: string | null;
+          moderated_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          customer_id: string;
+          order_id: string;
+          rating: number;
+          comment?: string | null;
+          status?: 'pending' | 'approved' | 'rejected';
+          moderated_by?: string | null;
+          moderated_at?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<Database['public']['Tables']['product_reviews']['Insert']>;
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_product_id_fkey"
+            columns: ["product_id"]
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_reviews_customer_id_fkey"
+            columns: ["customer_id"]
+            referencedRelation: "customer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_reviews_order_id_fkey"
+            columns: ["order_id"]
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          }
+        ];
+      };
       orders: {
         Row: {
           id: string;
