@@ -20,7 +20,7 @@ export function WishlistButton({ productId, size = 'md' }: { productId: string; 
         e.stopPropagation();
         void toggle(productId);
       }}
-      className={`relative z-50 flex ${dims} items-center justify-center rounded-full bg-background-card/90 shadow-sm backdrop-blur transition-all hover:scale-110 hover:bg-background-card`}
+      className={`relative z-50 flex ${dims} items-center justify-center rounded-full bg-white/90 shadow-sm backdrop-blur transition-all hover:scale-110 hover:bg-white`}
     >
       <Heart
         className={`${iconDims} transition-colors ${
