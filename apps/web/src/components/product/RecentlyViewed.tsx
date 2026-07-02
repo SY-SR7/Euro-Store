@@ -31,7 +31,7 @@ export function RecentlyViewed() {
               whileHover={{ y: -5 }}
               className='snap-start shrink-0 w-48 group'
             >
-              <Link href={\/products/\\} className='block'>
+              <Link href={`/products/${item.slug}`} className='block'>
                 <div className='relative aspect-[4/5] rounded-xl overflow-hidden bg-background-secondary mb-3 border border-border/50 group-hover:border-primary/30 transition-colors'>
                   <Image
                     src={item.imageUrl || 'https://via.placeholder.com/200'}
