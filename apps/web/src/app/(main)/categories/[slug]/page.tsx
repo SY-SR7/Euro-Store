@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { createServerSupabaseClient } from '@/supabase-server';
 import { FilterableProductGrid } from '../../../filterable-product-grid';
+import type { Metadata, ResolvingMetadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,38 @@ function LoadingGrid() {
       ))}
     </div>
   );
+}
+
+export async function generateMetadata(
+  { params }: { params: { slug: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const supabase = createServerSupabaseClient();
+  const { data: category } = await supabase
+    .from('categories')
+    .select('name_ar, name_en, description_ar, description_en')
+    .eq('slug', params.slug)
+    .single();
+
+  if (!category) return {};
+
+  const title = category.name_ar || category.name_en;
+  const description = category.description_ar || category.description_en || `تسوق أحدث منتجات ${title} من يورو ستور`;
+
+  return {
+    title: `${title} | EuroStore`,
+    description: description?.substring(0, 160),
+    openGraph: {
+      title: `${title} | EuroStore`,
+      description: description?.substring(0, 160),
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${title} | EuroStore`,
+      description: description?.substring(0, 160),
+    },
+  };
 }
 
 export default async function CategoryPage({ params }: { params: { slug: string } }) {
