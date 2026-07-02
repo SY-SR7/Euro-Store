@@ -114,12 +114,14 @@ export default function ProductPage({ params }: { params: any }) {
     (async () => {
       setLoading(true);
 
-      const { data: prod } = await supabase
+      const { data: prod, error } = await supabase
         .from('products')
         .select('id,name_ar,name_en,slug,description_ar,category_id,brand_id,image_url,is_featured')
         .eq('slug', slug)
         .eq('is_active', true)
         .maybeSingle();
+
+      if (error) console.error('Product fetch error:', error);
 
       if (!alive) return;
 
