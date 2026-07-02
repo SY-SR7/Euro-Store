@@ -28,7 +28,7 @@ function anonKey(): string {
 function serviceRoleKey(): string {
   return envValue(
     'SUPABASE_SERVICE_ROLE_KEY',
-    process.env.SUPABASE_SERVICE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? 'development-service-role-key'
+    process.env.SUPABASE_SERVICE_KEY ?? 'development-service-role-key'
   );
 }
 
