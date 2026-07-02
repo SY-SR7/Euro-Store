@@ -39,12 +39,15 @@ export default function ProfileScreen() {
             <Text className='text-white font-bold text-base'>??????</Text>
             <Text className='text-text-secondary font-bold'>{'<'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity className='bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3'>
-            <Text className='text-white font-bold text-base'>????????? ???????</Text>
+          <TouchableOpacity 
+            className='bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3'
+            onPress={() => router.push('/wishlist')}
+          >
+            <Text className='text-white font-bold text-base'>المفضلة</Text>
             <Text className='text-text-secondary font-bold'>{'<'}</Text>
           </TouchableOpacity>
           <TouchableOpacity className='bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-6'>
-            <Text className='text-white font-bold text-base'>????? ????</Text>
+            <Text className='text-white font-bold text-base'>تواصل معنا</Text>
             <Text className='text-text-secondary font-bold'>{'<'}</Text>
           </TouchableOpacity>
         </View>
