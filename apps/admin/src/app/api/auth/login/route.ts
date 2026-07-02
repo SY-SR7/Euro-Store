@@ -1,23 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@supabase/ssr';
+import { authRatelimit } from '@/lib/ratelimit';
 
 export const dynamic = 'force-dynamic';
-
-function envValue(name: string, fallback?: string) {
-  const value = process.env[name] ?? fallback;
-  if (!value) throw new Error(`Missing environment variable: ${name}`);
-  return value;
-}
-
-function supabaseUrl() {
-  return envValue('NEXT_PUBLIC_SUPABASE_URL', process.env.SUPABASE_URL);
-}
-
-function anonKey() {
-  return envValue('NEXT_PUBLIC_SUPABASE_ANON_KEY', process.env.SUPABASE_ANON_KEY);
-}
-
-import { authRatelimit } from '@/lib/ratelimit';
 
 export async function POST(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for') ?? 'anonymous';
@@ -27,8 +12,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const body = await req.json().catch(() => null) as { email?: string; password?: string } | null;
-
+    const body = await req.json().catch(() => null);
     const email = body?.email?.trim() ?? '';
     const password = body?.password ?? '';
 
@@ -36,55 +20,52 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'أدخل البريد الإلكتروني وكلمة المرور' }, { status: 400 });
     }
 
-    const supabase = createClient(supabaseUrl(), anonKey(), {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+    // We collect all cookies set by Supabase during signInWithPassword
+    const cookiesToSet: Array<{ name: string; value: string; options: Record<string, unknown> }> = [];
+
+    const supabase = createServerClient(supabaseUrl, supabaseAnon, {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll();
+        },
+        setAll(cookies) {
+          cookiesToSet.push(...cookies);
+        },
       },
     });
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error || !data.session || !data.user) {
-      return NextResponse.json(
-        { error: error?.message || 'فشل تسجيل الدخول' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: error?.message || 'فشل تسجيل الدخول' }, { status: 401 });
     }
 
-    const isProd = process.env.NODE_ENV === 'production';
-    const response = NextResponse.json({
-      ok: true,
-      user: {
-        id: data.user.id,
-        email: data.user.email,
-      },
-    });
+    // Build success response and apply all cookies collected
+    const response = NextResponse.json({ ok: true });
 
-    response.cookies.set('sb-access-token', data.session.access_token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: isProd,
-      path: '/',
-      maxAge: data.session.expires_in || 3600,
-    });
+    for (const { name, value, options } of cookiesToSet) {
+      response.cookies.set({
+        name,
+        value,
+        ...(options as object),
+        // Security hardening
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+      });
+    }
 
-    response.cookies.set('sb-refresh-token', data.session.refresh_token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: isProd,
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-    });
+    // Also delete any old-format Supabase cookies that might cause conflicts in middleware
+    response.cookies.set({ name: 'sb-access-token', value: '', maxAge: 0, path: '/' });
+    response.cookies.set({ name: 'sb-refresh-token', value: '', maxAge: 0, path: '/' });
 
     return response;
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'database_error' },
-      { status: 500 }
-    );
+  } catch (err) {
+    console.error('Login error:', err);
+    return NextResponse.json({ error: 'database_error' }, { status: 500 });
   }
 }

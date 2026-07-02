@@ -63,25 +63,25 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
         const isMobile = width < 768;
 
         if (isMobile) {
-          // On mobile (portrait), if we use cover, the sides of the 16:9 video get chopped severely.
-          // To fix "لا يظهر الحذاء بأكمله", we use contain logic but scaled up slightly (e.g. 1.2x) 
-          // so it fills more height without chopping too much width.
-          const scale = (width / img.naturalWidth) * 1.3; // 130% of contain width
+          // On mobile (portrait screen + portrait video), the user prefers the zoomed-in look 
+          // (1.3x scale) to fill the screen better.
+          const scale = (width / img.naturalWidth) * 1.3;
           drawW = img.naturalWidth * scale;
           drawH = img.naturalHeight * scale;
           drawX = (width - drawW) / 2;
-          drawY = (height - drawH) / 2;
+          // Align to the bottom, but shift UP by 90px to clear the mobile bottom navigation bar!
+          drawY = height - drawH - 90;
         } else {
-          // On desktop, we use cover logic for full cinematic immersion
-          if (imgAspect > canvasAspect) {
-            // Image is wider than canvas -> scale by height
-            drawH = height; drawW = height * imgAspect;
-            drawX = (width - drawW) / 2; drawY = 0;
-          } else {
-            // Image is taller than canvas -> scale by width
-            drawW = width; drawH = width / imgAspect;
-            drawX = 0; drawY = (height - drawH) / 2;
-          }
+          // On desktop, we want a cinematic feel without extreme zooming of 'cover'.
+          // We scale up the 'contain' size by ~1.35x, and anchor it towards the bottom 
+          // (which effectively crops out the empty top part of the portrait video).
+          const scale = (height / img.naturalHeight) * 1.35;
+          drawW = img.naturalWidth * scale;
+          drawH = img.naturalHeight * scale;
+          drawX = (width - drawW) / 2; // Center horizontally
+          // By subtracting drawH from height, we align the bottom of the image 
+          // with the bottom of the canvas, pushing all the excess height to the top (cropping it).
+          drawY = height - drawH + (height * 0.05); // slight padding at bottom
         }
 
         // We fill the canvas with a background color if we want, but it's transparent by default

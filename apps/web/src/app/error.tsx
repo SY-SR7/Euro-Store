@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { RefreshCcw, Home } from 'lucide-react';
+import { RefreshCw, Home } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Error({

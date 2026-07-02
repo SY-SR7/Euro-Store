@@ -45,15 +45,18 @@ export function HeroSection() {
       className="relative h-screen w-full overflow-hidden flex items-center justify-center"
       dir="rtl"
     >
-      {/* ── Background Image with subtle zoom & parallax ── */}
-      <motion.img
+      {/* ── Background Video with subtle zoom & parallax ── */}
+      <motion.video
         initial={{ scale: 1.05 }}
         animate={{ scale: 1 }}
         transition={{ duration: 10, ease: 'easeOut' }}
         style={{ y: prefersReduced ? 0 : y }}
         className="absolute inset-0 w-full h-full object-cover will-change-transform"
-        src="/images/hero-bg.png"
-        alt="Hero Background"
+        src="/videos/385198338_fb_trim.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
       />
 
       {/* ── Dark cinematic overlay with radial shading behind text ── */}

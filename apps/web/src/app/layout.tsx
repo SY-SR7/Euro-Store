@@ -36,7 +36,6 @@ import { PageTransitionProvider } from '../components/layout/PageTransitionProvi
 import { Toaster } from 'sonner';
 import { EuroConcierge } from '@/components/common/EuroConcierge';
 import { KonamiCode } from '@/components/common/KonamiCode';
-import { Credits } from '@/components/common/Credits';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -61,7 +60,7 @@ export default async function RootLayout({
           <Toaster position="bottom-center" toastOptions={{ style: { background: '#1F1B16', color: '#F7F0DF', border: '1px solid #332C24' } }} />
           <EuroConcierge />
           <KonamiCode />
-          <Credits />
+
           <Analytics />
           <SpeedInsights />
         </NextIntlClientProvider>

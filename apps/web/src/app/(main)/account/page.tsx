@@ -6,6 +6,7 @@ import { getSessionClient } from '@/supabase-server';
 import { ShoppingBag, Star, RefreshCw, User, LogOut, ChevronLeft, ChevronRight, Phone, ShieldCheck, FileText, Info } from 'lucide-react';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { LogoutButton } from '@/components/common/LogoutButton';
+import { AccountLanguageButton } from '@/components/account/AccountLanguageButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,6 +77,12 @@ export default async function AccountPage() {
               </div>
             </Link>
           ))}
+        </div>
+
+        {/* Preferences */}
+        <div className="grid gap-3">
+          <h2 className="text-sm font-bold text-text-muted px-2 mt-2">{isAr ? 'التفضيلات' : 'Preferences'}</h2>
+          <AccountLanguageButton />
         </div>
 
         {/* Info links */}

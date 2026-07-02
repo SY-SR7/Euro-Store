@@ -6,7 +6,7 @@ import Link from 'next/link';
 export async function FeaturedCategoryProducts({ 
   categorySlugs, 
   title, 
-  bgColor = '#0C0C0C',
+  bgColor,
   limit = 4 
 }: { 
   categorySlugs?: string[]; 
@@ -26,7 +26,8 @@ export async function FeaturedCategoryProducts({
       product_images(url, is_primary),
       categories!inner(slug),
       product_variants!inner(
-        id, price_syp, compare_price_syp, stock_quantity, is_active
+        id, price_syp, compare_price_syp, stock_quantity, is_active,
+        variant_attributes(attribute_values(attribute_types(name_ar, name_en)))
       )
     `)
     .eq('is_active', true)
@@ -48,7 +49,8 @@ export async function FeaturedCategoryProducts({
         id, name_ar, name_en, slug, description_ar, category_id, brand_id, is_featured, is_active,
         product_images(url, is_primary),
         product_variants!inner(
-          id, price_syp, compare_price_syp, stock_quantity, is_active
+          id, price_syp, compare_price_syp, stock_quantity, is_active,
+          variant_attributes(attribute_values(attribute_types(name_ar, name_en)))
         )
       `)
       .eq('is_active', true)
@@ -83,14 +85,14 @@ export async function FeaturedCategoryProducts({
   });
 
   return (
-    <section style={{ backgroundColor: bgColor }} className="py-16 md:py-24 px-4 relative z-10 border-t border-white/5">
+    <section style={bgColor ? { backgroundColor: bgColor } : undefined} className={`py-16 md:py-24 px-4 relative z-10 border-t border-border/30 ${!bgColor && 'bg-background'}`}>
       <div className="container mx-auto">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <h2 className="text-3xl md:text-5xl font-black font-headline text-white mb-2">{title}</h2>
+            <h2 className="text-3xl md:text-5xl font-black font-headline text-text-primary mb-2">{title}</h2>
             <div className="h-1 w-20 bg-primary rounded-full"></div>
           </div>
-          <Link href="/products" className="text-sm font-bold text-primary hover:text-[#E2E2E2] transition-colors hidden md:block">
+          <Link href="/products" className="text-sm font-bold text-primary hover:text-[#9A7209] transition-colors hidden md:block">
             {isAr ? 'عرض المزيد' : 'View More'}
           </Link>
         </div>

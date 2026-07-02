@@ -30,6 +30,8 @@ interface Props {
   frameSrcPattern: string;
   /** عدد الإطارات الكلي */
   frameCount: number;
+  /** الإزاحة في عدد الإطارات لتخطي البداية */
+  frameOffset?: number;
   /** ارتفاع مساحة السكرول — مثال: "300vh" */
   scrollHeight?: string;
   /** نصوص القصة التي تظهر على مراحل */
@@ -69,30 +71,30 @@ function ScrollBeat({
   return (
     <motion.div
       style={{ opacity, y }}
-      className="absolute inset-0 flex flex-col justify-end pointer-events-none will-change-transform"
+      className="absolute inset-0 flex flex-col justify-start pointer-events-none will-change-transform pt-[25vh] md:pt-[35vh]"
       dir={isAr ? "rtl" : "ltr"}
     >
-      {/* Frosted glass text card — removed for clean look */}
+      {/* Frosted glass text card restored */}
       <div
-        className="relative z-10 mx-8 mb-12 md:mx-14 md:mb-16 text-right max-w-xs md:max-w-sm mr-auto px-6 py-5"
+        className="relative z-10 mx-8 md:mx-14 text-right max-w-xs md:max-w-sm mr-auto px-8 py-7 bg-white/40 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl"
       >
         {/* Pre-Title Label */}
-        <p className={`text-[10px] font-bold tracking-[0.25em] uppercase mb-2 ${isLightBg ? 'text-text-primary opacity-60' : 'text-primary opacity-80'}`}>
+        <p className={`text-[10px] font-bold tracking-[0.25em] uppercase mb-2 text-text-primary opacity-60`}>
           EUROSTORE
         </p>
 
         {/* Title */}
         <motion.h2
-          className={`text-2xl md:text-3xl lg:text-4xl font-black leading-tight ${isLightBg ? 'text-text-primary' : 'text-text-primary'}`}
+          className={`text-2xl md:text-3xl lg:text-4xl font-black leading-tight text-text-primary`}
           style={{
-            filter: isLightBg ? 'none' : 'drop-shadow(0px 2px 4px rgba(0,0,0,0.5))'
+            filter: 'none'
           }}
         >
           {beat.title}
         </motion.h2>
 
         {/* Subtitle */}
-        <p className={`mt-2 text-xs md:text-sm leading-relaxed font-semibold tracking-wide ${isLightBg ? 'text-[#333333]' : 'text-[#D4D4D4] drop-shadow-sm'}`}>
+        <p className={`mt-2 text-xs md:text-sm leading-relaxed font-semibold tracking-wide text-[#333333]`}>
           {beat.subtitle}
         </p>
 
@@ -105,11 +107,7 @@ function ScrollBeat({
           >
             <Link
               href={beat.ctaHref}
-              className={`pointer-events-auto inline-flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors duration-300 rounded-lg ${
-                isLightBg 
-                  ? 'bg-black text-white hover:bg-black/80' 
-                  : 'bg-background-card text-text-primary hover:bg-gray-200'
-              }`}
+              className={`pointer-events-auto inline-flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors duration-300 rounded-lg bg-black text-white hover:bg-black/80`}
             >
               {beat.ctaLabel}
             </Link>
@@ -169,6 +167,7 @@ function CanvasBridge({
 export function CinematicShowcaseSection({
   frameSrcPattern,
   frameCount,
+  frameOffset = 0,
   scrollHeight = '350vh',
   storyBeats,
   bgColor = '#0C0C0C',
@@ -176,13 +175,13 @@ export function CinematicShowcaseSection({
   // Build the frameSrc function from the pattern string — stays client-side only
   const frameSrc = useCallback(
     (index: number) => {
-      // Support {index:04d} padding notation
-      const padded = String(index + 1).padStart(4, '0');
+      // Support {index:04d} padding notation. index + 1 makes it 1-based.
+      const padded = String(index + 1 + frameOffset).padStart(4, '0');
       return frameSrcPattern
         .replace('{index:04d}', padded)
-        .replace('{index}', String(index));
+        .replace('{index}', String(index + frameOffset));
     },
-    [frameSrcPattern],
+    [frameSrcPattern, frameOffset],
   );
   const prefersReduced = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -241,10 +240,7 @@ export function CinematicShowcaseSection({
           <ScrollBeat key={i} beat={beat} scrollProgress={smoothProgress} isLightBg={bgColor === '#dfdcd3'} />
         ))}
 
-        {/* Brand mark */}
-        <div className="absolute top-8 right-8 text-text-primary text-xs font-bold tracking-[0.3em] uppercase opacity-50 select-none">
-          EUROSTORE
-        </div>
+        {/* Brand mark removed as per request */}
 
         {/* Timeline progress bar */}
         <div className="absolute bottom-0 inset-x-0 h-[2px] bg-background-card/10">

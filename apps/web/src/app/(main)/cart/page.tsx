@@ -50,41 +50,48 @@ export default function CartPage() {
           <div className="space-y-3">
             {items.map((item: any) => (
               <div key={item.variantId}
-                className="flex items-center gap-4 rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
-                {/* Image */}
-                <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-[#E5E0D8] bg-[#F5F0E8]">
-                  {item.imageUrl
-                    ? <img src={item.imageUrl} alt={item.nameAr} className="h-full w-full object-cover" />
-                    : <span className="text-xs text-primary text-center px-1 leading-tight">{item.nameAr}</span>}
+                className="flex flex-col md:flex-row md:items-center gap-4 rounded-2xl border border-border bg-background-card p-4 shadow-sm">
+                
+                {/* Top Section (Mobile) / Left Section (Desktop) */}
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                  {/* Image */}
+                  <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-border bg-background-secondary">
+                    {item.imageUrl
+                      ? <img src={item.imageUrl} alt={item.nameAr} className="h-full w-full object-cover" />
+                      : <span className="text-xs text-primary text-center px-1 leading-tight">{item.nameAr}</span>}
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-text-primary truncate">{isAr ? item.nameAr : (item.nameEn || item.nameAr)}</p>
+                    <p className="text-xs text-text-muted font-mono mt-0.5">{item.sku}</p>
+                    <p className="text-sm font-bold text-primary mt-1">{fmt(item.priceSyp, locale)}</p>
+                  </div>
                 </div>
 
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-text-primary truncate">{isAr ? item.nameAr : (item.nameEn || item.nameAr)}</p>
-                  <p className="text-xs text-text-muted font-mono mt-0.5">{item.sku}</p>
-                  <p className="text-sm font-bold text-primary mt-1">{fmt(item.priceSyp, locale)}</p>
-                </div>
+                {/* Bottom Section (Mobile) / Right Section (Desktop) */}
+                <div className="flex items-center justify-between gap-4 border-t border-border/50 pt-3 md:border-none md:pt-0">
+                  {/* Qty + remove */}
+                  <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                    <button onClick={() => updateQty(item.variantId, item.quantity - 1)}
+                      className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-lg font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors">
+                      −
+                    </button>
+                    <span className="w-6 sm:w-8 text-center text-sm font-black text-text-primary">{item.quantity}</span>
+                    <button onClick={() => updateQty(item.variantId, item.quantity + 1)}
+                      className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-lg font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors">
+                      +
+                    </button>
+                    <button onClick={() => removeItem(item.variantId)}
+                      className="ms-2 text-xs font-semibold text-error hover:text-red-700 transition-colors">
+                      {t('remove')}
+                    </button>
+                  </div>
 
-                {/* Qty + remove */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <button onClick={() => updateQty(item.variantId, item.quantity - 1)}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E0D8] text-lg font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors">
-                    −
-                  </button>
-                  <span className="w-8 text-center text-sm font-black text-text-primary">{item.quantity}</span>
-                  <button onClick={() => updateQty(item.variantId, item.quantity + 1)}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#E5E0D8] text-lg font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors">
-                    +
-                  </button>
-                  <button onClick={() => removeItem(item.variantId)}
-                    className="mr-1 text-xs font-semibold text-red-500 hover:text-red-700 transition-colors px-2 py-1">
-                    {t('remove')}
-                  </button>
-                </div>
-
-                {/* Line total */}
-                <div className="text-sm font-black text-primary shrink-0 min-w-[80px] text-left">
-                  {fmt(item.priceSyp * item.quantity, locale)}
+                  {/* Line total */}
+                  <div className="text-sm font-black text-primary shrink-0 min-w-[80px] text-end">
+                    {fmt(item.priceSyp * item.quantity, locale)}
+                  </div>
                 </div>
               </div>
             ))}

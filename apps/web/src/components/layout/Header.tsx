@@ -55,8 +55,8 @@ export function Header({ loyaltyPoints = null }: { loyaltyPoints?: number | null
         />
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
 
-          <Link href="/" className="text-base font-black tracking-[0.18em] text-text-primary">
-            EURO STORE
+          <Link href="/" className="flex items-center">
+            <img src="/images/logo.png" alt="Euro Store" className="h-10 w-auto object-contain" />
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">
@@ -100,8 +100,7 @@ export function Header({ loyaltyPoints = null }: { loyaltyPoints?: number | null
               </Link>
             )}
 
-            <LanguageSwitcher />
-            
+            {/* Language Switcher moved to account page */}
           </div>
         </div>
       </motion.header>

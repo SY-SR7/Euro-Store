@@ -6,8 +6,10 @@ export const dynamic = 'force-dynamic';
 
 type RevenueRow = { total_syp: number|string|null };
 
-export async function GET() {
+export async function GET(req: any) {
+  console.log('[API Stats] Cookies:', req.cookies.getAll());
   const ctx = await requireAdminContext();
+  console.log('[API Stats] ctx:', ctx ? 'Found' : 'Null');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   try {

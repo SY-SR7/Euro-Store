@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
+import { createBrowserClient } from '@supabase/ssr';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 
 function safeNext(value: string | null) {
@@ -41,41 +42,30 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
-    const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), 15000);
-
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        cache: 'no-store',
-        credentials: 'same-origin',
-        signal: controller.signal,
-        body: JSON.stringify({
-          email: cleanEmail,
-          password,
-        }),
+      // Use browser client directly — this sets cookies in the correct format
+      // that the SSR middleware can read natively
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password,
       });
 
-      const payload = await res.json().catch(() => null) as { error?: string } | null;
-
-      if (!res.ok) {
-        setError(payload?.error || t('errors.loginFailed', { fallback: 'فشل تسجيل الدخول' }));
+      if (authError || !data.session) {
+        setError(authError?.message || t('errors.loginFailed', { fallback: 'فشل تسجيل الدخول' }));
         setLoading(false);
         return;
       }
 
+      // Navigate to the next page — cookies are already set by createBrowserClient
       window.location.assign(next);
     } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') {
-        setError(t('errors.timeout', { fallback: 'انتهت مهلة تسجيل الدخول. تحقق من اتصال Supabase ثم حاول مرة أخرى.' }));
-      } else {
-        setError(err instanceof Error ? err.message : t('errors.cannotLogin', { fallback: 'تعذر تسجيل الدخول' }));
-      }
-
+      setError(err instanceof Error ? err.message : t('errors.cannotLogin', { fallback: 'تعذر تسجيل الدخول' }));
       setLoading(false);
-    } finally {
-      window.clearTimeout(timeout);
     }
   }
 
@@ -86,11 +76,13 @@ export default function LoginPage() {
       </div>
       <section className="w-full max-w-md rounded-3xl border border-border bg-background-card p-8 shadow-xl">
         <div className="mb-8 text-center">
-          <p className="text-sm font-black tracking-[0.35em] text-primary">EURO STORE</p>
+          <div className="flex justify-center mb-4">
+            <img src="/logo.png" alt="Euro Store" className="h-16 w-auto object-contain" />
+          </div>
           <h1 className="mt-4 text-3xl font-black text-[#1F1B16]">{t('adminLogin', { fallback: 'تسجيل دخول الإدارة' })}</h1>
         </div>
 
-        <form onSubmit={handleSubmit} method="post" className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
             <div className="rounded-2xl border border-red-300 bg-red-50 p-4 text-sm font-bold text-red-700">
               {error}

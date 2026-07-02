@@ -1,6 +1,5 @@
 import { CinematicShowcaseSection, type StoryBeat } from '@/components/home/CinematicShowcaseSection';
 import { HeroSection } from '@/components/home/HeroSection';
-import { BentoFeatures } from '@/components/home/BentoFeatures';
 import { FeaturedCategoryProducts } from '@/components/home/FeaturedCategoryProducts';
 import { getLocale, getTranslations } from 'next-intl/server';
 
@@ -50,13 +49,13 @@ export default async function HomePage() {
       {/* 0. HERO — Full-screen autoplay video with animated content */}
       <HeroSection />
 
-      {/* 0.5 Bento Features */}
-      <BentoFeatures />
+
 
       {/* 1. SHOES (scroll-driven cinematic sequence) */}
       <CinematicShowcaseSection
         frameSrcPattern="/frames/shoes/frame_{index:04d}.jpg"
-        frameCount={120}
+        frameCount={236}
+        frameOffset={5}
         scrollHeight="250vh"
         storyBeats={SHOES_STORY_BEATS}
         bgColor="#dfdcd3"
@@ -64,7 +63,6 @@ export default async function HomePage() {
       <FeaturedCategoryProducts 
         categorySlugs={['shoes']} 
         title={isAr ? 'أحذية مميزة' : 'Featured Shoes'} 
-        bgColor="#0C0C0C"
       />
 
       {/* 2. MEN */}
@@ -73,12 +71,11 @@ export default async function HomePage() {
         frameCount={FRAME_COUNT}
         scrollHeight="250vh"
         storyBeats={MEN_STORY_BEATS}
-        bgColor="#0F1012"
+        bgColor="#FDFBF7"
       />
       <FeaturedCategoryProducts 
         categorySlugs={['men-shirts']} 
         title={isAr ? 'أزياء رجالية مميزة' : 'Featured Men'} 
-        bgColor="#0C0C0C"
       />
 
       {/* 3. WOMEN (Dresses & Abayas) */}
@@ -87,12 +84,11 @@ export default async function HomePage() {
         frameCount={FRAME_COUNT}
         scrollHeight="250vh"
         storyBeats={WOMEN_STORY_BEATS}
-        bgColor="#120A0B"
+        bgColor="#FDFBF7"
       />
       <FeaturedCategoryProducts 
         categorySlugs={['women-dresses', 'modest-wear']} 
         title={isAr ? 'أزياء نسائية مميزة' : 'Featured Women'} 
-        bgColor="#0C0C0C"
       />
 
       {/* 4. KIDS */}
@@ -101,12 +97,11 @@ export default async function HomePage() {
         frameCount={FRAME_COUNT}
         scrollHeight="250vh"
         storyBeats={KIDS_STORY_BEATS}
-        bgColor="#0A0F11"
+        bgColor="#FDFBF7"
       />
       <FeaturedCategoryProducts 
         categorySlugs={['kids']} 
         title={isAr ? 'أزياء أطفال مميزة' : 'Featured Kids'} 
-        bgColor="#0C0C0C"
       />
     </main>
   );

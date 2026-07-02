@@ -38,7 +38,7 @@ function stockBadge(stock: number | null | undefined, t: any) {
   );
 }
 
-export function ProductCard({ product, minPrice, variantCount, totalStock }: any) {
+export function ProductCard({ product, minPrice, variantCount, totalStock, varyingAttributes }: any) {
   const locale = useLocale();
   const t = useTranslations('catalog');
   const isAr = locale === 'ar';
@@ -58,23 +58,71 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
     product?.stock ??
     null;
 
+  let dynamicVariantsText = null;
+  let varyingAttrsNames: string[] = [];
+
+  if (varyingAttributes && Array.isArray(varyingAttributes)) {
+    varyingAttrsNames = varyingAttributes.map((attr: any) => isAr ? attr.name_ar : (attr.name_en || attr.name_ar));
+  } else if (product?.product_variants && Array.isArray(product.product_variants)) {
+    const attrValuesMap = new Map<string, Set<string>>();
+    
+    product.product_variants.forEach((v: any) => {
+      if (v.variant_attributes && Array.isArray(v.variant_attributes)) {
+        v.variant_attributes.forEach((va: any) => {
+          const attrTypeAr = va.attribute_values?.attribute_types?.name_ar;
+          const attrTypeEn = va.attribute_values?.attribute_types?.name_en;
+          const valId = va.attribute_values?.id;
+          
+          if (attrTypeAr && valId) {
+            const attrName = isAr ? attrTypeAr : (attrTypeEn || attrTypeAr);
+            if (!attrValuesMap.has(attrName)) {
+              attrValuesMap.set(attrName, new Set());
+            }
+            attrValuesMap.get(attrName)!.add(valId);
+          }
+        });
+      }
+    });
+
+    attrValuesMap.forEach((values, name) => {
+      if (values.size > 1) {
+        varyingAttrsNames.push(name.toLowerCase());
+      }
+    });
+  }
+
+  if (varyingAttrsNames.length > 0) {
+    if (varyingAttrsNames.length === 1) {
+      dynamicVariantsText = isAr 
+        ? `يتوفر بأكثر من ${varyingAttrsNames[0]}` 
+        : `Available in multiple ${varyingAttrsNames[0]}s`;
+    } else if (varyingAttrsNames.length === 2) {
+      dynamicVariantsText = isAr 
+        ? `يتوفر بأكثر من ${varyingAttrsNames[0]} و${varyingAttrsNames[1]}` 
+        : `Available in multiple ${varyingAttrsNames[0]}s and ${varyingAttrsNames[1]}s`;
+    } else {
+      const last = varyingAttrsNames.pop();
+      dynamicVariantsText = isAr 
+        ? `يتوفر بأكثر من ${varyingAttrsNames.join('، ')} و${last}` 
+        : `Available in multiple ${varyingAttrsNames.join(', ')} and ${last}s`;
+    }
+  }
+
   return (
-    <div
-      className="group flex min-h-full flex-col overflow-hidden rounded-2xl border border-border bg-background-card shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-md relative"
-    >
-      <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10" aria-label={productName || 'product'} />
-      <div className="relative aspect-[4/3] overflow-hidden bg-[#F3EDE3]">
-        <div className="absolute left-2 top-2 z-20">
-          <WishlistButton productId={product.id} size="sm" />
-        </div>
+    <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-background-card transition-all hover:shadow-lg hover:-translate-y-1 hover:border-primary/30">
+      <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10" aria-label={productName} />
+
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-background-secondary">
         <ImageWithFallback
           src={product.image_url || product.image || product.thumbnail_url}
           alt={productName || 'product'}
-          kind="product"
-          label={t('productImage')}
-          sublabel={productName}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
+        
+        <div className="absolute left-2 top-2 z-50">
+          <WishlistButton productId={product.id} size="sm" />
+        </div>
 
         {product.is_featured && (
           <span className="absolute right-2 top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-black text-text-primary shadow">
@@ -89,7 +137,7 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
 
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div>
-          <p className="line-clamp-2 font-black leading-tight text-[#1F1B16]">
+          <p className="line-clamp-2 font-black leading-tight text-text-primary">
             {productName}
           </p>
           {(!isAr && product.name_ar) && (
@@ -105,11 +153,11 @@ export function ProductCard({ product, minPrice, variantCount, totalStock }: any
         </div>
 
         <div className="mt-auto space-y-2 pt-2">
-          <div className="flex flex-wrap items-center gap-2 text-[11px] text-[#6F6658]">
-            {variants != null && (
+          <div className="flex flex-wrap items-center gap-2 text-[11px] text-text-secondary">
+            {(dynamicVariantsText || (variants != null && variants > 1)) && (
               <span className="inline-flex items-center gap-1 rounded-full bg-background px-2 py-1 font-bold">
                 <Layers3 className="h-3 w-3 text-primary" />
-                {variants} {t('variant')}
+                {dynamicVariantsText ? dynamicVariantsText : `${variants} ${t('variant')}`}
               </span>
             )}
             <span className="inline-flex items-center gap-1 rounded-full bg-background px-2 py-1 font-bold">

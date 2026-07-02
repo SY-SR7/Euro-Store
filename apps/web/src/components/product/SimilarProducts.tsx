@@ -3,13 +3,15 @@
 import { useEffect, useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { ProductCard } from '@/components/product/ProductCard';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 export function SimilarProducts({ categoryId, currentProductId }: { categoryId: string; currentProductId: string }) {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const t = useTranslations('catalog');
   const tCommon = useTranslations('common');
+  const td = useTranslations('productDetails');
+  const isAr = useLocale() === 'ar';
 
   useEffect(() => {
     if (!categoryId) return;
@@ -50,11 +52,11 @@ export function SimilarProducts({ categoryId, currentProductId }: { categoryId: 
   if (products.length === 0) return null;
 
   return (
-    <section className="py-10 border-t border-border">
+    <section className="py-10 border-t border-border" dir={isAr ? "rtl" : "ltr"}>
       <div className="mb-8 flex items-end justify-between">
         <div>
-          <h2 className="text-2xl font-black text-text-primary">منتجات مشابهة</h2>
-          <p className="mt-2 text-sm text-text-secondary">اكتشف منتجات من نفس القسم</p>
+          <h2 className="text-2xl font-black text-text-primary">{td('similarProducts', { fallback: 'منتجات مشابهة' })}</h2>
+          <p className="mt-2 text-sm text-text-secondary">{td('discoverSimilar', { fallback: 'اكتشف منتجات من نفس القسم' })}</p>
         </div>
       </div>
       

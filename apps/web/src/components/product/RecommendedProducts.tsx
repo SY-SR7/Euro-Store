@@ -4,9 +4,13 @@ import { useEffect, useState } from 'react';
 import { createBrowserClient } from '@supabase/ssr';
 import { ProductCard } from '@/components/product/ProductCard';
 
+import { useLocale, useTranslations } from 'next-intl';
+
 export function RecommendedProducts({ currentProductId }: { currentProductId: string }) {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const td = useTranslations('productDetails');
+  const isAr = useLocale() === 'ar';
 
   useEffect(() => {
     const supabase = createBrowserClient(
@@ -52,11 +56,11 @@ export function RecommendedProducts({ currentProductId }: { currentProductId: st
   if (products.length === 0) return null;
 
   return (
-    <section className="py-10 border-t border-border">
+    <section className="py-10 border-t border-border" dir={isAr ? "rtl" : "ltr"}>
       <div className="mb-8 flex items-end justify-between">
         <div>
-          <h2 className="text-2xl font-black text-text-primary">منتجات قد تعجبك</h2>
-          <p className="mt-2 text-sm text-text-secondary">تشكيلة مميزة من مختلف الأقسام</p>
+          <h2 className="text-2xl font-black text-text-primary">{td('youMayLike', { fallback: 'منتجات قد تعجبك' })}</h2>
+          <p className="mt-2 text-sm text-text-secondary">{td('discoverVariety', { fallback: 'تشكيلة مميزة من مختلف الأقسام' })}</p>
         </div>
       </div>
       

@@ -133,6 +133,26 @@ export async function GET(req: NextRequest) {
       const images = Array.isArray(p.product_images) ? p.product_images : [];
       const primaryImage = images.find((i: any) => i.is_primary) || images[0];
 
+      const varyingAttributes: { name_ar: string, name_en: string }[] = [];
+      const attrValueIdsArray = Array.from(attrValueIds);
+      
+      const countsByTypeId: Record<string, number> = {};
+      for (const vid of attrValueIdsArray) {
+        const val = attrValueById[vid];
+        if (val) {
+          countsByTypeId[val.attribute_type_id] = (countsByTypeId[val.attribute_type_id] || 0) + 1;
+        }
+      }
+      
+      for (const typeId in countsByTypeId) {
+        if (countsByTypeId[typeId] > 1) {
+          const typeDef = allAttrTypes.find(t => t.id === typeId);
+          if (typeDef) {
+            varyingAttributes.push({ name_ar: typeDef.name_ar, name_en: typeDef.name_en });
+          }
+        }
+      }
+
       products.push({
         id:           p.id,
         name_ar:      p.name_ar,
@@ -146,6 +166,9 @@ export async function GET(req: NextRequest) {
         minPrice:     Math.min(...prices),
         maxPrice:     Math.max(...prices),
         attrValueIds,
+        varyingAttributes,
+        variants_count: variants.length,
+        total_stock: variants.reduce((acc: number, v: any) => acc + (v.stock_quantity ?? 0), 0)
       });
     }
 

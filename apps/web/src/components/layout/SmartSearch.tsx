@@ -3,12 +3,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, X, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { createSupabaseBrowserClientFromEnv } from '@eurostore/database';
 import Link from 'next/link';
 
 export function SmartSearch() {
   const t = useTranslations('nav');
+  const locale = useLocale();
+  const isAr = locale === 'ar';
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
@@ -55,9 +57,9 @@ export function SmartSearch() {
         {isOpen && (
           <motion.div
             initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 280, opacity: 1 }}
+            animate={{ width: "min(280px, 70vw)", opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
-            className='absolute right-12 z-50 flex items-center overflow-hidden bg-background-secondary rounded-full border border-border px-4 py-2'
+            className={`absolute ${isAr ? 'left-10' : 'right-10'} z-50 flex items-center overflow-hidden bg-background-secondary rounded-full border border-border px-4 py-2`}
           >
             <Search className='h-4 w-4 text-text-secondary mr-2' />
             <input
@@ -65,9 +67,9 @@ export function SmartSearch() {
               type='text'
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder='???? ?? ??????...'
+              placeholder={t('searchPlaceholder', { fallback: 'ابحث عن منتج...' })}
               className='flex-1 bg-transparent border-none outline-none text-text-primary text-sm placeholder:text-text-secondary w-full rtl'
-              dir='rtl'
+              dir={isAr ? 'rtl' : 'ltr'}
             />
             {isLoading && <Loader2 className='h-4 w-4 text-primary animate-spin' />}
           </motion.div>
@@ -77,7 +79,7 @@ export function SmartSearch() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label={t('search')}
-        className='hidden rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary md:inline-flex'
+        className='inline-flex rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary'
       >
         {isOpen ? <X className='h-4 w-4' /> : <Search className='h-4 w-4' />}
       </button>
@@ -89,9 +91,9 @@ export function SmartSearch() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className='absolute top-14 right-12 w-[320px] bg-background-card rounded-2xl border border-border shadow-2xl p-4 overflow-hidden z-50'
+            className={`absolute top-14 ${isAr ? '-left-2 sm:left-10' : '-right-2 sm:right-10'} w-[90vw] sm:w-[320px] bg-background-card rounded-2xl border border-border shadow-2xl p-4 overflow-hidden z-50`}
           >
-            <p className='text-xs text-text-secondary mb-3 font-bold px-2'>????? ????? ({results.length})</p>
+            <p className='text-xs text-text-secondary mb-3 font-bold px-2'>{t('searchResults', { fallback: 'نتائج البحث' })} ({results.length})</p>
             <div className='flex flex-col gap-2'>
               {results.map((product) => (
                 <Link
@@ -108,7 +110,7 @@ export function SmartSearch() {
                   <div>
                     <p className='text-sm font-bold text-text-primary line-clamp-1'>{product.name_ar}</p>
                     <p className='text-xs text-primary font-bold mt-1'>
-                      {(product.product_variants?.[0]?.price_syp || 0).toLocaleString('ar-SY')} ?.?
+                      {(product.product_variants?.[0]?.price_syp || 0).toLocaleString('ar-SY')} ل.س
                     </p>
                   </div>
                 </Link>

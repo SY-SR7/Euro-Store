@@ -22,8 +22,14 @@ function formatSYP(n: number) {
   return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
 }
 
-function variantTitle(v: any, td: any) {
-  const parts = [v?.color, v?.size, v?.sku].filter(Boolean);
+function variantTitle(v: any, isAr: boolean, td: any) {
+  const parts: string[] = [];
+  if (v?.dynamicAttrs) {
+    v.dynamicAttrs.forEach((attr: any) => {
+      parts.push(isAr ? attr.valueAr : (attr.valueEn || attr.valueAr));
+    });
+  }
+  if (parts.length === 0 && v?.sku) parts.push(v.sku);
   return parts.length ? parts.join(' / ') : td('variant');
 }
 
@@ -81,6 +87,7 @@ export default function ProductPage({ params }: { params: any }) {
   const [category, setCategory] = useState<any>(null);
   const [brand, setBrand] = useState<any>(null);
   const [selected, setSelected] = useState<any>(null);
+  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
@@ -138,7 +145,15 @@ export default function ProductPage({ params }: { params: any }) {
       const [vRes, iRes, catRes, brRes] = await Promise.all([
         supabase
           .from('product_variants')
-          .select('id,sku,price_syp,compare_price_syp,stock_quantity,color,size,attributes,is_active')
+          .select(`
+            id, sku, price_syp, compare_price_syp, stock_quantity, is_active,
+            variant_attributes(
+              attribute_values(
+                id, value_ar, value_en, hex_color,
+                attribute_types(id, name_ar, name_en)
+              )
+            )
+          `)
           .eq('product_id', prod.id)
           .eq('is_active', true)
           .order('price_syp'),
@@ -160,9 +175,33 @@ export default function ProductPage({ params }: { params: any }) {
 
       if (!alive) return;
 
-      const vList = vRes.data ?? [];
+      const vList = (vRes.data ?? []).map((v: any) => {
+        const dynamicAttrs = v.variant_attributes?.map((va: any) => {
+          const val = va.attribute_values;
+          if (!val) return null;
+          return {
+            typeAr: val.attribute_types?.name_ar,
+            typeEn: val.attribute_types?.name_en,
+            valueAr: val.value_ar,
+            valueEn: val.value_en,
+            hex: val.hex_color
+          };
+        }).filter(Boolean) || [];
+        return {
+          ...v,
+          dynamicAttrs
+        };
+      });
       const iList = iRes.data ?? [];
       const first = vList.find((v: any) => Number(v.stock_quantity ?? 0) > 0) ?? vList[0] ?? null;
+      
+      const initialSelectedAttrs: Record<string, string> = {};
+      if (first?.dynamicAttrs) {
+        first.dynamicAttrs.forEach((attr: any) => {
+          initialSelectedAttrs[attr.typeAr] = attr.valueAr;
+        });
+      }
+      setSelectedAttributes(initialSelectedAttrs);
 
       setProduct(prod);
       setVariants(vList);
@@ -195,20 +234,70 @@ export default function ProductPage({ params }: { params: any }) {
     return () => { alive = false; };
   }, [slug]);
 
+  const attributeTypes = useMemo(() => {
+    const typesMap = new Map<string, { typeEn: string, values: any[] }>();
+    variants.forEach(v => {
+      v.dynamicAttrs?.forEach((attr: any) => {
+        const typeAr = attr.typeAr || '';
+        const typeEn = attr.typeEn || '';
+        const key = typeAr;
+        if (!typesMap.has(key)) {
+          typesMap.set(key, { typeEn, values: [] });
+        }
+        const valuesList = typesMap.get(key)!.values;
+        if (!valuesList.find((val: any) => val.valueAr === attr.valueAr)) {
+          valuesList.push(attr);
+        }
+      });
+    });
+    return Array.from(typesMap.entries()).map(([typeAr, data]) => ({
+      typeAr,
+      typeEn: data.typeEn,
+      values: data.values
+    }));
+  }, [variants]);
+
+  const handleSelectAttribute = (typeAr: string, valueAr: string) => {
+    setSelectedAttributes(prev => {
+      if (prev[typeAr] === valueAr) return prev;
+      return { ...prev, [typeAr]: valueAr };
+    });
+  };
+
+  const isAttributeValueValid = (typeAr: string, valueAr: string) => {
+    return variants.some(v => {
+      const hasThisAttr = v.dynamicAttrs?.some((a: any) => a.typeAr === typeAr && a.valueAr === valueAr);
+      if (!hasThisAttr) return false;
+      return Object.entries(selectedAttributes).every(([k, val]) => {
+        if (k === typeAr) return true;
+        return v.dynamicAttrs?.some((a: any) => a.typeAr === k && a.valueAr === val);
+      });
+    });
+  };
+
+  useEffect(() => {
+    if (variants.length === 0 || attributeTypes.length === 0) return;
+    const requiredAttributeKeys = attributeTypes.map(t => t.typeAr);
+    const hasSelectedAll = requiredAttributeKeys.every(k => selectedAttributes[k]);
+    
+    if (hasSelectedAll) {
+       const exactMatch = variants.find(v => {
+         return requiredAttributeKeys.every(k => {
+           return v.dynamicAttrs?.some((a: any) => a.typeAr === k && a.valueAr === selectedAttributes[k]);
+         });
+       });
+       setSelected(exactMatch || null);
+    } else {
+       setSelected(null);
+    }
+  }, [selectedAttributes, variants, attributeTypes]);
+
   const totalStock = useMemo(
     () => variants.reduce((sum: number, v: any) => sum + Number(v.stock_quantity ?? 0), 0),
     [variants]
   );
 
-  const colors = useMemo(
-    () => [...new Set(variants.map((v: any) => v.color).filter(Boolean))],
-    [variants]
-  );
-
-  const sizes = useMemo(
-    () => [...new Set(variants.map((v: any) => v.size).filter(Boolean))],
-    [variants]
-  );
+  // Colors and sizes are no longer used since we use dynamic attributes
 
   const selectedStock = Number(selected?.stock_quantity ?? 0);
   const selectedState = stockState(selectedStock, td);
@@ -338,7 +427,7 @@ export default function ProductPage({ params }: { params: any }) {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <p className="text-xs font-bold text-text-muted">{td('selectedVariant')}</p>
-                  <p className="mt-1 text-lg font-black text-[#1F1B16]">{variantTitle(selected, td)}</p>
+                  <p className="mt-1 text-lg font-black text-[#1F1B16]">{variantTitle(selected, isAr, td)}</p>
                 </div>
                 <div className="text-left">
                   <p className="text-2xl font-black text-[#171411]">{formatSYP(selected.price_syp)}</p>
@@ -355,18 +444,22 @@ export default function ProductPage({ params }: { params: any }) {
                     <p className="mt-1 font-mono text-[#1F1B16]" dir="ltr">{selected.sku}</p>
                   </div>
                 )}
-                {selected.color && (
-                  <div className="rounded-2xl bg-background p-3 text-sm">
-                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Palette className="h-4 w-4 text-primary" /> {td('color')}</p>
-                    <p className="mt-1 font-black text-[#1F1B16]">{selected.color}</p>
+                
+                {selected.dynamicAttrs?.map((attr: any, idx: number) => (
+                  <div key={idx} className="rounded-2xl bg-background p-3 text-sm">
+                    <p className="flex items-center gap-2 font-bold text-[#6F6658]">
+                      {attr.hex ? <Palette className="h-4 w-4 text-primary" /> : <Info className="h-4 w-4 text-primary" />} 
+                      {isAr ? attr.typeAr : (attr.typeEn || attr.typeAr)}
+                    </p>
+                    <p className="mt-1 font-black text-[#1F1B16] flex items-center gap-2">
+                      {attr.hex && (
+                        <span className="w-3 h-3 rounded-full border border-black/10 inline-block" style={{ backgroundColor: attr.hex }} />
+                      )}
+                      {isAr ? attr.valueAr : (attr.valueEn || attr.valueAr)}
+                    </p>
                   </div>
-                )}
-                {selected.size && (
-                  <div className="rounded-2xl bg-background p-3 text-sm">
-                    <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Ruler className="h-4 w-4 text-primary" /> {td('size')}</p>
-                    <p className="mt-1 font-black text-[#1F1B16]">{selected.size}</p>
-                  </div>
-                )}
+                ))}
+
                 <div className="rounded-2xl bg-background p-3 text-sm">
                   <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Boxes className="h-4 w-4 text-primary" /> {td('stock')}</p>
                   <p className="mt-1 font-black text-[#1F1B16]">{selectedStock} {td('pieces')}</p>
@@ -401,7 +494,66 @@ export default function ProductPage({ params }: { params: any }) {
             </div>
           )}
 
-          {variants.length > 0 && (
+          {attributeTypes.length > 0 && (
+            <div className="space-y-6">
+              {attributeTypes.map((attrType) => (
+                <div key={attrType.typeAr} className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-black text-[#3C352C]">
+                      {isAr ? attrType.typeAr : (attrType.typeEn || attrType.typeAr)}
+                    </p>
+                    {selectedAttributes[attrType.typeAr] && (
+                      <span className="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+                        {selectedAttributes[attrType.typeAr]}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center gap-3 overflow-x-auto py-2 px-1 -mx-1" style={{ scrollbarWidth: 'none' }}>
+                    {attrType.values.map((val, idx) => {
+                      const isSelected = selectedAttributes[attrType.typeAr] === val.valueAr;
+                      const isValid = isAttributeValueValid(attrType.typeAr, val.valueAr);
+                      const isColor = !!val.hex;
+                      
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => isValid && handleSelectAttribute(attrType.typeAr, val.valueAr)}
+                          disabled={!isValid}
+                          className={[
+                            'relative shrink-0 transition-all overflow-hidden flex items-center justify-center focus:outline-none',
+                            isColor ? 'w-11 h-11 rounded-full border' : 'px-5 py-2.5 rounded-xl border text-sm font-bold',
+                            isSelected 
+                              ? 'border-primary ring-2 ring-primary ring-offset-2 ring-offset-background' 
+                              : isValid 
+                                ? 'border-border hover:border-primary/50 bg-background-card hover:scale-[1.03]' 
+                                : 'border-border/50 bg-background opacity-40 cursor-not-allowed',
+                          ].join(' ')}
+                          title={isAr ? val.valueAr : (val.valueEn || val.valueAr)}
+                        >
+                          {isColor ? (
+                            <span 
+                              className="absolute inset-1 rounded-full shadow-inner" 
+                              style={{ backgroundColor: val.hex }} 
+                            />
+                          ) : (
+                            <span>{isAr ? val.valueAr : (val.valueEn || val.valueAr)}</span>
+                          )}
+                          {!isValid && (
+                             <div className="absolute inset-0 flex items-center justify-center">
+                               <div className="w-[120%] h-[1.5px] bg-red-600/60 -rotate-45 transform origin-center" />
+                             </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {variants.length > 0 && attributeTypes.length === 0 && (
             <div className="space-y-3">
               <p className="text-sm font-black text-[#3C352C]">{td('chooseVariant')}</p>
               <div className="grid gap-2 sm:grid-cols-2">
@@ -419,10 +571,8 @@ export default function ProductPage({ params }: { params: any }) {
                           : 'border-border bg-background-card hover:border-primary/60',
                       ].join(' ')}
                     >
-                      <p className="font-black text-[#1F1B16]">{variantTitle(v, td)}</p>
-                      <div className="mt-2 flex flex-wrap gap-1 text-[11px]">
-                        {v.color && <span className="rounded-full bg-background px-2 py-1">{td('colorLabel')}: {v.color}</span>}
-                        {v.size && <span className="rounded-full bg-background px-2 py-1">{td('sizeLabel')}: {v.size}</span>}
+                      <p className="font-black text-[#1F1B16]">{variantTitle(v, isAr, td)}</p>
+                      <div className="mt-2 flex flex-wrap gap-1 text-[11px] justify-end">
                         {v.sku && <span className="rounded-full bg-background px-2 py-1" dir="ltr">{v.sku}</span>}
                       </div>
                       <div className="mt-2 flex items-center justify-between gap-2">

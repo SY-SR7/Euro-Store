@@ -381,7 +381,14 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
         ) : (
           <div className="grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {data.products.map((product: any) => (
-              <ProductCard key={product.id} product={product} minPrice={product.minPrice} />
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                minPrice={product.minPrice} 
+                varyingAttributes={product.varyingAttributes}
+                variantCount={product.variants_count}
+                totalStock={product.total_stock}
+              />
             ))}
           </div>
         )}

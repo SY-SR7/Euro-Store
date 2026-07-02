@@ -44,7 +44,7 @@
     "noReviews": "لا توجد تقييمات حتى الآن",
     "only": "فقط",
     "productImage": "صورة المنتج",
-    "variant": "متغير",
+    "variant": "خيار",
     "priceInDetails": "السعر في التفاصيل",
     "wishlist": "المفضلة",
     "loginToViewWishlist": "سجل الدخول لعرض المفضلة",
@@ -53,7 +53,9 @@
     "removeFromWishlist": "إزالة من المفضلة",
     "myAccount": "حسابي",
     "myOrders": "طلباتي",
-    "loyaltyPoints": "نقاط الولاء"
+    "loyaltyPoints": "نقاط الولاء",
+    "browseProducts": "تصفح المنتجات",
+    "addToWishlist": "أضف للمفضلة"
   },
   "home": {
     "categoriesTitle": "تسوق حسب التصنيف",
@@ -64,6 +66,7 @@
     "shopNow": "تسوق الآن",
     "categoriesTag": "التصنيفات",
     "tagline": "أزياء أوروبية تصل إلى بابك",
+    "featuredCategoryTitle": "منتجات مختارة لك",
     "features": {
       "title": "فخامة",
       "titleHighlight": "يورو ستور",
@@ -267,7 +270,10 @@
     "statusCompleted": "مكتمل",
     "status": "الحالة",
     "date": "تاريخ الطلب",
-    "statusPending": "قيد الانتظار"
+    "statusPending": "قيد الانتظار",
+    "home": "الرئيسية",
+    "noOrders": "لا توجد طلبات بعد",
+    "browseProducts": "تصفح المنتجات"
   },
   "outOfStock": "غير متوفر",
   "shopSection": "المتجر",
@@ -436,7 +442,9 @@
     "home": "الرئيسية",
     "exchange": "الاستبدال",
     "faq": "الأسئلة الشائعة",
-    "wishlist": "المفضلة"
+    "wishlist": "المفضلة",
+    "searchPlaceholder": "ابحث عن منتج...",
+    "searchResults": "نتائج البحث"
   },
   "newArrivals": "وصل حديثاً",
   "cart": {
@@ -665,9 +673,9 @@
     "products": "المنتجات",
     "productImage": "صورة المنتج",
     "image": "صورة",
-    "variant": "متغير",
+    "variant": "خيار",
     "totalStock": "المخزون الكلي",
-    "selectedVariant": "المتغير المحدد",
+    "selectedVariant": "الخيار المحدد",
     "color": "اللون",
     "colorLabel": "لون",
     "size": "المقاس",
@@ -675,15 +683,19 @@
     "stock": "المخزون",
     "pieces": "قطعة",
     "extraDetails": "تفاصيل إضافية",
-    "noVariants": "لا توجد متغيرات متاحة حالياً",
-    "chooseVariant": "اختر المتغير المناسب",
+    "noVariants": "لا توجد خيارات متاحة حالياً",
+    "chooseVariant": "اختر الخيار المناسب",
     "outOfStockShort": "نفذ",
     "outOfStockLong": "نفذ المخزون",
     "lowStock": "كمية قليلة",
     "available": "متوفر",
     "addedToCart": "✓ تمت الإضافة إلى السلة",
     "addToCart": "أضف إلى السلة",
-    "chooseVariantFirst": "اختر المتغير أولاً",
-    "category": "التصنيف:"
+    "chooseVariantFirst": "اختر الخيار أولاً",
+    "category": "التصنيف:",
+    "similarProducts": "منتجات مشابهة",
+    "discoverSimilar": "اكتشف منتجات قد تعجبك",
+    "youMayLike": "قد يعجبك أيضاً",
+    "discoverVariety": "اكتشف تشكيلة متنوعة من مختاراتنا"
   }
 }

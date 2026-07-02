@@ -43,7 +43,9 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         <div className="rounded-2xl border border-border bg-background-card p-8 shadow-sm">
           <div className="mb-6 text-center">
-            <Link href="/" className="text-lg font-black tracking-widest text-primary">EURO STORE</Link>
+            <Link href="/" className="flex justify-center">
+              <img src="/images/logo.png" alt="Euro Store" className="h-16 w-auto object-contain" />
+            </Link>
             <h1 className="mt-2 text-xl font-black text-text-primary">{t('registerTitle')}</h1>
           </div>
 

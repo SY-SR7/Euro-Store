@@ -40,6 +40,8 @@ body {
 [dir="rtl"] body { font-family: 'Noto Naskh Arabic', 'Manrope', system-ui, sans-serif; }
 
 .font-headline { font-family: 'Playfair Display', 'Noto Naskh Arabic', Georgia, serif; }
+/* When inside an RTL element, fall back to the Arabic font so Arabic text doesn't show as ????? */
+[dir="rtl"] .font-headline { font-family: 'Noto Naskh Arabic', 'Playfair Display', Georgia, serif; }
 
 ::-webkit-scrollbar       { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--color-bg); }

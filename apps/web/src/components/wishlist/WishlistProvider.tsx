@@ -61,6 +61,10 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ product_id: productId }),
       });
+      if (res.status === 401) {
+        window.location.href = '/auth/login?next=' + encodeURIComponent(window.location.pathname);
+        return;
+      }
       if (!res.ok) throw new Error('failed');
       const data = await res.json();
       setIds((prev) => {

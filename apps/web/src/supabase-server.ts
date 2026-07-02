@@ -57,20 +57,17 @@ export async function getSessionClient(): Promise<{ client: SupabaseClient; user
   const client = createServerClient(supabaseUrl(), anonKey(), {
     ...clientOptions,
     cookies: {
-      get(name: string) {
-        return jar.get(name)?.value;
+      getAll() {
+        return jar.getAll().filter((c) => !['sb-access-token', 'sb-refresh-token'].includes(c.name));
       },
-      set() {
+      setAll() {
         // Server Components لا يمكنها تعديل الكوكيز؛ التحديث يتم عبر middleware.ts
-      },
-      remove() {
-        // نفس الملاحظة أعلاه
       },
     },
   });
 
-  const { data: { user } } = await client.auth.getUser();
-  return { client: client as unknown as SupabaseClient, user };
+  const { data: { session } } = await client.auth.getSession();
+  return { client: client as unknown as SupabaseClient, user: session?.user ?? null };
 }
 
 // Aliases (تبقى كما هي للحفاظ على التوافق مع الاستيرادات الموجودة في باقي الملفات)

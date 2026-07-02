@@ -1,4 +1,4 @@
-﻿/* eslint-disable */
+/* eslint-disable */
 // @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
 import { defaultLocale, locales, type Locale } from '@eurostore/shared';
@@ -48,20 +48,23 @@ export async function middleware(request: NextRequest) {
     if (supabaseUrl && supabaseAnon) {
       const supabase = createServerClient(supabaseUrl, supabaseAnon, {
         cookies: {
-          get(name)  { return request.cookies.get(name)?.value; },
-          set(name, value, options) {
-            request.cookies.set({ name, value, ...options });
-            response.cookies.set({ name, value, ...options });
+          getAll() {
+            // Filter out old-format separate Supabase cookies to avoid conflict
+            return request.cookies.getAll().filter((c) => !['sb-access-token', 'sb-refresh-token'].includes(c.name));
           },
-          remove(name, options) {
-            request.cookies.set({ name, value: '', ...options });
-            response.cookies.set({ name, value: '', ...options });
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+            response = NextResponse.next();
+            response.cookies.set('EUROSTORE_LOCALE', response.cookies.get('EUROSTORE_LOCALE')?.value || 'ar'); // Re-apply locale if response recreated
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            );
           },
         },
       });
 
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
         const loginUrl = request.nextUrl.clone();
         loginUrl.pathname = '/auth/login';
         loginUrl.search   = `?next=${encodeURIComponent(pathname)}`;

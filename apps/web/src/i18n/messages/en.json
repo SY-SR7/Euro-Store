@@ -53,7 +53,9 @@
     "removeFromWishlist": "Remove from wishlist",
     "myAccount": "My Account",
     "myOrders": "My Orders",
-    "loyaltyPoints": "Loyalty Points"
+    "loyaltyPoints": "Loyalty Points",
+    "browseProducts": "Browse Products",
+    "addToWishlist": "Add to Wishlist"
   },
   "home": {
     "categoriesTitle": "Shop by category",
@@ -64,6 +66,7 @@
     "shopNow": "Shop now",
     "categoriesTag": "Categories",
     "tagline": "European fashion delivered to your door",
+    "featuredCategoryTitle": "Handpicked for You",
     "features": {
       "title": "The EuroStore",
       "titleHighlight": "Difference",
@@ -267,7 +270,10 @@
     "statusCompleted": "Completed",
     "status": "Status",
     "date": "Order date",
-    "statusPending": "Pending"
+    "statusPending": "Pending",
+    "home": "Home",
+    "noOrders": "No orders yet",
+    "browseProducts": "Browse Products"
   },
   "outOfStock": "Out of stock",
   "shopSection": "Shop",
@@ -436,7 +442,9 @@
     "home": "Home",
     "exchange": "Exchange",
     "faq": "FAQ",
-    "wishlist": "Wishlist"
+    "wishlist": "Wishlist",
+    "searchPlaceholder": "Search for a product...",
+    "searchResults": "Search Results"
   },
   "newArrivals": "New arrivals",
   "cart": {
@@ -684,6 +692,10 @@
     "addedToCart": "✓ Added to Cart",
     "addToCart": "Add to Cart",
     "chooseVariantFirst": "Choose variant first",
-    "category": "Category:"
+    "category": "Category:",
+    "similarProducts": "Similar Products",
+    "discoverSimilar": "Discover products you might like",
+    "youMayLike": "You May Also Like",
+    "discoverVariety": "Explore a variety of our curated picks"
   }
 }

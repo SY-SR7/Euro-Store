@@ -100,3 +100,6 @@ test-results/
 *.key
 serviceAccount*.json
 firebase-adminsdk*.json
+
+# Local Netlify folder
+.netlify

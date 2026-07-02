@@ -96,7 +96,7 @@ export function ImageWithFallback({
       className={className}
       onError={() => setFailed(true)}
       loading={props.loading ?? 'lazy'}
-      {...props}
+      {...Object.fromEntries(Object.entries(props).filter(([k]) => k !== 'fill' && k !== 'quality' && k !== 'priority'))}
     />
   );
 }

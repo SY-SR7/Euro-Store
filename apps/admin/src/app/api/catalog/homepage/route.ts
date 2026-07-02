@@ -1,6 +1,6 @@
 import { requireAdminContext } from '@/supabase-server';
 import { NextResponse } from 'next/server';
-import { createAdminSupabaseClient, requireAdminClient } from '@/supabase-server';
+import { createAdminSupabaseClient } from '@/supabase-server';
 import { z } from 'zod';
 
 const sectionSchema = z.object({

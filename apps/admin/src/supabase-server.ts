@@ -1,138 +1,54 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { createServerClient } from '@supabase/ssr';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@eurostore/database';
 
-type ClientOptions = Parameters<typeof createClient>[2];
+function supabaseUrl() { return process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''; }
+function anonKey() { return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''; }
+function serviceRoleKey() { return process.env.SUPABASE_SERVICE_ROLE_KEY ?? ''; }
 
-const clientOptions: ClientOptions = {
-  auth: { persistSession: false, autoRefreshToken: false },
-  global: {
-    // Prevent Next.js data cache from serving stale Supabase responses
-    fetch: (url, options) =>
-      fetch(url, { ...options, cache: 'no-store' }),
-  },
+const clientOptions = {
+  auth: { persistSession: false, autoRefreshToken: false }
 };
 
-function envValue(name: string, fallback?: string): string {
-  const value = process.env[name] ?? fallback;
-  if (!value) throw new Error(`Missing environment variable: ${name}`);
-  return value;
-}
-
-function supabaseUrl(): string {
-  return envValue('NEXT_PUBLIC_SUPABASE_URL', process.env.SUPABASE_URL ?? 'http://localhost:54321');
-}
-function anonKey(): string {
-  return envValue('NEXT_PUBLIC_SUPABASE_ANON_KEY', process.env.SUPABASE_ANON_KEY ?? 'development-anon-key');
-}
-function serviceRoleKey(): string {
-  return envValue(
-    'SUPABASE_SERVICE_ROLE_KEY',
-    process.env.SUPABASE_SERVICE_KEY ?? 'development-service-role-key'
-  );
-}
-
-/** Client بالـ anon key — بدون session (للقراءات العامة فقط) */
-export function createServerSupabaseClient(): SupabaseClient {
-  return createClient(supabaseUrl(), anonKey(), clientOptions);
-}
-
-/** Client بالـ service role — يتخطى RLS */
-export function createAdminSupabaseClient(): SupabaseClient {
-  return createClient(supabaseUrl(), serviceRoleKey(), clientOptions);
-}
-
-/**
- * يقرأ sb-access-token / sb-refresh-token من الـ cookies ويضع الجلسة.
- * يُرجع { client, user } — إذا user = null فالمستخدم غير مُسجّل.
- */
 export async function getSessionClient(): Promise<{ client: SupabaseClient; user: import('@supabase/supabase-js').User | null }> {
   const { cookies } = await import('next/headers');
-  const jar = await cookies();
+  const cookieStore = await cookies();
 
-  const accessToken  = jar.get('sb-access-token')?.value;
-  const refreshToken = jar.get('sb-refresh-token')?.value;
-
-  const client = createClient(supabaseUrl(), anonKey(), {
-    ...clientOptions,
-    global: {
-      ...clientOptions.global,
-      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+  const client = createServerClient<Database>(supabaseUrl(), anonKey(), {
+    cookies: {
+      getAll() { return cookieStore.getAll(); },
+      setAll(cookiesToSet) {
+        try { cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options)); } catch {}
+      }
     }
   });
 
-  if (accessToken && refreshToken) {
-    await client.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).catch(() => {});
-  }
-
-  const { data, error } = await client.auth.getUser(accessToken);
-  if (error) {
-    console.error('[getSessionClient] getUser error:', error.message, error.status);
-  }
-  return { client, user: data?.user ?? null };
+  const { data: { user } } = await client.auth.getUser();
+  return { client, user };
 }
 
-/**
- * للاستخدام في Admin API routes:
- * يُرجع service-role client بعد التأكد من وجود جلسة صالحة.
- * إذا لم توجد جلسة يُرجع null.
- */
-export async function requireAdminClient(): Promise<SupabaseClient | null> {
-  const { user } = await getSessionClient();
-  if (!user) return null;
-  return createAdminSupabaseClient();
+export function createAdminSupabaseClient(): SupabaseClient<Database> {
+  return createClient<Database>(supabaseUrl(), serviceRoleKey(), clientOptions);
 }
 
-/**
- * نسخة محسّنة تُرجع { admin, userId } معاً.
- * admin = service-role client (يتخطى RLS).
- * userId = auth.uid() — يُستخدم كـ actor_id في audit_logs.
- * يُرجع null إن لم يكن هناك جلسة صالحة.
- */
 export async function requireAdminContext(): Promise<{ admin: SupabaseClient; userId: string } | null> {
   const { user } = await getSessionClient();
   if (!user) return null;
   return { admin: createAdminSupabaseClient(), userId: user.id };
 }
-
-/**
- * يكتب سجل تدقيق في جدول audit_logs.
- * لا يُوقف التدفق عند الفشل — يطبع تحذيراً في السيرفر فقط.
- */
-export async function writeAuditLog(params: {
-  admin: SupabaseClient;
-  actorId: string;
-  actorRole: 'admin' | 'sub_admin';
-  action: string;
-  entityType: string;
-  entityId: string;
-  beforeState?: Record<string, unknown> | null;
-  afterState?: Record<string, unknown> | null;
-}): Promise<void> {
-  const { error } = await params.admin.from('audit_logs').insert({
-    actor_id:     params.actorId,
-    actor_role:   params.actorRole,
-    action:       params.action,
-    entity_type:  params.entityType,
-    entity_id:    params.entityId,
-    before_state: params.beforeState ?? null,
-    after_state:  params.afterState  ?? null,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } as any);
-  if (error) {
-    console.warn('[audit_log] فشل تسجيل العملية:', error.message, '| action:', params.action, '| entity:', params.entityType, params.entityId);
-  }
+export async function createServerSupabaseClient() {
+  const { client } = await getSessionClient();
+  return client;
 }
 
-// Aliases للتوافق مع الكود القديم
-export const createSupabaseServerClient = createServerSupabaseClient;
-export const createSupabaseAdminClient  = createAdminSupabaseClient;
-export const createServiceSupabaseClient = createAdminSupabaseClient;
-export const createServiceRoleSupabaseClient = createAdminSupabaseClient;
-export const getServerSupabase = createServerSupabaseClient;
-export const getAdminSupabase  = createAdminSupabaseClient;
-export const getSupabaseServer = createServerSupabaseClient;
-export const getSupabaseAdmin  = createAdminSupabaseClient;
-export const supabaseServer    = createServerSupabaseClient();
-export const serverSupabase    = supabaseServer;
-export const supabaseAdmin     = createAdminSupabaseClient();
-export const adminSupabase     = supabaseAdmin;
-export default createServerSupabaseClient;
+export async function writeAuditLog(adminClient: SupabaseClient, action: string, details: any, userId?: string) {
+  try {
+    await adminClient.from('audit_logs').insert({
+      action,
+      details,
+      user_id: userId || null
+    });
+  } catch (err) {
+    console.error('Failed to write audit log', err);
+  }
+}
