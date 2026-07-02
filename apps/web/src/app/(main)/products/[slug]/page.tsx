@@ -380,7 +380,7 @@ export default function ProductPage({ params }: { params: any }) {
           </div>
 
           <div className="grid grid-cols-5 gap-2">
-            {(images.length ? images : [{ id: 'fallback', url: product.image_url }]).map((img: any) => (
+            {(images.length ? images : (mainImage ? [{ id: 'fallback', url: mainImage }] : [])).map((img: any) => (
               <button
                 key={img.id}
                 onClick={() => setMainImage(img.url)}
