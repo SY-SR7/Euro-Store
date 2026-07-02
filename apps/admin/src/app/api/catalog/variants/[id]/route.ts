@@ -21,7 +21,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     if (typeof body.weight_grams === 'number') update.weight_grams = body.weight_grams;
 
     if (Object.keys(update).length > 0) {
-      const { error } = await admin.from('product_variants').update(update).eq('id', params.id);
+      const { error } = await admin.from('product_variants').update(update as any).eq('id', params.id);
       if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     }
 
@@ -34,7 +34,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
           attribute_value_id: avid,
         }));
         const { error: attrErr } = await admin.from('variant_attributes').insert(attrs);
-        if (attrErr) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+        if (attrErr) return NextResponse.json({ error: attrErr?.message || 'database_error' }, { status: 500 });
       }
     }
 
@@ -44,7 +44,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
         variant_attributes(attribute_value_id, attribute_values(id, value_ar, value_en, hex_color, attribute_types(id, name_ar, slug)))`)
       .eq('id', params.id)
       .single();
-    if (selErr) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+    if (selErr) return NextResponse.json({ error: selErr?.message || 'database_error' }, { status: 500 });
     return NextResponse.json(data);
   } catch (e: any) { return NextResponse.json({ error: e?.message ?? 'server_error' }, { status: 500 }); }
 }
