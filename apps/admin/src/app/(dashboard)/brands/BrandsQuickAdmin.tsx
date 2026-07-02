@@ -62,6 +62,75 @@ function InlineText({ value, onSave, dir = 'rtl' }: { value?: string | null; onS
   return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">{value || <span className="text-text-muted">—</span>}</button>;
 }
 
+function InlineImage({ value, onSave, dir = 'ltr' }: { value?: string | null; onSave: (value: string) => void | Promise<void>; dir?: 'rtl' | 'ltr' }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value ?? '');
+  const [uploading, setUploading] = useState(false);
+  
+  useEffect(() => { if (!editing) setDraft(value ?? ''); }, [editing, value]);
+  
+  const commit = () => { 
+    const next = draft.trim(); 
+    setEditing(false); 
+    if (next !== (value ?? '')) void onSave(next); 
+  };
+  
+  const handleUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', files[0]);
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      if (!res.ok) throw new Error('Upload failed');
+      const data = await res.json();
+      if (data.files && data.files.length > 0) {
+        const nextUrl = data.files[0].url;
+        setDraft(nextUrl);
+        setEditing(false);
+        if (nextUrl !== (value ?? '')) void onSave(nextUrl);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  if (editing) {
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <input 
+            type="file" 
+            accept="image/*,video/*"
+            onChange={(e) => void handleUpload(e.target.files)}
+            disabled={uploading}
+            className={inputClass}
+          />
+          {uploading && <span className="text-xs font-bold text-primary animate-pulse whitespace-nowrap">جاري الرفع...</span>}
+        </div>
+        <input 
+          autoFocus 
+          value={draft} 
+          dir={dir} 
+          placeholder="أو أضف رابط الصورة هنا..."
+          onBlur={commit} 
+          onChange={(e) => setDraft(e.target.value)} 
+          onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} 
+          className={inputClass} 
+        />
+      </div>
+    );
+  }
+  
+  return (
+    <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background overflow-hidden text-ellipsis whitespace-nowrap">
+      {value || <span className="text-text-muted">—</span>}
+    </button>
+  );
+}
+
 function ActivePills({ value, onSave }: { value: boolean; onSave: (value: boolean) => void | Promise<void> }) {
   const t = useTranslations('adminCatalog');
   return (
@@ -221,7 +290,7 @@ export default function BrandsQuickAdmin() {
               <div className="space-y-2">
                 <Field label={t('brandName', { fallback: 'الاسم' })}><InlineText value={selected.name} dir={isAr ? "rtl" : "ltr"} onSave={(name) => patchBrand(selected, { name })} /></Field>
                 <Field label={t('brandSlug', { fallback: 'رابط العلامة' })}><InlineText value={selected.slug ?? ''} dir="ltr" onSave={(slug) => patchBrand(selected, { slug })} /></Field>
-                <Field label={t('primaryImage', { fallback: 'الشعار' })}><InlineText value={selected.logo_url ?? ''} dir="ltr" onSave={(logo_url) => patchBrand(selected, { logo_url })} /></Field>
+                <Field label={t('primaryImage', { fallback: 'الشعار' })}><InlineImage value={selected.logo_url ?? ''} dir="ltr" onSave={(logo_url) => patchBrand(selected, { logo_url })} /></Field>
                 <Field label={t('status', { fallback: 'الحالة' })}><ActivePills value={Boolean(selected.is_active)} onSave={(is_active) => patchBrand(selected, { is_active })} /></Field>
               </div>
             </div>
