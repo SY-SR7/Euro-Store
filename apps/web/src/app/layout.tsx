@@ -51,8 +51,8 @@ export default async function RootLayout({
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning className="overflow-x-hidden w-full">
-      <body className="min-h-screen bg-background text-text-primary antialiased overflow-x-hidden w-full flex flex-col">
+    <html lang={locale} dir={dir} suppressHydrationWarning className="overflow-x-clip w-full">
+      <body className="min-h-screen bg-background text-text-primary antialiased overflow-x-clip w-full flex flex-col">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <SmoothScroller>
             <PageTransitionProvider>
