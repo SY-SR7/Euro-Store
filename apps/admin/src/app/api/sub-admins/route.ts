@@ -29,19 +29,32 @@ export async function GET() {
   return NextResponse.json(mapped);
 }
 
+import { z } from 'zod';
+import { adminActionRatelimit } from '@/lib/ratelimit';
+
+const subAdminSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8).regex(/[A-Z]/, 'Requires uppercase').regex(/[0-9]/, 'Requires number'),
+  display_name: z.string().min(2).max(50),
+});
+
 export async function POST(request: Request) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
-  const { email, password, display_name } = await request.json() as {
-    email: string;
-    password: string;
-    display_name: string;
-  };
-
-  if (!email || !password || password.length < 8) {
-    return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
+  // Rate Limiting
+  const ip = request.headers.get('x-forwarded-for') ?? 'anonymous';
+  const { success } = await adminActionRatelimit.limit(ip);
+  if (!success) {
+    return NextResponse.json({ error: 'too_many_requests' }, { status: 429 });
   }
+
+  const body = await request.json().catch(() => ({}));
+  const parsed = subAdminSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'invalid_input', details: parsed.error.flatten() }, { status: 400 });
+  }
+  const { email, password, display_name } = parsed.data;
 
   const supabase = createSupabaseAdminClientFromEnv();
 
