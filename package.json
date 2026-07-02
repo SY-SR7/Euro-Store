@@ -25,5 +25,9 @@
     "fluent-ffmpeg": "^2.1.3",
     "turbo": "latest",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@upstash/ratelimit": "^1.2.1",
+    "@upstash/redis": "^1.38.0"
   }
 }
