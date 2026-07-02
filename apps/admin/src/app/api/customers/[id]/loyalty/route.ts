@@ -4,10 +4,7 @@ import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-serve
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const { admin, userId } = ctx;
+const { admin, userId } = ctx;
 
   const body = await request.json().catch(() => null) as { points?: number; reason?: string } | null;
   if (!body || typeof body.points !== 'number') return NextResponse.json({ error: 'points required' }, { status: 400 });

@@ -13,11 +13,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: NextRequest) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  try {
+try {
     const supabase = createAdminSupabaseClient();
     const { searchParams } = new URL(req.url);
 

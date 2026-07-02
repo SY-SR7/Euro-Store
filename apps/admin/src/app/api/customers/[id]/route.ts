@@ -23,10 +23,7 @@ export async function GET(_req: Request, { params }: RouteParams) {
 export async function PATCH(request: Request, { params }: RouteParams) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const { admin, userId } = ctx;
+const { admin, userId } = ctx;
 
   const body = await request.json().catch(() => null) as Record<string, unknown> | null;
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });

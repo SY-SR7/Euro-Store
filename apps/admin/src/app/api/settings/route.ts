@@ -26,10 +26,7 @@ export async function GET() {
 export async function PATCH(request: Request) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const { admin } = ctx;
+const { admin } = ctx;
   const body = await request.json().catch(() => null) as unknown;
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
 

@@ -44,10 +44,7 @@ export async function GET() {
 export async function POST(request: Request) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const { admin, userId } = ctx;
+const { admin, userId } = ctx;
 
   try {
     const body: unknown = await request.json();

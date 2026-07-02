@@ -20,11 +20,7 @@ export async function GET() {
 export async function POST(request: Request) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  const body = await request.json().catch(() => null) as Record<string, unknown> | null;
+const body = await request.json().catch(() => null) as Record<string, unknown> | null;
   if (!body || typeof body.name_ar !== 'string' || typeof body.slug !== 'string') {
     return NextResponse.json({ error: 'missing fields' }, { status: 400 });
   }

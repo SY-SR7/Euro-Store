@@ -24,11 +24,7 @@ export const revalidate = 0;
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  const { admin } = ctx;
+const { admin } = ctx;
 
   const { data, error } = await admin
     .from('orders')
@@ -44,11 +40,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  const { admin, userId } = ctx;
+const { admin, userId } = ctx;
   const body = await req.json().catch(() => ({})) as Record<string, unknown>;
 
   const { data: current, error: currentError } = await admin

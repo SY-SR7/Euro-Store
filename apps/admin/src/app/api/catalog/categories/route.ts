@@ -17,10 +17,7 @@ export const revalidate = 0;
 export async function GET() {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const { admin } = ctx;
+const { admin } = ctx;
 
   const { data, error } = await admin
     .from('categories')
@@ -35,10 +32,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  const { admin, userId } = ctx;
+const { admin, userId } = ctx;
 
   const body = (await req.json().catch(() => null)) as {
     name_ar?: string;

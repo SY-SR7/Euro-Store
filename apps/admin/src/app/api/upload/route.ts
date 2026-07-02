@@ -12,11 +12,7 @@ function getExt(filename: string, isVideo: boolean) {
 export async function POST(request: Request) {
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-  try {
+try {
     const formData = await request.formData();
     const files = formData.getAll('file') as File[];
 
