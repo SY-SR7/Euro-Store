@@ -216,7 +216,7 @@ export function CinematicShowcaseSection({
     >
       {/* Sticky viewport */}
       <div
-        className="sticky top-0 h-screen overflow-hidden"
+        className="sticky top-0 h-[100dvh] overflow-hidden flex flex-col justify-center"
         style={{ backgroundColor: bgColor }}
       >
         {/* Canvas — GPU accelerated */}
