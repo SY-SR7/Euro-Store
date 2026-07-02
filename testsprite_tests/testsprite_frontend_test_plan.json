@@ -1,0 +1,1317 @@
+[
+  {
+    "id": "TC001",
+    "title": "Complete checkout and create an order",
+    "description": "This verifies that a shopper can check out from the cart and land on a confirmed order summary with an order id.",
+    "category": "End-to-End Checkout",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Proceed to checkout"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the shipping details"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the payment details"
+      },
+      {
+        "type": "action",
+        "description": "Submit the checkout form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an order confirmation is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an order id is shown"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Log in to the admin dashboard and view orders",
+    "description": "This verifies that an administrator can sign in and open the order management list with protected access to admin data.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in {{LOGIN_USER}} into the username field"
+      },
+      {
+        "type": "action",
+        "description": "Fill in {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the admin orders page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify order management data is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Sign in and access the account profile",
+    "description": "This verifies a user can sign in with valid credentials and reach their account profile details.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user account profile is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Persist items added to the cart",
+    "description": "This verifies that a shopper can add a product variant to the cart and later see the same cart contents persisted.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a product detail page for a purchasable item"
+      },
+      {
+        "type": "action",
+        "description": "Add a selected product variant to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Open the cart"
+      },
+      {
+        "type": "action",
+        "description": "Reload the cart view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the added item remains in the cart"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the cart total is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Open a product detail page from catalog browsing",
+    "description": "This verifies shoppers can reach a product detail view from catalog browsing and see the available variants.",
+    "category": "Product Catalog",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the product catalog"
+      },
+      {
+        "type": "action",
+        "description": "Open a product from the catalog"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the product detail page is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify product variants are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Update cart quantities and totals",
+    "description": "This verifies that a shopper can change an item quantity in the cart and see the updated totals reflected.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a product detail page for a purchasable item"
+      },
+      {
+        "type": "action",
+        "description": "Add a selected product variant to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Open the cart"
+      },
+      {
+        "type": "action",
+        "description": "Increase the quantity of the item"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the cart quantity is updated"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the cart totals are recalculated"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Log in as a partner agent",
+    "description": "This verifies that a partner agent can sign in and reach the partner app experience.",
+    "category": "Partner App",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the credential field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the partner app home is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Review order history and tracking details",
+    "description": "This verifies that a customer can open order history, select an order, and view its current status and shipment details.",
+    "category": "Customer Order Tracking",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the orders page"
+      },
+      {
+        "type": "action",
+        "description": "Open a previously placed order"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the order status is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify shipment tracking details are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Create a partner order for a customer",
+    "description": "This verifies that a partner agent can create an order for an assigned customer and see the created order confirmation.",
+    "category": "Partner App",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the credential field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the assigned customers view"
+      },
+      {
+        "type": "action",
+        "description": "Start a new partner order for a customer"
+      },
+      {
+        "type": "action",
+        "description": "Add items to the order"
+      },
+      {
+        "type": "action",
+        "description": "Submit the partner order"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the created order confirmation is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new order appears in the order view"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Remove items from the cart",
+    "description": "This verifies that a shopper can remove an item from the cart and return to an empty cart state when no items remain.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a product detail page for a purchasable item"
+      },
+      {
+        "type": "action",
+        "description": "Add a selected product variant to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Open the cart"
+      },
+      {
+        "type": "action",
+        "description": "Remove the item from the cart"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the cart no longer shows the removed item"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty cart state is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Search the catalog in Arabic and open a result",
+    "description": "This verifies Arabic search returns matching products and lets the shopper open a result detail page.",
+    "category": "Smart Search",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Open search"
+      },
+      {
+        "type": "action",
+        "description": "Search for a valid Arabic term"
+      },
+      {
+        "type": "action",
+        "description": "Open a product from the search results"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the product detail page is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Update an order from the admin dashboard",
+    "description": "This verifies that an administrator can change an order state and see the updated order reflected in the admin list or detail view.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in {{LOGIN_USER}} into the username field"
+      },
+      {
+        "type": "action",
+        "description": "Fill in {{LOGIN_PASSWORD}} into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the admin orders page"
+      },
+      {
+        "type": "action",
+        "description": "Select an order to update"
+      },
+      {
+        "type": "action",
+        "description": "Submit the order status change"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the order shows the updated state"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "View current loyalty balance",
+    "description": "This verifies that a signed-in customer can open the loyalty section and see their current points balance.",
+    "category": "Loyalty Points System",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the credential field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the loyalty points section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the current loyalty points balance is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "Redeem loyalty points successfully",
+    "description": "This verifies that a customer can redeem available loyalty points and see their balance update afterward.",
+    "category": "Loyalty Points System",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the credential field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the loyalty points section"
+      },
+      {
+        "type": "action",
+        "description": "Start a points redemption"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid redemption amount"
+      },
+      {
+        "type": "action",
+        "description": "Submit the redemption request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated loyalty balance is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a redemption record is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC015",
+    "title": "View and change the current locale",
+    "description": "This verifies that a user can view the current locale and switch between Arabic and English with the preference saved after the change.",
+    "category": "Arabic/English Localization",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the locale settings page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the current locale is displayed"
+      },
+      {
+        "type": "action",
+        "description": "Select Arabic as the locale"
+      },
+      {
+        "type": "action",
+        "description": "Save the locale preference"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the interface reflects the selected locale"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC016",
+    "title": "Save a product to the wishlist",
+    "description": "This verifies that a shopper can add a product to their wishlist and see it appear in their saved items.",
+    "category": "Wishlist",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the product catalog"
+      },
+      {
+        "type": "action",
+        "description": "Open a product detail page"
+      },
+      {
+        "type": "action",
+        "description": "Save the product to the wishlist"
+      },
+      {
+        "type": "action",
+        "description": "Open the wishlist"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved product is displayed in the wishlist"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC017",
+    "title": "View assigned partner customers",
+    "description": "This verifies that a partner agent can open the customer list and see assigned customers.",
+    "category": "Partner App",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the credential field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the assigned customers view"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify assigned customers are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC018",
+    "title": "View referral code",
+    "description": "This verifies that a signed-in customer can open referrals and view their personal referral code.",
+    "category": "Referrals System",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the credential field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the referrals section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the referral code is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC019",
+    "title": "Persist wishlist items across navigation",
+    "description": "This verifies that a shopper can save an item, move elsewhere in the app, and still find it in the wishlist later.",
+    "category": "Wishlist",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the product catalog"
+      },
+      {
+        "type": "action",
+        "description": "Open a product detail page"
+      },
+      {
+        "type": "action",
+        "description": "Save the product to the wishlist"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the product catalog"
+      },
+      {
+        "type": "action",
+        "description": "Open the wishlist"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the previously saved product is still displayed in the wishlist"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC020",
+    "title": "Claim a valid referral code",
+    "description": "This verifies that a customer can submit a valid referral code and see the referral reward applied.",
+    "category": "Referrals System",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the credential field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the referrals section"
+      },
+      {
+        "type": "action",
+        "description": "Start a referral claim"
+      },
+      {
+        "type": "action",
+        "description": "Fill in a valid referral code"
+      },
+      {
+        "type": "action",
+        "description": "Submit the referral claim"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify referral attribution is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the referral reward status is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC021",
+    "title": "Remove an item from the wishlist",
+    "description": "This verifies that a shopper can remove a previously saved item and see it disappear from their wishlist.",
+    "category": "Wishlist",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the product catalog"
+      },
+      {
+        "type": "action",
+        "description": "Open a product detail page"
+      },
+      {
+        "type": "action",
+        "description": "Save the product to the wishlist"
+      },
+      {
+        "type": "action",
+        "description": "Open the wishlist"
+      },
+      {
+        "type": "action",
+        "description": "Remove the saved item from the wishlist"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the wishlist no longer shows the removed item"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC022",
+    "title": "Browse categories and brands in the product catalog",
+    "description": "This verifies shoppers can view the catalog entry points needed to discover products by category and brand.",
+    "category": "Product Catalog",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the product catalog"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify categories are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify brands are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC023",
+    "title": "Share a product through WhatsApp",
+    "description": "This verifies that a shopper can generate a WhatsApp share action for a product from its detail view.",
+    "category": "WhatsApp Integration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the product catalog"
+      },
+      {
+        "type": "action",
+        "description": "Open a product detail page"
+      },
+      {
+        "type": "action",
+        "description": "Start sharing the product through WhatsApp"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a WhatsApp share link or message payload is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC024",
+    "title": "Share an order through WhatsApp",
+    "description": "This verifies that a customer can generate a WhatsApp share action for an order from an order-related view.",
+    "category": "WhatsApp Integration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the order history"
+      },
+      {
+        "type": "action",
+        "description": "Open an order detail page"
+      },
+      {
+        "type": "action",
+        "description": "Start sharing the order through WhatsApp"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a WhatsApp share link or message payload is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC025",
+    "title": "Update a warehouse task status",
+    "description": "This verifies that a warehouse helper can view pending tasks and mark one as completed with the updated status reflected in the task list.",
+    "category": "Helper App",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the warehouse tasks page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify pending fulfillment tasks are displayed"
+      },
+      {
+        "type": "action",
+        "description": "Select a pending task status update"
+      },
+      {
+        "type": "action",
+        "description": "Submit the task status change"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the task is shown as completed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC026",
+    "title": "Reject partner order submission without customer details",
+    "description": "This verifies that a partner agent sees validation feedback when attempting to create an order without required customer information.",
+    "category": "Partner App",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the credential field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Open the new partner order form"
+      },
+      {
+        "type": "action",
+        "description": "Leave the customer details empty"
+      },
+      {
+        "type": "action",
+        "description": "Submit the partner order"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a required customer information validation error is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC027",
+    "title": "Reject invalid cart quantities",
+    "description": "This verifies that a shopper cannot set an invalid quantity in the cart and sees validation feedback instead of a changed cart.",
+    "category": "Shopping Cart",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a product detail page for a purchasable item"
+      },
+      {
+        "type": "action",
+        "description": "Add a selected product variant to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Open the cart"
+      },
+      {
+        "type": "action",
+        "description": "Change the item quantity to an invalid value"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a quantity validation error is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the cart quantity is not updated"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC028",
+    "title": "Show validation for incomplete checkout",
+    "description": "This verifies that a shopper cannot submit checkout with missing required information and sees validation feedback on the form.",
+    "category": "End-to-End Checkout",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the cart"
+      },
+      {
+        "type": "action",
+        "description": "Proceed to checkout"
+      },
+      {
+        "type": "action",
+        "description": "Submit the checkout form without completing required fields"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify checkout validation errors are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the order is not created"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC029",
+    "title": "Reject redemption with too few points",
+    "description": "This verifies that a customer cannot redeem more points than available and sees a validation error.",
+    "category": "Loyalty Points System",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the credential field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the loyalty points section"
+      },
+      {
+        "type": "action",
+        "description": "Start a points redemption"
+      },
+      {
+        "type": "action",
+        "description": "Select an amount greater than the available balance"
+      },
+      {
+        "type": "action",
+        "description": "Submit the redemption request"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a redemption validation error is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC030",
+    "title": "Reject invalid sign in credentials",
+    "description": "This verifies invalid credentials are rejected and the user remains unable to access protected account content.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with invalid@example.com"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with invalid-password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an authentication error message is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the user account profile is not displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC031",
+    "title": "Prevent invalid admin login",
+    "description": "This verifies that incorrect admin credentials are rejected and no admin session is created.",
+    "category": "Admin Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the login page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in an invalid username into the username field"
+      },
+      {
+        "type": "action",
+        "description": "Fill in an invalid password into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a login error message is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC032",
+    "title": "Handle an invalid category product lookup",
+    "description": "This verifies the catalog shows a clear error or empty state when a shopper requests products for an invalid category.",
+    "category": "Product Catalog",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the product catalog"
+      },
+      {
+        "type": "action",
+        "description": "Apply an invalid category filter"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a catalog error or empty state is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC033",
+    "title": "Block access to orders the customer does not own",
+    "description": "This verifies that a customer cannot view another customer's order details and sees access-restricted behavior instead.",
+    "category": "Customer Order Tracking",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the orders page"
+      },
+      {
+        "type": "action",
+        "description": "Open an order the customer does not own"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an access denied or not found state is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify order details are not shown"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC034",
+    "title": "Reject an invalid referral code",
+    "description": "This verifies that a customer sees an error when submitting an invalid or expired referral code.",
+    "category": "Referrals System",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the credential field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the referrals section"
+      },
+      {
+        "type": "action",
+        "description": "Start a referral claim"
+      },
+      {
+        "type": "action",
+        "description": "Fill in an invalid referral code"
+      },
+      {
+        "type": "action",
+        "description": "Submit the referral claim"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a referral validation error is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC035",
+    "title": "Handle an invalid wishlist product",
+    "description": "This verifies that trying to save an invalid product is rejected and no wishlist item is added.",
+    "category": "Wishlist",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a page that exposes wishlist actions"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to save an invalid product to the wishlist"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a validation or error message is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no wishlist item was added"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC036",
+    "title": "Handle warehouse task access restrictions",
+    "description": "This verifies that an invalid or unauthorized warehouse task update is blocked and the user sees an access or not-found error state.",
+    "category": "Helper App",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the warehouse tasks page"
+      },
+      {
+        "type": "action",
+        "description": "Select a task status update for an unavailable or inaccessible task"
+      },
+      {
+        "type": "action",
+        "description": "Submit the task status change"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an access or not-found error state is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC037",
+    "title": "Show an empty state for no search matches",
+    "description": "This verifies the search experience clearly indicates when a query returns no matching products.",
+    "category": "Smart Search",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Open search"
+      },
+      {
+        "type": "action",
+        "description": "Search for a term with no matches"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an empty search state is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC038",
+    "title": "Reject an unsupported locale",
+    "description": "This verifies that choosing an unsupported locale is blocked and a validation error is shown.",
+    "category": "Arabic/English Localization",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the locale settings page"
+      },
+      {
+        "type": "action",
+        "description": "Select an unsupported locale value"
+      },
+      {
+        "type": "action",
+        "description": "Save the locale preference"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a locale validation error is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC039",
+    "title": "Reject an incomplete WhatsApp share request",
+    "description": "This verifies that an incomplete WhatsApp share attempt is blocked with a visible validation error and no share payload is created.",
+    "category": "WhatsApp Integration",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a page that exposes WhatsApp sharing"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to share with incomplete details"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no WhatsApp share link or message payload is displayed"
+      }
+    ],
+    "priority": "Low"
+  }
+]
