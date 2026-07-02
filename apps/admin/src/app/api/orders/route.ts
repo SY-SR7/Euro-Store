@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     if (search) query = query.or(`order_number.ilike.%${search}%,address_snapshot->>full_name.ilike.%${search}%`);
 
     const { data, error, count } = await query;
-    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
 
     return NextResponse.json({ orders: data ?? [], total: count ?? 0, page, limit });
   } catch {

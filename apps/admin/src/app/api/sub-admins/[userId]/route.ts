@@ -38,7 +38,7 @@ export async function GET(_request: Request, { params }: Params) {
     .eq('id', params.userId)
     .single();
 
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 404 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 404 });
   return NextResponse.json(mapProfile(data));
 }
 
@@ -76,7 +76,7 @@ export async function PATCH(request: Request, { params }: Params) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: 'database_error' }, { status: 500 });
+      return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     }
 
     return NextResponse.json(mapProfile(data));

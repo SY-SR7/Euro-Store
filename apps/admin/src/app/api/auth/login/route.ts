@@ -66,6 +66,6 @@ export async function POST(req: NextRequest) {
     return response;
   } catch (err) {
     console.error('Login error:', err);
-    return NextResponse.json({ error: 'database_error' }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   }
 }

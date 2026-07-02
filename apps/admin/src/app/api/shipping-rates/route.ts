@@ -14,7 +14,7 @@ export async function GET() {
       .from('shipping_rates')
       .select('id,governorate,base_rate_syp,free_shipping_threshold_syp,is_active')
       .order('governorate');
-    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     return NextResponse.json(data ?? []);
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }

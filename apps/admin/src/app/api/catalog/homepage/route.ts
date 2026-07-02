@@ -21,7 +21,7 @@ export async function GET() {
 
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.from('homepage_sections').select('*').order('sort_order');
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json(data);
 }
 
@@ -36,6 +36,6 @@ export async function POST(request: Request) {
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await admin.from('homepage_sections').insert(parsed.data as any).select().single();
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json(data, { status: 201 });
 }

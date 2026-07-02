@@ -12,7 +12,7 @@ export async function GET(_req: Request, { params }: RouteParams) {
 
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.from('brands').select('*').eq('id', params.id).single();
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 404 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 404 });
   return NextResponse.json(data);
 }
 
@@ -29,7 +29,7 @@ const { admin } = ctx;
   if (typeof body.logo_url === 'string') update.logo_url = body.logo_url || null;
   if (Object.keys(update).length === 0) return NextResponse.json({ error: 'No valid fields' }, { status: 400 });
   const { data, error } = await admin.from('brands').update(update as never).eq('id', params.id).select().single();
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json(data);
 }
 
@@ -38,6 +38,6 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 const { admin } = ctx;
   const { error } = await admin.from('brands').delete().eq('id', params.id);
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json({ deleted: true });
 }

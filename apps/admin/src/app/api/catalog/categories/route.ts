@@ -25,7 +25,7 @@ const { admin } = ctx;
     .order('sort_order', { ascending: true })
     .order('created_at', { ascending: false });
 
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json(data ?? []);
 }
 
@@ -68,7 +68,7 @@ const { admin, userId } = ctx;
     .select('id, name_ar, name_en, slug, sort_order, is_active, created_at')
     .single();
 
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 400 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 400 });
 
   await writeAuditLog({
     admin, actorId: userId, actorRole: 'admin',

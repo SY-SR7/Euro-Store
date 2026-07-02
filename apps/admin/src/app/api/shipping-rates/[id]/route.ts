@@ -10,7 +10,7 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.from('shipping_rates').select('*').eq('id', params.id).single();
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 404 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 404 });
   return NextResponse.json(data);
 }
 
@@ -27,6 +27,6 @@ const { admin } = ctx;
   if (typeof body.free_shipping_threshold_syp === 'number' || body.free_shipping_threshold_syp === null) update.free_shipping_threshold_syp = body.free_shipping_threshold_syp;
   if (Object.keys(update).length === 0) return NextResponse.json({ error: 'No valid fields' }, { status: 400 });
   const { data, error } = await admin.from('shipping_rates').update(update as never).eq('id', params.id).select().single();
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json(data);
 }

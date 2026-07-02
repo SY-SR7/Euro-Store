@@ -13,7 +13,7 @@ export async function GET() {
     .from('attribute_types')
     .select('id, name_ar, name_en, slug, attribute_values(id, value_ar, value_en, hex_color, sort_order)')
     .order('created_at');
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json(data ?? []);
 }
 
@@ -36,6 +36,6 @@ const body = await request.json().catch(() => null) as Record<string, unknown> |
     .select('id, name_ar, name_en, slug, attribute_values(id, value_ar, value_en, hex_color, sort_order)')
     .single();
 
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   return NextResponse.json(data, { status: 201 });
 }

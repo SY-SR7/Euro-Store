@@ -32,7 +32,7 @@ const { admin } = ctx;
     .eq('id', params.id)
     .single();
 
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
 
   return NextResponse.json(data);
 }
@@ -99,7 +99,7 @@ const { admin, userId } = ctx;
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
 
   await writeAuditLog({
     admin,

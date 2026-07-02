@@ -10,7 +10,7 @@ export async function GET() {
 
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.from('system_settings').select('key,value').in('key', LOYALTY_KEYS);
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   const obj: Record<string,string> = {};
   for (const row of (data ?? [])) { obj[row.key] = row.value ?? ''; }
   return NextResponse.json(obj);

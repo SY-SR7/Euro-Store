@@ -16,7 +16,7 @@ export async function GET(_req: Request, { params }: RouteParams) {
     .select('id,full_name,phone,email,created_at,loyalty_points,referral_code,is_blocked')
     .eq('id', params.id)
     .single();
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 404 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 404 });
   return NextResponse.json(data);
 }
 
@@ -51,7 +51,7 @@ const { admin, userId } = ctx;
     .select('id,full_name,phone,email,created_at,loyalty_points,referral_code,is_blocked')
     .single();
 
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
 
   await writeAuditLog({
     admin,

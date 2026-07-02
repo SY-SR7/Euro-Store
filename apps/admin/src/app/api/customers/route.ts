@@ -21,7 +21,7 @@ export async function GET(request: Request) {
       query = query.or(`full_name.ilike.%${search}%,phone.ilike.%${search}%,email.ilike.%${search}%`);
     }
     const { data, error } = await query;
-    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     return NextResponse.json(data ?? []);
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }

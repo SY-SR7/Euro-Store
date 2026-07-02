@@ -18,7 +18,7 @@ export async function GET() {
   try {
     const admin = createAdminSupabaseClient();
     const { data, error } = await admin.from('system_settings').select('key,value,description,updated_at').in('key', ALLOWED_KEYS);
-    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     return NextResponse.json(data ?? []);
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }

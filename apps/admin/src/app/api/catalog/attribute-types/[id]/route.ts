@@ -19,7 +19,7 @@ export async function GET(_request: Request, { params }: RouteParams) {
     .eq('id', params.id)
     .single();
 
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 404 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 404 });
   return NextResponse.json(data);
 }
 
@@ -51,7 +51,7 @@ const body = await request.json().catch(() => null) as Record<string, unknown> |
     .select('id, name_ar, name_en, slug, attribute_values(id, value_ar, value_en, hex_color, sort_order)')
     .single();
 
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
 
   await writeAuditLog({
     admin: ctx.admin,
@@ -81,7 +81,7 @@ const { data: before } = await ctx.admin
     .delete({ count: 'exact' })
     .eq('id', params.id);
 
-  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
   if ((count ?? 0) === 0) return NextResponse.json({ error: 'not_found' }, { status: 404 });
 
   await writeAuditLog({

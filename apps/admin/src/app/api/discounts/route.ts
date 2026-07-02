@@ -25,7 +25,7 @@ export async function GET() {
       .from('discount_codes')
       .select('id,code,type,value,min_order_syp,valid_from,valid_until,max_uses,used_count,is_active,created_at')
       .order('created_at', { ascending: false });
-    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     return NextResponse.json(data ?? []);
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }
@@ -46,7 +46,7 @@ const { admin } = ctx;
       valid_until: parsed.data.valid_until ? new Date(parsed.data.valid_until).toISOString() : in90,
       used_count: 0,
     } as never).select().single();
-    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
     return NextResponse.json(data, { status: 201 });
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }
