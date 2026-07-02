@@ -1,0 +1,32 @@
+{
+  "cli": {
+    "version": ">= 9.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "PLACEHOLDER_URL",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "PLACEHOLDER_KEY"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "PLACEHOLDER_URL",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "PLACEHOLDER_KEY"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "PLACEHOLDER_URL",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "PLACEHOLDER_KEY"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
