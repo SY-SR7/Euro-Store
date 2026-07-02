@@ -8,7 +8,11 @@ export const dynamic = 'force-dynamic';
 export default async function PartnerExchangeHistoryPage() {
   const t = await getTranslations();
   const cookieStore = cookies();
-  const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = createSupabaseServerClientFromEnv({
+    get(name: string) { return cookieStore.get(name)?.value; },
+    set() {},
+    remove() {}
+  });
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
