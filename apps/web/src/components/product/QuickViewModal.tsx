@@ -18,13 +18,13 @@ export function QuickViewModal({ isOpen, onClose, product }: QuickViewModalProps
 
   const handleAddToCart = () => {
     addCartItem({
-      variant_id: product.id,
-      product_id: product.id,
-      name_ar: product.name_ar,
-      name_en: product.name_en,
-      price_syp: product.base_price,
+      variantId: product.id,
+      productId: product.id,
+      nameAr: product.name_ar,
+      nameEn: product.name_en,
+      priceSyp: product.base_price,
       quantity: 1,
-      image_url: product.primary_image_url
+      imageUrl: product.primary_image_url
     });
     onClose();
   };
