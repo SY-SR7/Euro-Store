@@ -119,6 +119,7 @@
   },
   "arabicShort": "عربي",
   "common": {
+    "saving": "جاري الحفظ...",
     "arabic": "العربية",
     "empty": "لا توجد بيانات",
     "rightsReserved": "جميع الحقوق محفوظة",
