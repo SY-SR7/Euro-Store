@@ -10,6 +10,8 @@ import { createServerSupabaseClient } from '@/supabase-server';
 import { useCartStore } from '@/lib/cart/cartStore';
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
 import { ReviewsSection } from '@/components/product/ReviewsSection';
+import { SimilarProducts } from '@/components/product/SimilarProducts';
+import { RecommendedProducts } from '@/components/product/RecommendedProducts';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import { Layers3, Package, Palette, Ruler, Barcode, Boxes, Info, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 import { useRecentStore } from '@/lib/recentStore';
