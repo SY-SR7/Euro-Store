@@ -25,6 +25,7 @@ import { PageTransitionProvider } from '../components/layout/PageTransitionProvi
 
 import { Toaster } from 'sonner';
 import { WhatsAppButton } from '@/components/common/WhatsAppButton';
+import { EuroConcierge } from '@/components/common/EuroConcierge';
 
 export default async function RootLayout({
   children
@@ -46,6 +47,7 @@ export default async function RootLayout({
           </SmoothScroller>
           <Toaster position="bottom-right" />
           <WhatsAppButton />
+          <EuroConcierge />
         </NextIntlClientProvider>
       </body>
     </html>
