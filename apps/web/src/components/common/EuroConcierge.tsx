@@ -65,7 +65,13 @@ export function EuroConcierge() {
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4" data-lenis-prevent="true">
+            <div 
+              className="flex-1 overflow-y-auto p-4 space-y-4 overscroll-contain touch-pan-y" 
+              data-lenis-prevent="true"
+              onWheel={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
+            >
               {chat.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
                   <div className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${
