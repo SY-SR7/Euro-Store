@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useMotionValue, useSpring, useAnimationFrame } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
 import { ProductCard } from '@/app/catalog-components';
