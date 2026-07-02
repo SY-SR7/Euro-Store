@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import crypto from 'crypto';
 import { createSupabaseServerClientFromEnv, createSupabaseAdminClientFromEnv } from '@eurostore/database';
@@ -7,7 +7,11 @@ import { generateExchangeQRToken } from '@eurostore/shared';
 export async function POST(req: NextRequest) {
   try {
     const cookieStore = cookies();
-    const supabase    = createSupabaseServerClientFromEnv(cookieStore);
+    const supabase = createSupabaseServerClientFromEnv({
+      get(name: string) { return cookieStore.get(name)?.value; },
+      set() {},
+      remove() {}
+    });
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
