@@ -13,34 +13,34 @@ export default async function HomePage() {
   const isAr = locale === 'ar';
 
   const SHOES_STORY_BEATS: StoryBeat[] = [
-    { from: 0.0, to: 0.18, title: t('shoes.beat1.title'), subtitle: t('shoes.beat1.subtitle') },
-    { from: 0.22, to: 0.42, title: t('shoes.beat2.title'), subtitle: t('shoes.beat2.subtitle') },
-    { from: 0.46, to: 0.64, title: t('shoes.beat3.title'), subtitle: t('shoes.beat3.subtitle') },
-    { from: 0.68, to: 0.86, title: t('shoes.beat4.title'), subtitle: t('shoes.beat4.subtitle') },
+    { from: 0.0, to: 0.15, title: t('shoes.beat1.title'), subtitle: t('shoes.beat1.subtitle') },
+    { from: 0.22, to: 0.37, title: t('shoes.beat2.title'), subtitle: t('shoes.beat2.subtitle') },
+    { from: 0.44, to: 0.59, title: t('shoes.beat3.title'), subtitle: t('shoes.beat3.subtitle') },
+    { from: 0.66, to: 0.81, title: t('shoes.beat4.title'), subtitle: t('shoes.beat4.subtitle') },
     { from: 0.88, to: 1.0, title: t('shoes.beat5.title'), subtitle: t('shoes.beat5.subtitle'), ctaLabel: t('shoes.beat5.cta'), ctaHref: '/categories/shoes' },
   ];
 
   const MEN_STORY_BEATS: StoryBeat[] = [
-    { from: 0.0, to: 0.18, title: t('men.beat1.title'), subtitle: t('men.beat1.subtitle') },
-    { from: 0.22, to: 0.42, title: t('men.beat2.title'), subtitle: t('men.beat2.subtitle') },
-    { from: 0.46, to: 0.64, title: t('men.beat3.title'), subtitle: t('men.beat3.subtitle') },
-    { from: 0.68, to: 0.86, title: t('men.beat4.title'), subtitle: t('men.beat4.subtitle') },
+    { from: 0.0, to: 0.15, title: t('men.beat1.title'), subtitle: t('men.beat1.subtitle') },
+    { from: 0.22, to: 0.37, title: t('men.beat2.title'), subtitle: t('men.beat2.subtitle') },
+    { from: 0.44, to: 0.59, title: t('men.beat3.title'), subtitle: t('men.beat3.subtitle') },
+    { from: 0.66, to: 0.81, title: t('men.beat4.title'), subtitle: t('men.beat4.subtitle') },
     { from: 0.88, to: 1.0, title: t('men.beat5.title'), subtitle: t('men.beat5.subtitle'), ctaLabel: t('men.beat5.cta'), ctaHref: '/categories/men' },
   ];
 
   const WOMEN_STORY_BEATS: StoryBeat[] = [
-    { from: 0.0, to: 0.18, title: t('women.beat1.title'), subtitle: t('women.beat1.subtitle') },
-    { from: 0.22, to: 0.42, title: t('women.beat2.title'), subtitle: t('women.beat2.subtitle') },
-    { from: 0.46, to: 0.64, title: t('women.beat3.title'), subtitle: t('women.beat3.subtitle') },
-    { from: 0.68, to: 0.86, title: t('women.beat4.title'), subtitle: t('women.beat4.subtitle') },
+    { from: 0.0, to: 0.15, title: t('women.beat1.title'), subtitle: t('women.beat1.subtitle') },
+    { from: 0.22, to: 0.37, title: t('women.beat2.title'), subtitle: t('women.beat2.subtitle') },
+    { from: 0.44, to: 0.59, title: t('women.beat3.title'), subtitle: t('women.beat3.subtitle') },
+    { from: 0.66, to: 0.81, title: t('women.beat4.title'), subtitle: t('women.beat4.subtitle') },
     { from: 0.88, to: 1.0, title: t('women.beat5.title'), subtitle: t('women.beat5.subtitle'), ctaLabel: t('women.beat5.cta'), ctaHref: '/categories/women' },
   ];
 
   const KIDS_STORY_BEATS: StoryBeat[] = [
-    { from: 0.0, to: 0.18, title: t('kids.beat1.title'), subtitle: t('kids.beat1.subtitle') },
-    { from: 0.22, to: 0.42, title: t('kids.beat2.title'), subtitle: t('kids.beat2.subtitle') },
-    { from: 0.46, to: 0.64, title: t('kids.beat3.title'), subtitle: t('kids.beat3.subtitle') },
-    { from: 0.68, to: 0.86, title: t('kids.beat4.title'), subtitle: t('kids.beat4.subtitle') },
+    { from: 0.0, to: 0.15, title: t('kids.beat1.title'), subtitle: t('kids.beat1.subtitle') },
+    { from: 0.22, to: 0.37, title: t('kids.beat2.title'), subtitle: t('kids.beat2.subtitle') },
+    { from: 0.44, to: 0.59, title: t('kids.beat3.title'), subtitle: t('kids.beat3.subtitle') },
+    { from: 0.66, to: 0.81, title: t('kids.beat4.title'), subtitle: t('kids.beat4.subtitle') },
     { from: 0.88, to: 1.0, title: t('kids.beat5.title'), subtitle: t('kids.beat5.subtitle'), ctaLabel: t('kids.beat5.cta'), ctaHref: '/categories/kids' },
   ];
 
