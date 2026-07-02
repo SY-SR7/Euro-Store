@@ -107,7 +107,7 @@ function ScrollBeat({
               href={beat.ctaHref}
               className={`pointer-events-auto inline-flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase transition-colors duration-300 rounded-lg ${
                 isLightBg 
-                  ? 'bg-black text-text-primary hover:bg-black/80' 
+                  ? 'bg-black text-white hover:bg-black/80' 
                   : 'bg-background-card text-text-primary hover:bg-gray-200'
               }`}
             >

@@ -13,6 +13,8 @@
     "@eurostore/database": "workspace:*",
     "@eurostore/shared": "workspace:*",
     "@eurostore/ui": "workspace:*",
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.110.0",
     "framer-motion": "^11.2.10",
     "lenis": "^1.1.13",
     "lucide-react": "^0.383.0",
