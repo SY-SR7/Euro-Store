@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getSessionClient } from '@/supabase-server';
-import { ShoppingBag, Star, RefreshCw, User, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShoppingBag, Star, RefreshCw, User, LogOut, ChevronLeft, ChevronRight, Phone, ShieldCheck, FileText, Info } from 'lucide-react';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { LogoutButton } from '@/components/common/LogoutButton';
 
@@ -30,6 +30,13 @@ export default async function AccountPage() {
     { href:'/orders',   icon:ShoppingBag, label:t('myOrders'),       badge: String(orderCount ?? 0) + ' ' + t('orderWord'),    badgeColor:'bg-blue-50 text-blue-700' },
     { href:'/loyalty',  icon:Star,        label:t('loyaltyPoints'),  badge: String(profile?.loyalty_points ?? 0) + ' ' + t('pointWord'), badgeColor:'bg-amber-50 text-amber-700' },
     { href:'/exchange', icon:RefreshCw,   label:t('exchangeRequests'), badge: null, badgeColor:'' },
+  ];
+
+  const infoLinks = [
+    { href:'/contact', icon:Phone, label: isAr ? 'تواصل معنا' : 'Contact Us' },
+    { href:'/about',   icon:Info, label: isAr ? 'عن المتجر' : 'About Us' },
+    { href:'/privacy', icon:ShieldCheck, label: isAr ? 'سياسة الخصوصية' : 'Privacy Policy' },
+    { href:'/terms',   icon:FileText, label: isAr ? 'الشروط والأحكام' : 'Terms & Conditions' },
   ];
 
   return (
@@ -65,6 +72,25 @@ export default async function AccountPage() {
               </div>
               <div className="flex items-center gap-2">
                 {badge && <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${badgeColor}`}>{badge}</span>}
+                {isAr ? <ChevronLeft className="h-4 w-4 text-text-muted" /> : <ChevronRight className="h-4 w-4 text-text-muted" />}
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* Info links */}
+        <div className="grid gap-3">
+          <h2 className="text-sm font-bold text-text-muted px-2 mt-2">{isAr ? 'المعلومات والدعم' : 'Information & Support'}</h2>
+          {infoLinks.map(({ href, icon: Icon, label }) => (
+            <Link key={href} href={href}
+              className="flex items-center justify-between rounded-2xl border border-border bg-background-card p-4 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-background-elevated text-text-secondary">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <span className="font-semibold text-text-primary">{label}</span>
+              </div>
+              <div className="flex items-center gap-2">
                 {isAr ? <ChevronLeft className="h-4 w-4 text-text-muted" /> : <ChevronRight className="h-4 w-4 text-text-muted" />}
               </div>
             </Link>
