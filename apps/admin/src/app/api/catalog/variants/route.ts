@@ -65,7 +65,7 @@ export async function POST(request: Request) {
         attribute_value_id: avid,
       }));
       const { error: attrErr } = await admin.from('variant_attributes').insert(attrs);
-      if (attrErr) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+      if (attrErr) return NextResponse.json({ error: attrErr?.message || 'database_error' }, { status: 500 });
     }
     return NextResponse.json(newVariant, { status: 201 });
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
