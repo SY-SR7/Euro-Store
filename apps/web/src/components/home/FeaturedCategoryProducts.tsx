@@ -106,7 +106,7 @@ export async function FeaturedCategoryProducts({
         </div>
         
         <div className="mt-8 text-center md:hidden">
-          <Link href="/products" className="inline-block px-6 py-3 rounded-full bg-background-elevated text-white text-sm font-bold border border-white/10 hover:border-primary/50 transition-colors">
+          <Link href="/products" className="inline-block px-6 py-3 rounded-full bg-background-elevated text-text-primary text-sm font-bold border border-border hover:border-primary/50 transition-colors">
             {isAr ? 'عرض المزيد من المنتجات' : 'View More Products'}
           </Link>
         </div>
