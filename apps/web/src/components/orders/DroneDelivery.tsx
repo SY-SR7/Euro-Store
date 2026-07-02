@@ -25,7 +25,7 @@ export function DroneDelivery({ status }: { status: string }) {
     <div className="mt-8 border border-primary/20 bg-primary/5 rounded-2xl p-6 relative overflow-hidden">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 z-10 relative">
         <div>
-          <h3 className="font-bold text-white text-lg flex items-center gap-2">
+          <h3 className="font-bold text-text-primary text-lg flex items-center gap-2">
             <Plane className="text-primary" />
             توصيل كبار الشخصيات (VIP Drone)
           </h3>
