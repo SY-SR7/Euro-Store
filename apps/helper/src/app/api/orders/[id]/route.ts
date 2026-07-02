@@ -8,8 +8,7 @@ const schema = z.object({
 });
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-  const cookieStore = cookies();
-  const supabase = createSupabaseServerClientFromEnv(cookieStore);
+  const supabase = await createServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
