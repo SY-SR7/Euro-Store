@@ -1,3 +1,4 @@
+import { requireAdminContext } from '@/supabase-server';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
@@ -54,6 +55,9 @@ function inferEmail(request: NextRequest): string {
 }
 
 export async function GET(request: NextRequest) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   return NextResponse.json({
     email: inferEmail(request),
   });

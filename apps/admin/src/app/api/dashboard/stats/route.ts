@@ -1,3 +1,4 @@
+import { requireAdminContext } from '@/supabase-server';
 ﻿import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
 
@@ -6,6 +7,9 @@ export const dynamic = 'force-dynamic';
 type RevenueRow = { total_syp: number|string|null };
 
 export async function GET() {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   try {
     const admin = createAdminSupabaseClient();
     const [ordersRes, revenueRes, customersRes, productsRes, exchangesRes] = await Promise.all([

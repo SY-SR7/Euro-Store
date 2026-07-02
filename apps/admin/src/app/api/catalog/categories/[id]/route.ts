@@ -7,6 +7,9 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(_req: Request, { params }: RouteParams) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.from('categories').select('*').eq('id', params.id).single();
   if (error) return NextResponse.json({ error: error.message }, { status: 404 });
@@ -14,6 +17,9 @@ export async function GET(_req: Request, { params }: RouteParams) {
 }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { admin } = ctx;
@@ -35,6 +41,9 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 }
 
 export async function DELETE(_req: Request, { params }: RouteParams) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { admin } = ctx;

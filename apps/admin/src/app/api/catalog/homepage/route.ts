@@ -1,3 +1,4 @@
+import { requireAdminContext } from '@/supabase-server';
 import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient, requireAdminClient } from '@/supabase-server';
 import { z } from 'zod';
@@ -15,6 +16,9 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET() {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.from('homepage_sections').select('*').order('sort_order');
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -22,6 +26,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const admin = await requireAdminClient();
   if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const body: unknown = await request.json();

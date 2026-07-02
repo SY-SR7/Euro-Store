@@ -10,6 +10,9 @@ const schema = z.object({
 
 export async function POST(request: Request) {
   const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
+  const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { admin, userId } = ctx;
 
@@ -37,6 +40,9 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET() {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { admin } = ctx;

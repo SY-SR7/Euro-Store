@@ -1,9 +1,13 @@
+import { requireAdminContext } from '@/supabase-server';
 ﻿import { NextRequest, NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   try {
     const admin = createAdminSupabaseClient();
     const { searchParams } = new URL(req.url);

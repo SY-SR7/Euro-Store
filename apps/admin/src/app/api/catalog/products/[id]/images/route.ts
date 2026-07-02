@@ -1,3 +1,4 @@
+import { requireAdminContext } from '@/supabase-server';
 /// <reference lib="dom" />
 import { NextResponse } from 'next/server';
 import { createServerSupabaseClient } from '@/supabase-server';
@@ -11,6 +12,9 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(_req: Request, { params }: RouteParams) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const supabase = createServerSupabaseClient();
   const { data, error } = await supabase
     .from('product_images')
@@ -22,6 +26,9 @@ export async function GET(_req: Request, { params }: RouteParams) {
 }
 
 export async function POST(request: Request, { params }: RouteParams) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   try {
     const formData = await request.formData();
     const file = formData.get('image') as File | null;

@@ -1,3 +1,4 @@
+import { requireAdminContext } from '@/supabase-server';
 import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
 
@@ -5,6 +6,9 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const { searchParams } = new URL(request.url);
   const product_id = searchParams.get('product_id') ?? '';
   const admin = createAdminSupabaseClient();
@@ -16,6 +20,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   try {
     const body = await request.json().catch(() => null) as { product_id?: string; url?: string; alt_ar?: string; is_primary?: boolean } | null;
     if (!body?.product_id || !body?.url) return NextResponse.json({ error: 'product_id and url required' }, { status: 400 });

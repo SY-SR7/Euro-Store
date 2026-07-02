@@ -5,6 +5,9 @@ export const dynamic = 'force-dynamic';
 const LOYALTY_KEYS = ['loyalty_earn_amount_syp','loyalty_earn_points','loyalty_redeem_points_per_syp','loyalty_max_redeem_percent','loyalty_referral_bonus_points'];
 
 export async function GET() {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.from('system_settings').select('key,value').in('key', LOYALTY_KEYS);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -14,6 +17,9 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { admin } = ctx;

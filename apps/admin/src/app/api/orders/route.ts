@@ -1,9 +1,13 @@
+import { requireAdminContext } from '@/supabase-server';
 ﻿import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   try {
     const { searchParams } = new URL(request.url);
     const page   = Math.max(1, parseInt(searchParams.get('page')  ?? '1'));

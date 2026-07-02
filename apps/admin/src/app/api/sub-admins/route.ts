@@ -1,3 +1,4 @@
+import { requireAdminContext } from '@/supabase-server';
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClientFromEnv } from '@eurostore/database';
 
@@ -5,6 +6,9 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET() {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const supabase = createSupabaseAdminClientFromEnv();
   const { data, error } = await supabase
     .from('sub_admin_profiles')
@@ -26,6 +30,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const { email, password, display_name } = await request.json() as {
     email: string;
     password: string;

@@ -1,3 +1,4 @@
+import { requireAdminContext } from '@/supabase-server';
 import { NextRequest, NextResponse } from 'next/server';
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import path from 'path';
@@ -90,6 +91,9 @@ function contains(haystack: unknown, needle: string): boolean {
 }
 
 export async function GET(request: NextRequest) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const logs = await readLogs();
   const searchParams = request.nextUrl.searchParams;
 
@@ -120,6 +124,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const body = await request.json().catch(() => ({}));
   const logs = await readLogs();
 

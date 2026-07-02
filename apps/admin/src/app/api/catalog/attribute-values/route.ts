@@ -1,7 +1,11 @@
+import { requireAdminContext } from '@/supabase-server';
 import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
 
 export async function POST(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const body = await request.json().catch(() => null);
   if (!body?.attribute_type_id || !body?.value_ar)
     return NextResponse.json({ error: 'missing fields' }, { status: 400 });

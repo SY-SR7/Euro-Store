@@ -1,9 +1,13 @@
+import { requireAdminContext } from '@/supabase-server';
 import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
 
 interface RouteParams { params: { id: string }; }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   try {
     const admin = createAdminSupabaseClient();
     const body = await request.json().catch(() => null) as Record<string, unknown> | null;
@@ -46,6 +50,9 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 }
 
 export async function DELETE(_: Request, { params }: RouteParams) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   try {
     const admin = createAdminSupabaseClient();
     await admin.from('variant_attributes').delete().eq('variant_id', params.id);

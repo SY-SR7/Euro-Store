@@ -12,6 +12,9 @@ const ALLOWED_KEYS = [
 ];
 
 export async function GET() {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   try {
     const admin = createAdminSupabaseClient();
     const { data, error } = await admin.from('system_settings').select('key,value,description,updated_at').in('key', ALLOWED_KEYS);
@@ -21,6 +24,9 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { admin } = ctx;

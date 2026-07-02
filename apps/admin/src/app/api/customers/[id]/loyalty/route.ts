@@ -3,6 +3,9 @@ import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-serve
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
+  const ctx = await requireAdminContext();
   if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const { admin, userId } = ctx;
 

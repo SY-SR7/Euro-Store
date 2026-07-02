@@ -4,6 +4,9 @@ import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-serve
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   try {
     const ctx = await requireAdminContext();
     if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

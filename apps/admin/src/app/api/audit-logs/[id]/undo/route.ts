@@ -1,3 +1,4 @@
+import { requireAdminContext } from '@/supabase-server';
 import { NextRequest, NextResponse } from 'next/server';
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import path from 'path';
@@ -92,6 +93,9 @@ export async function POST(
   request: NextRequest,
   context: { params: { id: string } },
 ) {
+  const ctx = await requireAdminContext();
+  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+
   const logs = await readLogs();
   const id = decodeURIComponent(context.params.id);
   const index = logs.findIndex((log) => String(log.id || '') === id);
