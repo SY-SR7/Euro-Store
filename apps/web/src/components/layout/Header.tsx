@@ -97,14 +97,6 @@ export function Header() {
             
           </div>
         </div>
-
-                  <LanguageSwitcher />
-                  <span className="text-xs font-bold tracking-widest uppercase text-text-secondary">Euro Store © 2025</span>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </motion.header>
 
       {/* Slide-over Cart Drawer */}
