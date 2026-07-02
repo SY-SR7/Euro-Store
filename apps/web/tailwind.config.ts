@@ -31,10 +31,20 @@ const config: Config = {
       keyframes: {
         shimmer: {
           '100%': { transform: 'translateX(100%)' },
+        },
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(calc(-100% - 2rem))' },
+        },
+        'marquee-rtl': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(calc(100% + 2rem))' },
         }
       },
       animation: {
         shimmer: 'shimmer 1.5s infinite',
+        marquee: 'marquee 40s linear infinite',
+        'marquee-rtl': 'marquee-rtl 40s linear infinite',
       }
     },
   },
