@@ -99,7 +99,7 @@ export default function FAQPage() {
           transition={{ delay: 0.8 }}
           className="mt-16 text-center bg-primary/10 border border-primary/20 rounded-2xl p-8"
         >
-          <h4 className="text-xl font-bold text-white mb-4">لم تجد إجابة لسؤالك؟</h4>
+          <h4 className="text-xl font-bold text-text-primary mb-4">لم تجد إجابة لسؤالك؟</h4>
           <p className="text-text-secondary mb-6">فريق خدمة العملاء لدينا جاهز دائماً لمساعدتك.</p>
           <Link href="/contact" className="inline-block bg-primary text-[#0F0F0F] font-black py-3 px-8 rounded-xl hover:bg-primary/90 transition-colors">
             تواصل معنا

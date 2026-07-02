@@ -68,7 +68,7 @@ export function QuickViewModal({ isOpen, onClose, product }: QuickViewModalProps
 
             {/* Details Section */}
             <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
-              <h2 className="text-3xl font-black text-white mb-2">{product.name_ar}</h2>
+              <h2 className="text-3xl font-black text-text-primary mb-2">{product.name_ar}</h2>
               {product.brand?.name && (
                 <p className="text-text-secondary uppercase tracking-widest text-sm font-bold mb-4">{product.brand.name}</p>
               )}
