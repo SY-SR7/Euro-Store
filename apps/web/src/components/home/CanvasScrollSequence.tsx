@@ -63,14 +63,13 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
         const isMobile = width < 768;
 
         if (isMobile) {
-          // On mobile (portrait screen + portrait video), the user prefers the zoomed-in look 
-          // (1.3x scale) to fill the screen better.
-          const scale = (width / img.naturalWidth) * 1.3;
+          // Fit width perfectly without zooming, so the sides of the shoes are fully visible.
+          // Center vertically so details are shown nicely.
+          const scale = width / img.naturalWidth;
           drawW = img.naturalWidth * scale;
           drawH = img.naturalHeight * scale;
           drawX = (width - drawW) / 2;
-          // Align to the bottom, but shift UP by 90px to clear the mobile bottom navigation bar!
-          drawY = height - drawH - 90;
+          drawY = (height - drawH) / 2;
         } else {
           // On desktop, we want a cinematic feel without extreme zooming of 'cover'.
           // We scale up the 'contain' size by ~1.35x, and anchor it towards the bottom 
