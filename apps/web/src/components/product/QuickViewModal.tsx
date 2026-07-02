@@ -91,7 +91,7 @@ export function QuickViewModal({ isOpen, onClose, product }: QuickViewModalProps
                 </button>
                 <Link
                   href={`/products/${product.slug}`}
-                  className="bg-background-secondary border border-border text-white font-bold py-4 px-6 rounded-xl hover:border-primary/50 transition-colors flex justify-center items-center"
+                  className="bg-background-secondary border border-border text-text-primary font-bold py-4 px-6 rounded-xl hover:border-primary/50 transition-colors flex justify-center items-center"
                 >
                   التفاصيل
                 </Link>

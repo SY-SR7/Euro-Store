@@ -55,11 +55,11 @@ export function EuroConcierge() {
                   <Sparkles size={16} className="text-[#0F0F0F]" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-white text-sm">EuroConcierge</h3>
+                  <h3 className="font-bold text-text-primary text-sm">EuroConcierge</h3>
                   <p className="text-xs text-primary">متصل (AI)</p>
                 </div>
               </div>
-              <button onClick={() => setIsOpen(false)} className="text-text-muted hover:text-white transition-colors">
+              <button onClick={() => setIsOpen(false)} className="text-text-muted hover:text-text-primary transition-colors">
                 <X size={20} />
               </button>
             </div>

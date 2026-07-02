@@ -23,7 +23,7 @@ export function TimeTravelDelivery() {
     <div className="mt-4 border border-purple-500/20 bg-purple-500/5 rounded-2xl p-6 relative overflow-hidden">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 z-10 relative">
         <div>
-          <h3 className="font-bold text-white text-lg flex items-center gap-2">
+          <h3 className="font-bold text-purple-600 text-lg flex items-center gap-2">
             <Hourglass className="text-purple-400" />
             توصيل السفر عبر الزمن (Time Travel)
           </h3>
