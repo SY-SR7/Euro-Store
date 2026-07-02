@@ -16,6 +16,16 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t('appName'),
     description: t('appDescription'),
+    manifest: '/manifest.json',
+    themeColor: '#CFA63D',
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'black-translucent',
+      title: 'EuroStore',
+    },
+    formatDetection: {
+      telephone: false,
+    },
   };
 }
 
