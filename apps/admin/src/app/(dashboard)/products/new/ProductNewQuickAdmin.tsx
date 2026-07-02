@@ -168,20 +168,31 @@ export default function ProductNewQuickAdmin() {
             </label>
             <label className="grid gap-1">
               <span className="text-xs font-black text-[#8B8172]">{t('productNameEn', { fallback: 'الاسم بالإنجليزية' })}</span>
-              <input value={form.name_en} onChange={(event) => setForm((current) => ({ ...current, name_en: event.target.value, slug: current.slug || slugify(event.target.value) }))} className={inputClass} dir="ltr" />
+              <input value={form.name_en} onChange={(event) => setForm((current) => ({ ...current, name_en: event.target.value, slug: slugify(event.target.value) }))} className={inputClass} dir="ltr" />
             </label>
             <label className="grid gap-1 md:col-span-2">
-              <span className="text-xs font-black text-[#8B8172]">{t('productSlug', { fallback: 'رابط المنتج' })}</span>
-              <input value={form.slug} onChange={(event) => setForm((current) => ({ ...current, slug: slugify(event.target.value) }))} className={inputClass} dir="ltr" />
-            </label>
-            <label className="grid gap-1">
               <span className="text-xs font-black text-[#8B8172]">{t('priceSyp', { fallback: 'السعر الأساسي (ل.س)' })}</span>
               <input type="number" min="0" required value={form.base_price_syp} onChange={(event) => setForm((current) => ({ ...current, base_price_syp: event.target.value }))} className={inputClass} dir="ltr" />
             </label>
-            <label className="grid gap-1">
-              <span className="text-xs font-black text-[#8B8172]">{t('sku', { fallback: 'رمز SKU للنسخة الأساسية' })}</span>
-              <input value={form.sku} onChange={(event) => setForm((current) => ({ ...current, sku: event.target.value }))} className={inputClass} dir="ltr" />
-            </label>
+
+            <details className="group md:col-span-2">
+              <summary className="cursor-pointer list-none outline-none flex items-center gap-2 text-xs font-bold text-primary hover:underline w-fit">
+                <span>{isAr ? 'إعدادات متقدمة (اختياري)' : 'Advanced Settings (Optional)'}</span>
+                <span className="text-[#8B8172] transition-transform group-open:rotate-180">▼</span>
+              </summary>
+              <div className="mt-4 grid gap-4 md:grid-cols-2 rounded-lg border border-[#E5E0D8] bg-[#FDFBF7] p-4">
+                <label className="grid gap-1">
+                  <span className="text-xs font-black text-[#8B8172]">{t('productSlug', { fallback: 'رابط المنتج' })}</span>
+                  <input value={form.slug} onChange={(event) => setForm((current) => ({ ...current, slug: slugify(event.target.value) }))} className={inputClass} dir="ltr" />
+                  <span className="text-[10px] text-[#8B8172] leading-tight">{isAr ? 'يُنشأ تلقائياً من الاسم الإنجليزي.' : 'Auto-generated from English name.'}</span>
+                </label>
+                <label className="grid gap-1">
+                  <span className="text-xs font-black text-[#8B8172]">{t('sku', { fallback: 'رمز SKU للنسخة الأساسية' })}</span>
+                  <input value={form.sku} onChange={(event) => setForm((current) => ({ ...current, sku: event.target.value }))} className={inputClass} dir="ltr" />
+                  <span className="text-[10px] text-[#8B8172] leading-tight">{isAr ? 'يتم تعيينه للرابط تلقائياً إذا تُرك فارغاً.' : 'Defaults to slug if left empty.'}</span>
+                </label>
+              </div>
+            </details>
             <label className="grid gap-1">
               <span className="text-xs font-black text-[#8B8172]">{t('descriptionAr', { fallback: 'الوصف العربي' })}</span>
               <textarea value={form.description_ar} onChange={(event) => setForm((current) => ({ ...current, description_ar: event.target.value }))} rows={7} className={inputClass} dir={isAr ? "rtl" : "ltr"} />
