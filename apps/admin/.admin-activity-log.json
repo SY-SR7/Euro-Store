@@ -1,5 +1,57 @@
 [
   {
+    "id": "6e392bab-1b26-4b41-acff-beef4d646d24",
+    "admin_email": "unknown-admin@local",
+    "action": "update",
+    "action_ar": "تعديل",
+    "entity_type": "catalog/homepage",
+    "entity_label": "catalog/homepage",
+    "entity_id": "94408b78-9b7a-419a-941e-f94008d41414",
+    "summary": "تعديل في catalog/homepage — المعرّف: 94408b78-9b7a-419a-941e-f94008d41414 — نتيجة العملية: 200",
+    "source": "admin-ui",
+    "created_at": "2026-07-03T14:24:44.111Z",
+    "ip": "::1"
+  },
+  {
+    "id": "a234f9e8-1975-429a-b1ae-ea678d28205e",
+    "admin_email": "unknown-admin@local",
+    "action": "update",
+    "action_ar": "تعديل",
+    "entity_type": "catalog/homepage",
+    "entity_label": "catalog/homepage",
+    "entity_id": "94408b78-9b7a-419a-941e-f94008d41414",
+    "summary": "تعديل في catalog/homepage — المعرّف: 94408b78-9b7a-419a-941e-f94008d41414 — نتيجة العملية: 200",
+    "source": "admin-ui",
+    "created_at": "2026-07-03T14:24:44.092Z",
+    "ip": "::1"
+  },
+  {
+    "id": "38c28b32-9a6e-47f1-baa5-6a6530d1b41d",
+    "admin_email": "unknown-admin@local",
+    "action": "deactivate",
+    "action_ar": "تعطيل",
+    "entity_type": "catalog/products",
+    "entity_label": "catalog/products",
+    "entity_id": "3122fe73-45da-481e-bab5-b46d686e1ad6",
+    "summary": "تعطيل في catalog/products — المعرّف: 3122fe73-45da-481e-bab5-b46d686e1ad6 — نتيجة العملية: 200",
+    "source": "admin-ui",
+    "created_at": "2026-07-03T14:22:46.092Z",
+    "ip": "::1"
+  },
+  {
+    "id": "bb608ce8-d6dd-4db3-bb41-9f1f84eee2ce",
+    "admin_email": "unknown-admin@local",
+    "action": "update",
+    "action_ar": "تعديل",
+    "entity_type": "settings",
+    "entity_label": "الإعدادات",
+    "entity_id": "settings",
+    "summary": "تعديل في الإعدادات — المعرّف: settings — نتيجة العملية: 200",
+    "source": "admin-ui",
+    "created_at": "2026-07-03T14:21:25.068Z",
+    "ip": "::1"
+  },
+  {
     "id": "b8c6fce5-36ab-4e78-9f62-6095f4d6be47",
     "admin_email": "eurostore.private@gmail.com",
     "action": "activate",

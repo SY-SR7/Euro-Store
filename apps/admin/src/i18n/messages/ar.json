@@ -184,8 +184,7 @@
     "emptyField": "—",
     "savedSuccessfully": "تم الحفظ بنجاح",
     "clear": "مسح",
-    "filters": "تصفية",
-    "items": "{count} عنصر"
+    "filters": "تصفية"
   },
   "productCount": "عدد المنتجات",
   "categories": {

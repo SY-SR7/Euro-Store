@@ -184,8 +184,7 @@
     "emptyField": "—",
     "savedSuccessfully": "Saved successfully",
     "clear": "Clear",
-    "filters": "Filters",
-    "items": "{count} items"
+    "filters": "Filters"
   },
   "productCount": "Product count",
   "categories": {
