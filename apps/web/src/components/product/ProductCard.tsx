@@ -55,9 +55,19 @@ export function ProductCard({ product, variantPrice, isNew: propIsNew, isOnSale:
 
   const comparePrice = product.product_variants?.length
     ? product.product_variants[0]?.compare_price_syp
-    : product.compare_price_syp;
+    : (product.compare_price_syp ?? null);
 
-  const isOnSale = propIsOnSale ?? Boolean(comparePrice && comparePrice > minPrice);
+  const discountPercentage = (product as any)?.discount_percentage ?? null;
+  let originalPrice = comparePrice;
+  let finalDiscount = discountPercentage;
+
+  if (discountPercentage && discountPercentage > 0 && !comparePrice && minPrice > 0) {
+    originalPrice = Math.round(minPrice / (1 - discountPercentage / 100));
+  } else if (comparePrice && comparePrice > minPrice && !discountPercentage && minPrice > 0) {
+    finalDiscount = Math.round(((comparePrice - minPrice) / comparePrice) * 100);
+  }
+
+  const isOnSale = propIsOnSale ?? Boolean((finalDiscount && finalDiscount > 0) || (originalPrice && originalPrice > minPrice));
   const isNew = propIsNew ?? (product.created_at ? (new Date().getTime() - new Date(product.created_at).getTime()) < 30 * 24 * 60 * 60 * 1000 : false);
 
   return (
@@ -89,9 +99,9 @@ export function ProductCard({ product, variantPrice, isNew: propIsNew, isOnSale:
               {t('new')}
             </span>
           )}
-          {isOnSale && (
-            <span className="bg-error/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
-              {t('sale')}
+          {isOnSale && finalDiscount && (
+            <span className="bg-amber-500 text-amber-950 border border-amber-300 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+              -{finalDiscount}%
             </span>
           )}
         </div>
@@ -114,13 +124,13 @@ export function ProductCard({ product, variantPrice, isNew: propIsNew, isOnSale:
           </Link>
         </div>
 
-        <div className="mt-4 flex items-baseline justify-center gap-2">
-          <PriceDisplay amountSyp={minPrice} className="text-base font-bold text-primary" />
-          {isOnSale && comparePrice && (
-            <span className="text-xs text-text-muted line-through">
-              {comparePrice.toLocaleString(isAr ? 'ar-SY' : 'en-US')} {isAr ? 'ل.س' : 'SYP'}
-            </span>
-          )}
+        <div className="mt-4 flex items-center justify-center">
+          <PriceDisplay
+            amountSyp={minPrice}
+            originalPriceSyp={originalPrice}
+            discountPercentage={finalDiscount}
+            className="text-sm justify-center"
+          />
         </div>
       </div>
     </motion.div>

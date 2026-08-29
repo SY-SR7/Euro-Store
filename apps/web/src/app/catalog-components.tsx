@@ -104,6 +104,19 @@ export function ProductCard({ product, minPrice, variantCount, totalStock, varyi
     }
   }
 
+  const discountPercentage = product?.discount_percentage ?? (product?.discount != null ? Number(product.discount) : null);
+  const comparePrice = product?.compare_price_syp ?? product?.comparePrice;
+  const rawPrice = minPrice != null ? Number(minPrice) : (product?.base_price != null ? Number(product.base_price) : 0);
+  
+  let originalPrice = comparePrice;
+  let finalDiscount = discountPercentage;
+  if (discountPercentage && discountPercentage > 0 && !comparePrice && rawPrice > 0) {
+    originalPrice = Math.round(rawPrice / (1 - discountPercentage / 100));
+  } else if (comparePrice && comparePrice > rawPrice && !discountPercentage && rawPrice > 0) {
+    finalDiscount = Math.round(((comparePrice - rawPrice) / comparePrice) * 100);
+  }
+  const hasDiscount = Boolean((finalDiscount && finalDiscount > 0) || (originalPrice && originalPrice > rawPrice));
+
   return (
     <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-background-card transition-all hover:shadow-lg hover:-translate-y-1 hover:border-primary/30">
       <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10" aria-label={productName} />
@@ -116,27 +129,37 @@ export function ProductCard({ product, minPrice, variantCount, totalStock, varyi
           className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
         />
         
+        {/* Wishlist Button */}
         <div className="absolute left-2 top-2 z-50">
           <WishlistButton productId={product.id} size="sm" />
         </div>
 
-        {product.is_featured && (
-          <span className="absolute right-2 top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-black text-text-primary shadow">
-            {t('featured')}
-          </span>
-        )}
-        {product.is_new && (
-          <span className="absolute right-2 top-9 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-text-primary shadow">
-            {t('new')}
-          </span>
-        )}
-        {product.is_on_sale && (
-          <span className="absolute right-2 top-16 rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-black text-white shadow">
-            {t('sale')}
+        {/* Discount Badge on Image */}
+        {hasDiscount && finalDiscount && (
+          <span className="absolute start-2 bottom-2 z-20 rounded-lg bg-amber-500 text-amber-950 border border-amber-300 px-2 py-0.5 text-xs font-black shadow-md flex items-center gap-0.5">
+            <span>-{finalDiscount}%</span>
           </span>
         )}
 
-        <div className="absolute bottom-2 right-2 flex flex-wrap gap-1">
+        <div className="absolute right-2 top-2 flex flex-col gap-1.5 z-20 items-end">
+          {product.is_featured && (
+            <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-black text-text-primary shadow">
+              {t('featured')}
+            </span>
+          )}
+          {product.is_new && (
+            <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-text-primary shadow border border-border">
+              {t('new')}
+            </span>
+          )}
+          {product.is_on_sale && !hasDiscount && (
+            <span className="rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-black text-amber-950 shadow">
+              {t('sale')}
+            </span>
+          )}
+        </div>
+
+        <div className="absolute bottom-2 end-2 flex flex-wrap gap-1 z-20">
           {stockBadge(stock, t)}
         </div>
       </div>
@@ -172,10 +195,15 @@ export function ProductCard({ product, minPrice, variantCount, totalStock, varyi
             </span>
           </div>
 
-          {minPrice != null && Number(minPrice) > 0 ? (
-            <div className="flex items-center gap-1.5 text-base font-black text-primary">
-              <span className="text-text-muted text-xs font-bold">{t('startsFrom')}</span>
-              <PriceDisplay amountSyp={minPrice} className="!text-sm" />
+          {rawPrice > 0 ? (
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-text-muted text-xs font-bold shrink-0">{t('startsFrom')}</span>
+              <PriceDisplay
+                amountSyp={rawPrice}
+                originalPriceSyp={originalPrice}
+                discountPercentage={finalDiscount}
+                className="!text-sm"
+              />
             </div>
           ) : (
             <p className="text-sm font-bold text-text-muted">
