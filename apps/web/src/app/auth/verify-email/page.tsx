@@ -1,16 +1,17 @@
 import Link from 'next/link';
 
-export default function VerifyEmailPage({
+export default async function VerifyEmailPage({
   searchParams,
 }: {
-  searchParams: { email?: string };
+  searchParams: Promise<{ email?: string }>;
 }) {
+  const { email } = await searchParams;
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center p-4">
       <div className="w-full max-w-md rounded-lg border bg-card p-8 text-center shadow-lg">
         <h1 className="mb-4 text-2xl font-bold">Please Verify Your Email</h1>
         <p className="mb-6 text-muted-foreground">
-          We have sent a verification link to <strong>{searchParams.email || 'your email address'}</strong>.
+          We have sent a verification link to <strong>{email || 'your email address'}</strong>.
           <br />
           Please click the link in the email to verify your account before logging in.
         </p>

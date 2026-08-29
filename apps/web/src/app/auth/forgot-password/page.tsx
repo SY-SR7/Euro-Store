@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { use, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { forgotPasswordAction } from '../actions';
@@ -7,8 +7,9 @@ import { forgotPasswordAction } from '../actions';
 export default function ForgotPasswordPage({
   searchParams,
 }: {
-  searchParams: { status?: string };
+  searchParams: Promise<{ status?: string }>;
 }) {
+  const { status } = use(searchParams);
   const locale = useLocale();
   const t = useTranslations('auth');
   const isAr = locale === 'ar';
@@ -26,17 +27,17 @@ export default function ForgotPasswordPage({
             <p className="mt-2 text-sm text-text-secondary">أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة التعيين.</p>
           </div>
 
-          {searchParams.status === 'sent' && (
+          {status === 'sent' && (
             <div className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-bold text-green-700">
               تم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني.
             </div>
           )}
-          {searchParams.status === 'failed' && (
+          {status === 'failed' && (
             <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
               فشل إرسال الرابط. يرجى المحاولة مرة أخرى.
             </div>
           )}
-          {searchParams.status === 'invalid' && (
+          {status === 'invalid' && (
             <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
               يرجى إدخال بريد إلكتروني صحيح.
             </div>

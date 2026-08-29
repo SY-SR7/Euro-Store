@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { use, useState } from 'react';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import { resetPasswordAction } from '../actions';
@@ -7,8 +7,9 @@ import { resetPasswordAction } from '../actions';
 export default function ResetPasswordPage({
   searchParams,
 }: {
-  searchParams: { status?: string };
+  searchParams: Promise<{ status?: string }>;
 }) {
+  const { status } = use(searchParams);
   const locale = useLocale();
   const isAr = locale === 'ar';
   const [loading, setLoading] = useState(false);
@@ -25,12 +26,12 @@ export default function ResetPasswordPage({
             <p className="mt-2 text-sm text-text-secondary">يرجى إدخال كلمة مرور جديدة وقوية.</p>
           </div>
 
-          {searchParams.status === 'failed' && (
+          {status === 'failed' && (
             <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
               فشل تعيين كلمة المرور. قد يكون الرابط منتهياً.
             </div>
           )}
-          {searchParams.status === 'invalid' && (
+          {status === 'invalid' && (
             <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
               يرجى إدخال كلمة مرور صالحة (12 حرفاً على الأقل).
             </div>
