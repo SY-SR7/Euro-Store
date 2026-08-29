@@ -207,6 +207,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                   count={cat.count}
                   checked={selectedCategories.includes(cat.slug)}
                   onChange={() => { toggle(selectedCategories, cat.slug, setSelectedCategories); }}
+                  isAr={isAr}
                 />
               ))}
             </FilterSection>
@@ -222,6 +223,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                   count={b.count}
                   checked={selectedBrands.includes(b.slug)}
                   onChange={() => { toggle(selectedBrands, b.slug, setSelectedBrands); }}
+                  isAr={isAr}
                 />
               ))}
             </FilterSection>
@@ -243,13 +245,20 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                         key={val.id}
                         disabled={isZero}
                         title={`${isAr ? val.value_ar : (val.value_en || val.value_ar)} (${val.count})${isZero ? (isAr ? ' - غير متوفر' : ' - Unavailable') : ''}`}
-                        onClick={() => !isZero && toggle(selectedAttrs, attrKey, setSelectedAttrs)}
-                        className={`relative h-7 w-7 rounded-full border-2 transition-all overflow-hidden ${
+                        onClick={(e) => {
+                          if (isZero) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            return;
+                          }
+                          toggle(selectedAttrs, attrKey, setSelectedAttrs);
+                        }}
+                        className={`relative h-8 w-8 rounded-full border-2 transition-all overflow-hidden flex items-center justify-center ${
                           checked 
-                            ? 'border-[#1F1B16] scale-110 shadow-md ring-2 ring-primary ring-offset-1' 
+                            ? 'border-[#1F1B16] scale-110 shadow-md ring-2 ring-primary ring-offset-2' 
                             : isZero 
-                              ? 'border-dashed border-red-300 opacity-30 cursor-not-allowed' 
-                              : 'border-border hover:border-primary cursor-pointer'
+                              ? 'border-dashed border-red-300/80 opacity-35 cursor-not-allowed grayscale-[40%]' 
+                              : 'border-border hover:border-primary hover:scale-105 cursor-pointer shadow-sm'
                         }`}
                         style={{ backgroundColor: val.hex_color }}
                       >
@@ -257,8 +266,8 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                           <span className="absolute inset-0 flex items-center justify-center text-text-primary text-[10px] font-black drop-shadow">✓</span>
                         )}
                         {isZero && (
-                          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div className="w-[140%] h-[1.5px] bg-red-600/80 -rotate-45" />
+                          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                            <div className="w-[140%] h-[2px] bg-red-600/90 -rotate-45 shadow-[0_0_2px_rgba(255,255,255,0.8)]" />
                           </div>
                         )}
                       </button>
@@ -272,6 +281,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                       count={val.count}
                       checked={checked}
                       onChange={() => toggle(selectedAttrs, attrKey, setSelectedAttrs)}
+                      isAr={isAr}
                     />
                   );
                 })}
@@ -433,23 +443,43 @@ function FilterSection({ title, children }: { title: string; children: React.Rea
   );
 }
 
-function CheckItem({ label, count, checked, onChange }: {
-  label: string; count: number; checked: boolean; onChange: () => void;
+function CheckItem({ label, count, checked, onChange, isAr = true }: {
+  label: string; count: number; checked: boolean; onChange: () => void; isAr?: boolean;
 }) {
   const isZero = count === 0 && !checked;
   return (
-    <label className={`flex items-center gap-2.5 rounded-lg px-1 py-1 transition-colors select-none ${
-      isZero ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:bg-[#F8F3EA]'
-    }`}>
+    <label
+      onClick={(e) => {
+        if (isZero) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }}
+      title={isZero ? (isAr ? `${label} (غير متوفر)` : `${label} (Unavailable)`) : label}
+      className={`relative flex items-center gap-2.5 rounded-lg px-2 py-1.5 transition-all select-none ${
+        isZero
+          ? 'opacity-40 cursor-not-allowed bg-black/[0.02] border border-dashed border-border/40 text-[#8C8275]'
+          : 'cursor-pointer hover:bg-[#F8F3EA]'
+      }`}
+    >
       <input
         type="checkbox"
         checked={checked}
         disabled={isZero}
-        onChange={onChange}
+        onChange={isZero ? undefined : onChange}
         className="h-4 w-4 rounded accent-[#C9A84C] cursor-pointer disabled:cursor-not-allowed"
       />
-      <span className={`flex-1 text-sm font-medium ${isZero ? 'line-through text-[#8C8275]' : 'text-[#1F1B16]'}`}>{label}</span>
-      <span className="text-xs text-text-muted font-medium tabular-nums">{count}</span>
+      <span className={`flex-1 text-sm font-medium ${isZero ? 'line-through decoration-red-500/80 decoration-[1.5px] text-[#8C8275]' : 'text-[#1F1B16]'}`}>
+        {label}
+      </span>
+      <span className={`text-xs font-bold tabular-nums ${isZero ? 'text-red-400/80' : 'text-text-muted'}`}>
+        {count}
+      </span>
+      {isZero && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+          <div className="w-[104%] h-[1.5px] bg-red-500/50 -rotate-2" />
+        </div>
+      )}
     </label>
   );
 }
