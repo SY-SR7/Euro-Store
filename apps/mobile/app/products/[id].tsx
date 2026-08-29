@@ -232,7 +232,10 @@ function collectAttributes(variants: ProductVariant[]) {
     if (!group.values.some((item) => item.id === value.id)) group.values.push(value);
     groups.set(type.slug, group);
   }));
-  return [...groups.values()];
+  const list = [...groups.values()];
+  const order: Record<string, number> = { color: 1, size: 2, material: 3 };
+  list.sort((a, b) => (order[a.slug] ?? 99) - (order[b.slug] ?? 99));
+  return list;
 }
 
 function BundleRow({ bundle, isAr, onAdd, formatCurrency, t }: { bundle: ProductBundle; isAr: boolean; onAdd: () => void; formatCurrency: (value: number) => string; t: (key: string, params?: Record<string, string | number>) => string }) {

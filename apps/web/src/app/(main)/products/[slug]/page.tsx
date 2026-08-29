@@ -18,6 +18,27 @@ import { SizeGuideModal } from '@/components/product/sizeguide/SizeGuideModal';
 import { NotifyMeForm } from '@/components/product/notify/NotifyMeForm';
 import { ProductBundlesList } from '@/components/product/bundles/ProductBundlesList';
 
+const ATTR_PRIORITY: Record<string, number> = {
+  color: 1,
+  اللون: 1,
+  Color: 1,
+  size: 2,
+  المقاس: 2,
+  Size: 2,
+  material: 3,
+  الخامة: 3,
+  Material: 3,
+};
+
+function getAttrPriority(typeAr?: string, typeEn?: string, typeSlug?: string): number {
+  return (
+    ATTR_PRIORITY[typeSlug?.toLowerCase() ?? ''] ??
+    ATTR_PRIORITY[typeEn?.toLowerCase() ?? ''] ??
+    ATTR_PRIORITY[typeAr ?? ''] ??
+    99
+  );
+}
+
 function variantTitle(v: any, isAr: boolean, td: any) {
   const parts: string[] = [];
   if (v?.dynamicAttrs) {
@@ -34,45 +55,6 @@ function stockState(qty: number, td: any) {
   if (qty <= 5) return { text: `${td('lowStock')} ${qty}`, Icon: AlertTriangle, cls: 'bg-amber-50 border-amber-200 text-amber-700' };
   return { text: `${td('available')} ${qty}`, Icon: CheckCircle2, cls: 'bg-green-50 border-green-200 text-green-700' };
 }
-
-/*
-export async function generateMetadata(
-  { params }: { params: any },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
-  const slug = params?.slug;
-  if (!slug) return {};
-
-  const supabase = createPublicSupabaseClient();
-  const { data: product } = await supabase
-    .from('products')
-    .select('name_ar, name_en, description_ar, description_en')
-    .eq('slug', slug)
-    .single();
-
-  if (!product) return {};
-
-  const title = product.name_ar || product.name_en;
-  const description = product.description_ar || product.description_en;
-
-  return {
-    title: `${title} | EuroStore`,
-    description: description?.substring(0, 160),
-    openGraph: {
-      title: `${title} | EuroStore`,
-      description: description?.substring(0, 160),
-      images: image ? [image] : [],
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${title} | EuroStore`,
-      description: description?.substring(0, 160),
-      images: image ? [image] : [],
-    },
-  };
-}
-*/
 
 export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -98,7 +80,6 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const isAr = locale === 'ar';
 
   const addItem = useCartStore((s: any) => s.addItem);
-  const _wishlistProductId = product?.id ?? null;
 
   useEffect(() => {
     if (!slug) return;
@@ -128,22 +109,34 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
       }
 
       const vList = (prod.product_variants ?? []).map((v: any) => {
-        const dynamicAttrs = v.variant_attributes?.map((va: any) => {
+        const dynamicAttrs = (v.variant_attributes ?? []).map((va: any) => {
           const val = va.attribute_values;
           if (!val) return null;
           return {
+            typeSlug: val.attribute_types?.slug,
             typeAr: val.attribute_types?.name_ar,
             typeEn: val.attribute_types?.name_en,
             valueAr: val.value_ar,
             valueEn: val.value_en,
-            hex: val.hex_color
+            hex: val.hex_color,
+            sortOrder: val.sort_order ?? 0,
           };
-        }).filter(Boolean) || [];
+        }).filter(Boolean);
+
+        // Sort dynamicAttrs canonically so Color is ALWAYS first, Size is ALWAYS second, Material is ALWAYS third
+        dynamicAttrs.sort((a: any, b: any) => {
+          const pA = getAttrPriority(a.typeAr, a.typeEn, a.typeSlug);
+          const pB = getAttrPriority(b.typeAr, b.typeEn, b.typeSlug);
+          if (pA !== pB) return pA - pB;
+          return (a.typeAr || '').localeCompare(b.typeAr || '');
+        });
+
         return {
           ...v,
           dynamicAttrs
         };
       });
+
       const iList = prod.product_images ?? [];
       const first = vList.find((v: any) => Number(v.stock_quantity ?? 0) > 0) ?? vList[0] ?? null;
       
@@ -190,14 +183,15 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   }, [slug]);
 
   const attributeTypes = useMemo(() => {
-    const typesMap = new Map<string, { typeEn: string, values: any[] }>();
+    const typesMap = new Map<string, { typeSlug?: string, typeEn: string, values: any[] }>();
     variants.forEach(v => {
       v.dynamicAttrs?.forEach((attr: any) => {
         const typeAr = attr.typeAr || '';
         const typeEn = attr.typeEn || '';
+        const typeSlug = attr.typeSlug || '';
         const key = typeAr;
         if (!typesMap.has(key)) {
-          typesMap.set(key, { typeEn, values: [] });
+          typesMap.set(key, { typeSlug, typeEn, values: [] });
         }
         const valuesList = typesMap.get(key)!.values;
         if (!valuesList.find((val: any) => val.valueAr === attr.valueAr)) {
@@ -205,28 +199,86 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         }
       });
     });
-    return Array.from(typesMap.entries()).map(([typeAr, data]) => ({
-      typeAr,
-      typeEn: data.typeEn,
-      values: data.values
-    }));
+
+    const list = Array.from(typesMap.entries()).map(([typeAr, data]) => {
+      // Sort values inside this attribute type
+      const sortedValues = [...data.values].sort((a, b) => {
+        // If numeric sizes (e.g. 38, 39, 40, 41 EU)
+        const numA = parseFloat(a.valueAr.replace(/[^0-9.]/g, ''));
+        const numB = parseFloat(b.valueAr.replace(/[^0-9.]/g, ''));
+        if (!isNaN(numA) && !isNaN(numB) && numA !== numB) {
+          return numA - numB;
+        }
+        // Standard clothing size order
+        const sizeOrder: Record<string, number> = {
+          'xs': 1, 's': 2, 'm': 3, 'l': 4, 'xl': 5, 'xxl': 6, '2xl': 6, 'xxxl': 7, '3xl': 7,
+          'مقاس موحد': 99, 'one size': 99
+        };
+        const sA = sizeOrder[a.valueAr.toLowerCase()] ?? sizeOrder[a.valueEn?.toLowerCase()] ?? 50;
+        const sB = sizeOrder[b.valueAr.toLowerCase()] ?? sizeOrder[b.valueEn?.toLowerCase()] ?? 50;
+        if (sA !== sB) return sA - sB;
+
+        return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+      });
+
+      return {
+        typeAr,
+        typeSlug: data.typeSlug,
+        typeEn: data.typeEn,
+        values: sortedValues,
+      };
+    });
+
+    // Sort attribute types canonically (Color -> Size -> Material)
+    list.sort((a, b) => {
+      const pA = getAttrPriority(a.typeAr, a.typeEn, a.typeSlug);
+      const pB = getAttrPriority(b.typeAr, b.typeEn, b.typeSlug);
+      if (pA !== pB) return pA - pB;
+      return a.typeAr.localeCompare(b.typeAr);
+    });
+
+    return list;
   }, [variants]);
 
   const handleSelectAttribute = (typeAr: string, valueAr: string) => {
-    setSelectedAttributes(prev => {
-      if (prev[typeAr] === valueAr) return prev;
-      return { ...prev, [typeAr]: valueAr };
+    // 1. Calculate the prospective target attributes
+    const targetAttrs = { ...selectedAttributes, [typeAr]: valueAr };
+
+    // 2. Try exact match first
+    const requiredKeys = attributeTypes.map(t => t.typeAr);
+    let matchedVariant = variants.find(v => {
+      return requiredKeys.every(k => {
+        const val = targetAttrs[k];
+        if (!val) return true;
+        return v.dynamicAttrs?.some((a: any) => a.typeAr === k && a.valueAr === val);
+      });
     });
+
+    // 3. If no exact match (e.g. changing size to EU 44 when current color isn't made in EU 44),
+    // find the first available variant that has this chosen attribute!
+    if (!matchedVariant) {
+      matchedVariant = variants.find(v => {
+        return v.dynamicAttrs?.some((a: any) => a.typeAr === typeAr && a.valueAr === valueAr);
+      });
+    }
+
+    // 4. Update selected and synchronize selectedAttributes to that variant
+    if (matchedVariant) {
+      const newSelectedAttrs: Record<string, string> = {};
+      matchedVariant.dynamicAttrs?.forEach((attr: any) => {
+        newSelectedAttrs[attr.typeAr] = attr.valueAr;
+      });
+      setSelectedAttributes(newSelectedAttrs);
+      setSelected(matchedVariant);
+    } else {
+      setSelectedAttributes(targetAttrs);
+    }
   };
 
   const isAttributeValueValid = (typeAr: string, valueAr: string) => {
     return variants.some(v => {
       const hasThisAttr = v.dynamicAttrs?.some((a: any) => a.typeAr === typeAr && a.valueAr === valueAr);
-      if (!hasThisAttr) return false;
-      return Object.entries(selectedAttributes).every(([k, val]) => {
-        if (k === typeAr) return true;
-        return v.dynamicAttrs?.some((a: any) => a.typeAr === k && a.valueAr === val);
-      });
+      return hasThisAttr;
     });
   };
 
@@ -241,18 +293,16 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
            return v.dynamicAttrs?.some((a: any) => a.typeAr === k && a.valueAr === selectedAttributes[k]);
          });
        });
-       setSelected(exactMatch || null);
-    } else {
-       setSelected(null);
+       if (exactMatch && exactMatch.id !== selected?.id) {
+         setSelected(exactMatch);
+       }
     }
-  }, [selectedAttributes, variants, attributeTypes]);
+  }, [selectedAttributes, variants, attributeTypes, selected]);
 
   const totalStock = useMemo(
     () => variants.reduce((sum: number, v: any) => sum + Number(v.stock_quantity ?? 0), 0),
     [variants]
   );
-
-  // Colors and sizes are no longer used since we use dynamic attributes
 
   const selectedStock = Number(selected?.stock_quantity ?? 0);
   const selectedState = stockState(selectedStock, td);
@@ -429,6 +479,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 )}
               </div>
 
+              {/* Fixed, deterministic specs cards layout */}
               <div className="mt-4 grid gap-2 sm:grid-cols-2">
                 {selected.sku && (
                   <div className="rounded-2xl bg-background p-3 text-sm">
@@ -437,20 +488,28 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                   </div>
                 )}
                 
-                {selected.dynamicAttrs?.map((attr: any, idx: number) => (
-                  <div key={idx} className="rounded-2xl bg-background p-3 text-sm">
-                    <p className="flex items-center gap-2 font-bold text-[#6F6658]">
-                      {attr.hex ? <Palette className="h-4 w-4 text-primary" /> : <Info className="h-4 w-4 text-primary" />} 
-                      {isAr ? attr.typeAr : (attr.typeEn || attr.typeAr)}
-                    </p>
-                    <p className="mt-1 font-black text-[#1F1B16] flex items-center gap-2">
-                      {attr.hex && (
-                        <span className="w-3 h-3 rounded-full border border-black/10 inline-block" style={{ backgroundColor: attr.hex }} />
-                      )}
-                      {isAr ? attr.valueAr : (attr.valueEn || attr.valueAr)}
-                    </p>
-                  </div>
-                ))}
+                {selected.dynamicAttrs?.map((attr: any) => {
+                  const isColor = !!attr.hex || attr.typeSlug === 'color' || attr.typeAr === 'اللون';
+                  const isSize = attr.typeSlug === 'size' || attr.typeAr === 'المقاس';
+                  const isMaterial = attr.typeSlug === 'material' || attr.typeAr === 'الخامة';
+
+                  const IconComponent = isColor ? Palette : isSize ? Ruler : isMaterial ? Layers3 : Info;
+
+                  return (
+                    <div key={attr.typeAr} className="rounded-2xl bg-background p-3 text-sm">
+                      <p className="flex items-center gap-2 font-bold text-[#6F6658]">
+                        <IconComponent className="h-4 w-4 text-primary" /> 
+                        {isAr ? attr.typeAr : (attr.typeEn || attr.typeAr)}
+                      </p>
+                      <p className="mt-1 font-black text-[#1F1B16] flex items-center gap-2">
+                        {attr.hex && (
+                          <span className="w-3 h-3 rounded-full border border-black/10 inline-block" style={{ backgroundColor: attr.hex }} />
+                        )}
+                        {isAr ? attr.valueAr : (attr.valueEn || attr.valueAr)}
+                      </p>
+                    </div>
+                  );
+                })}
 
                 <div className="rounded-2xl bg-background p-3 text-sm">
                   <p className="flex items-center gap-2 font-bold text-[#6F6658]"><Boxes className="h-4 w-4 text-primary" /> {td('stock')}</p>
@@ -521,7 +580,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                       
                       return (
                         <button
-                          key={idx}
+                          type="button"
+                          key={val.valueAr}
                           onClick={() => isValid && handleSelectAttribute(attrType.typeAr, val.valueAr)}
                           disabled={!isValid}
                           className={[
@@ -566,6 +626,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                   const active = selected?.id === v.id;
                   return (
                     <button
+                      type="button"
                       key={v.id}
                       onClick={() => setSelected(v)}
                       className={[
@@ -603,6 +664,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           <div className="flex items-center gap-2">
             {selected && selectedStock > 0 ? (
               <button
+                type="button"
                 onClick={handleAddToCart}
                 className={[
                   'flex-1 rounded-2xl py-4 text-base font-black transition-all',
@@ -612,7 +674,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 {added ? td('addedToCart') : td('addToCart')}
               </button>
             ) : (
-              <button disabled className="flex-1 rounded-2xl bg-[#E8DCC3] py-4 text-base font-black text-[#9CA3AF]">
+              <button type="button" disabled className="flex-1 rounded-2xl bg-[#E8DCC3] py-4 text-base font-black text-[#9CA3AF]">
                 {selected ? td('outOfStockLong') : td('chooseVariantFirst')}
               </button>
             )}
