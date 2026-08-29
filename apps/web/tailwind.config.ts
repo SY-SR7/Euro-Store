@@ -34,17 +34,17 @@ const config: Config = {
         },
         marquee: {
           from: { transform: 'translateX(0)' },
-          to: { transform: 'translateX(calc(-100% - 2rem))' },
+          to: { transform: 'translateX(-50%)' },
         },
         'marquee-rtl': {
           from: { transform: 'translateX(0)' },
-          to: { transform: 'translateX(calc(100% + 2rem))' },
+          to: { transform: 'translateX(50%)' },
         }
       },
       animation: {
         shimmer: 'shimmer 1.5s infinite',
-        marquee: 'marquee 40s linear infinite',
-        'marquee-rtl': 'marquee-rtl 40s linear infinite',
+        marquee: 'marquee 45s linear infinite',
+        'marquee-rtl': 'marquee-rtl 45s linear infinite',
       }
     },
   },

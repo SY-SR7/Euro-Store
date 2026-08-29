@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getLocale } from 'next-intl/server';
 import { ProductCard } from '@/app/catalog-components';
 import { HomeBannerCarousel, type HomeBanner } from '@/components/home/HomeBannerCarousel';
+import { BrandMarqueeSection } from '@/components/home/BrandMarqueeSection';
 import { createAdminSupabaseClient } from '@/supabase-server';
 import type { Database } from '@eurostore/database';
 
@@ -154,24 +155,28 @@ export default async function HomePage() {
 
     if (section.section_key === 'featured_brands') {
       const brandIds = Array.isArray(content.brand_ids) ? content.brand_ids.filter((id): id is string => typeof id === 'string') : [];
-      if (!brandIds.length) return null;
-      const { data: brands } = await admin.from('brands').select('id, name, slug, logo_url').in('id', brandIds).eq('is_active', true);
-      const byId = new Map((brands ?? []).map((brand) => [brand.id, brand]));
-      const ordered = brandIds.map((id) => byId.get(id)).filter(Boolean);
-      if (!ordered.length) return null;
+      let brandsQuery = admin.from('brands').select('id, name, slug, logo_url').eq('is_active', true);
+      if (brandIds.length > 0) {
+        brandsQuery = brandsQuery.in('id', brandIds);
+      } else {
+        brandsQuery = brandsQuery.order('name');
+      }
+      const { data: brands } = await brandsQuery;
+      if (!brands || !brands.length) return null;
+
+      let orderedBrands = brands;
+      if (brandIds.length > 0) {
+        const byId = new Map(brands.map((b) => [b.id, b]));
+        orderedBrands = brandIds.map((id) => byId.get(id)).filter(Boolean) as typeof brands;
+      }
+
       return (
-        <section key={section.id} className="border-t border-border bg-background-card px-4 py-12 md:px-8 md:py-16">
-          <div className="mx-auto max-w-7xl">
-            <h2 className="mb-8 text-2xl font-black text-text-primary md:text-4xl">{isAr ? section.title_ar : section.title_en}</h2>
-            <div className="grid grid-cols-2 gap-px border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
-              {ordered.map((brand) => brand ? (
-                <Link key={brand.id} href={`/products?brand_id=${brand.id}`} className="relative flex aspect-[3/2] items-center justify-center bg-background p-5 transition hover:bg-background-secondary">
-                  {brand.logo_url ? <Image src={brand.logo_url} alt={brand.name} fill className="object-contain p-5" sizes="(max-width: 640px) 50vw, 16vw" /> : <span className="text-center text-sm font-black text-text-primary">{brand.name}</span>}
-                </Link>
-              ) : null)}
-            </div>
-          </div>
-        </section>
+        <BrandMarqueeSection
+          key={section.id}
+          title={isAr ? section.title_ar : section.title_en}
+          brands={orderedBrands}
+          isAr={isAr}
+        />
       );
     }
 
