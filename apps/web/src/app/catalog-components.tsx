@@ -108,12 +108,12 @@ export function ProductCard({ product, minPrice, variantCount, totalStock, varyi
     <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-background-card transition-all hover:shadow-lg hover:-translate-y-1 hover:border-primary/30">
       <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10" aria-label={productName} />
 
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-background-secondary">
+      <div className="relative aspect-square w-full overflow-hidden bg-white p-4">
         <ImageWithFallback
           src={product.image_url || product.image || product.thumbnail_url}
           alt={productName || 'product'}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
         />
         
         <div className="absolute left-2 top-2 z-50">

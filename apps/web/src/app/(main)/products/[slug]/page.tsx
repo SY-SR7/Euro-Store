@@ -407,14 +407,14 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
 
       <div className="grid gap-10 lg:grid-cols-2">
         <div className="space-y-3">
-          <div className="aspect-square overflow-hidden rounded-3xl border border-black/5 bg-[#F3EDE3] shadow-sm">
+          <div className="aspect-square overflow-hidden rounded-3xl border border-border/60 bg-white p-6 shadow-sm flex items-center justify-center">
             <ImageWithFallback
               src={mainImage}
               alt={isAr ? product.name_ar : (product.name_en || product.name_ar)}
               kind="product"
               label={td('productImage')}
               sublabel={isAr ? product.name_ar : (product.name_en || product.name_ar)}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain p-2"
             />
           </div>
 
@@ -427,8 +427,8 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 aria-label={`${td('image')} ${index + 1}`}
                 aria-pressed={mainImage === img.url}
                 className={[
-                  'aspect-square overflow-hidden rounded-xl border-2 bg-background-card transition-colors',
-                  mainImage === img.url ? 'border-primary' : 'border-transparent hover:border-primary/50',
+                  'aspect-square overflow-hidden rounded-xl border-2 bg-white p-1 transition-colors flex items-center justify-center',
+                  mainImage === img.url ? 'border-primary' : 'border-border/40 hover:border-primary/50',
                 ].join(' ')}
               >
                 <ImageWithFallback
@@ -436,7 +436,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                   alt={img.alt_ar ?? (isAr ? product.name_ar : (product.name_en || product.name_ar))}
                   kind="product"
                   label={td('image')}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain p-1"
                 />
               </button>
             ))}

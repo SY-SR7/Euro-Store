@@ -32,13 +32,17 @@ export function RecentlyViewed() {
               className='snap-start shrink-0 w-48 group'
             >
               <Link href={`/products/${item.slug}`} className='block'>
-                <div className='relative aspect-[4/5] rounded-xl overflow-hidden bg-background-secondary mb-3 border border-border/50 group-hover:border-primary/30 transition-colors'>
-                  {item.imageUrl ? <Image
-                    src={item.imageUrl}
-                    alt={isAr ? item.nameAr : item.nameEn}
-                    fill
-                    className='object-cover group-hover:scale-105 transition-transform duration-500'
-                  /> : <div className="flex h-full items-center justify-center text-xs text-text-muted">{isAr ? 'لا توجد صورة' : 'No image'}</div>}
+                <div className='relative aspect-square rounded-xl overflow-hidden bg-white p-3 mb-3 border border-border/50 group-hover:border-primary/30 transition-colors'>
+                  {item.imageUrl ? (
+                    <Image
+                      src={item.imageUrl}
+                      alt={isAr ? item.nameAr : item.nameEn}
+                      fill
+                      className='object-contain p-1 group-hover:scale-105 transition-transform duration-500'
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-xs text-text-muted">{isAr ? 'لا توجد صورة' : 'No image'}</div>
+                  )}
                 </div>
                 <p className='text-xs font-bold text-text-muted uppercase tracking-widest mb-1'>{item.brandName || 'EuroStore'}</p>
                 <p className='text-sm font-semibold text-text-primary line-clamp-1 group-hover:text-primary transition-colors'>{isAr ? item.nameAr : item.nameEn}</p>
@@ -51,4 +55,3 @@ export function RecentlyViewed() {
     </div>
   );
 }
-

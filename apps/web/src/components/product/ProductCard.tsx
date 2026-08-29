@@ -1,51 +1,64 @@
 'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { useLocale, useTranslations } from 'next-intl';
+import { motion, type Variants } from 'framer-motion';
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
-import type { Database } from '@eurostore/database';
+import { PriceDisplay } from '@/components/common/PriceDisplay';
+import { useLocale, useTranslations } from 'next-intl';
 
-type Product = Database['public']['Tables']['products']['Row'];
-type Brand = Database['public']['Tables']['brands']['Row'];
-
-type ProductCardProduct = Pick<Product, 'id' | 'name_ar' | 'name_en' | 'slug'> & Partial<Product> & {
-  primary_image_url?: string | null;
-  product_images?: Array<{ url: string; is_primary?: boolean | null }> | null;
-  brand?: Pick<Brand, 'name'> | null;
-};
-
-interface ProductCardProps {
-  product: ProductCardProduct;
+export interface ProductCardProps {
+  product: {
+    id: string;
+    slug: string;
+    name_ar: string;
+    name_en?: string | null;
+    base_price?: number;
+    compare_price_syp?: number | null;
+    is_featured?: boolean;
+    created_at?: string;
+    product_images?: Array<{ url: string; is_primary?: boolean }>;
+    primary_image_url?: string | null;
+    image_url?: string | null;
+    product_variants?: Array<{ price_syp: number; compare_price_syp?: number | null }>;
+    brand?: { name: string } | null;
+  };
   variantPrice?: number;
   isNew?: boolean;
   isOnSale?: boolean;
 }
 
-const tiltVariants = {
-  rest: { 
-    y: 0,
-    scale: 1, 
-    boxShadow: "0px 4px 10px rgba(0,0,0,0.02)"
-  },
+const tiltVariants: Variants = {
+  rest: { rotateX: 0, rotateY: 0, scale: 1 },
   hover: { 
-    y: -8,
-    scale: 1.02,
-    boxShadow: "0px 15px 30px rgba(184, 134, 11, 0.15)", // Primary gold glow
-    transition: { type: "spring", stiffness: 400, damping: 25 } 
-  },
+    y: -4,
+    transition: { duration: 0.3, ease: 'easeOut' }
+  }
 };
 
-export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductCardProps) {
-  const displayPrice = variantPrice ?? product.base_price ?? 0;
+export function ProductCard({ product, variantPrice, isNew: propIsNew, isOnSale: propIsOnSale }: ProductCardProps) {
   const locale = useLocale();
   const t = useTranslations('catalog');
   const isAr = locale === 'ar';
+  
   const productName = isAr ? product.name_ar : (product.name_en || product.name_ar);
-  const productImage = product.primary_image_url
-    ?? product.product_images?.find((image) => image.is_primary)?.url
-    ?? product.product_images?.[0]?.url
-    ?? null;
+  const primaryImage = product.product_images?.find(img => img.is_primary)?.url 
+    || product.product_images?.[0]?.url 
+    || product.primary_image_url 
+    || product.image_url;
+  const productImage = primaryImage || null;
+  
+  // Calculate lowest price & discount
+  const minPrice = variantPrice ?? (product.product_variants?.length 
+    ? Math.min(...product.product_variants.map(v => v.price_syp))
+    : (product.base_price ?? 0));
+
+  const comparePrice = product.product_variants?.length
+    ? product.product_variants[0]?.compare_price_syp
+    : product.compare_price_syp;
+
+  const isOnSale = propIsOnSale ?? Boolean(comparePrice && comparePrice > minPrice);
+  const isNew = propIsNew ?? (product.created_at ? (new Date().getTime() - new Date(product.created_at).getTime()) < 30 * 24 * 60 * 60 * 1000 : false);
 
   return (
     <motion.div
@@ -54,13 +67,13 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
       whileHover="hover"
       className="group relative bg-background-elevated rounded-2xl overflow-hidden border border-border/60 hover:border-primary/40 transition-colors duration-300 flex flex-col h-full"
     >
-      <div className="relative aspect-[4/5] overflow-hidden bg-background-secondary">
+      <div className="relative aspect-square overflow-hidden bg-white p-4">
         {productImage ? (
           <Image 
             src={productImage}
             alt={productName}
             fill
-            className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+            className="object-contain p-2 group-hover:scale-105 transition-transform duration-500 ease-out"
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
           />
         ) : (
@@ -100,12 +113,16 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
             </h3>
           </Link>
         </div>
-        <p className="text-primary font-black mt-3 text-[15px]">
-          {new Intl.NumberFormat(isAr ? 'ar-SY' : 'en-US', { style: 'currency', currency: 'SYP', maximumFractionDigits: 0 }).format(displayPrice)}
-        </p>
+
+        <div className="mt-4 flex items-baseline justify-center gap-2">
+          <PriceDisplay amountSyp={minPrice} className="text-base font-bold text-primary" />
+          {isOnSale && comparePrice && (
+            <span className="text-xs text-text-muted line-through">
+              {comparePrice.toLocaleString(isAr ? 'ar-SY' : 'en-US')} {isAr ? 'ل.س' : 'SYP'}
+            </span>
+          )}
+        </div>
       </div>
-      <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10" aria-label={`${t('viewProduct')} ${productName}`} />
     </motion.div>
   );
 }
-
