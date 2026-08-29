@@ -36,6 +36,7 @@
         "zustand": "^5.0.14"
     },
     "devDependencies": {
+        "@netlify/plugin-nextjs": "^5.15.13",
         "@types/node": "^20",
         "@types/pdfkit": "0.17.6",
         "@types/qrcode": "^1.5.6",
