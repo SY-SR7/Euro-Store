@@ -3,13 +3,11 @@ import { getLocale } from 'next-intl/server';
 import { ProductCard } from '@/app/catalog-components';
 import { HomeBannerCarousel, type HomeBanner } from '@/components/home/HomeBannerCarousel';
 import { BrandMarqueeSection } from '@/components/home/BrandMarqueeSection';
-import { TrustPillars } from '@/components/home/TrustPillars';
 import { CategoryBentoShowcase } from '@/components/home/CategoryBentoShowcase';
 import { SneakersSpotlightSection } from '@/components/home/SneakersSpotlightSection';
 import { LuxuryFragranceVault } from '@/components/home/LuxuryFragranceVault';
 import { ApparelPoloSpotlight } from '@/components/home/ApparelPoloSpotlight';
-import { WhyEuroStoreEditorial } from '@/components/home/WhyEuroStoreEditorial';
-import { CustomerReviewsSection } from '@/components/home/CustomerReviewsSection';
+import { AccessoriesSpotlightSection } from '@/components/home/AccessoriesSpotlightSection';
 import { VipClubNewsletter } from '@/components/home/VipClubNewsletter';
 import { createAdminSupabaseClient } from '@/supabase-server';
 import type { Database } from '@eurostore/database';
@@ -17,14 +15,6 @@ import type { Database } from '@eurostore/database';
 export const dynamic = 'force-dynamic';
 
 type SectionKey = 'main_banner' | 'new_arrivals' | 'sales' | 'featured_brands' | 'most_popular';
-type HomeSection = {
-  id: string;
-  section_key: SectionKey;
-  title_ar: string;
-  title_en: string;
-  content: unknown;
-  sort_order: number;
-};
 
 type ProductBase = Pick<Database['public']['Tables']['products']['Row'],
   'id' | 'name_ar' | 'name_en' | 'slug' | 'base_price' | 'discount_percentage' |
@@ -123,6 +113,18 @@ export default async function HomePage() {
       p.name_ar.includes('طقم')
   );
 
+  const accessoriesProducts = formattedProducts.filter(
+    (p) =>
+      p.categories?.slug === 'watches-accessories' ||
+      p.categories?.slug === 'accessories' ||
+      p.categories?.slug === 'bags-leather' ||
+      p.name_ar.includes('نظارة') ||
+      p.name_ar.includes('ساعة') ||
+      p.name_ar.includes('حزام') ||
+      p.name_ar.includes('قبعة') ||
+      p.name_ar.includes('حقيبة')
+  );
+
   const newArrivals = formattedProducts.slice(0, 12);
 
   // Extract main banner
@@ -143,29 +145,29 @@ export default async function HomePage() {
         <HomeBannerCarousel banners={banners} locale={locale} />
       )}
 
-      {/* 2. Trust Pillars (100% Authentic, Express Delivery, Loyalty, Guaranteed Exchange) */}
-      <TrustPillars isAr={isAr} />
-
-      {/* 3. Continuous Infinite Brand Marquee (All 24 World Brands) */}
+      {/* 2. Continuous Infinite Brand Marquee (All 24 World Brands) */}
       {activeBrands.length > 0 && (
         <BrandMarqueeSection
-          title={isAr ? 'العلامات التجارية العالمية الفاخرة' : 'World Iconic Brands'}
+          title={isAr ? 'العلامات التجارية العالمية' : 'World Iconic Brands'}
           brands={activeBrands}
           isAr={isAr}
         />
       )}
 
-      {/* 4. Luxury Category Bento Grid */}
+      {/* 3. Luxury Category Bento Grid */}
       <CategoryBentoShowcase isAr={isAr} />
 
-      {/* 5. Iconic Sneakers Spotlight */}
+      {/* 4. Iconic Sneakers Spotlight */}
       <SneakersSpotlightSection products={sneakersProducts} isAr={isAr} />
 
-      {/* 6. Luxury Fragrance & Parfumerie Vault */}
+      {/* 5. Luxury Fragrance & Parfumerie Vault */}
       <LuxuryFragranceVault products={fragranceProducts} isAr={isAr} />
 
-      {/* 7. Designer Apparel & Polos Spotlight */}
+      {/* 6. Designer Apparel & Polos Spotlight */}
       <ApparelPoloSpotlight products={apparelProducts} isAr={isAr} />
+
+      {/* 7. Watches, Sunglasses & Accessories Vault */}
+      <AccessoriesSpotlightSection products={accessoriesProducts} isAr={isAr} />
 
       {/* 8. New Arrivals Grid */}
       {newArrivals.length > 0 && (
@@ -177,7 +179,7 @@ export default async function HomePage() {
                   {isAr ? 'وصل حديثاً' : 'Latest Drops'}
                 </span>
                 <h2 className="text-2xl font-black text-text-primary md:text-4xl">
-                  {isAr ? 'أحدث المنتجات المضافة إلى يورو ستور' : 'New In EuroStore'}
+                  {isAr ? 'أحدث المنتجات المضافة' : 'New In EuroStore'}
                 </h2>
               </div>
               <Link href="/products" className="text-sm font-bold text-primary hover:underline">
@@ -199,13 +201,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* 9. Editorial Standard & Why EuroStore */}
-      <WhyEuroStoreEditorial isAr={isAr} />
-
-      {/* 10. Verified Customer Reviews */}
-      <CustomerReviewsSection isAr={isAr} />
-
-      {/* 11. VIP Club & 10% Coupon Promo */}
+      {/* 9. VIP Club & 10% Coupon Promo */}
       <VipClubNewsletter isAr={isAr} />
     </main>
   );
