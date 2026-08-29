@@ -4,7 +4,8 @@ import { ProductCard } from '@/components/product/ProductCard';
 
 export const revalidate = 60; // ISR 1 minute
 
-export default async function CollectionPage({ params }: { params: { slug: string } }) {
+export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const { client: supabase } = await getSessionClient();
   const { locale } = await import('next-intl/server').then(m => m.getLocale()).then(loc => ({ locale: loc }));
   const isAr = locale === 'ar';
@@ -20,7 +21,7 @@ export default async function CollectionPage({ params }: { params: { slug: strin
         )
       )
     `)
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .eq('is_active', true)
     .eq('has_standalone_page', true)
     .maybeSingle();

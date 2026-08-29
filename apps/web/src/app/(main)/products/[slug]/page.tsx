@@ -1,7 +1,7 @@
 /* eslint-disable */
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { use, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { useCartStore } from '@/lib/cart/cartStore';
@@ -74,8 +74,8 @@ export async function generateMetadata(
 }
 */
 
-export default function ProductPage({ params }: { params: any }) {
-  const [slug, setSlug] = useState('');
+export default function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const [product, setProduct] = useState<any>(null);
   const [variants, setVariants] = useState<any[]>([]);
   const [images, setImages] = useState<any[]>([]);
@@ -99,14 +99,6 @@ export default function ProductPage({ params }: { params: any }) {
 
   const addItem = useCartStore((s: any) => s.addItem);
   const _wishlistProductId = product?.id ?? null;
-
-  useEffect(() => {
-    let alive = true;
-    Promise.resolve(params).then((p: any) => {
-      if (alive) setSlug(p?.slug ?? '');
-    });
-    return () => { alive = false; };
-  }, [params]);
 
   useEffect(() => {
     if (!slug) return;

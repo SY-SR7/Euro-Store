@@ -25,7 +25,8 @@ interface ExchangeDetail {
   updated_at: string;
 }
 
-export default async function ExchangeDetailPage({ params }: { params: { id: string } }) {
+export default async function ExchangeDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const locale = await getLocale();
   const t = await getTranslations('exchangeDetail');
   const dateLocale = locale === 'ar' ? 'ar-SY' : 'en-GB';
@@ -37,7 +38,7 @@ export default async function ExchangeDetailPage({ params }: { params: { id: str
   const { data: req, error } = await admin
     .from('exchange_requests')
     .select('id,status,reason,customer_whatsapp,rejection_reason,resolution_path,partner_stage,qr_code_url,qr_code_expires_at,qr_code_used_at,created_at,updated_at')
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('customer_id', user.id)
     .maybeSingle();
 

@@ -10,12 +10,13 @@ export const dynamic = 'force-dynamic';
 
 const tokenSchema = z.string().uuid();
 
-export default async function SharedWishlistPage({ params }: { params: { token: string } }) {
+export default async function SharedWishlistPage({ params }: { params: Promise<{ token: string }> }) {
+  const { token: tokenParam } = await params;
   const t = await getTranslations('catalog');
   const locale = await getLocale();
   const isAr = locale === 'ar';
   
-  const token = tokenSchema.safeParse(params.token);
+  const token = tokenSchema.safeParse(tokenParam);
   if (!token.success) return notFound();
 
   const admin = createSupabaseAdminClientFromEnv();

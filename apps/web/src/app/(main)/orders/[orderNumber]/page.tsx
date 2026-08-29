@@ -36,9 +36,10 @@ function jsonText(value: Json | undefined): string {
   return typeof value === 'string' ? value : '';
 }
 
-interface Props { params: { orderNumber: string } }
+interface Props { params: Promise<{ orderNumber: string }> }
 
 export default async function OrderDetailPage({ params }: Props) {
+  const { orderNumber } = await params;
   const locale = await getLocale();
   const t = await getTranslations('orders');
   const tCat = await getTranslations('catalog');
@@ -56,7 +57,7 @@ export default async function OrderDetailPage({ params }: Props) {
         product_variants ( id, product_id, products ( id, slug ) )
       )
     `)
-    .eq('order_number', params.orderNumber)
+    .eq('order_number', orderNumber)
     .eq('customer_id', user.id)
     .maybeSingle();
 
