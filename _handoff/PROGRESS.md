@@ -1,5 +1,23 @@
 # EuroStore Progress
 
+## 🟢 جلسة 2026-08-29 — الكتالوج العالمي وشعارات الماركات الرسمية واستوديو أمازون 100%
+
+### 1. إزالة كافة المنتجات التجريبية القديمة والماركات الوهمية (House Brands Purged)
+- تم حذف كافة الماركات الوهمية الـ 6 القديمة بالكامل من Supabase (`maison-aurelia`, `nordhavn-studio`, `cinder-and-vale`, `velora-atelier`, `lumen-step`, `little-loom`).
+- تم حذف المنتجات التجريبية الـ 18 وحزمها ومتغيراتها وعناصر السلة والمفضلة المرتبطة بها.
+
+### 2. شعارات الفكتور الرسمية لجميع الماركات العالمية الـ 24 (Official Vector Brand Logos)
+- تم استخراج ورسم وتصدير الشعارات والرموز الرسمية 100% بجودة Vector فائقة لجميع الماركات الـ 24 (Nike Swoosh, Adidas 3-Stripes/Trefoil, Puma Cat, New Balance NB, Vans Off The Wall, Converse Star, Lacoste Croc, Polo Horse, Ray-Ban Script, Casio/G-Shock, Gucci GG, Chanel CC, Dior, Prada, Versace Medusa, Armani Eagle, Michael Kors, Under Armour, Zara, Boss, Calvin Klein, Tommy Hilfiger, Reebok, Skechers).
+- تصدير بطاقات 1200x800 WebP فاخرة ونظيفة ومزامنتها مباشرة على Supabase Storage.
+
+### 3. صور منتجات استوديو أمازون الحقيقية 100% فريدة بدون أي تكرار وبدون بشر
+- استبدال كافة صور الكتالوج (186 منتجاً بالكامل) بصور استوديو بيضاء 1000x1000 WebP أصلية ومطابقة تماماً لموديلات المنتجات الحقيقية.
+- فحص وتأكيد عدم وجود أي تجانس أو تكرار في ملفات الصور (Zero Duplicates: 186/186 Unique Hashes).
+- رفع وتحديث كافة روابط الصور على Supabase Storage وجداول `products` و `product_images`.
+
+---
+
+
 ## 🟢 جلسة 2026-07-07 — الميزات الناقصة (QR + Helper + Partner + Admin Reports)
 
 ### Web (apps/web)

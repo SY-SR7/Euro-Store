@@ -1,0 +1,932 @@
+[
+  {
+    "slug": "new-balance-574-core",
+    "name_ar": "حذاء نيو بالانس 574 كلاسيك ريترو",
+    "name_en": "New Balance 574 Core Classic Retro Sneaker"
+  },
+  {
+    "slug": "new-balance-990v6-made-in-usa",
+    "name_ar": "حذاء نيو بالانس 990v6 الفاخر صناعة أمريكية",
+    "name_en": "New Balance 990v6 Made in USA Heritage Runner"
+  },
+  {
+    "slug": "new-balance-327-retro-runner",
+    "name_ar": "حذاء نيو بالانس 327 الرياضي العصري",
+    "name_en": "New Balance 327 Lifestyle Retro Runner"
+  },
+  {
+    "slug": "new-balance-550-basketball",
+    "name_ar": "حذاء نيو بالانس 550 كلاسيك كرة سلة لو",
+    "name_en": "New Balance 550 Low Classic Basketball Sneaker"
+  },
+  {
+    "slug": "new-balance-1906r-tech-runner",
+    "name_ar": "حذاء نيو بالانس 1906R التقني للجري",
+    "name_en": "New Balance 1906R Technical Lifestyle Runner"
+  },
+  {
+    "slug": "new-balance-2002r-protection",
+    "name_ar": "حذاء نيو بالانس 2002R بروتكشن باك",
+    "name_en": "New Balance 2002R Protection Pack Distressed Sneaker"
+  },
+  {
+    "slug": "new-balance-essentials-hoodie",
+    "name_ar": "هودي نيو بالانس إسنشالز بالشعار المطرز",
+    "name_en": "New Balance Essentials Stacked Logo Fleece Hoodie"
+  },
+  {
+    "slug": "new-balance-athletics-pant",
+    "name_ar": "بنطال نيو بالانس أثليتيكس الرياضي",
+    "name_en": "New Balance Athletics Tech Track Pant"
+  },
+  {
+    "slug": "converse-chuck-taylor-all-star-high",
+    "name_ar": "حذاء كونفيرس تشاك تايلور أول ستار الكلاسيكي العالي",
+    "name_en": "Converse Chuck Taylor All Star High Top Canvas Sneaker"
+  },
+  {
+    "slug": "converse-chuck-70-low",
+    "name_ar": "حذاء كونفيرس تشاك 70 الفاخر المنخفض",
+    "name_en": "Converse Chuck 70 Vintage Canvas Low Top"
+  },
+  {
+    "slug": "reebok-bb-4000-ii",
+    "name_ar": "حذاء ريبوك BB 4000 II كرة سلة كلاسيك",
+    "name_en": "Reebok BB 4000 II Basketball-Inspired Sneaker"
+  },
+  {
+    "slug": "converse-run-star-hike",
+    "name_ar": "حذاء كونفيرس رن ستار هايك بلاتفورم",
+    "name_en": "Converse Run Star Hike Chunky Platform Sneaker"
+  },
+  {
+    "slug": "converse-one-star-vintage",
+    "name_ar": "حذاء كونفيرس ون ستار شمواه كلاسيك",
+    "name_en": "Converse One Star Vintage Suede Low Top"
+  },
+  {
+    "slug": "vans-old-skool-classic",
+    "name_ar": "حذاء فانز أولد سكول الكلاسيكي بالشريط الجانبي",
+    "name_en": "Vans Old Skool Classic Skate Sneaker"
+  },
+  {
+    "slug": "vans-sk8-hi-high-top",
+    "name_ar": "حذاء فانز سكيت-هاي العالي المبطن",
+    "name_en": "Vans Sk8-Hi High Top Skate Sneaker"
+  },
+  {
+    "slug": "vans-classic-slip-on",
+    "name_ar": "حذاء فانز كلاسيك سليب أون القماشي",
+    "name_en": "Vans Classic Slip-On Core Canvas Sneaker"
+  },
+  {
+    "slug": "vans-authentic-low",
+    "name_ar": "حذاء فانز أوثنتيك المنخفض الأيقوني",
+    "name_en": "Vans Authentic Low Original Skate Sneaker"
+  },
+  {
+    "slug": "ralph-lauren-mesh-polo",
+    "name_ar": "قميص بولو رالف لورين الكلاسيكي من القطن المشبك",
+    "name_en": "Polo Ralph Lauren Custom Slim Fit Mesh Polo Shirt"
+  },
+  {
+    "slug": "ralph-lauren-cable-knit-sweater",
+    "name_ar": "كنزة رالف لورين صوف محبوك بجديلة كلاسيكية",
+    "name_en": "Polo Ralph Lauren Iconic Cable-Knit Cotton Sweater"
+  },
+  {
+    "slug": "ralph-lauren-oxford-shirt",
+    "name_ar": "قميص رالف لورين أكسفورد القطني الفاخر",
+    "name_en": "Polo Ralph Lauren Classic Oxford Cotton Button-Down Shirt"
+  },
+  {
+    "slug": "ralph-lauren-leather-belt",
+    "name_ar": "حزام رالف لورين من الجلد الطبيعي بإبزيم نحاسي",
+    "name_en": "Polo Ralph Lauren Heritage Full Grain Leather Belt"
+  },
+  {
+    "slug": "ralph-lauren-fleece-joggers",
+    "name_ar": "بنطال رياضي رالف لورين كلوب فليس",
+    "name_en": "Polo Ralph Lauren Cotton-Blend Fleece Track Joggers"
+  },
+  {
+    "slug": "ralph-lauren-chino-cap",
+    "name_ar": "قبعة رالف لورين قطنية بشعار البولو المطرز",
+    "name_en": "Polo Ralph Lauren Cotton Chino Baseball Cap"
+  },
+  {
+    "slug": "ray-ban-aviator-classic-gold",
+    "name_ar": "نظارة راي بان أفياتور الكلاسيكية بإطار ذهبي",
+    "name_en": "Ray-Ban Aviator Classic Gold Frame Sunglasses RB3025"
+  },
+  {
+    "slug": "ray-ban-wayfarer-classic",
+    "name_ar": "نظارة راي بان وايفارير الكلاسيكية السوداء",
+    "name_en": "Ray-Ban Original Wayfarer Classic Sunglasses RB2140"
+  },
+  {
+    "slug": "ray-ban-clubmaster-classic",
+    "name_ar": "نظارة راي بان كلوب ماستر الأيقونية",
+    "name_en": "Ray-Ban Clubmaster Classic Retro Sunglasses RB3016"
+  },
+  {
+    "slug": "ray-ban-round-metal-gold",
+    "name_ar": "نظارة راي بان راوند ميتال الدائرية الذهبية",
+    "name_en": "Ray-Ban Round Metal Gold Frame Sunglasses RB3447"
+  },
+  {
+    "slug": "ray-ban-justin-matte-black",
+    "name_ar": "نظارة راي بان جاستن بإطار مطفي مستقطب",
+    "name_en": "Ray-Ban Justin Matte Black Polarized Sunglasses RB4165"
+  },
+  {
+    "slug": "casio-g-shock-ga-2100-casioak",
+    "name_ar": "ساعة كاسيو جي شوك GA-2100 الأوكتاجون المقاومة للصدمات",
+    "name_en": "Casio G-Shock GA-2100 \"CasiOak\" Octagonal Carbon Core Watch"
+  },
+  {
+    "slug": "casio-vintage-gold-a168",
+    "name_ar": "ساعة كاسيو فينتاج الذهبية الرقمية الكلاسيكية",
+    "name_en": "Casio Vintage Digital Gold-Tone Illuminator Watch A168WG"
+  },
+  {
+    "slug": "casio-g-shock-dw-5600",
+    "name_ar": "ساعة كاسيو جي شوك DW-5600 المربعة الكلاسيكية",
+    "name_en": "Casio G-Shock DW-5600 Classic Square Tough Digital Watch"
+  },
+  {
+    "slug": "casio-edifice-chronograph",
+    "name_ar": "ساعة كاسيو إيديفيس كرونوغراف ستانلس ستيل",
+    "name_en": "Casio Edifice Motorsport Chronograph Stainless Steel Watch"
+  },
+  {
+    "slug": "dior-sauvage-eau-de-parfum",
+    "name_ar": "عطر ديور سوفاج أو دو بارفان الرجالي الفاخر",
+    "name_en": "Dior Sauvage Eau de Parfum Luxury Fragrance"
+  },
+  {
+    "slug": "dior-miss-dior-eau-de-parfum",
+    "name_ar": "عطر ميس ديور أو دو بارفان الزهري الراقي",
+    "name_en": "Miss Dior Eau de Parfum Floral Luxury Fragrance"
+  },
+  {
+    "slug": "dior-homme-intense-edp",
+    "name_ar": "عطر ديور أوم إنتنس المركز بالأخشاب والسوسن",
+    "name_en": "Dior Homme Intense Eau de Parfum Woody Floral Scent"
+  },
+  {
+    "slug": "dior-saddle-grained-leather-bag",
+    "name_ar": "حقيبة ديور سادل الجلدية الأيقونية بحزام كتف",
+    "name_en": "Dior Saddle Bag in Grained Calfskin Leather with CD Hardware"
+  },
+  {
+    "slug": "dior-b23-high-top-sneaker",
+    "name_ar": "حذاء ديور B23 العالي بطبعة أوبليك الفاخرة",
+    "name_en": "Dior B23 High-Top Dior Oblique Canvas Sneaker"
+  },
+  {
+    "slug": "prada-paradoxe-eau-de-parfum",
+    "name_ar": "عطر برادا بارادوكس أو دو بارفان المبتكر",
+    "name_en": "Prada Paradoxe Eau de Parfum Refillable Fragrance"
+  },
+  {
+    "slug": "prada-re-nylon-shoulder-bag",
+    "name_ar": "حقيبة برادا ري-نايلون الكتف بالشعار المثلث",
+    "name_en": "Prada Re-Nylon and Saffiano Leather Shoulder Bag"
+  },
+  {
+    "slug": "prada-saffiano-leather-wallet",
+    "name_ar": "محفظة برادا من جلد سافيانو الإيطالي الأصلي",
+    "name_en": "Prada Saffiano Leather Zip-Around Long Wallet"
+  },
+  {
+    "slug": "nike-air-force-1-07",
+    "name_ar": "حذاء نايك إير فورس 1 '07 كلاسيك أبيض",
+    "name_en": "Nike Air Force 1 '07 Low Triple White"
+  },
+  {
+    "slug": "prada-monolith-leather-loafers",
+    "name_ar": "حذاء برادا مونوليث لوفر بالجلد المصقول والنعل السميك",
+    "name_en": "Prada Monolith Brushed Leather Chunky Loafers"
+  },
+  {
+    "slug": "prada-linea-rossa-sunglasses",
+    "name_ar": "نظارة برادا لينيا روسا الرياضية المستقطبة",
+    "name_en": "Prada Linea Rossa Lifestyle Polarized Sunglasses SPS01V"
+  },
+  {
+    "slug": "armani-stronger-with-you-intensely",
+    "name_ar": "عطر سترونجر وذ يو إنتنسلي الفاخر المركز",
+    "name_en": "Emporio Armani Stronger With You Intensely EDP"
+  },
+  {
+    "slug": "armani-chronograph-black-dial",
+    "name_ar": "ساعة إمبوريو أرماني كرونوغراف بمينا سوداء وحزام ستيل",
+    "name_en": "Emporio Armani Classic Chronograph Stainless Steel Watch AR2434"
+  },
+  {
+    "slug": "armani-eagle-logo-polo",
+    "name_ar": "قميص بولو أرماني بشعار النسر المعدني الأنيق",
+    "name_en": "Emporio Armani Eagle Metal Logo Cotton Pique Polo Shirt"
+  },
+  {
+    "slug": "lacoste-challenge-polo",
+    "name_ar": "قميص بولو لاكوست تشالنج مقلم كلاسيك",
+    "name_en": "Lacoste Challenge Stripe Classic Polo Shirt"
+  },
+  {
+    "slug": "armani-bifold-leather-wallet",
+    "name_ar": "محفظة أرماني ثنائية الطي من الجلد المحبب الفاخر",
+    "name_en": "Emporio Armani Deer-Print Grained Leather Bi-Fold Wallet"
+  },
+  {
+    "slug": "versace-eros-flame-eau-de-parfum",
+    "name_ar": "عطر فيرساتشي إيروس فليم أو دو بارفان الحار",
+    "name_en": "Versace Eros Flame Eau de Parfum Fiery Fragrance"
+  },
+  {
+    "slug": "versace-medusa-leather-belt",
+    "name_ar": "حزام فيرساتشي من الجلد الطبيعي بإبزيم رأس ميدوسا الذهبي",
+    "name_en": "Versace Medusa Head 3D Gold Buckle Leather Belt"
+  },
+  {
+    "slug": "versace-chain-reaction-sneaker",
+    "name_ar": "حذاء فيرساتشي تشين ريأكشن بالنعل المتسلسل الأيقوني",
+    "name_en": "Versace Chain Reaction Chunky Sole Luxury Sneaker"
+  },
+  {
+    "slug": "versace-dylan-blue-pour-homme",
+    "name_ar": "عطر فيرساتشي ديلان بلو المنعش بالأخشاب",
+    "name_en": "Versace Pour Homme Dylan Blue Eau de Toilette"
+  },
+  {
+    "slug": "versace-barocco-silk-scarf",
+    "name_ar": "وشاح فيرساتشي من الحرير الخالص بنقشة الباروك الذهبية",
+    "name_en": "Versace Barocco Heritage Pure Silk Twill Scarf"
+  },
+  {
+    "slug": "under-armour-tech-20-tee",
+    "name_ar": "تيشيرت أندر آرمر تك 2.0 سريع الجفاف للتمارين",
+    "name_en": "Under Armour Tech 2.0 Short-Sleeve Athletic Training Tee"
+  },
+  {
+    "slug": "under-armour-rival-fleece-hoodie",
+    "name_ar": "هودي أندر آرمر رايفال فليس الرياضي",
+    "name_en": "Under Armour Rival Fleece Pullover Athletic Hoodie"
+  },
+  {
+    "slug": "under-armour-hovr-phantom-3",
+    "name_ar": "حذاء أندر آرمر هوفر فانتوم 3 المبطن للجري",
+    "name_en": "Under Armour UA HOVR Phantom 3 Knit Running Shoe"
+  },
+  {
+    "slug": "under-armour-heatgear-leggings",
+    "name_ar": "بنطال ضاغط أندر آرمر هيت جير للأداء العالي",
+    "name_en": "Under Armour HeatGear 2.0 Compression Leggings"
+  },
+  {
+    "slug": "under-armour-hustle-50-backpack",
+    "name_ar": "حقيبة ظهر أندر آرمر هاسل 5.0 المقاومة للماء",
+    "name_en": "Under Armour Hustle 5.0 Water-Resistant Storm Backpack"
+  },
+  {
+    "slug": "michael-kors-jet-set-saffiano-tote",
+    "name_ar": "حقيبة مايكل كورس جيت سيت توت بالجلد السافيانو الذهبي",
+    "name_en": "Michael Kors Jet Set Large Saffiano Leather Top-Zip Tote Bag"
+  },
+  {
+    "slug": "michael-kors-slim-runway-gold-watch",
+    "name_ar": "ساعة مايكل كورس سليم رنواي الذهبية الأنيقة",
+    "name_en": "Michael Kors Slim Runway Gold-Tone Stainless Steel Watch MK3179"
+  },
+  {
+    "slug": "michael-kors-greenwich-crossbody",
+    "name_ar": "حقيبة مايكل كورس غرينيتش كروس بودي بالجلد الناعم",
+    "name_en": "Michael Kors Greenwich Small Saffiano Leather Crossbody Bag"
+  },
+  {
+    "slug": "michael-kors-leather-card-case",
+    "name_ar": "حافظة بطاقات مايكل كورس من الجلد الطبيعي",
+    "name_en": "Michael Kors Bryant Saffiano Leather Slim Card Case"
+  },
+  {
+    "slug": "nike-vapormax-plus",
+    "name_ar": "حذاء نايك إير فابور ماكس بلس الرياضي الأيقوني",
+    "name_en": "Nike Air VaporMax Plus Running Lifestyle Sneaker"
+  },
+  {
+    "slug": "nike-court-vision-low",
+    "name_ar": "حذاء نايك كورت فيجن لو الكلاسيكي الأبيض",
+    "name_en": "Nike Court Vision Low Next Nature Retro Sneaker"
+  },
+  {
+    "slug": "nike-pro-compression-top",
+    "name_ar": "تيشيرت ضاغط نايك برو بأكمام طويلة وتقنية دراي-فيت",
+    "name_en": "Nike Pro Dri-FIT Tight Compression Long-Sleeve Top"
+  },
+  {
+    "slug": "adidas-adilette-comfort-slides",
+    "name_ar": "سليبر أديداس أديليت كومفورت بنعل كلاود فوم",
+    "name_en": "Adidas Adilette Comfort Cloudfoam Contoured Slides"
+  },
+  {
+    "slug": "adidas-terrex-swift-r3",
+    "name_ar": "حذاء أديداس تيريكس سويفت R3 المقاوم للماء والوعورة",
+    "name_en": "Adidas Terrex Swift R3 GORE-TEX All-Terrain Hiking Shoe"
+  },
+  {
+    "slug": "puma-future-rider-play-on",
+    "name_ar": "حذاء بوما فيوتشر رايدر بتصميم كتل الألوان",
+    "name_en": "Puma Future Rider Play On Heritage Colorblock Sneaker"
+  },
+  {
+    "slug": "reebok-workout-plus",
+    "name_ar": "حذاء ريبوك وورك آوت بلس بالجلد الطبيعي الأبيض",
+    "name_en": "Reebok Workout Plus Vintage Full Grain Leather Sneaker"
+  },
+  {
+    "slug": "lacoste-classic-gabardine-cap",
+    "name_ar": "قبعة لاكوست كلاسيك من قطن الغاباردين بالتمساح الأخضر",
+    "name_en": "Lacoste Classic Cotton Gabardine Crocodile Baseball Cap"
+  },
+  {
+    "slug": "zara-wool-blend-overcoat",
+    "name_ar": "معطف زارا من صوف الميرينو المخلوط بقصة مستقيمة",
+    "name_en": "Zara Structured Wool-Blend Tailored Overcoat"
+  },
+  {
+    "slug": "boss-slim-fit-stretch-suit",
+    "name_ar": "بدلة هوغو بوس سليم فيت صوف إيطالي",
+    "name_en": "BOSS Slim-Fit Virgin Wool Stretch Suit"
+  },
+  {
+    "slug": "gucci-ophidia-gg-zip-wallet",
+    "name_ar": "محفظة غوتشي أوفيديا كانفاس GG بسحاب كامل",
+    "name_en": "Gucci Ophidia GG Supreme Zip-Around Wallet with Web Stripe"
+  },
+  {
+    "slug": "chanel-gabrielle-essence-edp",
+    "name_ar": "عطر شانيل غابرييل إيسنس الزهري المشمس",
+    "name_en": "Chanel Gabrielle Essence Eau de Parfum Solar Floral Scent"
+  },
+  {
+    "slug": "boss-leather-cardholder",
+    "name_ar": "حافظة بطاقات بوس من جلد العجل الإيطالي المحبب",
+    "name_en": "BOSS Signature Grained Calf Leather Slim Cardholder"
+  },
+  {
+    "slug": "calvin-klein-reversible-puffer",
+    "name_ar": "جاكيت كالفن كلاين بافر عازل بوجهين",
+    "name_en": "Calvin Klein Reversible Insulated Puffer Jacket"
+  },
+  {
+    "slug": "tommy-hilfiger-heritage-backpack",
+    "name_ar": "حقيبة ظهر تومي هيلفيغر هيريتيج بالنايلون المتين",
+    "name_en": "Tommy Hilfiger Heritage Stripe Heavy-Duty Nylon Backpack"
+  },
+  {
+    "slug": "nike-tech-fleece-hoodie",
+    "name_ar": "هودي نايك تيك فليس ويندرنر بسحاب كامل",
+    "name_en": "Nike Tech Fleece Full-Zip Windrunner Hoodie"
+  },
+  {
+    "slug": "calvin-klein-platform-chelsea",
+    "name_ar": "حذاء تشيلسي بوت كالفن كلاين برقبة عالية",
+    "name_en": "Calvin Klein Platform Chelsea Ankle Boot"
+  },
+  {
+    "slug": "reebok-classic-leather",
+    "name_ar": "حذاء ريبوك كلاسيك ليذر الأيقوني",
+    "name_en": "Reebok Classic Leather Timeless Sneaker"
+  },
+  {
+    "slug": "reebok-nano-x4-training",
+    "name_ar": "حذاء التدريب ريبوك نانو X4 المتكامل",
+    "name_en": "Reebok Nano X4 Cross-Training Shoe"
+  },
+  {
+    "slug": "reebok-vector-fleece-sweatshirt",
+    "name_ar": "سويت شيرت ريبوك كلاسيك فكتور كروع",
+    "name_en": "Reebok Classics Vector Crew Sweatshirt"
+  },
+  {
+    "slug": "reebok-freestyle-hi",
+    "name_ar": "حذاء ريبوك فريستايل هاي للأيروبيك",
+    "name_en": "Reebok Freestyle Hi Classic Women Shoe"
+  },
+  {
+    "slug": "lacoste-sport-polo",
+    "name_ar": "قميص بولو لاكوست سبورت تنفسي",
+    "name_en": "Lacoste Sport Breathable Stretch Polo"
+  },
+  {
+    "slug": "nike-air-max-270",
+    "name_ar": "حذاء نايك إير ماكس 270 لأسلوب الحياة",
+    "name_en": "Nike Air Max 270 Lifestyle Sneaker"
+  },
+  {
+    "slug": "nike-club-fleece-joggers",
+    "name_ar": "بنطال رياضي نايك كلوب فليس جوغرز",
+    "name_en": "Nike Sportswear Club Fleece Joggers"
+  },
+  {
+    "slug": "nike-air-jordan-1-high",
+    "name_ar": "حذاء نايك إير جوردان 1 هاي أوجي",
+    "name_en": "Nike Air Jordan 1 High OG Retro"
+  },
+  {
+    "slug": "nike-air-max-90",
+    "name_ar": "حذاء نايك إير ماكس 90 الكلاسيكي",
+    "name_en": "Nike Air Max 90 Retro Classic Sneaker"
+  },
+  {
+    "slug": "nike-windrunner-jacket",
+    "name_ar": "جاكيت نايك ويندرنر ريبل للريح والمطر",
+    "name_en": "Nike Windrunner Ripstop Jacket"
+  },
+  {
+    "slug": "boss-mens-ives-loafer",
+    "name_ar": "حذاء لوفر بوس إيفيس جلد إيطالي",
+    "name_en": "BOSS Ives Italian Leather Penny Loafer"
+  },
+  {
+    "slug": "nike-sb-dunk-low",
+    "name_ar": "حذاء سكيت بورد نايك SB دانك لو",
+    "name_en": "Nike SB Dunk Low Pro Skate Shoe"
+  },
+  {
+    "slug": "nike-therma-fit-hoodie",
+    "name_ar": "هودي نايك ثيرما-فيت المبطن الدافئ",
+    "name_en": "Nike Therma-FIT Pullover Training Hoodie"
+  },
+  {
+    "slug": "nike-air-zoom-structure",
+    "name_ar": "حذاء جري نايك إير زوم ستراكتشر 25",
+    "name_en": "Nike Air Zoom Structure 25 Stability Run"
+  },
+  {
+    "slug": "adidas-samba-classic",
+    "name_ar": "حذاء أديداس سامبا كلاسيك الأصلي",
+    "name_en": "Adidas Originals Samba Classic OG"
+  },
+  {
+    "slug": "adidas-gazelle-indoor",
+    "name_ar": "حذاء أديداس غازيل إندور شمواه رترو",
+    "name_en": "Adidas Originals Gazelle Indoor Retro Suede"
+  },
+  {
+    "slug": "adidas-ultraboost-light",
+    "name_ar": "حذاء أديداس ألترا بوست لايت للجري",
+    "name_en": "Adidas Ultraboost Light Performance Running"
+  },
+  {
+    "slug": "adidas-beckenbauer-tracktop",
+    "name_ar": "جاكيت أديداس بيكنباور تراك توب رترو",
+    "name_en": "Adidas Originals Beckenbauer Track Jacket"
+  },
+  {
+    "slug": "adidas-3-stripes-tee",
+    "name_ar": "تيشيرت أديداس أوريجينالز 3 خطوط كلاسيك",
+    "name_en": "Adidas Adicolor Classics 3-Stripes Tee"
+  },
+  {
+    "slug": "adidas-stan-smith-leather",
+    "name_ar": "حذاء أديداس ستان سميث جلد لوكس",
+    "name_en": "Adidas Originals Stan Smith Lux Leather"
+  },
+  {
+    "slug": "adidas-nmd-r1",
+    "name_ar": "حذاء أديداس NMD_R1 عصري بوست",
+    "name_en": "Adidas NMD_R1 Boost Urban Style Sneaker"
+  },
+  {
+    "slug": "adidas-forum-low-white",
+    "name_ar": "حذاء أديداس فورم لو أبيض كلاسيك",
+    "name_en": "Adidas Forum Low Classic Leather White"
+  },
+  {
+    "slug": "adidas-superstar-shell-toe",
+    "name_ar": "حذاء أديداس سوبرستار شيل تو الأيقوني",
+    "name_en": "Adidas Originals Superstar Shell Toe"
+  },
+  {
+    "slug": "adidas-originals-trefoil-hoodie",
+    "name_ar": "هودي أديداس أوريجينالز تريفيل سوبر",
+    "name_en": "Adidas Originals Trefoil Hoodie"
+  },
+  {
+    "slug": "adidas-tiro-21-track-pants",
+    "name_ar": "بنطال تيرو 21 أديداس رياضي احترافي",
+    "name_en": "Adidas Tiro 21 Training Track Pants"
+  },
+  {
+    "slug": "adidas-campus-00s",
+    "name_ar": "حذاء أديداس كامبوس 00s عودة الألفية",
+    "name_en": "Adidas Campus 00s Retro Millennium Sneaker"
+  },
+  {
+    "slug": "skechers-slip-ins-max-cushioning",
+    "name_ar": "حذاء سكيتشرز Slip-ins ماكس كوشينينج",
+    "name_en": "Skechers Hands Free Slip-ins Max Cushioning Elite"
+  },
+  {
+    "slug": "skechers-dlites-memory-foam",
+    "name_ar": "حذاء سكيتشرز دي لايتس تشاكي أيقوني",
+    "name_en": "Skechers D'Lites Biggest Fan Chunky Sneaker"
+  },
+  {
+    "slug": "skechers-go-walk-7",
+    "name_ar": "حذاء المشي سكيتشرز جو ووك 7",
+    "name_en": "Skechers GO WALK 7 Hyper Pillar Technology"
+  },
+  {
+    "slug": "skechers-arch-fit-leather",
+    "name_ar": "سنيكرز سكيتشرز آرش فيت بدعم قوس القدم",
+    "name_en": "Skechers Arch Fit Banlin Leather Sneaker"
+  },
+  {
+    "slug": "skechers-max-cushioning-elite",
+    "name_ar": "حذاء سكيتشرز ماكس كوشينينج إيليت للجري",
+    "name_en": "Skechers Max Cushioning Elite Running Shoe"
+  },
+  {
+    "slug": "skechers-relaxed-fit-expected",
+    "name_ar": "حذاء سكيتشرز ريلاكسد فيت اليومي المريح",
+    "name_en": "Skechers Relaxed Fit Expected Avillo Slip-on"
+  },
+  {
+    "slug": "puma-suede-classic-xxi",
+    "name_ar": "حذاء بوما سويد كلاسيك XXI أيقوني",
+    "name_en": "Puma Suede Classic XXI Iconic Streetwear"
+  },
+  {
+    "slug": "puma-palermo-leather-sneaker",
+    "name_ar": "حذاء بوما باليرمو كورت رترو إيطالي",
+    "name_en": "Puma Palermo Retro Court Leather Sneaker"
+  },
+  {
+    "slug": "puma-essentials-fleece-hoodie",
+    "name_ar": "هودي بوما إسنشالز شعار كبير قطني",
+    "name_en": "Puma Essentials Big Logo Fleece Hoodie"
+  },
+  {
+    "slug": "nike-pegasus-40",
+    "name_ar": "حذاء جري نايك إير زوم بيغاسوس 40",
+    "name_en": "Nike Air Zoom Pegasus 40 Road Running Shoe"
+  },
+  {
+    "slug": "nike-dri-fit-club-cap",
+    "name_ar": "قبعة نايك دراي-فيت بيسبول كلاسيكية",
+    "name_en": "Nike Dri-FIT Club Unstructured Baseball Cap"
+  },
+  {
+    "slug": "puma-ferrari-race-polo",
+    "name_ar": "قميص بولو بوما سكوديريا فيراري رسمي",
+    "name_en": "Puma Scuderia Ferrari Motorsport Race Polo"
+  },
+  {
+    "slug": "puma-rs-x-bold",
+    "name_ar": "حذاء بوما RS-X بولد بتصميم ضخم",
+    "name_en": "Puma RS-X Bold Oversized Chunky Runner"
+  },
+  {
+    "slug": "puma-thunder-spectra",
+    "name_ar": "حذاء بوما ثاندر سبيكترا رترو ملون",
+    "name_en": "Puma Thunder Spectra Retro Color-block Sneaker"
+  },
+  {
+    "slug": "puma-clyde-all-pro",
+    "name_ar": "حذاء بوما كلايد أول برو كورت",
+    "name_en": "Puma Clyde All-Pro Mid Court Shoe"
+  },
+  {
+    "slug": "puma-classic-logo-tee",
+    "name_ar": "تيشيرت بوما كلاسيك شعار مطرز",
+    "name_en": "Puma Classic Logo Embroidered Tee"
+  },
+  {
+    "slug": "puma-mercedes-polo",
+    "name_ar": "قميص بولو بوما Mercedes-AMG فورمولا 1",
+    "name_en": "Puma Mercedes-AMG Petronas F1 Polo Shirt"
+  },
+  {
+    "slug": "reebok-club-c-85-vintage",
+    "name_ar": "حذاء ريبوك كلوب سي 85 فينتيج تنس",
+    "name_en": "Reebok Club C 85 Vintage Chalk Tennis Shoe"
+  },
+  {
+    "slug": "tommy-hilfiger-classic-leather-belt",
+    "name_ar": "حزام تومي هيلفيغر جلد طبيعي كلاسيك",
+    "name_en": "Tommy Hilfiger Denton Classic Leather Belt"
+  },
+  {
+    "slug": "reebok-instapump-fury",
+    "name_ar": "حذاء ريبوك إنستابمب فيوري الضخم",
+    "name_en": "Reebok Instapump Fury OG Sneaker"
+  },
+  {
+    "slug": "lacoste-l1212-classic-polo",
+    "name_ar": "قميص بولو لاكوست L.12.12 كلاسيك الأصلي",
+    "name_en": "Lacoste L.12.12 Classic Fit Petit Pique Polo"
+  },
+  {
+    "slug": "lacoste-carnaby-leather-sneaker",
+    "name_ar": "سنيكرز لاكوست كارنابي جلد كورت",
+    "name_en": "Lacoste Carnaby Pro Leather Court Sneaker"
+  },
+  {
+    "slug": "lacoste-cotton-zip-cardigan",
+    "name_ar": "كارديغان لاكوست قطني بسحاب كامل",
+    "name_en": "Lacoste Full-Zip Organic Cotton Knit Cardigan"
+  },
+  {
+    "slug": "lacoste-grained-leather-wallet",
+    "name_ar": "محفظة لاكوست جلد محبب ثنائية الطي",
+    "name_en": "Lacoste Fitzgerald Grained Leather Bifold Wallet"
+  },
+  {
+    "slug": "lacoste-lerond-sneaker",
+    "name_ar": "حذاء لاكوست لوروند سنيكرز جلد ناعم",
+    "name_en": "Lacoste Lerond Pro Leather Court Sneaker"
+  },
+  {
+    "slug": "zara-tailored-textured-blazer",
+    "name_ar": "بليزر زارا مفصل بقماش صوفي فاخر",
+    "name_en": "Zara Man Tailored Textured Wool Blazer"
+  },
+  {
+    "slug": "zara-pleated-wide-leg-trousers",
+    "name_ar": "بنطال زارا نسائي واسع بكسرات خصر مرتفع",
+    "name_en": "Zara Pleated High-Waist Wide Leg Trousers"
+  },
+  {
+    "slug": "zara-satin-midi-slip-dress",
+    "name_ar": "فستان زارا ساتان ميدي مائل للسهرات",
+    "name_en": "Zara Satin Finish Bias-Cut Midi Slip Dress"
+  },
+  {
+    "slug": "zara-faux-leather-trench",
+    "name_ar": "معطف ترنش زارا جلد صناعي مزدوج الأزرار",
+    "name_en": "Zara Double-Breasted Faux Leather Trench Coat"
+  },
+  {
+    "slug": "zara-oversized-poplin-shirt",
+    "name_ar": "قميص بوبلين أبيض أوفر سايز زارا",
+    "name_en": "Zara 100% Cotton Poplin Oversized Shirt"
+  },
+  {
+    "slug": "zara-knit-sweater-crew",
+    "name_ar": "سترة صوف زارا كروع مريحة كلاسيك",
+    "name_en": "Zara Soft Ribbed Crew Neck Knit Sweater"
+  },
+  {
+    "slug": "tommy-hilfiger-flag-polo",
+    "name_ar": "قميص بولو تومي هيلفيغر علم أيقوني",
+    "name_en": "Tommy Hilfiger Iconic Flag Polo Shirt"
+  },
+  {
+    "slug": "zara-straight-leg-jeans",
+    "name_ar": "جينز زارا مستقيم كلاسيك لازوردي",
+    "name_en": "Zara Classic Straight Leg Denim Jeans"
+  },
+  {
+    "slug": "zara-leather-crossbody",
+    "name_ar": "حقيبة كروسبودي زارا جلد صغيرة أنيقة",
+    "name_en": "Zara Mini Leather Crossbody Bag"
+  },
+  {
+    "slug": "zara-quilted-bomber-jacket",
+    "name_ar": "جاكيت بومبر مبطن زارا خفيف الوزن",
+    "name_en": "Zara Lightweight Quilted Bomber Jacket"
+  },
+  {
+    "slug": "zara-structured-tote-bag",
+    "name_ar": "حقيبة توت زارا جلد هيكلية واسعة",
+    "name_en": "Zara Structured Leather Tote Bag"
+  },
+  {
+    "slug": "gucci-gg-marmont-shoulder-bag",
+    "name_ar": "حقيبة كتف غوتشي GG مارمونت مبطنة",
+    "name_en": "Gucci GG Marmont Matelasse Shoulder Bag"
+  },
+  {
+    "slug": "gucci-horsebit-1953-loafer",
+    "name_ar": "حذاء لوفر غوتشي 1953 هورسبيت تراثي",
+    "name_en": "Gucci 1953 Horsebit Classic Leather Loafer"
+  },
+  {
+    "slug": "gucci-double-g-leather-belt",
+    "name_ar": "حزام جلد غوتشي بإبزيم Double G",
+    "name_en": "Gucci Double G Smooth Italian Leather Belt"
+  },
+  {
+    "slug": "gucci-flora-gorgeous-gardenia",
+    "name_ar": "عطر غوتشي فلورا غورجيوس غاردينيا",
+    "name_en": "Gucci Flora Gorgeous Gardenia Eau de Parfum"
+  },
+  {
+    "slug": "gucci-square-acetate-sunglasses",
+    "name_ar": "نظارة شمسية غوتشي مربعة أسيتات فاخرة",
+    "name_en": "Gucci Oversized Square Acetate Sunglasses"
+  },
+  {
+    "slug": "gucci-gg-canvas-tote",
+    "name_ar": "حقيبة توت غوتشي GG كانفاس كبيرة",
+    "name_en": "Gucci GG Supreme Canvas Large Tote Bag"
+  },
+  {
+    "slug": "gucci-ace-leather-sneaker",
+    "name_ar": "حذاء سنيكرز غوتشي آيس كلاسيك جلد",
+    "name_en": "Gucci Ace Classic Leather Low-Top Sneaker"
+  },
+  {
+    "slug": "gucci-wool-coat",
+    "name_ar": "معطف صوف فاخر من غوتشي إيطالي الصنع",
+    "name_en": "Gucci Double-Faced Cashmere Wool Coat"
+  },
+  {
+    "slug": "gucci-bamboo-handle-bag",
+    "name_ar": "حقيبة غوتشي بمقبض البامبو الأيقوني",
+    "name_en": "Gucci Bamboo 1947 Small Top Handle Bag"
+  },
+  {
+    "slug": "boss-hugo-red-edp",
+    "name_ar": "عطر هوغو ريد أو دو بارفان جريء",
+    "name_en": "HUGO Red Eau de Parfum Bold Fragrance"
+  },
+  {
+    "slug": "gucci-guilty-pour-homme",
+    "name_ar": "عطر غوتشي غيلتي بور أوم للرجال",
+    "name_en": "Gucci Guilty Pour Homme Eau de Toilette"
+  },
+  {
+    "slug": "chanel-bleu-de-chanel-parfum",
+    "name_ar": "عطر بلو دي شانيل بارفان خشبي رجالي",
+    "name_en": "Chanel Bleu de Chanel Pure Parfum"
+  },
+  {
+    "slug": "chanel-coco-mademoiselle",
+    "name_ar": "عطر شانيل كوكو مادموزيل أو دو بارفان",
+    "name_en": "Chanel Coco Mademoiselle Eau de Parfum"
+  },
+  {
+    "slug": "chanel-classic-11-12-flap-bag",
+    "name_ar": "حقيبة شانيل كلاسيك 11.12 جلد كافيار",
+    "name_en": "Chanel Classic 11.12 Quilted Caviar Flap Bag"
+  },
+  {
+    "slug": "chanel-boy-chanel-long-wallet",
+    "name_ar": "محفظة بوي شانيل جلد مبطن بسحاب",
+    "name_en": "Chanel Boy Chanel Zipped Long Wallet"
+  },
+  {
+    "slug": "chanel-rouge-allure-lextrait",
+    "name_ar": "أحمر شفاه شانيل روج أللور ليكستري",
+    "name_en": "Chanel Rouge Allure L'Extrait High-Intensity Lipstick"
+  },
+  {
+    "slug": "chanel-no5-parfum",
+    "name_ar": "عطر شانيل رقم 5 الأسطوري الخالد",
+    "name_en": "Chanel N°5 Eau de Parfum Timeless Icon"
+  },
+  {
+    "slug": "chanel-22-handbag",
+    "name_ar": "حقيبة شانيل 22 كبيرة مبطنة مرنة",
+    "name_en": "Chanel 22 Shiny Calfskin Large Hobo Bag"
+  },
+  {
+    "slug": "chanel-coco-crush-ring",
+    "name_ar": "خاتم شانيل كوكو كراش ذهبي بيج غولد",
+    "name_en": "Chanel Coco Crush Ring Beige Gold"
+  },
+  {
+    "slug": "chanel-boy-bag-medium",
+    "name_ar": "حقيبة بوي شانيل متوسطة بشريط مبطن",
+    "name_en": "Chanel Boy Bag Medium Chevron Leather"
+  },
+  {
+    "slug": "chanel-espadrilles",
+    "name_ar": "أحذية إسبادريل شانيل قماش CC صيفي",
+    "name_en": "Chanel CC Logo Canvas Espadrille Flats"
+  },
+  {
+    "slug": "boss-pallas-pique-polo",
+    "name_ar": "قميص بولو هوغو بوس بالاس قطني",
+    "name_en": "BOSS Pallas Regular-Fit Pique Polo Shirt"
+  },
+  {
+    "slug": "calvin-klein-modern-cotton-sweatshirt",
+    "name_ar": "سويت شيرت كالفن كلاين مودرن قطني",
+    "name_en": "Calvin Klein Modern Cotton Crewneck Sweatshirt"
+  },
+  {
+    "slug": "boss-bottled-eau-de-parfum",
+    "name_ar": "عطر هوغو بوس بوتلد أو دو بارفان رجالي",
+    "name_en": "BOSS Bottled Eau de Parfum for Men"
+  },
+  {
+    "slug": "boss-skeleton-automatic-watch",
+    "name_ar": "ساعة بوس أوتوماتيكية هيكلية فاخرة",
+    "name_en": "BOSS Grand Prix Automatic Skeleton Watch"
+  },
+  {
+    "slug": "boss-casual-slim-chino",
+    "name_ar": "بنطال تشينو هوغو بوس سليم كاجوال",
+    "name_en": "BOSS Schino Slim-Fit Stretch Chino Trousers"
+  },
+  {
+    "slug": "boss-oxford-slim-shirt",
+    "name_ar": "قميص أكسفورد هوغو بوس سليم أبيض",
+    "name_en": "BOSS Slim-Fit Oxford Cotton Shirt"
+  },
+  {
+    "slug": "boss-leather-chelsea-boot",
+    "name_ar": "حذاء تشيلسي بوت هوغو بوس جلد فاخر",
+    "name_en": "BOSS Leather Chelsea Boot with Elastic Insert"
+  },
+  {
+    "slug": "boss-wool-overcoat",
+    "name_ar": "معطف بوس صوفي طويل أنيق للشتاء",
+    "name_en": "BOSS Slim-Fit Wool Blend Overcoat"
+  },
+  {
+    "slug": "calvin-klein-90s-straight-denim",
+    "name_ar": "جينز كالفن كلاين 90s مستقيم كلاسيك",
+    "name_en": "Calvin Klein 90s Straight Vintage Denim"
+  },
+  {
+    "slug": "calvin-klein-minimalist-crossbody",
+    "name_ar": "حقيبة كروسبودي CK مدمجة أنيقة",
+    "name_en": "Calvin Klein Minimalist Monogram Crossbody Bag"
+  },
+  {
+    "slug": "calvin-klein-ck-one-unisex",
+    "name_ar": "عطر كالفن كلاين CK ONE للجنسين",
+    "name_en": "Calvin Klein CK One Unisex Eau de Toilette"
+  },
+  {
+    "slug": "calvin-klein-eternity-edp",
+    "name_ar": "عطر كالفن كلاين إيترنيتي أو دو بارفان",
+    "name_en": "Calvin Klein Eternity Eau de Parfum for Women"
+  },
+  {
+    "slug": "calvin-klein-slim-blazer",
+    "name_ar": "بليزر كالفن كلاين سليم فيت قطني أنيق",
+    "name_en": "Calvin Klein Slim-Fit Cotton Stretch Blazer"
+  },
+  {
+    "slug": "calvin-klein-underwear-3pack",
+    "name_ar": "طقم داخلية كالفن كلاين 3 قطع بوكسرات",
+    "name_en": "Calvin Klein Modern Cotton 3-Pack Boxer Brief"
+  },
+  {
+    "slug": "calvin-klein-leather-belt",
+    "name_ar": "حزام كالفن كلاين جلد بسيط أنيق",
+    "name_en": "Calvin Klein Classic Leather Dress Belt"
+  },
+  {
+    "slug": "calvin-klein-euphoria-edp",
+    "name_ar": "عطر كالفن كلاين يوفوريا النسائي الفاخر",
+    "name_en": "Calvin Klein Euphoria Women Eau de Parfum"
+  },
+  {
+    "slug": "tommy-hilfiger-puffer-jacket",
+    "name_ar": "جاكيت بومبر مبطن تومي هيلفيغر شتوي",
+    "name_en": "Tommy Hilfiger Down Padded Puffer Bomber Jacket"
+  },
+  {
+    "slug": "tommy-hilfiger-1985-oxford-shirt",
+    "name_ar": "قميص أكسفورد 1985 تومي هيلفيغر",
+    "name_en": "Tommy Hilfiger 1985 Oxford Stretch Shirt"
+  },
+  {
+    "slug": "tommy-hilfiger-leather-low-sneaker",
+    "name_ar": "سنيكرز تومي هيلفيغر كلاسيك جلد منخفض",
+    "name_en": "Tommy Hilfiger Core Leather Low-Top Sneaker"
+  },
+  {
+    "slug": "tommy-hilfiger-cable-knit-sweater",
+    "name_ar": "سترة صوف كيبل نيت تومي هيلفيغر",
+    "name_en": "Tommy Hilfiger Cable Knit Crewneck Sweater"
+  },
+  {
+    "slug": "tommy-hilfiger-chino-classic",
+    "name_ar": "بنطال تشينو تومي هيلفيغر كلاسيك",
+    "name_en": "Tommy Hilfiger Classic Straight Chino Trousers"
+  },
+  {
+    "slug": "tommy-hilfiger-bold-logo-hoodie",
+    "name_ar": "هودي تومي هيلفيغر شعار كبير واضح",
+    "name_en": "Tommy Hilfiger Bold Logo Fleece Hoodie"
+  },
+  {
+    "slug": "tommy-hilfiger-denim-jacket",
+    "name_ar": "جاكيت دنيم تومي هيلفيغر شبابي كلاسيك",
+    "name_en": "Tommy Hilfiger Classic Denim Trucker Jacket"
+  },
+  {
+    "slug": "tommy-hilfiger-tommy-edp",
+    "name_ar": "عطر تومي هيلفيغر أو دو بارفان للرجال",
+    "name_en": "Tommy Hilfiger Tommy Eau de Toilette Classic"
+  }
+]
