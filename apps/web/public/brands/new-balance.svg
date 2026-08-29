@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+  <g fill="#CE0E2D" transform="translate(40, 22) scale(0.6)">
+    <path d="M22 0l-8 16h18l4-8h16l-8 16h18l4-8h16l-16 32H0l22-44h-8L6 20H0l14-28h8z"/>
+    <path d="M62 48l16-32h18L80 48H62zm24 0l16-32h18L104 48H86z"/>
+  </g>
+  <text x="130" y="44" font-family="'Arial Black', sans-serif" font-size="16" font-weight="900" letter-spacing="1" fill="#CE0E2D" text-anchor="middle">new balance</text>
+</svg>

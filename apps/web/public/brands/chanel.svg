@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80" fill="#111111">
+  <g transform="translate(100, 28) scale(0.65)">
+    <path d="M-18 -18 C-30 -6 -30 6 -18 18 C-8 28 8 28 18 18 L10 10 C4 16 -4 16 -10 10 C-18 2 -18 -2 -10 -10 C-4 -16 4 -16 10 -10 L18 -18 C8 -28 -8 -28 -18 -18 Z" transform="translate(-6, 0)"/>
+    <path d="M18 -18 C30 -6 30 6 18 18 C8 28 -8 28 -18 18 L-10 10 C-4 16 4 16 10 10 C18 2 18 -2 10 -10 C4 -16 -4 -16 -10 -10 L-18 -18 C-8 -28 8 -28 18 -18 Z" transform="translate(6, 0)"/>
+  </g>
+  <text x="100" y="60" font-family="'Futura', 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="6" text-anchor="middle">CHANEL</text>
+</svg>

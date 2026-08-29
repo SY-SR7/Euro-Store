@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80" fill="#111111">
+  <g transform="translate(45, 18) scale(0.65)">
+    <path d="M28 0 C12 0 0 12 0 28 C0 38 6 46 14 50 C6 54 0 62 0 72 C0 88 12 100 28 100 C38 100 46 94 50 86 C54 94 62 100 72 100 C88 100 100 88 100 72 C100 62 94 54 86 50 C94 46 100 38 100 28 C100 12 88 0 72 0 C62 0 54 6 50 14 C46 6 38 0 28 0 Z" fill="none" stroke="#111111" stroke-width="12"/>
+  </g>
+  <text x="130" y="46" font-family="'Arial Black', Impact, sans-serif" font-size="12" font-weight="900" letter-spacing="1" text-anchor="middle">UNDER ARMOUR</text>
+</svg>

@@ -82,13 +82,11 @@ export function BrandMarqueeSection({
               title={brand.name}
             >
               {brand.logo_url ? (
-                <div className="relative h-full w-full">
-                  <Image
+                <div className="relative h-full w-full flex items-center justify-center">
+                  <img
                     src={brand.logo_url}
                     alt={brand.name}
-                    fill
-                    sizes="(max-width: 640px) 176px, 224px"
-                    className="object-contain p-2"
+                    className="max-h-full max-w-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
                   />
                 </div>
               ) : (

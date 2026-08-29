@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+  <g transform="translate(15, 18) scale(0.65)">
+    <path fill="#005826" d="M12 28c8-14 28-20 44-12 12 6 22 18 36 20 14 2 28-6 42-2 10 3 18 12 22 22-8-2-18-2-26 2-10 5-18 15-28 18-12 4-26-2-38-6-16-5-32-4-46 6-4-16-6-32-6-48z"/>
+    <path fill="#D62B20" d="M152 46c6-4 14-4 20 0-4 4-12 6-20 0z"/>
+    <circle cx="140" cy="36" r="3" fill="#FFFFFF"/>
+    <circle cx="140" cy="36" r="1.5" fill="#000000"/>
+  </g>
+  <text x="126" y="48" font-family="'Trebuchet MS', Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="3" fill="#111111" text-anchor="middle">LACOSTE</text>
+</svg>

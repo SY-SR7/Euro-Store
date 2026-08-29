@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+  <rect x="75" y="24" width="50" height="14" fill="#CC0C2F"/>
+  <rect x="75" y="24" width="25" height="14" fill="#FFFFFF"/>
+  <rect x="75" y="20" width="50" height="4" fill="#00174F"/>
+  <rect x="75" y="38" width="50" height="4" fill="#00174F"/>
+  <text x="100" y="58" font-family="'Century Gothic', Arial, sans-serif" font-size="11" font-weight="800" letter-spacing="3" fill="#00174F" text-anchor="middle">TOMMY HILFIGER</text>
+</svg>
