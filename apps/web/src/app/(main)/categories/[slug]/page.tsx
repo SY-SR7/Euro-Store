@@ -67,30 +67,30 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   if (!category) notFound();
 
   return (
-    <main className={`min-h-screen bg-background px-6 py-12 text-[#1F1B16]`} dir={isAr ? "rtl" : "ltr"}>
-      <div className="mx-auto max-w-7xl space-y-10">
+    <div className="w-full px-4 sm:px-6 py-8 md:py-12 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
+      <div className="mx-auto max-w-7xl space-y-8">
         <Link href="/categories" className="text-sm font-bold text-primary hover:underline">
           {isAr ? '←' : '→'} {t('allCategoriesLink')}
         </Link>
 
-        <section className={`border-b border-border pb-10 ${isAr ? 'text-right' : 'text-left'}`}>
+        <section className={`border-b border-border pb-8 ${isAr ? 'text-right' : 'text-left'}`}>
           <p className="text-sm font-bold text-primary">{t('categoryTag')}</p>
-          <h1 className="mt-3 text-3xl font-black md:text-5xl">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</h1>
+          <h1 className="mt-2 text-3xl font-black md:text-5xl">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</h1>
           {(!isAr && category.name_ar) && (
-            <p className="mt-3 text-lg text-[#6F6658]" dir="rtl">{category.name_ar}</p>
+            <p className="mt-2 text-base text-[#6F6658]" dir="rtl">{category.name_ar}</p>
           )}
           {(isAr && category.name_en) && (
-            <p className="mt-3 text-lg text-[#6F6658]" dir="ltr">{category.name_en}</p>
+            <p className="mt-2 text-base text-[#6F6658]" dir="ltr">{category.name_en}</p>
           )}
         </section>
 
         <section>
-          <h2 className="mb-8 text-2xl font-black">{t('allProducts')}</h2>
+          <h2 className="mb-6 text-2xl font-black">{t('allProducts')}</h2>
           <Suspense fallback={<LoadingGrid />}>
             <FilterableProductGrid lockedCategorySlug={category.slug} />
           </Suspense>
         </section>
       </div>
-    </main>
+    </div>
   );
 }

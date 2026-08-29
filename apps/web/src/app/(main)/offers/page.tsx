@@ -27,7 +27,7 @@ export default async function OffersPage() {
   const isAr = locale === 'ar';
 
   return (
-    <main className="min-h-screen bg-background px-4 py-10 md:py-14 text-[#1F1B16]" dir={isAr ? 'rtl' : 'ltr'}>
+    <div className="w-full px-4 py-8 md:py-12 text-[#1F1B16]" dir={isAr ? 'rtl' : 'ltr'}>
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Luxury Offers Editorial Banner */}
         <div className="relative overflow-hidden rounded-3xl border border-amber-300/70 bg-gradient-to-br from-[#FFFDF9] via-[#FEF3C7]/40 to-[#FDE68A]/20 p-8 md:p-12 shadow-sm">
@@ -68,6 +68,6 @@ export default async function OffersPage() {
           <FilterableProductGrid initialSaleOnly={true} />
         </Suspense>
       </div>
-    </main>
+    </div>
   );
 }

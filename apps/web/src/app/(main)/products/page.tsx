@@ -21,7 +21,7 @@ export default async function ProductsPage() {
   const isAr = locale === 'ar';
 
   return (
-    <main className="min-h-screen bg-background px-4 py-12 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
+    <div className="w-full px-4 py-8 md:py-12 text-[#1F1B16]" dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-7xl space-y-8">
         <div>
           <p className="text-xs font-bold text-primary uppercase tracking-widest">{t('productsLabel')}</p>
@@ -33,6 +33,6 @@ export default async function ProductsPage() {
           <FilterableProductGrid />
         </Suspense>
       </div>
-    </main>
+    </div>
   );
 }

@@ -19,12 +19,14 @@ export default async function MainLayout({ children }: { children: React.ReactNo
     <AuthModalProvider isAuthenticated={!!user}>
       <WishlistProvider>
         <CartSync isAuthenticated={!!user} />
-        <Header loyaltyPoints={loyaltyPoints} />
-        <main className="min-h-screen bg-background text-text-primary pb-20 md:pb-0">
-          {children}
-        </main>
-        <Footer />
-        <MobileBottomNav />
+        <div className="flex min-h-screen flex-col bg-background text-text-primary">
+          <Header loyaltyPoints={loyaltyPoints} />
+          <main className="flex-1 pb-16 md:pb-0">
+            {children}
+          </main>
+          <Footer />
+          <MobileBottomNav />
+        </div>
       </WishlistProvider>
     </AuthModalProvider>
   );

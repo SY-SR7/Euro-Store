@@ -27,7 +27,7 @@ export default async function CategoriesPage(): Promise<JSX.Element> {
   const subcategories = (categories ?? []).filter((category) => category.parent_id);
 
   return (
-    <main className="min-h-screen bg-background text-[#1F1B16] px-4 py-10 md:py-14" dir={isAr ? 'rtl' : 'ltr'}>
+    <div className="w-full text-[#1F1B16] px-4 py-8 md:py-12" dir={isAr ? 'rtl' : 'ltr'}>
       <div className="mx-auto max-w-7xl space-y-10">
         {/* Luxury Categories Header */}
         <div className="relative overflow-hidden rounded-3xl border border-[#E8DFC8] bg-gradient-to-br from-[#FFFDF9] via-[#FAF6ED] to-[#F5EFE0] p-8 md:p-12 shadow-sm">
@@ -116,6 +116,6 @@ export default async function CategoriesPage(): Promise<JSX.Element> {
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }

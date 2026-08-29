@@ -26,7 +26,7 @@ export default async function NewArrivalsPage() {
   const isAr = locale === 'ar';
 
   return (
-    <main className="min-h-screen bg-background px-4 py-10 md:py-14 text-[#1F1B16]" dir={isAr ? 'rtl' : 'ltr'}>
+    <div className="w-full px-4 py-8 md:py-12 text-[#1F1B16]" dir={isAr ? 'rtl' : 'ltr'}>
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Luxury New Arrivals Editorial Banner */}
         <div className="relative overflow-hidden rounded-3xl border border-[#E8DFC8] bg-gradient-to-br from-[#FFFDF9] via-[#FAF6ED] to-[#F5EFE0] p-8 md:p-12 shadow-sm">
@@ -56,6 +56,6 @@ export default async function NewArrivalsPage() {
           <FilterableProductGrid initialSort="newest" />
         </Suspense>
       </div>
-    </main>
+    </div>
   );
 }
