@@ -275,11 +275,42 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     }
   };
 
-  const isAttributeValueValid = (typeAr: string, valueAr: string) => {
-    return variants.some(v => {
-      const hasThisAttr = v.dynamicAttrs?.some((a: any) => a.typeAr === typeAr && a.valueAr === valueAr);
-      return hasThisAttr;
+  const getOptionAvailability = (typeAr: string, valueAr: string) => {
+    // 1. Find all variants that possess this candidate value for this attribute type
+    const candidateVariants = variants.filter((v: any) =>
+      v.dynamicAttrs?.some((a: any) => a.typeAr === typeAr && a.valueAr === valueAr)
+    );
+
+    if (candidateVariants.length === 0) {
+      return { isAvailable: false, reason: 'notFound' as const };
+    }
+
+    // 2. All other attribute types that currently have a selection
+    const otherSelectedTypes = attributeTypes
+      .map(t => t.typeAr)
+      .filter(tKey => tKey !== typeAr && selectedAttributes[tKey]);
+
+    // 3. Find if any candidate variant matches ALL other currently selected attributes
+    const matchingVariants = candidateVariants.filter((v: any) => {
+      return otherSelectedTypes.every((otherKey) => {
+        const selectedVal = selectedAttributes[otherKey];
+        return v.dynamicAttrs?.some((a: any) => a.typeAr === otherKey && a.valueAr === selectedVal);
+      });
     });
+
+    if (matchingVariants.length === 0) {
+      // Incompatible with current combination (e.g. this size or material is not available for the selected color)
+      return { isAvailable: false, reason: 'incompatible' as const };
+    }
+
+    // 4. Check if any compatible variant has stock > 0
+    const inStock = matchingVariants.some((v: any) => Number(v.stock_quantity ?? 0) > 0);
+
+    if (!inStock) {
+      return { isAvailable: false, reason: 'outOfStock' as const };
+    }
+
+    return { isAvailable: true, reason: 'available' as const };
   };
 
   useEffect(() => {
@@ -573,40 +604,48 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                   </div>
                   
                   <div className="flex items-center gap-3 overflow-x-auto py-2 px-1 -mx-1" style={{ scrollbarWidth: 'none' }}>
-                    {attrType.values.map((val, idx) => {
+                    {attrType.values.map((val) => {
                       const isSelected = selectedAttributes[attrType.typeAr] === val.valueAr;
-                      const isValid = isAttributeValueValid(attrType.typeAr, val.valueAr);
+                      const { isAvailable, reason } = getOptionAvailability(attrType.typeAr, val.valueAr);
                       const isColor = !!val.hex;
+                      
+                      const tooltip = !isAvailable
+                        ? reason === 'incompatible'
+                          ? (isAr ? `${val.valueAr} (غير متوفر مع الخيارات المحددة)` : `${val.valueEn || val.valueAr} (Unavailable with current selection)`)
+                          : (isAr ? `${val.valueAr} (نفد من المخزون)` : `${val.valueEn || val.valueAr} (Out of stock)`)
+                        : (isAr ? val.valueAr : (val.valueEn || val.valueAr));
                       
                       return (
                         <button
                           type="button"
                           key={val.valueAr}
-                          onClick={() => isValid && handleSelectAttribute(attrType.typeAr, val.valueAr)}
-                          disabled={!isValid}
+                          onClick={() => isAvailable && handleSelectAttribute(attrType.typeAr, val.valueAr)}
+                          disabled={!isAvailable}
                           className={[
-                            'relative shrink-0 transition-all overflow-hidden flex items-center justify-center focus:outline-none',
+                            'relative shrink-0 transition-all overflow-hidden flex items-center justify-center focus:outline-none select-none',
                             isColor ? 'w-11 h-11 rounded-full border' : 'px-5 py-2.5 rounded-xl border text-sm font-bold',
                             isSelected 
-                              ? 'border-primary ring-2 ring-primary ring-offset-2 ring-offset-background' 
-                              : isValid 
-                                ? 'border-border hover:border-primary/50 bg-background-card hover:scale-[1.03]' 
-                                : 'border-border/50 bg-background opacity-40 cursor-not-allowed',
+                              ? 'border-primary ring-2 ring-primary ring-offset-2 ring-offset-background scale-105 shadow-sm' 
+                              : isAvailable 
+                                ? 'border-border hover:border-primary/60 bg-background-card text-[#1F1B16] hover:scale-[1.02] active:scale-[0.98]' 
+                                : 'border-dashed border-red-200/80 bg-[#FAF7F2] text-[#9E9689] opacity-45 cursor-not-allowed',
                           ].join(' ')}
-                          title={isAr ? val.valueAr : (val.valueEn || val.valueAr)}
+                          title={tooltip}
                         >
                           {isColor ? (
                             <span 
-                              className="absolute inset-1 rounded-full shadow-inner" 
+                              className={`absolute inset-1 rounded-full shadow-inner ${!isAvailable ? 'grayscale-[40%]' : ''}`} 
                               style={{ backgroundColor: val.hex }} 
                             />
                           ) : (
-                            <span>{isAr ? val.valueAr : (val.valueEn || val.valueAr)}</span>
+                            <span className={!isAvailable ? 'line-through decoration-red-500/70 decoration-[1.5px]' : ''}>
+                              {isAr ? val.valueAr : (val.valueEn || val.valueAr)}
+                            </span>
                           )}
-                          {!isValid && (
-                             <div className="absolute inset-0 flex items-center justify-center">
-                               <div className="w-[120%] h-[1.5px] bg-red-600/60 -rotate-45 transform origin-center" />
-                             </div>
+                          {!isAvailable && (
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                              <div className="w-[140%] h-[2px] bg-red-600/85 -rotate-45 shadow-[0_0_2px_rgba(255,255,255,0.8)]" />
+                            </div>
                           )}
                         </button>
                       );

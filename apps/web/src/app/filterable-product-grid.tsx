@@ -236,18 +236,30 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                   const checked = selectedAttrs.includes(attrKey) || selectedAttrs.includes(`${attrType.slug}:${val.id}`);
 
                   if (attrType.slug === 'color' && val.hex_color) {
+                    const isZero = val.count === 0 && !checked;
                     return (
                       <button
+                        type="button"
                         key={val.id}
-                        title={`${isAr ? val.value_ar : (val.value_en || val.value_ar)} (${val.count})`}
-                        onClick={() => toggle(selectedAttrs, attrKey, setSelectedAttrs)}
-                        className={`relative h-7 w-7 rounded-full border-2 transition-all ${
-                          checked ? 'border-[#1F1B16] scale-110 shadow-md' : 'border-border hover:border-primary'
+                        disabled={isZero}
+                        title={`${isAr ? val.value_ar : (val.value_en || val.value_ar)} (${val.count})${isZero ? (isAr ? ' - غير متوفر' : ' - Unavailable') : ''}`}
+                        onClick={() => !isZero && toggle(selectedAttrs, attrKey, setSelectedAttrs)}
+                        className={`relative h-7 w-7 rounded-full border-2 transition-all overflow-hidden ${
+                          checked 
+                            ? 'border-[#1F1B16] scale-110 shadow-md ring-2 ring-primary ring-offset-1' 
+                            : isZero 
+                              ? 'border-dashed border-red-300 opacity-30 cursor-not-allowed' 
+                              : 'border-border hover:border-primary cursor-pointer'
                         }`}
                         style={{ backgroundColor: val.hex_color }}
                       >
                         {checked && (
                           <span className="absolute inset-0 flex items-center justify-center text-text-primary text-[10px] font-black drop-shadow">✓</span>
+                        )}
+                        {isZero && (
+                          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div className="w-[140%] h-[1.5px] bg-red-600/80 -rotate-45" />
+                          </div>
                         )}
                       </button>
                     );
@@ -399,7 +411,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
         )}
       </div>
     </div>
-    </div>
+  </div>
   );
 }
 
@@ -424,15 +436,19 @@ function FilterSection({ title, children }: { title: string; children: React.Rea
 function CheckItem({ label, count, checked, onChange }: {
   label: string; count: number; checked: boolean; onChange: () => void;
 }) {
+  const isZero = count === 0 && !checked;
   return (
-    <label className="flex cursor-pointer items-center gap-2.5 rounded-lg px-1 py-1 hover:bg-[#F8F3EA] transition-colors">
+    <label className={`flex items-center gap-2.5 rounded-lg px-1 py-1 transition-colors select-none ${
+      isZero ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer hover:bg-[#F8F3EA]'
+    }`}>
       <input
         type="checkbox"
         checked={checked}
+        disabled={isZero}
         onChange={onChange}
-        className="h-4 w-4 rounded accent-[#C9A84C] cursor-pointer"
+        className="h-4 w-4 rounded accent-[#C9A84C] cursor-pointer disabled:cursor-not-allowed"
       />
-      <span className="flex-1 text-sm text-[#1F1B16] font-medium">{label}</span>
+      <span className={`flex-1 text-sm font-medium ${isZero ? 'line-through text-[#8C8275]' : 'text-[#1F1B16]'}`}>{label}</span>
       <span className="text-xs text-text-muted font-medium tabular-nums">{count}</span>
     </label>
   );
