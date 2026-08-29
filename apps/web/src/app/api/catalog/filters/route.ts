@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const search = (sp.get('search') ?? sp.get('q') ?? '').trim();
     if (search.length > 100) return NextResponse.json({ error: 'search_too_long' }, { status: 400 });
     const [categoriesResult, brandsResult, typesResult, valuesResult] = await Promise.all([
-      supabase.from('categories').select('id, slug').eq('is_active', true),
+      supabase.from('categories').select('id, slug, parent_id').eq('is_active', true),
       supabase.from('brands').select('id, slug').eq('is_active', true),
       supabase.from('attribute_types').select('id, slug'),
       supabase.from('attribute_values').select('id, attribute_type_id, value_en'),
@@ -45,7 +45,14 @@ export async function GET(request: NextRequest) {
     const attributeValues = valuesResult.data ?? [];
     const categoryTokens = listParam(sp, 'categories', 'category_id');
     const brandTokens = listParam(sp, 'brands', 'brand_id');
-    const categoryIds = categories.filter((item) => categoryTokens.includes(item.id) || categoryTokens.includes(item.slug)).map((item) => item.id);
+    const matchedCategories = categories.filter((item) => categoryTokens.includes(item.id) || categoryTokens.includes(item.slug));
+    const matchedIds = new Set(matchedCategories.map((item) => item.id));
+    categories.forEach((item) => {
+      if (item.parent_id && matchedIds.has(item.parent_id)) {
+        matchedIds.add(item.id);
+      }
+    });
+    const categoryIds = Array.from(matchedIds);
     const brandIds = brands.filter((item) => brandTokens.includes(item.id) || brandTokens.includes(item.slug)).map((item) => item.id);
 
     const selectedByType = new Map<string, Set<string>>();
