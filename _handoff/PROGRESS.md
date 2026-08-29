@@ -182,3 +182,31 @@
     - تم توحيد الترتيب القياسي (Canonical Priority) للخصائص: اللون دائماً أولاً، المقاس ثانياً، الخامة ثالثاً.
     - تثبيت مربعات المواصفات في بطاقة تفاصيل المتغير المختار بحيث لا تتبدل أو تقفز أماكنها إطلاقاً عند تغيير المقاس أو اللون.
     - تحسين منطق الاختيار الذكي (Smart Attribute Matching) ليعثر دائماً وبشكل فوري على المتغير الصحيح عند النقر على أي مقاس أو لون دون أي تعليق أو بطء.
+
+---
+
+## إضافة وتوسيع أشهر منتجات أمازون والماركات العالمية (Amazon & Global Bestsellers v4) 📦🔥 - 2026-08-29
+
+- **توسيع الكتالوج ليصل إلى 204 منتجاً حقيقياً و 24 علامة تجارية عالمية كبرى:**
+  - إضافة ماركات عالمية جديدة شهيرة جداً على أمازون ومتاجر التجزئة الكبرى:
+    - **New Balance** (574 Core, 990v6 Made in USA, 327 Runner, 550 Basketball, 1906R, 2002R Protection Pack, Essentials Hoodie, Track Pant).
+    - **Converse** (Chuck Taylor All Star High, Chuck 70 Low, Run Star Hike Platform, One Star Vintage Suede).
+    - **Vans** (Old Skool Classic, Sk8-Hi High Top, Classic Slip-On, Authentic Low).
+    - **Polo Ralph Lauren** (Custom Slim Mesh Polo, Cable-Knit Sweater, Classic Oxford Shirt, Heritage Leather Belt, Fleece Joggers, Chino Cap).
+    - **Ray-Ban** (Aviator Classic Gold, Wayfarer Original Black, Clubmaster Classic, Round Metal Gold, Justin Matte Black).
+    - **Casio / G-Shock** (G-Shock GA-2100 CasiOak, Vintage Gold Digital A168, G-Shock DW-5600 Square, Edifice Chronograph).
+    - **Dior** (Sauvage EDP, Miss Dior EDP, Dior Homme Intense, Saddle Grained Leather Bag, B23 Oblique High-Top).
+    - **Prada** (Prada Paradoxe EDP, Re-Nylon Shoulder Bag, Saffiano Leather Wallet, Monolith Loafers, Linea Rossa Sunglasses).
+    - **Emporio Armani** (Stronger With You Intensely EDP, Chronograph Watch, Eagle Logo Polo, Bi-Fold Leather Wallet).
+    - **Versace** (Eros Flame EDP, Medusa Head Gold Belt, Chain Reaction Sneaker, Dylan Blue EDT, Barocco Silk Scarf).
+    - **Under Armour** (Tech 2.0 Tee, Rival Fleece Hoodie, UA HOVR Phantom 3, HeatGear Compression, Hustle 5.0 Backpack).
+    - **Michael Kors** (Jet Set Saffiano Tote, Slim Runway Gold Watch, Greenwich Crossbody, Bryant Card Case).
+  - توسيع قائمة الأكثر مبيعاً لماركات (Nike, Adidas, Puma, Reebok, Lacoste, Zara, Hugo Boss, Calvin Klein, Tommy Hilfiger).
+- **الصور والشعارات:**
+  - توليد وتصميم **24 شعاراً رسمياً عالي الدقة** (1200x800 WebP) لكافة الماركات وربطها في قسم "علامات مختارة".
+  - رفع وتجهيز **204 صورة فوتوغرافية استوديو عالية النقاء خالية تماماً 100% من أي عناصر أو شخصيات بشرية**.
+- **المتغيرات والـ SKUs:**
+  - ارتفاع إجمالي الـ SKUs في قاعدة البيانات إلى **2,573 متغيراً** يشمل جميع المقاسات والألوان.
+  - إنشاء **10 تشكيلات منسقة عالمية (Curated World Collections)** بما فيها مجموعة الأكثر مبيعاً على أمازون لعام 2026.
+- **الحالة الحية:**
+  - كافة المنتجات والصور والشعارات متصلة ونشطة وتعمل مباشرة على [https://euro-store.netlify.app](https://euro-store.netlify.app).
