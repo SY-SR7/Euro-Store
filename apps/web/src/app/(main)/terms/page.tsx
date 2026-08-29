@@ -2,36 +2,170 @@ import { getLocale } from 'next-intl/server';
 import { LegalDocument } from '@/components/legal/LegalDocument';
 
 const AR_SECTIONS = [
-  { title: 'التسجيل والحساب', paragraphs: ['يجب تقديم معلومات صحيحة وحديثة عند إنشاء الحساب. أنت مسؤول عن حماية بيانات الدخول وعن جميع الأنشطة التي تتم من خلال حسابك، ويجب إبلاغنا عند الاشتباه باستخدام غير مصرح به.'] },
-  { title: 'معلومات المنتجات والأسعار', paragraphs: ['نبذل جهداً معقولاً لعرض الأوصاف والصور والمقاسات والمخزون بدقة. تُعرض الأسعار بالليرة السورية، ويُعتمد السعر والمخزون اللذان يؤكدهما النظام عند إتمام الطلب.'] },
-  { title: 'الطلبات والدفع', paragraphs: ['إرسال الطلب لا يعني قبوله نهائياً. يصبح الطلب مؤكداً عند اعتماده وفق سير المعالجة الظاهر في حسابك. تتوفر طرق الدفع المعروضة أثناء الدفع فقط، ويمكن إلغاء الطلب المعلّق وفق السياسة المطبقة في المنصة.'] },
-  { title: 'الشحن والتسليم', paragraphs: ['تظهر تكلفة الشحن قبل تأكيد الطلب وتختلف حسب المحافظة والقواعد التي يحددها المتجر. أوقات الوصول تقديرية وقد تتأثر بجهة التوصيل أو ظروف خارجة عن السيطرة المعقولة.'] },
-  { title: 'سياسة الاستبدال', paragraphs: ['يمكن طلب الاستبدال للطلب المؤهل خلال النافذة الزمنية التي يعرضها النظام، مع بقاء المنتج بحالته المطلوبة وإرفاق صور الإثبات. يخضع الطلب للمراجعة، وتظهر حالته وخطوات تسليمه في حساب العميل.'] },
-  { title: 'نقاط الولاء', paragraphs: ['نقاط الولاء شخصية وغير قابلة للتحويل ولا تمثل نقداً. تُكتسب وتُستخدم وفق الصيغة والحدود المعروضة في المنصة، ويجوز تعديل الصيغة للعمليات المستقبلية مع الحفاظ على السجلات المحاسبية.'] },
-  { title: 'السلوك المحظور وتعليق الحساب', paragraphs: ['يُحظر الاحتيال أو إساءة استخدام الخصومات والنقاط أو محاولة اختراق المنصة أو حسابات الآخرين. يجوز تقييد الحساب عند وجود مؤشرات إساءة استخدام، مع الاحتفاظ بسجلات التدقيق اللازمة لحماية الحقوق.'] },
-  { title: 'الملكية الفكرية', paragraphs: ['المحتوى والعلامة والتصميمات والمواد المنشورة مملوكة ليورو ستور أو مستخدمة بترخيص، ولا يجوز نسخها أو استغلالها تجارياً دون إذن.'] },
-  { title: 'حدود المسؤولية', paragraphs: ['لا يُستبعد أي حق لا يجوز استبعاده قانوناً. وفي الحدود التي يسمح بها القانون، تقتصر مسؤولية يورو ستور على الضرر المباشر المرتبط بالطلب محل النزاع.'] },
-  { title: 'تعديل الشروط', paragraphs: ['قد تُحدّث هذه الشروط عند تغير الخدمة أو المتطلبات القانونية. يُنشر تاريخ آخر تحديث، ويسري التعديل على الاستخدام والطلبات اللاحقة لنشره ما لم يقتض القانون خلاف ذلك.'] },
-  { title: 'القانون الواجب التطبيق', paragraphs: ['تخضع هذه الشروط للقانون الواجب التطبيق على جهة تشغيل يورو ستور والعميل. لا تمنع هذه الشروط أي حماية إلزامية يمنحها القانون للمستهلك.'] },
-  { title: 'التواصل', paragraphs: ['يمكن إرسال الاستفسارات المتعلقة بالشروط من صفحة التواصل في الموقع. تُعتمد بيانات التواصل الرسمية المنشورة هناك عند الحاجة إلى إشعار مكتوب.'] },
+  {
+    title: 'الأهلية وشروط إنشاء الحساب',
+    paragraphs: [
+      'باستخدامك لمنصة "يورو ستور" (EuroStore) أو إنشاء حساب، فإنك تقر بأنك بلغت السن القانونية للشراء وتلتزم بتقديم معلومات دقيقة وصحيحة وكاملة عن هويتك وبيانات التواصل والعنوان.',
+      'أنت مسؤول مسؤولية كاملة عن الحفاظ على سرية بيانات تسجيل الدخول الخاصة بحسابك، وعن كافة الأنشطة والطلبات التي تتم عبر حسابك. يجب إخطارنا فوراً عند الاشتباه في أي استخدام غير مصرح به.'
+    ]
+  },
+  {
+    title: 'دقة المنتجات والمخزون والتسعير',
+    paragraphs: [
+      'تُعرض كافة الأسعار في المتجر بالليرة السورية (SYP). السعر المعتمد والنهائي هو السعر الظاهر والمعتمد في شاشة تأكيد الطلب قبل إتمام عملية الدفع.',
+      'نبذل أقصى درجات العناية لعرض صور وأوصاف ومقاسات ومواصفات المنتجات بدقة مطابقة للواقع. قد تطرأ فروق طفيفة جداً في درجات الألوان نتيجة إعدادات شاشات العرض المختلفة.',
+      'تخضع كافة المنتجات لتوفر المخزون اللحظي المؤكد بواسطة نظام إدارة المستودعات في يورو ستور.'
+    ]
+  },
+  {
+    title: 'إتمام الطلبات وتأكيد الشراء',
+    paragraphs: [
+      'يُعد إرسال الطلب عبر الموقع إيجاباً للشراء. يصبح الطلب ملزماً ومؤكداً فور إصدار رقم الطلب وتأكيده عبر إشعار الحساب أو رسالة التأكيد.',
+      'يحتفظ يورو ستور بحق إلغاء أو تعليق أي طلب في حالات استثنائية محددة مثل: عدم توفر المخزون الفعلي للمقاس المطلوب، وجود خطأ تسعيري فني واضح، أو عدم التمكن من التحقق من بيانات المشتري وعنوان التوصيل.'
+    ]
+  },
+  {
+    title: 'الشحن والتوصيل في المحافظات السورية',
+    paragraphs: [
+      'نحن نوفر خدمة الشحن والتوصيل السريع لكافة المحافظات والمدن الرئيسية في الجمهورية العربية السورية (دمشق، ريف دمشق، حلب، حمص، حماة، اللاذقية، طرطوس، وغيرها).',
+      'تظهر تكلفة الشحن بوضوح وشفافية في صفحة الدفع قبل تأكيد الطلب. مواعيد التوصيل تقديرية (عادة بين 2 إلى 5 أيام عمل) وقد تتأثر بحالة الطرق أو الأحوال الجوية الطارئة.'
+    ]
+  },
+  {
+    title: 'طرق الدفع والأمان المالي',
+    paragraphs: [
+      'نوفر خيارات دفع متعددة وآمنة:',
+      '1. الدفع نقدياً عند الاستلام (Cash on Delivery): يتم دفع قيمة الطلب لمندوب التوصيل عند استلام الشحنة وفحص الطرد الخارجي.',
+      '2. الدفع الإلكتروني عبر Sham Cash والمحافظ الإلكترونية المعتمدة: تتم المعاملة عبر اتصال مشفر وآمن بالكامل مع تأكيد فوري للدفع في حساب العميل.'
+    ]
+  },
+  {
+    title: 'سياسة الاستبدال وضمان الأصالة 100%',
+    paragraphs: [
+      'ضمان الأصالة: نضمن أن كافة المنتجات المعروضة في يورو ستور هي منتجات أصلية 100% تحمل العلامات الرسمية للمصنعين.',
+      'مهلة طلب الاستبدال: يحق للعميل تقديم طلب استبدال المقاس أو المنتج خلال نافذة زمنية مدتها 3 أيام من تاريخ استلام الشحنة، بشرط أن يكون المنتج بحالته الأصلية غير مستخدم ومرفقاً ببطاقة السعر (Tag) وتغليف المصنع الأصلي.',
+      'يتم تقديم ومتابعة طلب الاستبدال إلكترونياً بالكامل عبر صفحة "طلب استبدال" في لوحة تحكم العميل.'
+    ]
+  },
+  {
+    title: 'برنامج الولاء ونقاط المكافآت وكوبونات الخصم',
+    paragraphs: [
+      'يحصل العميل على نقاط ولاء ومكافآت عند إتمام عمليات الشراء المؤهلة. نقاط الولاء شخصية وخاصة بصاحب الحساب ولا يمكن استبدالها نقداً أو تحويلها لحساب آخر.',
+      'تخضع كوبونات وقسائم الخصم الترويجية للشروط المحددة لكل حملة (مثل الحد الأدنى لقيمة الطلب أو الاستخدام لمرة واحدة للعملاء الجدد). يحظر التحايل بإنشاء حسابات وهمية للاستفادة المتكررة من الخصومات المخصصة للمرة الأولى.'
+    ]
+  },
+  {
+    title: 'الملكية الفكرية وحقوق النشر',
+    paragraphs: [
+      'كافة محتويات المنصة بما يشمل التصاميم والبرمجيات والشعارات والنصوص والأيقونات هي ملكية حصرية لـ "يورو ستور" ومحمية بموجب قوانين حماية الملكية الفكرية والعلامات التجارية.',
+      'العلامات التجارية العالمية (مثل Nike, Adidas, Dior, Ralph Lauren, وغيرها) هي ملك لأصحابها الشرعيين وتُعرض للإشارة إلى المنتجات المعروضة فقط.'
+    ]
+  },
+  {
+    title: 'القانون الواجب التطبيق وتسوية النزاعات',
+    paragraphs: [
+      'تخضع هذه الشروط والأحكام وتفسر وفقاً للقوانين والأنظمة التجارية وحماية المستهلك السارية.',
+      'في حال نشوء أي خلاف أو نزاع، يتم السعي أولاً لحله ودياً وبحسن نية عبر التواصل المباشر مع إدارة خدمة العملاء في يورو ستور.'
+    ]
+  },
+  {
+    title: 'معلومات التواصل والدعم الرسمي',
+    paragraphs: [
+      'لأي استفسارات قانونية أو مساعدة بشأن طلبك أو الشروط والأحكام، يمكنك التواصل معنا عبر:',
+      'صفحة التواصل الرسمية بالموقع، أو البريد الإلكتروني: support@eurostore.sy، أو عبر خدمة العملاء المعتمدة في المتجر.'
+    ]
+  }
 ];
 
 const EN_SECTIONS = [
-  { title: 'Registration and accounts', paragraphs: ['You must provide accurate, current information. You are responsible for safeguarding your credentials and for activity through your account, and should notify us of suspected unauthorized use.'] },
-  { title: 'Product information and pricing', paragraphs: ['We take reasonable care to present descriptions, images, sizes, and stock accurately. Prices are shown in Syrian pounds; the price and availability confirmed by the system at checkout apply.'] },
-  { title: 'Orders and payment', paragraphs: ['Submitting an order is not final acceptance. An order is confirmed through the processing status shown in your account. Only payment methods offered at checkout are available, and pending orders may be cancelled under the platform policy.'] },
-  { title: 'Shipping and delivery', paragraphs: ['Shipping cost is shown before confirmation and depends on the governorate and store rules. Delivery dates are estimates and may be affected by the carrier or events outside reasonable control.'] },
-  { title: 'Exchange policy', paragraphs: ['An exchange may be requested for an eligible order within the window shown by the platform, provided the item meets the required condition and proof photos are supplied. Requests are reviewed and tracked in the customer account.'] },
-  { title: 'Loyalty points', paragraphs: ['Points are personal, non-transferable, and have no cash value. They are earned and redeemed under the formula and limits shown in the platform. Future formulas may change while accounting records are retained.'] },
-  { title: 'Prohibited conduct and suspension', paragraphs: ['Fraud, abuse of discounts or points, and attempts to compromise the platform or another account are prohibited. Accounts may be restricted when abuse is reasonably suspected, with audit records retained to protect legitimate rights.'] },
-  { title: 'Intellectual property', paragraphs: ['Published content, branding, designs, and materials are owned by Euro Store or used under licence and may not be copied or commercially exploited without permission.'] },
-  { title: 'Limitation of liability', paragraphs: ['Nothing excludes a right that cannot legally be excluded. To the extent permitted by law, Euro Store is responsible only for direct loss connected to the order in dispute.'] },
-  { title: 'Changes to these terms', paragraphs: ['These terms may be updated when the service or legal requirements change. The latest revision date is published, and changes apply to later use and orders unless applicable law requires otherwise.'] },
-  { title: 'Governing law', paragraphs: ['These terms are governed by the law applicable to the Euro Store operator and customer. They do not limit mandatory consumer protections.'] },
-  { title: 'Contact', paragraphs: ['Questions about these terms may be submitted through the website contact page. The official contact details published there apply to written notices.'] },
+  {
+    title: 'Eligibility and Account Registration',
+    paragraphs: [
+      'By using the EuroStore platform or creating an account, you confirm that you are of legal purchasing age and agree to provide accurate, current, and complete identity, contact, and delivery details.',
+      'You are solely responsible for maintaining the confidentiality of your login credentials and for all activities conducted under your account. You must notify us immediately of any unauthorized account activity.'
+    ]
+  },
+  {
+    title: 'Product Accuracy, Inventory, and Pricing',
+    paragraphs: [
+      'All store prices are listed in Syrian Pounds (SYP). The final binding price is the price confirmed at the checkout review stage prior to order placement.',
+      'We exercise the highest standard of care in displaying authentic product imagery, size specs, and descriptions. Minor color variations may occur depending on screen displays.',
+      'All orders are subject to real-time inventory validation by EuroStore warehouse management systems.'
+    ]
+  },
+  {
+    title: 'Order Placement and Confirmation',
+    paragraphs: [
+      'Submitting an order represents an offer to purchase. An order is confirmed once an official Order Number is generated and tracked within your customer portal.',
+      'EuroStore reserves the right to cancel or place an order on hold in rare operational scenarios (e.g. inventory discrepancy, obvious pricing error, or unverified delivery coordinates).'
+    ]
+  },
+  {
+    title: 'Shipping and Delivery Across Syria',
+    paragraphs: [
+      'We provide express delivery services across all major Syrian governorates and cities (Damascus, Rural Damascus, Aleppo, Homs, Hama, Latakia, Tartus, etc.).',
+      'Shipping rates are clearly itemized before checkout confirmation. Estimated delivery timeframes are typically 2 to 5 business days.'
+    ]
+  },
+  {
+    title: 'Payment Methods and Financial Security',
+    paragraphs: [
+      'We support secure and flexible payment options:',
+      '1. Cash on Delivery (COD): Payment is handed to the courier representative upon receiving and verifying package seals.',
+      '2. Digital Payments via Sham Cash and authorized digital wallets: Transactions are processed via 256-bit encrypted gateways with instant order confirmation.'
+    ]
+  },
+  {
+    title: '100% Authenticity Guarantee and Exchange Policy',
+    paragraphs: [
+      'Authenticity Guarantee: We certify that 100% of products sold on EuroStore are authentic and brand original.',
+      'Exchange Window: Customers may submit an exchange request for size or product variations within 3 calendar days of parcel delivery, provided the item is in pristine, unworn condition with original brand tags and packaging intact.',
+      'Exchange requests are managed entirely through the automated Exchange portal in your user account.'
+    ]
+  },
+  {
+    title: 'Loyalty Program, Reward Points, and Coupons',
+    paragraphs: [
+      'Customers accumulate reward points on eligible purchases. Loyalty points are personal, non-transferable, and possess no standalone cash value outside store redemptions.',
+      'Promotional vouchers and coupon codes are governed by campaign-specific eligibility criteria (e.g., minimum basket values or first-time customer limits).'
+    ]
+  },
+  {
+    title: 'Intellectual Property and Trademarks',
+    paragraphs: [
+      'All platform content, graphics, layouts, UI code, and brand marks belong exclusively to EuroStore and are protected under copyright and intellectual property legislation.',
+      'World brand names and marks (such as Nike, Adidas, Dior, Ralph Lauren, etc.) are the proprietary assets of their respective trademark holders.'
+    ]
+  },
+  {
+    title: 'Governing Law and Dispute Resolution',
+    paragraphs: [
+      'These Terms and Conditions are governed by and construed in accordance with applicable commercial and consumer protection regulations.',
+      'Any disputes will be addressed with priority through amicable resolution with EuroStore Customer Support.'
+    ]
+  },
+  {
+    title: 'Official Support and Contact Info',
+    paragraphs: [
+      'For legal inquiries, terms clarifications, or customer service assistance, please reach out via:',
+      'Our official Contact page, or via email at support@eurostore.sy.'
+    ]
+  }
 ];
 
 export default async function TermsPage() {
   const isAr = (await getLocale()) === 'ar';
-  return <LegalDocument title={isAr ? 'الشروط والأحكام' : 'Terms and Conditions'} updatedLabel={isAr ? 'آخر تحديث: 4 آب 2026' : 'Last updated: 4 August 2026'} introduction={isAr ? 'تنظم هذه الشروط استخدام موقع وخدمات يورو ستور وعمليات الشراء والاستبدال وبرنامج الولاء.' : 'These terms govern use of the Euro Store website and services, purchases, exchanges, and the loyalty programme.'} sections={isAr ? AR_SECTIONS : EN_SECTIONS} dir={isAr ? 'rtl' : 'ltr'} />;
+  return (
+    <LegalDocument
+      title={isAr ? 'الشروط والأحكام وسياسة الاستخدام' : 'Terms & Conditions of Service'}
+      updatedLabel={isAr ? 'آخر تحديث: آب 2026' : 'Last updated: August 2026'}
+      introduction={
+        isAr
+          ? 'تنظم هذه الشروط والأحكام استخدامك لمنصة يورو ستور وعمليات الشراء والشحن والاستبدال وبرنامج الولاء وكافة الحقوق والالتزامات المتبادلة.'
+          : 'These Terms & Conditions govern your use of the EuroStore platform, order processing, shipping, exchange procedures, and loyalty rewards.'
+      }
+      sections={isAr ? AR_SECTIONS : EN_SECTIONS}
+      dir={isAr ? 'rtl' : 'ltr'}
+    />
+  );
 }

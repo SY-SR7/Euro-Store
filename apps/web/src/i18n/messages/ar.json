@@ -356,16 +356,20 @@
   },
   "sales": "العروض",
   "footer": {
-    "description": "متجر أزياء أوروبي مصمم للسوق السوري",
-    "faq": "الأسئلة الشائعة",
-    "helpSection": "المساعدة",
+    "description": "متجر أزياء وسنيكرز وعطور أوروبية أصلية 100% مصمم للسوق السوري",
+    "shopSection": "المتجر والأقسام",
     "newArrivals": "وصل حديثاً",
+    "categories": "كافة التصنيفات",
+    "allProducts": "جميع المنتجات",
+    "sales": "العروض والتخفيضات",
+    "helpSection": "خدمة العملاء والمساعدة",
+    "faq": "الأسئلة الشائعة",
     "exchangePolicy": "سياسة الاستبدال",
     "contact": "تواصل معنا",
-    "shopSection": "المتجر",
-    "categories": "التصنيفات",
-    "rightsReserved": "جميع الحقوق محفوظة",
-    "sales": "العروض"
+    "legalSection": "السياسات والشروط",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsAndConditions": "شروط الاستخدام",
+    "rightsReserved": "جميع الحقوق محفوظة"
   },
   "arabicShort": "عربي",
   "account": {

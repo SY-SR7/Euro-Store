@@ -72,6 +72,8 @@ export async function GET(request: NextRequest) {
     const attributes = Object.fromEntries([...selectedByType.entries()].map(([slug, ids]) => [slug, [...ids]]));
     const page = Math.max(1, Math.floor(numericParam(sp, 'page') ?? 1));
     const perPage = Math.min(60, Math.max(1, Math.floor(numericParam(sp, 'per_page') ?? 24)));
+    const isSale = sp.get('sale') === 'true' || sp.get('sale') === '1' || sp.get('on_sale') === 'true' || sp.get('has_discount') === 'true';
+    const minDiscount = isSale ? 1 : numericParam(sp, 'discount_min', 'discountMin');
     const sort = ['newest', 'price_asc', 'price_desc', 'popular'].includes(sp.get('sort') ?? '') ? sp.get('sort')! : 'newest';
 
     const { data, error } = await supabase.rpc('catalog_search_with_facets', {
@@ -80,7 +82,7 @@ export async function GET(request: NextRequest) {
       p_attributes: attributes,
       ...(numericParam(sp, 'min_price', 'minPrice') !== null ? { p_min_price: numericParam(sp, 'min_price', 'minPrice') ?? undefined } : {}),
       ...(numericParam(sp, 'max_price', 'maxPrice') !== null ? { p_max_price: numericParam(sp, 'max_price', 'maxPrice') ?? undefined } : {}),
-      ...(numericParam(sp, 'discount_min') !== null ? { p_discount_min: numericParam(sp, 'discount_min') ?? undefined } : {}),
+      ...(minDiscount !== null ? { p_discount_min: minDiscount } : {}),
       ...(search ? { p_search: search } : {}),
       p_featured_only: sp.get('featured') === '1' || sp.get('featured') === 'true',
       p_sort: sort,

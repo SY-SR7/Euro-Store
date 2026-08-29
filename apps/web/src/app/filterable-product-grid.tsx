@@ -61,7 +61,8 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
     const v = searchParams.get('maxPrice'); return v ? Number(v) : null;
   });
   const [q,                 setQ]                 = useState(() => searchParams.get('q') ?? '');
-  const [featuredOnly,      setFeaturedOnly]      = useState(() => searchParams.get('featured') === '1');
+  const [featuredOnly,      setFeaturedOnly]      = useState(() => searchParams.get('featured') === '1' || searchParams.get('featured') === 'true');
+  const [saleOnly,          setSaleOnly]          = useState(() => searchParams.get('sale') === 'true' || searchParams.get('sale') === '1' || searchParams.get('has_discount') === 'true');
   const [sort, setSort] = useState(() => searchParams.get('sort') ?? 'newest');
   const [page, setPage] = useState(() => Math.max(1, Number(searchParams.get('page') ?? 1)));
 
@@ -81,11 +82,12 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
     if (priceMax !== null)    p.set('maxPrice', String(priceMax));
     if (q)                    p.set('q', q);
     if (featuredOnly)         p.set('featured', '1');
+    if (saleOnly)             p.set('sale', 'true');
     if (sort !== 'newest')    p.set('sort', sort);
     if (page > 1)             p.set('page', String(page));
     p.set('per_page', '24');
     return p;
-  }, [selectedCategories, selectedBrands, selectedAttrs, priceMin, priceMax, q, featuredOnly, sort, page, lockedCategorySlug]);
+  }, [selectedCategories, selectedBrands, selectedAttrs, priceMin, priceMax, q, featuredOnly, saleOnly, sort, page, lockedCategorySlug]);
 
   const fetchFilters = useCallback(async () => {
     setLoading(true);
@@ -194,7 +196,21 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
               onChange={e => { setFeaturedOnly(e.target.checked); setPage(1); }}
               className="accent-[#C9A84C]"
             />
-            <Star size={15} className="text-primary" /><span className="text-sm font-bold text-[#1F1B16]">{t('featuredOnly')}</span>
+            <Star size={15} className="text-primary" /><span className="text-sm font-bold text-text-primary">{t('featuredOnly')}</span>
+          </label>
+
+          {/* sale / discounts toggle */}
+          <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-amber-300/80 bg-amber-500/10 px-3 py-2 hover:border-amber-500 transition-colors">
+            <input
+              type="checkbox"
+              checked={saleOnly}
+              onChange={e => { setSaleOnly(e.target.checked); setPage(1); }}
+              className="accent-amber-600"
+            />
+            <span className="text-xs font-black text-amber-600">🏷️</span>
+            <span className="text-sm font-bold text-amber-900 dark:text-amber-300">
+              {isAr ? 'العروض والتخفيضات فقط' : 'Sale Items Only'}
+            </span>
           </label>
 
           {/* categories (only shown if not locked) */}
