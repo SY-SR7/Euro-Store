@@ -2,8 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Sparkles, Award } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Award } from 'lucide-react';
 import { ProductCard } from '@/app/catalog-components';
 
 interface LuxuryFragranceVaultProps {
@@ -15,30 +14,27 @@ export function LuxuryFragranceVault({ products, isAr = true }: LuxuryFragranceV
   if (!products || products.length === 0) return null;
 
   return (
-    <section className="relative overflow-hidden border-t border-primary/20 bg-gradient-to-b from-[#14120E] via-[#1A1712] to-background px-4 py-16 md:px-8 md:py-24">
-      {/* Background Decorative Gold Light */}
-      <div className="pointer-events-none absolute -top-40 start-1/2 -translate-x-1/2 h-96 w-96 rounded-full bg-primary/10 blur-[120px]" />
-
+    <section className="relative overflow-hidden bg-[#FAF6EE]/60 border-t border-b border-[#E8DFC8]/80 px-4 py-14 md:px-8 md:py-20">
       <div className="relative mx-auto max-w-7xl">
         {/* Section Header */}
-        <div className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-primary/15 pb-8">
+        <div className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-4 border-b border-[#E8DFC8]/60 pb-6">
           <div>
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary mb-2">
               <Award className="h-4 w-4 text-primary" />
               <span>{isAr ? 'عطور النخبة الأوروبية' : 'Haute Parfumerie'}</span>
             </div>
-            <h2 className="text-2xl font-black text-text-primary md:text-4xl">
+            <h2 className="text-2xl font-black text-[#1F1B16] md:text-4xl">
               {isAr ? 'جناح العطور العالمية الفاخرة والأصلية' : 'Authentic Luxury Fragrances'}
             </h2>
-            <p className="mt-1 text-sm text-text-secondary">
+            <p className="mt-1 text-xs md:text-sm text-[#6F6658]">
               {isAr
-                ? 'ديور، شانيل، فرزاتشي، برادا، وغوتشي — عبق الفخامة بتركيز أو دو بارفان الأصلي'
+                ? 'ديور، شانيل، فرزاتشي، برادا، وغوتشي — عبق الفخامة بتركيز أو دو بارفان الأصلي 100%'
                 : 'Dior, Chanel, Versace, Prada & Gucci — 100% Authentic Eau de Parfum'}
             </p>
           </div>
           <Link
             href="/categories/perfumes-beauty"
-            className="group inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-5 py-2.5 text-sm font-bold text-primary hover:bg-primary hover:text-black transition-all"
+            className="group inline-flex items-center gap-2 rounded-full border border-primary/40 bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-sm hover:bg-primary hover:text-black transition-all"
           >
             <span>{isAr ? 'تصفح كافة العطور' : 'Explore All Fragrances'}</span>
             {isAr ? (
