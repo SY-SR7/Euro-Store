@@ -18,6 +18,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: t('appName'),
     description: t('appDescription'),
     manifest: '/manifest.json',
+    icons: {
+      icon: [{ url: '/icons/icon-192x192.png', type: 'image/png' }],
+      apple: [{ url: '/icons/icon-192x192.png', type: 'image/png' }],
+    },
     appleWebApp: {
       capable: true,
       statusBarStyle: 'black-translucent',
@@ -34,8 +38,6 @@ import { SmoothScroller } from '../components/layout/SmoothScroller';
 import { PageTransitionProvider } from '../components/layout/PageTransitionProvider';
 
 import { Toaster } from 'sonner';
-import { EuroConcierge } from '@/components/common/EuroConcierge';
-import { KonamiCode } from '@/components/common/KonamiCode';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -58,8 +60,6 @@ export default async function RootLayout({
             </PageTransitionProvider>
           </SmoothScroller>
           <Toaster position="bottom-center" toastOptions={{ style: { background: '#1F1B16', color: '#F7F0DF', border: '1px solid #332C24' } }} />
-          <EuroConcierge />
-          <KonamiCode />
 
           <Analytics />
           <SpeedInsights />

@@ -6,7 +6,7 @@ export function CopyReferralButton({ code }: { code: string }) {
   return (
     <button
       onClick={() => {
-        navigator.clipboard.writeText(code).catch(() => {});
+        navigator.clipboard.writeText(code).catch(() => undefined);
         const el = document.activeElement as HTMLButtonElement;
         const orig = el.textContent ?? '';
         el.textContent = `✓ ${t('copied')}`;

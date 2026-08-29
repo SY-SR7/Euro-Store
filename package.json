@@ -10,21 +10,17 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
-    "test": "turbo run test",
-    "extract-frames": "node scripts/extract-frames.mjs"
+    "test": "vitest run"
   },
   "devDependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.1.0",
-    "@ffmpeg/ffmpeg": "^0.12.15",
-    "@ffmpeg/util": "^0.12.2",
-    "@ffprobe-installer/ffprobe": "^2.1.2",
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
     "eslint": "^8.57.0",
-    "fluent-ffmpeg": "^2.1.3",
-    "turbo": "latest",
-    "typescript": "^5.0.0"
+    "eslint-config-next": "15.5.21",
+    "turbo": "2.10.8",
+    "typescript": "^5.0.0",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "@upstash/ratelimit": "^1.2.1",

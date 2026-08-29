@@ -1,10 +1,8 @@
-// @ts-nocheck
-/* eslint-disable */
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
-import { createServerSupabaseClient } from '@/supabase-server';
+import { createPublicSupabaseClient } from '@/supabase-server';
 import { FilterableProductGrid } from '../../../filterable-product-grid';
 import type { Metadata, ResolvingMetadata } from 'next';
 
@@ -14,27 +12,28 @@ function LoadingGrid() {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="h-64 rounded-2xl bg-[#F3EDE3] animate-pulse" />
+        <div key={i} className="h-64 animate-pulse rounded-lg bg-[#F3EDE3]" />
       ))}
     </div>
   );
 }
 
 export async function generateMetadata(
-  { params }: { params: { slug: string } },
-  parent: ResolvingMetadata
+  { params }: { params: Promise<{ slug: string }> },
+  _parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const supabase = createServerSupabaseClient();
+  const { slug } = await params;
+  const supabase = createPublicSupabaseClient();
   const { data: category } = await supabase
     .from('categories')
-    .select('name_ar, name_en, description_ar, description_en')
-    .eq('slug', params.slug)
+    .select('name_ar, name_en')
+    .eq('slug', slug)
     .single();
 
   if (!category) return {};
 
   const title = category.name_ar || category.name_en;
-  const description = category.description_ar || category.description_en || `تسوق أحدث منتجات ${title} من يورو ستور`;
+  const description = `تسوق أحدث منتجات ${title} من يورو ستور`;
 
   return {
     title: `${title} | EuroStore`,
@@ -52,16 +51,17 @@ export async function generateMetadata(
   };
 }
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const locale = await getLocale();
   const t = await getTranslations('catalog');
   const isAr = locale === 'ar';
-  const supabase = createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
 
   const { data: category } = await supabase
     .from('categories')
     .select('id,name_ar,name_en,slug,is_active')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .maybeSingle();
 
   if (!category) notFound();
@@ -75,7 +75,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
 
         <section className={`border-b border-border pb-10 ${isAr ? 'text-right' : 'text-left'}`}>
           <p className="text-sm font-bold text-primary">{t('categoryTag')}</p>
-          <h1 className="mt-3 text-6xl font-black">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</h1>
+          <h1 className="mt-3 text-3xl font-black md:text-5xl">{isAr ? category.name_ar : (category.name_en || category.name_ar)}</h1>
           {(!isAr && category.name_ar) && (
             <p className="mt-3 text-lg text-[#6F6658]" dir="rtl">{category.name_ar}</p>
           )}

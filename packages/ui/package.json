@@ -5,20 +5,25 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "description": "Shared UI components for EuroStore",
+  "scripts": {
+    "type-check": "tsc --noEmit --incremental false"
+  },
   "dependencies": {
-    "clsx": "latest",
-    "framer-motion": "latest",
-    "lenis": "latest",
-    "lucide-react": "latest",
-    "sonner": "latest",
-    "tailwind-merge": "latest"
+    "clsx": "2.1.1",
+    "framer-motion": "12.43.0",
+    "lenis": "1.3.25",
+    "lucide-react": "1.28.0",
+    "sonner": "2.0.7",
+    "tailwind-merge": "3.6.0"
   },
   "peerDependencies": {
     "react": "^18.2.0 || ^19.0.0",
     "react-dom": "^18.2.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^18.3.7"
+    "@types/react": "18.3.24",
+    "@types/react-dom": "18.3.7",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
   }
 }

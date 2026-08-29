@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* eslint-disable */
 'use client';
 
@@ -6,6 +5,7 @@ import { useState, useEffect, useCallback, useTransition } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ProductCard } from './catalog-components';
+import { ChevronLeft, ChevronRight, Search, SlidersHorizontal, Star } from 'lucide-react';
 
 function formatSYP(n: number, isAr: boolean, t: any) {
   return Number(n || 0).toLocaleString(isAr ? 'ar-SY' : 'en-US') + ' ' + t('syp');
@@ -21,6 +21,8 @@ type AttrTypeFacet = { id: string; slug: string; name_ar: string; name_en: strin
 type FilterData = {
   products:  any[];
   total:     number;
+  page:      number;
+  per_page:  number;
   facets: {
     categories: CategoryFacet[];
     brands:     BrandFacet[];
@@ -60,6 +62,8 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
   });
   const [q,                 setQ]                 = useState(() => searchParams.get('q') ?? '');
   const [featuredOnly,      setFeaturedOnly]      = useState(() => searchParams.get('featured') === '1');
+  const [sort, setSort] = useState(() => searchParams.get('sort') ?? 'newest');
+  const [page, setPage] = useState(() => Math.max(1, Number(searchParams.get('page') ?? 1)));
 
   const [data,    setData]    = useState<FilterData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -77,8 +81,11 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
     if (priceMax !== null)    p.set('maxPrice', String(priceMax));
     if (q)                    p.set('q', q);
     if (featuredOnly)         p.set('featured', '1');
+    if (sort !== 'newest')    p.set('sort', sort);
+    if (page > 1)             p.set('page', String(page));
+    p.set('per_page', '24');
     return p;
-  }, [selectedCategories, selectedBrands, selectedAttrs, priceMin, priceMax, q, featuredOnly, lockedCategorySlug]);
+  }, [selectedCategories, selectedBrands, selectedAttrs, priceMin, priceMax, q, featuredOnly, sort, page, lockedCategorySlug]);
 
   const fetchFilters = useCallback(async () => {
     setLoading(true);
@@ -107,6 +114,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
 
   // ── toggle helpers ────────────────────────────────────────────────────
   const toggle = (list: string[], item: string, setter: (v: string[]) => void) => {
+    setPage(1);
     setter(list.includes(item) ? list.filter(x => x !== item) : [...list, item]);
   };
 
@@ -118,12 +126,8 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
     setPriceMax(null);
     setQ('');
     setFeaturedOnly(false);
+    setPage(1);
   };
-
-  // re-fetch whenever state changes
-  useEffect(() => { fetchFilters(); }, [
-    selectedCategories, selectedBrands, selectedAttrs, priceMin, priceMax, featuredOnly
-  ]);
 
   const hasActiveFilters =
     (lockedCategorySlug ? false : selectedCategories.length > 0) ||
@@ -135,6 +139,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
   // ── search submit ─────────────────────────────────────────────────────
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    setPage(1);
     fetchFilters();
   };
 
@@ -146,11 +151,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
           onClick={() => setSidebarOpen(v => !v)}
           className="flex items-center gap-2 rounded-lg border border-border bg-background-card px-4 py-2 text-sm font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors w-full justify-center"
         >
-          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
+          <SlidersHorizontal size={16} />
           {sidebarOpen ? t('hideFilters') : t('showFilters')}
         </button>
       </div>
@@ -180,8 +181,8 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
               placeholder={t('searchPlaceholder')}
               className="flex-1 rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-primary bg-background-card"
             />
-            <button type="submit" className="rounded-lg bg-primary px-3 py-2 text-text-primary text-sm font-bold hover:bg-primary">
-              🔍
+            <button type="submit" title={isAr ? 'بحث' : 'Search'} className="grid h-10 w-10 place-items-center rounded-lg bg-primary text-text-primary hover:bg-primary">
+              <Search size={16} />
             </button>
           </form>
 
@@ -190,10 +191,10 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
             <input
               type="checkbox"
               checked={featuredOnly}
-              onChange={e => setFeaturedOnly(e.target.checked)}
+              onChange={e => { setFeaturedOnly(e.target.checked); setPage(1); }}
               className="accent-[#C9A84C]"
             />
-            <span className="text-sm font-bold text-[#1F1B16]">⭐ {t('featuredOnly')}</span>
+            <Star size={15} className="text-primary" /><span className="text-sm font-bold text-[#1F1B16]">{t('featuredOnly')}</span>
           </label>
 
           {/* categories (only shown if not locked) */}
@@ -276,7 +277,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                     <input
                       type="number"
                       value={priceMin ?? ''}
-                      onChange={e => setPriceMin(e.target.value ? Number(e.target.value) : null)}
+                      onChange={e => { setPriceMin(e.target.value ? Number(e.target.value) : null); setPage(1); }}
                       placeholder={String(facets.priceRange.min)}
                       className="w-full rounded-lg border border-border px-2 py-1.5 text-xs outline-none focus:border-primary"
                     />
@@ -286,7 +287,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
                     <input
                       type="number"
                       value={priceMax ?? ''}
-                      onChange={e => setPriceMax(e.target.value ? Number(e.target.value) : null)}
+                      onChange={e => { setPriceMax(e.target.value ? Number(e.target.value) : null); setPage(1); }}
                       placeholder={String(facets.priceRange.max)}
                       className="w-full rounded-lg border border-border px-2 py-1.5 text-xs outline-none focus:border-primary"
                     />
@@ -319,11 +320,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
               onClick={() => setSidebarOpen(v => !v)}
               className="hidden md:flex items-center gap-2 rounded-lg border border-border bg-background-card px-3 py-2 text-sm font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors"
             >
-              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
+              <SlidersHorizontal size={16} />
               {sidebarOpen ? t('hideFilters') : t('showFilters')}
             </button>
 
@@ -345,9 +342,15 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
             )}
           </div>
 
-          <p className="text-sm text-[#6F6658] font-medium">
-            {loading ? t('loading') : `${data?.total ?? 0} ${t('productCount')}`}
-          </p>
+          <div className="flex items-center gap-3">
+            <select aria-label={isAr ? 'ترتيب المنتجات' : 'Sort products'} value={sort} onChange={(event) => { setSort(event.target.value); setPage(1); }} className="rounded-lg border border-border bg-background-card px-3 py-2 text-xs font-bold text-text-primary">
+              <option value="newest">{isAr ? 'الأحدث' : 'Newest'}</option>
+              <option value="popular">{isAr ? 'الأكثر طلبا' : 'Most popular'}</option>
+              <option value="price_asc">{isAr ? 'السعر: الأقل' : 'Price: low to high'}</option>
+              <option value="price_desc">{isAr ? 'السعر: الأعلى' : 'Price: high to low'}</option>
+            </select>
+            <p className="text-sm text-[#6F6658] font-medium">{loading ? t('loading') : `${data?.total ?? 0} ${t('productCount')}`}</p>
+          </div>
         </div>
 
         {/* products grid */}
@@ -374,6 +377,7 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
             )}
           </div>
         ) : (
+          <>
           <div className="grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {data.products.map((product: any) => (
               <ProductCard 
@@ -386,6 +390,12 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
               />
             ))}
           </div>
+          {Math.ceil(data.total / data.per_page) > 1 ? <nav className="mt-8 flex items-center justify-center gap-3" aria-label={isAr ? 'صفحات المنتجات' : 'Product pages'}>
+            <button type="button" title={isAr ? 'الصفحة السابقة' : 'Previous page'} disabled={page <= 1 || loading} onClick={() => setPage((current) => Math.max(1, current - 1))} className="grid h-10 w-10 place-items-center rounded-lg border border-border disabled:opacity-40"><ChevronRight size={18} className={isAr ? '' : 'rotate-180'} /></button>
+            <span className="min-w-24 text-center text-sm font-bold text-text-primary">{data.page} / {Math.ceil(data.total / data.per_page)}</span>
+            <button type="button" title={isAr ? 'الصفحة التالية' : 'Next page'} disabled={page >= Math.ceil(data.total / data.per_page) || loading} onClick={() => setPage((current) => current + 1)} className="grid h-10 w-10 place-items-center rounded-lg border border-border disabled:opacity-40"><ChevronLeft size={18} className={isAr ? '' : 'rotate-180'} /></button>
+          </nav> : null}
+          </>
         )}
       </div>
     </div>

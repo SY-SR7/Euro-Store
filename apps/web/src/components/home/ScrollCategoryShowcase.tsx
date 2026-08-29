@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useMotionValue, useSpring, useAnimationFrame } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
@@ -82,7 +82,6 @@ function ScrollLockedVideo({
   const progressRef = useRef(0);
   const durationRef = useRef(0);
   const touchYRef = useRef<number | null>(null);
-  const rafRef = useRef<number | null>(null);
   const metadataReadyRef = useRef(false);
 
   const targetProgress = useMotionValue(0);
@@ -97,7 +96,7 @@ function ScrollLockedVideo({
   const [ready, setReady] = useState(false);
   const [lockedHint, setLockedHint] = useState(false);
 
-  function isSectionAtControlLine() {
+  const isSectionAtControlLine = useCallback(() => {
     const section = sectionRef.current;
     if (!section) return false;
 
@@ -106,13 +105,13 @@ function ScrollLockedVideo({
     const controlLine = vh * 0.5;
 
     return rect.top <= controlLine && rect.bottom >= controlLine;
-  }
+  }, [sectionRef]);
 
-  function seekVideo(nextProgress: number) {
+  const seekVideo = useCallback((nextProgress: number) => {
     const safeProgress = clamp(nextProgress);
     progressRef.current = safeProgress;
     targetProgress.set(safeProgress);
-  }
+  }, [targetProgress]);
 
   useAnimationFrame(() => {
     const video = videoRef.current;
@@ -138,7 +137,7 @@ function ScrollLockedVideo({
     }
   });
 
-  function shouldCaptureScroll(deltaY: number) {
+  const shouldCaptureScroll = useCallback((deltaY: number) => {
     if (!ready || failed) return false;
     if (!isSectionAtControlLine()) return false;
 
@@ -148,7 +147,7 @@ function ScrollLockedVideo({
     if (deltaY < 0 && currentProgress <= 0.001) return false;
 
     return true;
-  }
+  }, [failed, isSectionAtControlLine, ready]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -164,11 +163,6 @@ function ScrollLockedVideo({
       // ignore
     }
 
-    return () => {
-      if (rafRef.current !== null) {
-        window.cancelAnimationFrame(rafRef.current);
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -254,7 +248,7 @@ function ScrollLockedVideo({
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [ready, failed]);
+  }, [seekVideo, shouldCaptureScroll]);
 
   if (failed) {
     return <StaticProductIntro title={title} imageUrl={fallbackImage} />;

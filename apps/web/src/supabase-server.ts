@@ -1,7 +1,10 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import 'server-only';
+import { createClient, type SupabaseClient, type User } from '@supabase/supabase-js';
 import { createServerClient } from '@supabase/ssr';
+import type { Database } from '@eurostore/database';
 
-type ClientOptions = Parameters<typeof createClient>[2];
+type TypedSupabaseClient = SupabaseClient<Database>;
+type ClientOptions = NonNullable<Parameters<typeof createClient<Database>>[2]>;
 
 const clientOptions: ClientOptions = {
   auth: { persistSession: false, autoRefreshToken: false },
@@ -20,26 +23,23 @@ function envValue(name: string, fallback?: string): string {
   return value;
 }
 function supabaseUrl(): string {
-  return envValue('NEXT_PUBLIC_SUPABASE_URL', process.env.SUPABASE_URL ?? 'http://localhost:54321');
+  return envValue('NEXT_PUBLIC_SUPABASE_URL', process.env.SUPABASE_URL);
 }
 function anonKey(): string {
-  return envValue('NEXT_PUBLIC_SUPABASE_ANON_KEY', process.env.SUPABASE_ANON_KEY ?? 'development-anon-key');
+  return envValue('NEXT_PUBLIC_SUPABASE_ANON_KEY', process.env.SUPABASE_ANON_KEY);
 }
 function serviceRoleKey(): string {
-  return envValue(
-    'SUPABASE_SERVICE_ROLE_KEY',
-    process.env.SUPABASE_SERVICE_KEY ?? 'development-service-role-key'
-  );
+  return envValue('SUPABASE_SERVICE_ROLE_KEY', process.env.SUPABASE_SERVICE_KEY);
 }
 
 /** Client بالـ anon key — بدون session (للقراءات العامة فقط، لا يعرف من هو المستخدم) */
-export function createServerSupabaseClient(): SupabaseClient {
-  return createClient(supabaseUrl(), anonKey(), clientOptions);
+export function createPublicSupabaseClient(): TypedSupabaseClient {
+  return createClient<Database>(supabaseUrl(), anonKey(), clientOptions);
 }
 
 /** Client بالـ service role — يتخطى RLS بالكامل */
-export function createAdminSupabaseClient(): SupabaseClient {
-  return createClient(supabaseUrl(), serviceRoleKey(), clientOptions);
+export function createAdminSupabaseClient(): TypedSupabaseClient {
+  return createClient<Database>(supabaseUrl(), serviceRoleKey(), clientOptions);
 }
 
 /**
@@ -50,11 +50,32 @@ export function createAdminSupabaseClient(): SupabaseClient {
  *
  * هذا هو نفس النمط المستخدم بنجاح في middleware.ts لحماية المسارات.
  */
-export async function getSessionClient(): Promise<{ client: SupabaseClient; user: import('@supabase/supabase-js').User | null }> {
-  const { cookies } = await import('next/headers');
+export async function getSessionClient(): Promise<{ client: TypedSupabaseClient; user: User | null }> {
+  const { cookies, headers } = await import('next/headers');
+  const requestHeaders = await headers();
+  const authorization = requestHeaders.get('authorization')?.trim() ?? '';
+  const bearerMatch = /^Bearer\s+([^\s]+)$/i.exec(authorization);
+
+  if (authorization) {
+    if (!bearerMatch || bearerMatch[1].length > 8192) {
+      return { client: createPublicSupabaseClient(), user: null };
+    }
+
+    const accessToken = bearerMatch[1];
+    const client = createClient<Database>(supabaseUrl(), anonKey(), {
+      ...clientOptions,
+      global: {
+        ...clientOptions.global,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+    });
+    const { data: { user }, error } = await client.auth.getUser(accessToken);
+    return { client, user: error ? null : user };
+  }
+
   const jar = await cookies();
 
-  const client = createServerClient(supabaseUrl(), anonKey(), {
+  const client = createServerClient<Database>(supabaseUrl(), anonKey(), {
     ...clientOptions,
     cookies: {
       getAll() {
@@ -66,21 +87,8 @@ export async function getSessionClient(): Promise<{ client: SupabaseClient; user
     },
   });
 
-  const { data: { session } } = await client.auth.getSession();
-  return { client: client as unknown as SupabaseClient, user: session?.user ?? null };
+  const { data: { user } } = await client.auth.getUser();
+  return { client, user };
 }
 
-// Aliases (تبقى كما هي للحفاظ على التوافق مع الاستيرادات الموجودة في باقي الملفات)
-export const createSupabaseServerClient = createServerSupabaseClient;
-export const createSupabaseAdminClient  = createAdminSupabaseClient;
-export const createServiceSupabaseClient = createAdminSupabaseClient;
-export const createServiceRoleSupabaseClient = createAdminSupabaseClient;
-export const getServerSupabase = createServerSupabaseClient;
-export const getAdminSupabase  = createAdminSupabaseClient;
-export const getSupabaseServer = createServerSupabaseClient;
-export const getSupabaseAdmin  = createAdminSupabaseClient;
-export const supabaseServer    = createServerSupabaseClient();
-export const serverSupabase    = supabaseServer;
-export const supabaseAdmin     = createAdminSupabaseClient();
-export const adminSupabase     = supabaseAdmin;
-export default createServerSupabaseClient;
+export default createPublicSupabaseClient;

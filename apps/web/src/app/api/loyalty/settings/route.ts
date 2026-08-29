@@ -1,5 +1,5 @@
-/* eslint-disable */
 import { NextResponse } from 'next/server';
+import { createAdminSupabaseClient, getSessionClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -22,8 +22,6 @@ const DEFAULTS: Record<string, number> = {
   referral_bonus_points: 50,
 };
 
-import { getSessionClient } from '@/supabase-server';
-
 export async function GET() {
   const { user } = await getSessionClient();
   if (!user) {
@@ -31,31 +29,11 @@ export async function GET() {
   }
 
   const result = { ...DEFAULTS };
-  try {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    // Use SERVICE ROLE key to bypass RLS — this is a server-only route
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_KEY;
-
-    if (url && key) {
-      const keysParam = KEYS.join(',');
-      const res = await fetch(
-        `${url}/rest/v1/system_settings?key=in.(${keysParam})&select=key,value`,
-        {
-          cache: 'no-store',
-          headers: {
-            apikey: key,
-            Authorization: `Bearer ${key}`,
-          },
-        }
-      );
-      if (res.ok) {
-        const rows: { key: string; value: string }[] = await res.json();
-        for (const row of rows) {
-          if (row.key in result) result[row.key] = Number(row.value) || result[row.key];
-        }
-      }
-    }
-  } catch {}
+  const admin = createAdminSupabaseClient();
+  const { data: rows } = await admin.from('system_settings').select('key, value').in('key', KEYS);
+  for (const row of rows ?? []) {
+    if (row.key in result) result[row.key] = Number(row.value) || result[row.key];
+  }
 
   return NextResponse.json(result, {
     headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' },

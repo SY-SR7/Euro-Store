@@ -15,10 +15,10 @@ export function SmoothScroller({ children }: { children: React.ReactNode }): Rea
       });
       lenisRef.current = lenis;
 
-      function raf(time: number) {
+      const raf = (time: number) => {
         lenis.raf(time);
         requestAnimationFrame(raf);
-      }
+      };
       requestAnimationFrame(raf);
 
       return () => lenis.destroy();

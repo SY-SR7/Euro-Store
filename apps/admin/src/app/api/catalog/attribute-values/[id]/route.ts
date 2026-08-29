@@ -1,18 +1,19 @@
 import { requireAdminContext } from '@/supabase-server';
 import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
+import type { TableUpdate } from '@/lib/database-types';
 
-interface RouteParams { params: { id: string } }
+interface RouteParams { params: Promise<{ id: string }> }
 
 export async function PATCH(request: Request, { params }: RouteParams) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('product_management', 'edit');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
   const body = await request.json().catch(() => null) as Record<string, unknown> | null;
   if (!body) return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
 
-  const update: Record<string, unknown> = {};
+  const update: TableUpdate<'attribute_values'> = {};
   if (typeof body.value_ar === 'string') update.value_ar = body.value_ar;
   if (typeof body.value_en === 'string') update.value_en = body.value_en;
   if (typeof body.hex_color === 'string' || body.hex_color === null) update.hex_color = body.hex_color;
@@ -24,21 +25,21 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
   const { data, error } = await admin
     .from('attribute_values')
-    .update(update as any)
-    .eq('id', params.id)
+    .update(update)
+    .eq('id', (await params).id)
     .select()
     .single();
 
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json(data);
 }
 
 export async function DELETE(_: Request, { params }: RouteParams) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('product_management', 'edit');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
-  const { error } = await admin.from('attribute_values').delete().eq('id', params.id);
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+  const { error } = await admin.from('attribute_values').delete().eq('id', (await params).id);
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json({ ok: true });
 }

@@ -16,7 +16,9 @@ export async function getAdminAccess(supabase: EurostoreSupabaseClient): Promise
   const refreshToken = cookieStore.get('sb-refresh-token')?.value;
 
   if (accessToken && refreshToken) {
-    await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).catch(() => {});
+    await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken }).catch(() => {
+      // Invalid legacy cookies are handled by the following getUser call.
+    });
   }
 
   const {
@@ -40,7 +42,7 @@ export async function getAdminAccess(supabase: EurostoreSupabaseClient): Promise
       email: adminResult.data.email,
       fullName: adminResult.data.full_name,
       role: USER_ROLES.ADMIN,
-      totpEnabled: adminResult.data.totp_enabled,
+      totpEnabled: adminResult.data.totp_enabled ?? false,
       totpSecret: adminResult.data.totp_secret,
     };
   }
@@ -61,7 +63,7 @@ export async function getAdminAccess(supabase: EurostoreSupabaseClient): Promise
     email: subAdminResult.data.email,
     fullName: subAdminResult.data.full_name,
     role: USER_ROLES.SUB_ADMIN,
-    totpEnabled: subAdminResult.data.totp_enabled,
+    totpEnabled: subAdminResult.data.totp_enabled ?? false,
     totpSecret: subAdminResult.data.totp_secret,
   };
 }

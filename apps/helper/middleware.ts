@@ -1,6 +1,7 @@
 import { createSupabaseServerClientFromEnv } from '@eurostore/database';
 import { type NextRequest, NextResponse } from 'next/server';
 import { getHelperAccess } from './src/auth';
+import { apiRateLimitCategory, createContentSecurityPolicy, createCspNonce, isAllowedMutationOrigin, limitApiRequest } from '@eurostore/shared';
 
 const LOGIN_PATH = '/login';
 
@@ -21,8 +22,28 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   if (isStaticPath(pathname)) {
     return NextResponse.next();
   }
+  const nonce = createCspNonce();
+  const contentSecurityPolicy = createContentSecurityPolicy('helper', nonce, process.env.NODE_ENV === 'development');
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', contentSecurityPolicy);
+  const secure = (response: NextResponse) => {
+    response.headers.set('Content-Security-Policy', contentSecurityPolicy);
+    return response;
+  };
 
-  const response = NextResponse.next({ request });
+  if (pathname.startsWith('/api/') && !isAllowedMutationOrigin(request)) {
+    return secure(NextResponse.json({ error: { code: 'FORBIDDEN', message: 'Cross-origin request rejected.' } }, { status: 403 }));
+  }
+  if (pathname.startsWith('/api/')) {
+    const rate = await limitApiRequest(request, apiRateLimitCategory(pathname, 'helper'));
+    if (!rate.success) {
+      const retryAfter = Math.max(1, Math.ceil((rate.reset - Date.now()) / 1000));
+      return secure(NextResponse.json({ error: { code: 'RATE_LIMITED', message: 'Too many requests.' } }, { status: 429, headers: { 'Retry-After': String(retryAfter) } }));
+    }
+  }
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
   const supabase = createSupabaseServerClientFromEnv({
     get(name) {
       return request.cookies.get(name)?.value;
@@ -36,18 +57,17 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
       response.cookies.set({ name, value: '', ...options, maxAge: 0 });
     },
   });
-  const { data: { user } } = await supabase.auth.getUser();
-  const access = getHelperAccess(user);
+  const access = await getHelperAccess(supabase);
 
   if (!access) {
-    return pathname === LOGIN_PATH ? response : redirectTo(request, LOGIN_PATH);
+    return secure(pathname === LOGIN_PATH ? response : redirectTo(request, LOGIN_PATH));
   }
 
   if (pathname === LOGIN_PATH) {
-    return redirectTo(request, '/');
+    return secure(redirectTo(request, '/dashboard'));
   }
 
-  return response;
+  return secure(response);
 }
 
 export const config = {

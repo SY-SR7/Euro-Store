@@ -1,635 +1,118 @@
 'use client';
 
+import { Bell, CheckCheck, RefreshCw, Search } from 'lucide-react';
 import Link from 'next/link';
-import { AlertTriangle, Bell, CheckCircle2, ClipboardList, Percent, RefreshCw, Search, ShoppingBag, Undo2, Users, X } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { ReactNode } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
+import { z } from 'zod';
 
-type Tone = 'danger' | 'warning' | 'success' | 'info' | 'neutral';
-type Source = 'orders' | 'exchanges' | 'customers' | 'discounts' | 'audit' | 'system';
-type TabKey = 'all' | 'unread' | Source;
-
-type NotificationItem = {
+type Notification = {
   id: string;
-  source: Source;
-  tone: Tone;
-  priority: number;
-  title: string;
-  description: string;
-  createdAt: string;
-  actionHref?: string;
-  actionLabel?: string;
-  badge?: string;
-  meta?: [string, string][];
+  type: string;
+  title_ar: string;
+  title_en: string;
+  body_ar: string;
+  body_en: string;
+  reference_id: string | null;
+  reference_type: string | null;
+  is_read: boolean;
+  sent_push: boolean;
+  sent_email: boolean;
+  created_at: string;
+  data: Record<string, unknown> | null;
 };
 
-const STORAGE_KEY = 'eurostore-admin-read-notifications-v2';
+const notificationSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  title_ar: z.string(),
+  title_en: z.string(),
+  body_ar: z.string(),
+  body_en: z.string(),
+  reference_id: z.string().nullable(),
+  reference_type: z.string().nullable(),
+  is_read: z.boolean(),
+  sent_push: z.boolean(),
+  sent_email: z.boolean(),
+  created_at: z.string(),
+  data: z.record(z.unknown()).nullable(),
+});
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+const notificationsResponseSchema = z.object({ data: z.array(notificationSchema) });
+
+function responseError(value: unknown, fallback: string): string {
+  if (!value || typeof value !== 'object') return fallback;
+  const error = (value as { error?: unknown }).error;
+  return typeof error === 'string' ? error : fallback;
 }
 
-function pickArray(payload: unknown, keys: string[]): Record<string, unknown>[] {
-  if (Array.isArray(payload)) return payload.filter(isRecord);
-  if (isRecord(payload)) {
-    for (const key of keys) {
-      const value = payload[key];
-      if (Array.isArray(value)) return value.filter(isRecord);
-    }
-  }
-  return [];
-}
-
-function getString(row: Record<string, unknown>, key: string, fallback = '') {
-  const value = row[key];
-  if (typeof value === 'string') return value;
-  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
-  return fallback;
-}
-
-function getNumber(row: Record<string, unknown>, key: string, fallback = 0) {
-  const value = Number(row[key]);
-  return Number.isFinite(value) ? value : fallback;
-}
-
-function getBoolean(row: Record<string, unknown>, key: string, fallback = false) {
-  const value = row[key];
-  if (typeof value === 'boolean') return value;
-  if (typeof value === 'string') return value === 'true';
-  return fallback;
-}
-
-function nested(row: Record<string, unknown>, key: string): Record<string, unknown> {
-  const value = row[key];
-  return isRecord(value) ? value : {};
-}
-
-function safeDate(value?: string) {
-  if (!value) return null;
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date;
-}
-
-function dateText(value: string | undefined, locale: string) {
-  const date = safeDate(value);
-  if (!date) return '-';
-  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' }).format(date);
-}
-
-function relative(value: string | undefined, t: any) {
-  const date = safeDate(value);
-  if (!date) return '-';
-  const diff = Date.now() - date.getTime();
-  const minute = 60 * 1000;
-  const hour = minute * 60;
-  const day = hour * 24;
-  const abs = Math.abs(diff);
-  if (abs < minute) return t('timeNow');
-  if (abs < hour) return t('timeMinsAgo', { count: Math.max(1, Math.round(abs / minute)) });
-  if (abs < day) return t('timeHoursAgo', { count: Math.max(1, Math.round(abs / hour)) });
-  return t('timeDaysAgo', { count: Math.max(1, Math.round(abs / day)) });
-}
-
-function money(value: number, locale: string, unit: string) {
-  return `${Number(value || 0).toLocaleString(locale)} ${unit}`;
-}
-
-async function fetchJson(path: string): Promise<unknown> {
-  try {
-    const response = await fetch(path, { cache: 'no-store' });
-    if (!response.ok) return { __error: `${path}: ${response.status}` };
-    return await response.json();
-  } catch {
-    return { __error: `${path}: failed` };
-  }
-}
-
-function sourceIcon(source: Source) {
-  const className = 'h-4 w-4';
-  if (source === 'orders') return <ShoppingBag className={className} />;
-  if (source === 'exchanges') return <Undo2 className={className} />;
-  if (source === 'customers') return <Users className={className} />;
-  if (source === 'discounts') return <Percent className={className} />;
-  if (source === 'audit') return <ClipboardList className={className} />;
-  return <Bell className={className} />;
-}
-
-function toneClass(tone: Tone) {
-  if (tone === 'danger') return 'border-red-200 bg-red-50 text-red-700';
-  if (tone === 'warning') return 'border-amber-200 bg-amber-50 text-amber-800';
-  if (tone === 'success') return 'border-green-200 bg-green-50 text-green-700';
-  if (tone === 'info') return 'border-blue-200 bg-blue-50 text-blue-700';
-  return 'border-[#E5E0D8] bg-[#F8F6F2] text-text-secondary';
-}
-
-function buildOrderNotifications(rows: Record<string, unknown>[], t: any, locale: string, orderStatusMap: Record<string, string>, unitSyp: string): NotificationItem[] {
-  return rows.slice(0, 60).map((row) => {
-    const id = getString(row, 'id', crypto.randomUUID());
-    const orderNumber = getString(row, 'order_number', id.slice(0, 8));
-    const status = getString(row, 'status', 'pending');
-    const total = getNumber(row, 'total_syp', 0);
-    const createdAt = getString(row, 'created_at', new Date().toISOString());
-    const address = nested(row, 'address_snapshot');
-    const customer = getString(address, 'full_name', t('unspecifiedCustomer'));
-    const phone = getString(address, 'phone', '');
-
-    let tone: Tone = 'neutral';
-    let priority = 30;
-    let title = t('orderTitle', { status: orderStatusMap[status] ?? status });
-    if (status === 'pending') {
-      tone = 'warning';
-      priority = 95;
-      title = t('newOrder');
-    } else if (status === 'cancelled') {
-      tone = 'danger';
-      priority = 75;
-      title = t('cancelledOrder');
-    } else if (status === 'confirmed' || status === 'processing') {
-      tone = 'info';
-      priority = 70;
-    }
-
-    return {
-      id: `order:${id}:${status}`,
-      source: 'orders',
-      tone,
-      priority,
-      title,
-      description: `#${orderNumber} - ${customer} - ${money(total, locale, unitSyp)}`,
-      createdAt,
-      actionHref: `/orders?open=${id}`,
-      actionLabel: t('openOrder'),
-      badge: orderStatusMap[status] ?? status,
-      meta: [
-        [t('metaOrderNumber'), orderNumber],
-        [t('metaCustomer'), customer],
-        [t('metaPhone'), phone || '-'],
-        [t('metaTotal'), money(total, locale, unitSyp)],
-        [t('metaStatus'), orderStatusMap[status] ?? status],
-      ],
-    };
-  });
-}
-
-function buildExchangeNotifications(rows: Record<string, unknown>[], t: any, exchangeStatusMap: Record<string, string>): NotificationItem[] {
-  return rows.slice(0, 60).map((row) => {
-    const id = getString(row, 'id', crypto.randomUUID());
-    const status = getString(row, 'status', 'pending');
-    const createdAt = getString(row, 'created_at', new Date().toISOString());
-    const reason = getString(row, 'reason_ar', getString(row, 'reason', t('noReason')));
-    const orderId = getString(row, 'order_id', '');
-
-    let tone: Tone = 'neutral';
-    let priority = 35;
-    if (status === 'pending' || status === 'requested') {
-      tone = 'warning';
-      priority = 92;
-    } else if (status === 'rejected' || status === 'cancelled') {
-      tone = 'danger';
-      priority = 55;
-    } else if (status === 'approved') {
-      tone = 'info';
-      priority = 68;
-    } else if (status === 'completed') {
-      tone = 'success';
-      priority = 35;
-    }
-
-    return {
-      id: `exchange:${id}:${status}`,
-      source: 'exchanges',
-      tone,
-      priority,
-      title: t('exchangeRequest'),
-      description: `${exchangeStatusMap[status] ?? status} - ${reason}`,
-      createdAt,
-      actionHref: `/exchanges?open=${id}`,
-      actionLabel: t('openExchange'),
-      badge: exchangeStatusMap[status] ?? status,
-      meta: [
-        [t('metaId'), id],
-        [t('metaLinkedOrder'), orderId || '-'],
-        [t('metaStatus'), exchangeStatusMap[status] ?? status],
-        [t('metaReason'), reason],
-      ],
-    };
-  });
-}
-
-function buildDiscountNotifications(rows: Record<string, unknown>[], t: any, locale: string): NotificationItem[] {
-  const items: NotificationItem[] = [];
-  for (const row of rows.slice(0, 60)) {
-    const id = getString(row, 'id', getString(row, 'code', crypto.randomUUID()));
-    const code = getString(row, 'code', 'CODE');
-    const active = getBoolean(row, 'is_active', true);
-    const validUntil = getString(row, 'valid_until', '');
-    const usedCount = getNumber(row, 'used_count', 0);
-    const maxUses = getNumber(row, 'max_uses', 0);
-    const expires = safeDate(validUntil);
-    const expired = expires ? expires.getTime() < Date.now() : false;
-    const usedUp = maxUses > 0 && usedCount >= maxUses;
-    if (active && !expired && !usedUp) continue;
-    items.push({
-      id: `discount:${id}:${active}:${validUntil}:${usedCount}`,
-      source: 'discounts',
-      tone: expired || usedUp ? 'danger' : 'neutral',
-      priority: expired || usedUp ? 72 : 28,
-      title: expired ? t('codeExpired') : usedUp ? t('codeExhausted') : t('codeDisabled'),
-      description: code,
-      createdAt: validUntil || new Date().toISOString(),
-      actionHref: `/discounts?open=${id}`,
-      actionLabel: t('openDiscounts'),
-      badge: expired ? t('badgeExpired') : usedUp ? t('badgeExhausted') : t('badgeDisabled'),
-      meta: [
-        [t('metaCode'), code],
-        [t('metaUsage'), maxUses ? `${usedCount}/${maxUses}` : String(usedCount)],
-        [t('metaExpires'), validUntil ? dateText(validUntil, locale) : '-'],
-      ],
-    });
-  }
-  return items;
-}
-
-function buildCustomerNotifications(rows: Record<string, unknown>[], t: any): NotificationItem[] {
-  const twoDays = 2 * 24 * 60 * 60 * 1000;
-  return rows.slice(0, 60).filter((row) => {
-    const date = safeDate(getString(row, 'created_at', ''));
-    return date ? Date.now() - date.getTime() <= twoDays : false;
-  }).map((row) => {
-    const id = getString(row, 'id', crypto.randomUUID());
-    const name = getString(row, 'full_name', t('newCustomer'));
-    const email = getString(row, 'email', '');
-    const phone = getString(row, 'phone', '');
-    const createdAt = getString(row, 'created_at', new Date().toISOString());
-    return {
-      id: `customer:${id}`,
-      source: 'customers',
-      tone: 'success',
-      priority: 42,
-      title: t('newCustomer'),
-      description: name,
-      createdAt,
-      actionHref: `/customers?open=${id}`,
-      actionLabel: t('openCustomer'),
-      badge: t('badgeNew'),
-      meta: [
-        [t('metaName'), name],
-        [t('metaEmail'), email || '-'],
-        [t('metaPhone'), phone || '-'],
-      ],
-    } satisfies NotificationItem;
-  });
-}
-
-function buildAuditNotifications(rows: Record<string, unknown>[], t: any, locale: string): NotificationItem[] {
-  const ENTITY_MAP: Record<string, string> = {
-    'catalog/products': 'المنتجات',
-    'catalog/variants': 'متغيرات المنتجات',
-    'catalog/categories': 'التصنيفات',
-    'catalog/brands': 'العلامات التجارية',
-    'orders': 'الطلبات',
-    'customers': 'العملاء',
-    'discounts': 'الخصومات',
-    'exchanges': 'الاستبدال والترجيع',
-    'settings': 'الإعدادات',
-    'loyalty_settings': 'إعدادات الولاء'
-  };
-
-  return rows.slice(0, 40).map((row) => {
-    const id = getString(row, 'id', crypto.randomUUID());
-    const action = getString(row, 'action_ar', getString(row, 'action', t('systemAction')));
-    const rawEntityType = getString(row, 'entity_type', t('systemEntity'));
-    const entity = getString(row, 'entity_label', ENTITY_MAP[rawEntityType] || rawEntityType);
-    const createdAt = getString(row, 'created_at', new Date().toISOString());
-    const actionRaw = getString(row, 'action', '');
-    const danger = actionRaw.includes('delete');
-    return {
-      id: `audit:${id}`,
-      source: 'audit',
-      tone: danger ? 'danger' : 'neutral',
-      priority: danger ? 60 : 20,
-      title: action,
-      description: entity,
-      createdAt,
-      actionHref: `/audit-logs?open=${id}`,
-      actionLabel: t('openAudit'),
-      badge: entity,
-      meta: [
-        [t('metaAction'), action],
-        [t('metaSection'), entity],
-        [t('metaTime'), dateText(createdAt, locale)],
-      ],
-    };
-  });
-}
-
-function systemErrors(payloads: unknown[]) {
-  return payloads.flatMap((payload) => isRecord(payload) && typeof payload.__error === 'string' ? [payload.__error] : []);
-}
-
-function Modal({ title, onClose, children, closeTitle }: { title: string; onClose: () => void; children: ReactNode; closeTitle?: string }) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
-      <div className="w-full max-w-2xl overflow-hidden rounded-lg border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
-          <h2 className="font-black text-text-primary">{title}</h2>
-          <button type="button" title={closeTitle || "Close"} onClick={onClose} className="grid h-8 w-8 place-items-center rounded-lg bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
-            <X size={17} />
-          </button>
-        </div>
-        <div className="max-h-[75dvh] overflow-y-auto p-5">{children}</div>
-      </div>
-    </div>
-  );
+function notificationHref(item: Notification) {
+  if (!item.reference_id) return null;
+  if (item.reference_type === 'orders' || item.reference_type === 'order') return `/orders?open=${item.reference_id}`;
+  if (item.reference_type === 'exchange_requests' || item.reference_type === 'exchange') return `/exchanges?open=${item.reference_id}`;
+  if (item.reference_type === 'product_variant') return '/reports?type=inventory';
+  return null;
 }
 
 export default function NotificationsQuickAdmin() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const locale = useLocale();
   const isAr = locale === 'ar';
-  const t = useTranslations('adminNotifications');
-  const tCommon = useTranslations('common');
-  
-  const formatLoc = isAr ? 'ar-SY' : 'en-US';
-
-  const sourceMap: Record<Source, string> = useMemo(() => ({
-    orders: t('sourceOrders'),
-    exchanges: t('sourceExchanges'),
-    customers: t('sourceCustomers'),
-    discounts: t('sourceDiscounts'),
-    audit: t('sourceAudit'),
-    system: t('sourceSystem'),
-  }), [t]);
-
-  const orderStatusMap: Record<string, string> = useMemo(() => ({
-    pending: t('orderStatusPending'),
-    confirmed: t('orderStatusConfirmed'),
-    processing: t('orderStatusProcessing'),
-    shipped: t('orderStatusShipped'),
-    delivered: t('orderStatusDelivered'),
-    cancelled: t('orderStatusCancelled'),
-  }), [t]);
-
-  const exchangeStatusMap: Record<string, string> = useMemo(() => ({
-    pending: t('exchangeStatusPending'),
-    requested: t('exchangeStatusRequested'),
-    approved: t('exchangeStatusApproved'),
-    rejected: t('exchangeStatusRejected'),
-    completed: t('exchangeStatusCompleted'),
-    cancelled: t('exchangeStatusCancelled'),
-  }), [t]);
-
-  const [items, setItems] = useState<NotificationItem[]>([]);
-  const [readIds, setReadIds] = useState<string[]>([]);
-  const [tab, setTab] = useState<TabKey>('all');
-  const [query, setQuery] = useState('');
-  const [selected, setSelected] = useState<NotificationItem | null>(null);
-  const [autoOpenedId, setAutoOpenedId] = useState('');
+  const [items, setItems] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
-  const [msg, setMsg] = useState('');
+  const [unreadOnly, setUnreadOnly] = useState(false);
+  const [query, setQuery] = useState('');
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed: unknown = raw ? JSON.parse(raw) : [];
-      setReadIds(Array.isArray(parsed) ? parsed.filter((value): value is string => typeof value === 'string') : []);
-    } catch {
-      setReadIds([]);
-    }
-  }, []);
-
-  const saveRead = useCallback((next: string[]) => {
-    setReadIds(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next.slice(0, 700)));
-    } catch {
-      // storage can be unavailable
-    }
-  }, []);
-
-  const load = useCallback(() => {
+  const load = useCallback(async () => {
     setLoading(true);
-    setMsg('');
-    Promise.all([
-      fetchJson('/api/orders?limit=50'),
-      fetchJson('/api/exchanges'),
-      fetchJson('/api/customers?limit=50'),
-      fetchJson('/api/discounts'),
-      fetchJson('/api/audit-logs?limit=50'),
-    ])
-      .then(([ordersPayload, exchangesPayload, customersPayload, discountsPayload, auditPayload]) => {
-        const errors = systemErrors([ordersPayload, exchangesPayload, customersPayload, discountsPayload, auditPayload]);
-        const next = [
-          ...buildOrderNotifications(pickArray(ordersPayload, ['orders', 'data', 'items']), t, formatLoc, orderStatusMap, tCommon('unitSyp', { fallback: 'ل.س' })),
-          ...buildExchangeNotifications(pickArray(exchangesPayload, ['exchanges', 'data', 'items']), t, exchangeStatusMap),
-          ...buildCustomerNotifications(pickArray(customersPayload, ['customers', 'data', 'items']), t),
-          ...buildDiscountNotifications(pickArray(discountsPayload, ['discounts', 'data', 'items']), t, formatLoc),
-          ...buildAuditNotifications(pickArray(auditPayload, ['logs', 'data', 'items']), t, formatLoc),
-          ...errors.map((error, index) => ({
-            id: `system:${index}:${error}`,
-            source: 'system' as const,
-            tone: 'warning' as const,
-            priority: 85,
-            title: t('systemDataSourceUnavailable'),
-            description: error,
-            createdAt: new Date().toISOString(),
-            actionHref: '/settings',
-            actionLabel: t('settingsLabel'),
-            badge: t('connectionBadge'),
-          })),
-        ].sort((a, b) => b.priority - a.priority || ((safeDate(b.createdAt)?.getTime() ?? 0) - (safeDate(a.createdAt)?.getTime() ?? 0)));
-        setItems(next);
-      })
-      .catch((error) => setMsg(error instanceof Error ? error.message : t('failedToLoadNotifications')))
-      .finally(() => setLoading(false));
-  }, [t, formatLoc, orderStatusMap, tCommon, exchangeStatusMap]);
+    setError('');
+    const response = await fetch(`/api/notifications?per_page=100${unreadOnly ? '&unread=1' : ''}`, { cache: 'no-store' });
+    const payload: unknown = await response.json().catch(() => null);
+    if (!response.ok) setError(responseError(payload, 'load_failed'));
+    else {
+      const parsed = notificationsResponseSchema.safeParse(payload);
+      if (parsed.success) setItems(parsed.data.data);
+      else setError('invalid_notification_response');
+    }
+    setLoading(false);
+  }, [unreadOnly]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  const unread = useMemo(() => new Set(items.filter((item) => !readIds.includes(item.id)).map((item) => item.id)), [items, readIds]);
-
-  const tabs = useMemo<{ key: TabKey; label: string; count: number }[]>(() => [
-    { key: 'all', label: t('allTab'), count: items.length },
-    { key: 'unread', label: t('unreadTab'), count: unread.size },
-    { key: 'orders', label: t('ordersTab'), count: items.filter((item) => item.source === 'orders').length },
-    { key: 'exchanges', label: t('sourceExchanges'), count: items.filter((item) => item.source === 'exchanges').length },
-    { key: 'customers', label: t('sourceCustomers'), count: items.filter((item) => item.source === 'customers').length },
-    { key: 'discounts', label: t('sourceDiscounts'), count: items.filter((item) => item.source === 'discounts').length },
-    { key: 'audit', label: t('sourceAudit'), count: items.filter((item) => item.source === 'audit').length },
-    { key: 'system', label: t('sourceSystem'), count: items.filter((item) => item.source === 'system').length },
-  ], [items, unread.size, t]);
+  useEffect(() => { void load(); }, [load]);
 
   const visible = useMemo(() => {
     const text = query.trim().toLowerCase();
-    return items.filter((item) => {
-      if (tab === 'unread' && !unread.has(item.id)) return false;
-      if (tab !== 'all' && tab !== 'unread' && item.source !== tab) return false;
-      if (!text) return true;
-      return `${item.title} ${item.description} ${item.badge ?? ''} ${sourceMap[item.source]}`.toLowerCase().includes(text);
-    });
-  }, [items, query, tab, unread, sourceMap]);
+    if (!text) return items;
+    return items.filter((item) => `${item.title_ar} ${item.title_en} ${item.body_ar} ${item.body_en}`.toLowerCase().includes(text));
+  }, [items, query]);
 
-  const openItem = useCallback((item: NotificationItem, updateUrl = true) => {
-    if (!readIds.includes(item.id)) saveRead([item.id, ...readIds]);
-    setSelected(item);
-    if (updateUrl) router.replace(`/notifications?open=${encodeURIComponent(item.id)}`, { scroll: false });
-  }, [readIds, router, saveRead]);
+  async function markRead(id: string) {
+    const response = await fetch(`/api/notifications/${id}/read`, { method: 'PUT' });
+    if (response.ok) setItems((current) => unreadOnly ? current.filter((item) => item.id !== id) : current.map((item) => item.id === id ? { ...item, is_read: true } : item));
+  }
 
-  const closeItem = () => {
-    setSelected(null);
-    router.replace('/notifications', { scroll: false });
-  };
-
-  useEffect(() => {
-    const itemId = searchParams.get('open');
-    if (!itemId || autoOpenedId === itemId || selected?.id === itemId) return;
-
-    const existing = items.find((item) => item.id === itemId);
-    if (existing) {
-      openItem(existing, false);
-      setAutoOpenedId(itemId);
-    }
-  }, [autoOpenedId, items, openItem, searchParams, selected?.id]);
-
-  const markAllRead = () => saveRead(items.map((item) => item.id));
-  const resetRead = () => saveRead([]);
+  async function markAllRead() {
+    const response = await fetch('/api/notifications/read-all', { method: 'PUT' });
+    if (response.ok) setItems((current) => unreadOnly ? [] : current.map((item) => ({ ...item, is_read: true })));
+  }
 
   return (
-    <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-      <section className="flex flex-col gap-4 rounded-lg border border-[#E5E0D8] bg-background-card p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h1 className="text-2xl font-black text-text-primary">{t('title')}</h1>
-          <p className="mt-1 text-sm text-[#8B8172]">{t('unreadCount', { count: unread.size })}</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={markAllRead} className="inline-flex items-center gap-2 rounded-lg border border-[#E5E0D8] px-4 py-2 text-sm font-bold text-text-secondary hover:border-primary">
-            <CheckCircle2 size={16} /> {t('markAllRead')}
-          </button>
-          <button type="button" onClick={load} className="inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-primary">
-            <RefreshCw size={16} /> {tCommon('refresh')}
-          </button>
-        </div>
-      </section>
-
-      {msg ? <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">{msg}</div> : null}
-
-      <section className="grid gap-3 md:grid-cols-4">
-        {[
-          [t('allTab'), items.length, Bell],
-          [t('unreadTab'), unread.size, AlertTriangle],
-          [t('urgentTab'), items.filter((item) => item.tone === 'danger' || item.priority >= 85).length, AlertTriangle],
-          [t('ordersTab'), items.filter((item) => item.source === 'orders').length, ShoppingBag],
-        ].map(([label, value, Icon]) => {
-          const IconComponent = Icon as typeof Bell;
-          return (
-            <div key={String(label)} className="rounded-lg border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
-              <IconComponent size={16} className="text-primary" />
-              <p className="mt-3 text-2xl font-black text-text-primary" dir="ltr">{Number(value).toLocaleString(formatLoc)}</p>
-              <p className="mt-1 text-xs font-black text-[#8B8172]">{String(label)}</p>
-            </div>
-          );
+    <div className="space-y-5" dir={isAr ? 'rtl' : 'ltr'}>
+      <header className="flex flex-col gap-3 border-b pb-5 md:flex-row md:items-center md:justify-between">
+        <div><h1 className="text-2xl font-black">{isAr ? 'الإشعارات' : 'Notifications'}</h1><p className="mt-1 text-sm text-muted-foreground">{items.filter((item) => !item.is_read).length} {isAr ? 'غير مقروء' : 'unread'}</p></div>
+        <div className="flex gap-2"><button onClick={() => void markAllRead()} className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-semibold"><CheckCheck size={16} />{isAr ? 'قراءة الكل' : 'Mark all read'}</button><button onClick={() => void load()} className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-semibold"><RefreshCw size={16} />{isAr ? 'تحديث' : 'Refresh'}</button></div>
+      </header>
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex gap-2"><button onClick={() => setUnreadOnly(false)} className={`rounded-md border px-3 py-2 text-sm ${!unreadOnly ? 'border-primary bg-primary/10' : ''}`}>{isAr ? 'الكل' : 'All'}</button><button onClick={() => setUnreadOnly(true)} className={`rounded-md border px-3 py-2 text-sm ${unreadOnly ? 'border-primary bg-primary/10' : ''}`}>{isAr ? 'غير المقروء' : 'Unread'}</button></div>
+        <label className="relative max-w-md flex-1"><Search size={16} className="absolute start-3 top-3 text-muted-foreground" /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={isAr ? 'بحث في الإشعارات' : 'Search notifications'} className="w-full rounded-md border py-2.5 pe-3 ps-9 text-sm" /></label>
+      </div>
+      {error && <p className="border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
+      <section className="divide-y border">
+        {loading ? <p className="p-8 text-center text-sm text-muted-foreground">{isAr ? 'جار التحميل...' : 'Loading...'}</p> : visible.length === 0 ? <p className="p-8 text-center text-sm text-muted-foreground">{isAr ? 'لا توجد إشعارات' : 'No notifications'}</p> : visible.map((item) => {
+          const href = notificationHref(item);
+          const content = <><span className={`grid h-9 w-9 shrink-0 place-items-center rounded-md ${item.is_read ? 'bg-muted text-muted-foreground' : 'bg-primary/15 text-primary'}`}><Bell size={16} /></span><span className="min-w-0 flex-1"><span className="block font-bold">{isAr ? item.title_ar : item.title_en}</span><span className="mt-1 block text-sm text-muted-foreground">{isAr ? item.body_ar : item.body_en}</span><span className="mt-2 block text-xs text-muted-foreground">{new Intl.DateTimeFormat(isAr ? 'ar-SY' : 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(item.created_at))}</span></span>{!item.is_read && <span className="h-2 w-2 rounded-full bg-red-500" />}</>;
+          return href ? <Link key={item.id} href={href} onClick={() => void markRead(item.id)} className="flex gap-3 p-4 hover:bg-muted/40">{content}</Link> : <button key={item.id} onClick={() => void markRead(item.id)} className="flex w-full gap-3 p-4 text-start hover:bg-muted/40">{content}</button>;
         })}
       </section>
-
-      <section className="rounded-lg border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {tabs.map((item) => (
-              <button key={item.key} type="button" onClick={() => setTab(item.key)} className={`whitespace-nowrap rounded-lg border px-3 py-2 text-xs font-black ${tab === item.key ? 'border-primary bg-primary text-text-primary' : 'border-[#E5E0D8] bg-background text-text-secondary hover:border-primary'}`}>
-                {item.label} <span className="ms-1" dir="ltr">{item.count.toLocaleString(formatLoc)}</span>
-              </button>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <div className="flex overflow-hidden rounded-lg border border-[#E5E0D8] bg-background focus-within:border-primary">
-              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('searchPlaceholder')} className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm outline-none" dir={isAr ? "rtl" : "ltr"} />
-              <span className={`grid w-10 place-items-center ${isAr ? "border-r" : "border-l"} border-[#E5E0D8] text-[#8B8172]`}><Search size={16} /></span>
-            </div>
-            <button type="button" onClick={resetRead} className="rounded-lg border border-[#E5E0D8] px-3 py-2 text-xs font-bold text-text-secondary hover:border-primary">{t('showBtn')}</button>
-          </div>
-        </div>
-      </section>
-
-      <section className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-background-card shadow-sm">
-        {loading ? <p className="p-4 md:p-10 text-center text-sm text-text-muted">{tCommon('loading')}</p>
-        : visible.length === 0 ? <p className="p-4 md:p-10 text-center text-sm text-text-muted">{t('noNotifications')}</p>
-        : (
-          <div className="divide-y divide-[#F0ECE6]">
-            {visible.map((item) => {
-              const read = readIds.includes(item.id);
-              return (
-                <div key={item.id} className={`grid gap-3 p-4 transition hover:bg-[#FFFBF0] lg:grid-cols-[44px_minmax(0,1fr)_auto] lg:items-center ${read ? 'opacity-70' : ''}`}>
-                  <button type="button" onClick={() => openItem(item)} className={`grid h-10 w-10 place-items-center rounded-lg border ${toneClass(item.tone)}`}>
-                    {sourceIcon(item.source)}
-                  </button>
-                  <button type="button" onClick={() => openItem(item)} className={`min-w-0 ${isAr ? "text-right" : "text-left"}`}>
-                    <span className="flex flex-wrap items-center gap-2">
-                      {!read ? <span className="h-2 w-2 rounded-full bg-primary" /> : null}
-                      <span className="font-black text-text-primary">{item.title}</span>
-                      <span className={`rounded-full border px-2 py-1 text-[11px] font-bold ${toneClass(item.tone)}`}>{item.badge ?? sourceMap[item.source]}</span>
-                    </span>
-                    <span className="mt-1 block truncate text-sm text-text-secondary">{item.description}</span>
-                    <span className="mt-1 block text-xs text-text-muted">{dateText(item.createdAt, formatLoc)} - {relative(item.createdAt, t)}</span>
-                  </button>
-                  <div className="flex gap-2">
-                    <button type="button" onClick={() => saveRead(read ? readIds.filter((id) => id !== item.id) : [item.id, ...readIds])} className="rounded-lg border border-[#E5E0D8] px-3 py-2 text-xs font-bold text-text-secondary hover:border-primary">
-                      {read ? t('btnUnread') : t('btnRead')}
-                    </button>
-                    {item.actionHref ? (
-                      <Link href={item.actionHref} onClick={() => !read && saveRead([item.id, ...readIds])} className="rounded-lg bg-[#1C1917] px-3 py-2 text-xs font-black text-white hover:bg-primary">
-                        {item.actionLabel ?? t('openBtn')}
-                      </Link>
-                    ) : null}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
-
-      {selected ? (
-        <Modal title={selected.title} onClose={closeItem} closeTitle={tCommon('close')}>
-          <div className="space-y-4">
-            <div className="rounded-lg border border-[#E5E0D8] bg-background-card p-4">
-              <div className="flex items-center gap-2">
-                <span className={`grid h-9 w-9 place-items-center rounded-lg border ${toneClass(selected.tone)}`}>{sourceIcon(selected.source)}</span>
-                <div>
-                  <p className="text-sm font-black text-text-primary">{selected.description}</p>
-                  <p className="mt-1 text-xs text-[#8B8172]">{sourceMap[selected.source]} - {dateText(selected.createdAt, formatLoc)}</p>
-                </div>
-              </div>
-            </div>
-
-            {selected.meta?.length ? (
-              <div className="overflow-hidden rounded-lg border border-[#E5E0D8] bg-background-card">
-                {selected.meta.map(([label, value]) => (
-                  <div key={`${label}:${value}`} className="flex items-start justify-between gap-4 border-b border-[#F0ECE6] px-4 py-3 text-sm last:border-b-0">
-                    <span className="text-[#8B8172]">{label}</span>
-                    <span className={`max-w-[65%] break-words ${isAr ? "text-left" : "text-right"} font-black text-text-primary`} dir="auto">{value}</span>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-
-            <div className="flex flex-col gap-2 sm:flex-row">
-              {selected.actionHref ? (
-                <Link href={selected.actionHref} onClick={() => setSelected(null)} className="flex-1 rounded-lg bg-primary px-4 py-3 text-center text-sm font-black text-text-primary hover:bg-[#9A7209]">
-                  {selected.actionLabel ?? t('openBtn')}
-                </Link>
-              ) : null}
-              <button type="button" onClick={closeItem} className="rounded-lg border border-[#E5E0D8] px-4 py-3 text-sm font-bold text-text-secondary hover:border-primary">
-                {tCommon('close')}
-              </button>
-            </div>
-          </div>
-        </Modal>
-      ) : null}
     </div>
   );
 }

@@ -17,6 +17,8 @@ type Customer = {
   is_blocked?: boolean | null;
 };
 
+type Translator = (key: string, values?: Record<string, string | number>) => string;
+
 const inputClass =
   'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
@@ -109,6 +111,7 @@ function InlineText({
   if (editing) {
     return (
       <input
+        aria-label="تحرير بيانات العميل / Edit customer value"
         autoFocus
         value={draft}
         dir={dir}
@@ -157,6 +160,7 @@ function InlineNumber({
   if (editing) {
     return (
       <input
+        aria-label="تحرير نقاط العميل / Edit customer points"
         autoFocus
         type="number"
         value={draft}
@@ -197,7 +201,7 @@ function StatusPills({
 }: {
   blocked: boolean;
   onSave: (blocked: boolean) => Promise<void> | void;
-  t: any;
+  t: Translator;
 }) {
   return (
     <div className="flex flex-wrap gap-2">
@@ -245,7 +249,7 @@ export default function CustomersQuickAdmin() {
     setLoading(true);
     const params = new URLSearchParams();
     if (search) params.set('search', search);
-    fetchJson<Customer[]>(`/api/customers?${params}`, { cache: 'no-store' })
+    fetchJson<Customer[]>(`/api/customers?${params.toString()}`, { cache: 'no-store' })
       .then((data) => setCustomers(Array.isArray(data) ? data : []))
       .catch(() => setCustomers([]))
       .finally(() => setLoading(false));

@@ -1,14 +1,16 @@
-﻿'use client';
+'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { LayoutDashboard, ShoppingCart, RefreshCw, Gift, LogOut } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, RefreshCw, Gift, PackagePlus, Box, LogOut } from 'lucide-react';
 
 const navItems = [
-  { href: '/dashboard',  icon: LayoutDashboard, labelKey: 'helper.dashboardTitle' },
-  { href: '/orders',     icon: ShoppingCart,    labelKey: 'helper.orderQueue'     },
-  { href: '/exchange',   icon: RefreshCw,       labelKey: 'helper.exchangeQueue'  },
-  { href: '/loyalty',    icon: Gift,            labelKey: 'helper.grantLoyalty'   },
+  { href: '/dashboard',         icon: LayoutDashboard, labelKey: 'helper.dashboardTitle' },
+  { href: '/dashboard#order-queue', icon: ShoppingCart, labelKey: 'helper.orderQueue'     },
+  { href: '/exchange',          icon: RefreshCw,       labelKey: 'helper.exchangeQueue'  },
+  { href: '/inventory',         icon: Box,             labelKey: 'helper.inventory'      },
+  { href: '/loyalty',           icon: Gift,            labelKey: 'helper.grantLoyalty'   },
+  { href: '/product-requests',  icon: PackagePlus,     labelKey: 'helper.productRequests'},
 ];
 
 export function HelperSidebar() {

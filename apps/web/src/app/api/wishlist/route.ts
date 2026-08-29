@@ -1,5 +1,3 @@
-// @ts-nocheck
-/* eslint-disable */
 import { NextResponse } from 'next/server';
 import { getSessionClient } from '@/supabase-server';
 import { z } from 'zod';
@@ -18,20 +16,30 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from('wishlist_items')
-      .select('id, product_id, created_at, products(id, name_ar, name_en, slug, is_active, product_images(url, is_primary), product_variants(id, price_syp, compare_price_syp, stock_quantity))')
+      .select('id, product_id, created_at, products(id, name_ar, name_en, slug, is_active, product_images(url, is_primary), product_variants(id, price_syp, compare_price_syp, stock_quantity, is_active))')
       .eq('customer_id', user.id)
       .order('created_at', { ascending: false });
 
+    const { data: customerData } = await supabase
+      .from('customer_profiles')
+      .select('wishlist_share_token')
+      .eq('id', user.id)
+      .maybeSingle();
+
     if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
-    const items = (data ?? []).map((row: any) => {
+    const items = (data ?? []).map((row) => {
       const product = row.products;
-      const variants = (product?.product_variants ?? []) as any[];
-      const totalStock = variants.reduce((s, v) => s + Number(v.stock_quantity || 0), 0);
-      const minPrice = variants.length
-        ? Math.min(...variants.map((v) => Number(v.price_syp || 0)))
+      const variants = product?.product_variants ?? [];
+      const activeVariants = variants.filter((variant) => variant.is_active);
+      const purchasableVariant = activeVariants.find((variant) => Number(variant.stock_quantity ?? 0) > 0)
+        ?? activeVariants[0]
+        ?? null;
+      const totalStock = activeVariants.reduce((s, v) => s + Number(v.stock_quantity || 0), 0);
+      const minPrice = activeVariants.length
+        ? Math.min(...activeVariants.map((v) => Number(v.price_syp || 0)))
         : null;
-      const images = (product?.product_images ?? []) as any[];
+      const images = product?.product_images ?? [];
       const primaryImage = images.find((i) => i.is_primary)?.url ?? images[0]?.url ?? null;
 
       return {
@@ -45,10 +53,12 @@ export async function GET() {
         image_url: primaryImage,
         min_price_syp: minPrice,
         in_stock: totalStock > 0,
+        variant_id: purchasableVariant?.id ?? null,
+        max_quantity: Math.max(0, Number(purchasableVariant?.stock_quantity ?? 0)),
       };
     });
 
-    return NextResponse.json({ authenticated: true, items });
+    return NextResponse.json({ authenticated: true, share_token: customerData?.wishlist_share_token, items });
   } catch {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
   }

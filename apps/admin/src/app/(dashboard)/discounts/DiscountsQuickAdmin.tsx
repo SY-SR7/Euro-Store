@@ -6,10 +6,13 @@ import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 
+type DiscountType = 'percentage' | 'fixed' | 'fixed_amount';
+type Translator = (key: string, values?: Record<string, string | number>) => string;
+
 type Discount = {
   id: string;
   code: string;
-  type: 'percentage' | 'fixed' | string;
+  type: DiscountType;
   value: number;
   min_order_syp?: number | null;
   valid_from?: string | null;
@@ -80,7 +83,7 @@ function InlineText({ value, onSave, dir = 'rtl' }: { value?: string | null; onS
     setEditing(false);
     if (next !== (value ?? '')) void onSave(next);
   };
-  if (editing) return <input autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
+  if (editing) return <input aria-label="تحرير النص / Edit text" autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
   return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">{value || <span className="text-text-muted">—</span>}</button>;
 }
 
@@ -95,14 +98,18 @@ function InlineNumber({ value, onSave, nullable = false, locale = 'ar-SY' }: { v
     const next = Number(trimmed);
     if (Number.isFinite(next) && next !== (value ?? null)) void onSave(next);
   };
-  if (editing) return <input autoFocus type="number" value={draft} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
+  if (editing) return <input aria-label="تحرير الرقم / Edit number" autoFocus type="number" value={draft} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
   return <button type="button" onClick={() => setEditing(true)} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-bold text-text-primary transition hover:bg-background">{value == null ? <span className="text-text-muted">—</span> : Number(value).toLocaleString(locale)}</button>;
 }
 
-function TypePills({ value, onSave, t }: { value: string; onSave: (value: string) => void | Promise<void>; t: any }) {
+function TypePills({ value, onSave, t }: { value: DiscountType; onSave: (value: DiscountType) => void | Promise<void>; t: Translator }) {
+  const options: Array<[DiscountType, string]> = [
+    ['percentage', t('typePercentage', { fallback: 'نسبة %' })],
+    ['fixed', t('typeFixed', { fallback: 'مبلغ ثابت' })],
+  ];
   return (
     <div className="flex gap-2">
-      {[['percentage', t('typePercentage', { fallback: 'نسبة %' })], ['fixed', t('typeFixed', { fallback: 'مبلغ ثابت' })]].map(([key, label]) => (
+      {options.map(([key, label]) => (
         <button key={key} type="button" onClick={() => key !== value && void onSave(key)} className={`rounded-full border px-3 py-1 text-xs font-black ${key === value ? 'border-primary bg-[#FFF4D8] text-text-primary' : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary'}`}>
           {label}
         </button>
@@ -111,7 +118,7 @@ function TypePills({ value, onSave, t }: { value: string; onSave: (value: string
   );
 }
 
-function ActivePills({ value, onSave, t }: { value: boolean; onSave: (value: boolean) => void | Promise<void>; t: any }) {
+function ActivePills({ value, onSave, t }: { value: boolean; onSave: (value: boolean) => void | Promise<void>; t: Translator }) {
   return (
     <div className="flex gap-2">
       {[{ v: true, l: t('statusActive', { fallback: 'نشط' }), c: 'border-green-200 bg-green-50 text-green-700' }, { v: false, l: t('statusInactive', { fallback: 'معطّل' }), c: 'border-red-200 bg-red-50 text-red-700' }].map((option) => (
@@ -246,14 +253,14 @@ export default function DiscountsQuickAdmin() {
         <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm">
           <div className="grid gap-3 sm:grid-cols-2">
             <input value={newForm.code} onChange={(e) => setNewForm((f) => ({ ...f, code: e.target.value.toUpperCase() }))} placeholder={t('code', { fallback: 'الكود' })} className={`${inputClass} font-mono`} dir="ltr" />
-            <select value={newForm.type} onChange={(e) => setNewForm((f) => ({ ...f, type: e.target.value }))} className={inputClass} dir={isAr ? "rtl" : "ltr"}>
+            <select aria-label={t('type', { fallback: 'نوع الخصم' })} value={newForm.type} onChange={(e) => setNewForm((f) => ({ ...f, type: e.target.value }))} className={inputClass} dir={isAr ? "rtl" : "ltr"}>
               <option value="percentage">{t('typePercentage', { fallback: 'نسبة %' })}</option>
               <option value="fixed">{t('typeFixed', { fallback: 'مبلغ ثابت' })}</option>
             </select>
             <input type="number" value={newForm.value} onChange={(e) => setNewForm((f) => ({ ...f, value: e.target.value }))} placeholder={t('value', { fallback: 'القيمة' })} className={inputClass} />
             <input type="number" value={newForm.min_order_syp} onChange={(e) => setNewForm((f) => ({ ...f, min_order_syp: e.target.value }))} placeholder={t('minOrder', { fallback: 'الحد الأدنى' })} className={inputClass} />
-            <input type="date" value={newForm.valid_from} onChange={(e) => setNewForm((f) => ({ ...f, valid_from: e.target.value }))} className={inputClass} dir="ltr" />
-            <input type="date" value={newForm.valid_until} onChange={(e) => setNewForm((f) => ({ ...f, valid_until: e.target.value }))} className={inputClass} dir="ltr" />
+            <input aria-label={t('validFrom', { fallback: 'صالح من' })} type="date" value={newForm.valid_from} onChange={(e) => setNewForm((f) => ({ ...f, valid_from: e.target.value }))} className={inputClass} dir="ltr" />
+            <input aria-label={t('validUntil', { fallback: 'صالح حتى' })} type="date" value={newForm.valid_until} onChange={(e) => setNewForm((f) => ({ ...f, valid_until: e.target.value }))} className={inputClass} dir="ltr" />
             <input type="number" value={newForm.max_uses} onChange={(e) => setNewForm((f) => ({ ...f, max_uses: e.target.value }))} placeholder={t('maxUses', { fallback: 'أقصى استخدام' })} className={inputClass} />
             <button type="button" onClick={() => void createDiscount()} disabled={!newForm.code || !newForm.value} className="rounded-xl bg-primary py-2 text-sm font-bold text-text-primary disabled:opacity-50">{t('createBtn', { fallback: 'إنشاء' })}</button>
           </div>
@@ -296,8 +303,8 @@ export default function DiscountsQuickAdmin() {
                 <Field label={t('value', { fallback: 'القيمة' })}><InlineNumber value={selected.value} onSave={(value) => patchDiscount(selected, { value: Number(value ?? 0) })} locale={locale === 'ar' ? 'ar-SY' : 'en-US'} /></Field>
                 <Field label={t('minOrder', { fallback: 'الحد الأدنى' })}><InlineNumber value={selected.min_order_syp ?? null} nullable onSave={(value) => patchDiscount(selected, { min_order_syp: value })} locale={locale === 'ar' ? 'ar-SY' : 'en-US'} /></Field>
                 <Field label={t('maxUses', { fallback: 'أقصى استخدام' })}><InlineNumber value={selected.max_uses ?? null} nullable onSave={(value) => patchDiscount(selected, { max_uses: value })} locale={locale === 'ar' ? 'ar-SY' : 'en-US'} /></Field>
-                <Field label={t('validFrom', { fallback: 'صالح من' })}><input type="date" value={toDateInput(selected.valid_from)} onChange={(e) => void patchDiscount(selected, { valid_from: e.target.value || null })} className={inputClass} dir="ltr" /></Field>
-                <Field label={t('validUntil', { fallback: 'صالح حتى' })}><input type="date" value={toDateInput(selected.valid_until)} onChange={(e) => void patchDiscount(selected, { valid_until: e.target.value || null })} className={inputClass} dir="ltr" /></Field>
+                <Field label={t('validFrom', { fallback: 'صالح من' })}><input aria-label={t('validFrom', { fallback: 'صالح من' })} required type="date" value={toDateInput(selected.valid_from)} onChange={(e) => { if (e.target.value) void patchDiscount(selected, { valid_from: e.target.value }); }} className={inputClass} dir="ltr" /></Field>
+                <Field label={t('validUntil', { fallback: 'صالح حتى' })}><input aria-label={t('validUntil', { fallback: 'صالح حتى' })} required type="date" value={toDateInput(selected.valid_until)} onChange={(e) => { if (e.target.value) void patchDiscount(selected, { valid_until: e.target.value }); }} className={inputClass} dir="ltr" /></Field>
                 <Field label={t('status', { fallback: 'الحالة' })}><ActivePills value={selected.is_active} onSave={(is_active) => patchDiscount(selected, { is_active })} t={t} /></Field>
                 <Field label={t('uses', { fallback: 'الاستخدامات' })}><div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-text-primary">{selected.used_count ?? 0}{selected.max_uses ? ` / ${selected.max_uses}` : ''}</div></Field>
                 <Field label={t('dateRange', { fallback: 'النطاق' })}><div className="min-h-9 rounded-xl px-3 py-2 text-sm font-semibold text-text-primary" dir="ltr">{formatDate(selected.valid_from, locale === 'ar' ? 'ar-SY' : 'en-US')} - {formatDate(selected.valid_until, locale === 'ar' ? 'ar-SY' : 'en-US')}</div></Field>

@@ -1,16 +1,14 @@
-// @ts-nocheck
-/* eslint-disable */
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 import { useLocale, useTranslations } from 'next-intl';
+import { safeInternalPath } from '@eurostore/shared';
 
 export default function LoginPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const nextUrl = searchParams.get('next') || '/account';
+  const nextUrl = safeInternalPath(searchParams.get('next'), '/account');
   
   const [email, setEmail]     = useState('');
   const [password, setPassword] = useState('');
@@ -27,9 +25,18 @@ export default function LoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault(); setError(''); setLoading(true);
-    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
-    if (err) { setError(err.message); setLoading(false); return; }
-    
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const payload = await response.json().catch(() => null) as { error?: { message?: string } } | null;
+    if (!response.ok) {
+      setError(payload?.error?.message || t('loginError', { fallback: 'تعذر تسجيل الدخول' }));
+      setLoading(false);
+      return;
+    }
+
     window.location.assign(nextUrl);
   }
 
@@ -46,7 +53,7 @@ export default function LoginPage() {
 
           {error && <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={(event) => { void handleLogin(event); }} className="space-y-4">
             <div>
               <label className="mb-1.5 block text-sm font-semibold text-text-primary">{t('email')}</label>
               <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required
@@ -54,7 +61,12 @@ export default function LoginPage() {
                 placeholder="you@example.com" dir="ltr" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-text-primary">{t('password')}</label>
+              <div className="mb-1.5 flex items-center justify-between">
+                <label className="block text-sm font-semibold text-text-primary">{t('password')}</label>
+                <Link href="/auth/forgot-password" className="text-xs font-semibold text-primary hover:underline">
+                  {t('forgotPassword')}
+                </Link>
+              </div>
               <input type="password" value={password} onChange={e=>setPassword(e.target.value)} required
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none transition focus:border-primary"
                 placeholder="••••••••" dir="ltr" />
@@ -64,6 +76,20 @@ export default function LoginPage() {
               {loading ? t('loggingIn') : t('login')}
             </button>
           </form>
+
+          <div className="mt-4 flex flex-col space-y-3">
+            <div className="flex items-center">
+              <div className="flex-grow border-t border-border"></div>
+              <span className="mx-2 text-xs text-text-muted">{t('or')}</span>
+              <div className="flex-grow border-t border-border"></div>
+            </div>
+            <button
+              onClick={() => { void supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}` } }); }}
+              className="flex w-full items-center justify-center rounded-xl border border-border bg-background py-3 text-sm font-semibold text-text-primary hover:bg-background-card transition-colors"
+            >
+              {t('continueWithGoogle')}
+            </button>
+          </div>
 
           <p className="mt-5 text-center text-sm text-text-muted">
             {t('noAccount')}{' '}

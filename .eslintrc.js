@@ -22,6 +22,21 @@ module.exports = {
     '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
     // No unused vars
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/consistent-type-definitions': 'off',
+    '@typescript-eslint/array-type': 'off',
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
+    '@typescript-eslint/no-empty-function': ['error', { allow: ['methods'] }],
+    'no-empty': ['error', { allowEmptyCatch: true }],
   },
-  ignorePatterns: ['node_modules/', '.next/', 'dist/', 'build/', 'coverage/', '*.config.js'],
+  overrides: [
+    {
+      files: ['apps/{web,admin,helper,partner}/**/*.{js,jsx,ts,tsx}'],
+      extends: ['next/core-web-vitals'],
+      rules: {
+        '@typescript-eslint/no-empty-function': ['error', { allow: ['methods'] }],
+        'no-empty': ['error', { allowEmptyCatch: true }],
+      },
+    },
+  ],
+  ignorePatterns: ['node_modules/', '.next/', 'dist/', 'build/', 'coverage/', '*.config.js', '**/next-env.d.ts'],
 };

@@ -1,0 +1,1 @@
+ALTER TABLE customer_profiles ADD COLUMN gender TEXT CHECK (gender IN ('male', 'female'));

@@ -14,6 +14,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { responseError, uploadResponseSchema } from '@/lib/upload-response';
+import { ConfirmDialog } from '@eurostore/ui';
 
 type Product = {
   id: string;
@@ -173,6 +175,8 @@ function Modal({
           </div>
           <button
             type="button"
+            aria-label="إغلاق / Close"
+            title="إغلاق / Close"
             onClick={onClose}
             className="flex h-9 w-9 flex-none items-center justify-center rounded-full border border-[#E5E0D8] bg-background text-text-secondary transition hover:border-primary hover:text-text-primary"
           >
@@ -264,6 +268,7 @@ function InlineText({
     if (multiline) {
       return (
         <textarea
+          aria-label="تحرير الوصف / Edit description"
           autoFocus
           rows={4}
           value={draft}
@@ -278,6 +283,7 @@ function InlineText({
 
     return (
       <input
+        aria-label="تحرير النص / Edit text"
         autoFocus
         value={draft}
         dir={dir}
@@ -333,6 +339,7 @@ function InlineNumber({
   if (editing) {
     return (
       <input
+        aria-label="تحرير الرقم / Edit number"
         autoFocus
         type="number"
         value={draft}
@@ -382,6 +389,7 @@ function InlineSelect({
   if (editing) {
     return (
       <select
+        aria-label="تحرير الخيار / Edit option"
         autoFocus
         value={value ?? ''}
         onBlur={() => setEditing(false)}
@@ -575,6 +583,7 @@ export default function ProductQuickAdmin() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<'all' | 'active' | 'inactive' | 'featured'>('all');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<{ kind: 'variant'; item: ProductVariant } | { kind: 'image'; item: ProductImage } | null>(null);
 
   const categoryOptions = useMemo(
     () => [{ value: '', label: t('uncategorized', { fallback: 'بدون تصنيف' }) }, ...allCategories.map((c) => ({ value: c.id, label: isAr ? c.name_ar : (c.name_en || c.name_ar) }))],
@@ -615,7 +624,7 @@ export default function ProductQuickAdmin() {
     } finally {
       setLoading(false);
     }
-  }, [buildQuery]);
+  }, [buildQuery, t]);
 
   useEffect(() => {
     void load();
@@ -644,7 +653,7 @@ export default function ProductQuickAdmin() {
     } finally {
       if (!quiet) setModalLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const toggleFilter = (list: string[], item: string, setter: (value: string[]) => void) => {
     setter(list.includes(item) ? list.filter((current) => current !== item) : [...list, item]);
@@ -696,7 +705,7 @@ export default function ProductQuickAdmin() {
       is_featured: false,
     }, false);
     setAutoOpenedId(productId);
-  }, [autoOpenedId, filterData?.products, openProduct, searchParams, selected?.id]);
+  }, [autoOpenedId, filterData?.products, openProduct, searchParams, selected?.id, t]);
 
   const updateListProduct = (productId: string, patch: Partial<Product>) => {
     setFilterData((current) =>
@@ -816,7 +825,7 @@ export default function ProductQuickAdmin() {
   };
 
   const deleteVariant = async (variant: ProductVariant) => {
-    if (!confirm(tCommon('confirmDelete', { fallback: 'تأكيد الحذف؟' })) || !selected) return;
+    if (!selected) return;
 
     const previous = variants;
     setSavingKey(`variant:${variant.id}:delete`);
@@ -824,6 +833,7 @@ export default function ProductQuickAdmin() {
 
     try {
       await fetchJson<{ ok: boolean }>(`/api/catalog/variants/${variant.id}`, { method: 'DELETE' });
+      setPendingDelete(null);
       await loadProductBundle(selected.id, true);
       void load();
     } catch (error) {
@@ -921,30 +931,29 @@ export default function ProductQuickAdmin() {
 
     try {
       const formData = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        formData.append('file', files[i]);
-      }
+      for (const file of Array.from(files)) formData.append('file', file);
       
-      const uploadRes = await fetch('/api/upload', {
+      const uploadRes = await fetch('/api/upload?purpose=product', {
         method: 'POST',
         body: formData
       });
       
       if (!uploadRes.ok) {
-        const uErr = await uploadRes.json().catch(() => ({}));
-        throw new Error(uErr.error || 'Failed to upload media');
+        const errorPayload: unknown = await uploadRes.json().catch(() => null);
+        throw new Error(responseError(errorPayload, 'Failed to upload media'));
       }
-      
-      const uploadData = await uploadRes.json();
+
+      const rawUploadData: unknown = await uploadRes.json();
+      const uploadData = uploadResponseSchema.parse(rawUploadData);
       
       let isPrimary = images.length === 0;
-      for (const f of uploadData.files) {
+      for (const file of uploadData.files) {
         await fetchJson<{ id: string }>('/api/catalog/images', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             product_id: selected.id,
-            url: f.url,
+            url: file.url,
             is_primary: isPrimary,
           }),
         });
@@ -961,7 +970,7 @@ export default function ProductQuickAdmin() {
   };
 
   const deleteImage = async (image: ProductImage) => {
-    if (!confirm(tCommon('confirmDelete', { fallback: 'تأكيد الحذف؟' })) || !selected) return;
+    if (!selected) return;
 
     const previous = images;
     setSavingKey(`image:${image.id}:delete`);
@@ -969,6 +978,7 @@ export default function ProductQuickAdmin() {
 
     try {
       await fetchJson<{ ok: boolean }>(`/api/catalog/images/${image.id}`, { method: 'DELETE' });
+      setPendingDelete(null);
       await loadProductBundle(selected.id, true);
       void load();
     } catch (error) {
@@ -1449,7 +1459,7 @@ export default function ProductQuickAdmin() {
                       />
                       <button
                         type="button"
-                        onClick={createVariant}
+                        onClick={() => void createVariant()}
                         disabled={savingKey === 'variant:new' || !newVariant.sku.trim() || !newVariant.price_syp.trim()}
                         className="rounded-xl bg-primary px-4 py-2 text-sm font-black text-text-primary transition hover:bg-[#9A7209] disabled:opacity-50"
                       >
@@ -1525,7 +1535,7 @@ export default function ProductQuickAdmin() {
                               <button
                                 type="button"
                                 title={tCommon('delete', { fallback: 'حذف الخيار' })}
-                                onClick={() => void deleteVariant(variant)}
+                                onClick={() => setPendingDelete({ kind: 'variant', item: variant })}
                                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-red-100 text-red-600 transition hover:bg-red-50"
                               >
                                 <Trash2 size={15} />
@@ -1602,10 +1612,11 @@ export default function ProductQuickAdmin() {
                 <div className="mb-3 flex flex-col gap-2">
                   <div className="flex items-center gap-2">
                     <input 
+                      aria-label={t('media', { fallback: isAr ? 'صور وفيديوهات المنتج' : 'Product images and videos' })}
                       type="file" 
                       multiple 
                       accept="image/*,video/*"
-                      onChange={(e) => uploadImages(e.target.files)}
+                      onChange={(e) => void uploadImages(e.target.files)}
                       disabled={savingKey === 'image:upload'}
                       className={inputClass}
                     />
@@ -1621,7 +1632,7 @@ export default function ProductQuickAdmin() {
                     />
                     <button
                       type="button"
-                      onClick={addImage}
+                      onClick={() => void addImage()}
                       disabled={savingKey === 'image:new' || !newImageUrl.trim()}
                       className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926] disabled:opacity-50 whitespace-nowrap"
                     >
@@ -1697,7 +1708,7 @@ export default function ProductQuickAdmin() {
                           <button
                             type="button"
                             title="حذف الصورة"
-                            onClick={() => void deleteImage(image)}
+                            onClick={() => setPendingDelete({ kind: 'image', item: image })}
                             className="flex h-9 w-9 items-center justify-center rounded-xl border border-red-100 text-red-600 transition hover:bg-red-50"
                           >
                             <Trash2 size={15} />
@@ -1712,6 +1723,20 @@ export default function ProductQuickAdmin() {
           )}
         </Modal>
       ) : null}
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title={pendingDelete?.kind === 'variant' ? (isAr ? 'حذف الخيار' : 'Delete variant') : (isAr ? 'حذف الصورة' : 'Delete image')}
+        description={isAr ? 'سيُحذف العنصر نهائياً من المنتج.' : 'This item will be permanently removed from the product.'}
+        confirmLabel={savingKey.includes(':delete') ? (isAr ? 'جارٍ الحذف' : 'Deleting') : tCommon('delete', { fallback: isAr ? 'حذف' : 'Delete' })}
+        cancelLabel={tCommon('cancel', { fallback: isAr ? 'إلغاء' : 'Cancel' })}
+        onConfirm={() => {
+          if (pendingDelete?.kind === 'variant') void deleteVariant(pendingDelete.item);
+          if (pendingDelete?.kind === 'image') void deleteImage(pendingDelete.item);
+        }}
+        onCancel={() => setPendingDelete(null)}
+        pending={savingKey.includes(':delete')}
+        destructive
+      />
     </div>
   );
 }

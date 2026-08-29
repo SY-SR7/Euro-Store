@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { defaultLocale, type Locale } from '@eurostore/shared';
 
 export default getRequestConfig(async () => {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const locale = (cookieStore.get('EUROSTORE_LOCALE')?.value as Locale | undefined) ?? defaultLocale;
   const messages = locale === 'ar' 
     ? (await import('../../../../packages/shared/src/messages/ar.json')).default 

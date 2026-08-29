@@ -1,10 +1,10 @@
 'use client';
 
-import { FormEvent, useMemo, useState } from 'react';
+import type { FormEvent} from 'react';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { createBrowserClient } from '@supabase/ssr';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 
 function safeNext(value: string | null) {
@@ -43,26 +43,32 @@ export default function LoginPage() {
     setError('');
 
     try {
-      // Use browser client directly — this sets cookies in the correct format
-      // that the SSR middleware can read natively
-      const supabase = createBrowserClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-      );
-
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email: cleanEmail,
-        password,
+      const res = await fetch('/api/admin/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: cleanEmail,
+          password,
+        }),
       });
 
-      if (authError || !data.session) {
-        setError(authError?.message || t('errors.loginFailed', { fallback: 'فشل تسجيل الدخول' }));
+      const data = await res.json().catch(() => null) as {
+        error?: string;
+        status?: '2fa_required' | 'setup_required';
+      } | null;
+
+      if (!res.ok || !data?.status) {
+        setError(data?.error || t('errors.loginFailed', { fallback: 'فشل تسجيل الدخول' }));
         setLoading(false);
         return;
       }
 
-      // Navigate to the next page — cookies are already set by createBrowserClient
-      window.location.assign(next);
+      if (data.status === 'setup_required') {
+        window.location.assign(`/totp/setup?next=${encodeURIComponent(next)}`);
+        return;
+      }
+
+      window.location.assign(`/totp/verify?next=${encodeURIComponent(next)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : t('errors.cannotLogin', { fallback: 'تعذر تسجيل الدخول' }));
       setLoading(false);
@@ -82,7 +88,7 @@ export default function LoginPage() {
           <h1 className="mt-4 text-3xl font-black text-[#1F1B16]">{t('adminLogin', { fallback: 'تسجيل دخول الإدارة' })}</h1>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={(event) => void handleSubmit(event)} className="space-y-5">
           {error && (
             <div className="rounded-2xl border border-red-300 bg-red-50 p-4 text-sm font-bold text-red-700">
               {error}

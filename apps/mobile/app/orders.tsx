@@ -1,116 +1,100 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
-import { supabase } from '../utils/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { apiFetch } from '../utils/api';
+import { ScreenHeader } from '../components/ScreenHeader';
+import { usePreferences } from '../contexts/PreferencesContext';
+import { orderStatusLabel } from '../utils/orderStatus';
+
+type Order = {
+  id: string;
+  order_number: string;
+  status: string;
+  payment_status: string;
+  payment_method: string;
+  total_syp: number;
+  created_at: string;
+};
 
 export default function OrdersScreen() {
   const { user } = useAuth();
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const { isAr, l, formatCurrency, formatDate } = usePreferences();
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
-    if (!user) return;
+  const loadOrders = useCallback(async () => {
+    if (!user) {
+      setOrders([]);
+      setLoading(false);
+      return;
+    }
     try {
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*, order_items(quantity, price_syp, products(name_ar))')
-        .eq('customer_id', user.id)
-        .order('created_at', { ascending: false });
-        
-      if (data) setOrders(data);
-    } catch (err) {
-      console.error(err);
+      const result = await apiFetch<{ data: Order[] }>('/api/orders');
+      setOrders(result.data);
+    } catch {
+      Alert.alert(l('تعذر تحميل الطلبات', 'Could not load orders'), l('تحقق من الاتصال ثم اسحب للأسفل للمحاولة مجدداً.', 'Check your connection, then pull down to try again.'));
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
-  };
+  }, [l, user]);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'text-amber-500';
-      case 'processing': return 'text-blue-500';
-      case 'shipped': return 'text-indigo-500';
-      case 'delivered': return 'text-green-500';
-      case 'cancelled': return 'text-error';
-      default: return 'text-text-secondary';
-    }
-  };
+  useEffect(() => { void loadOrders(); }, [loadOrders]);
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'pending': return '??? ????????';
-      case 'processing': return '??? ???????';
-      case 'shipped': return '?? ?????';
-      case 'delivered': return '?? ???????';
-      case 'cancelled': return '????';
-      default: return status;
-    }
-  };
+  async function cancelOrder(order: Order) {
+    Alert.alert(l('إلغاء الطلب', 'Cancel order'), l(`هل تريد إلغاء الطلب ${order.order_number}؟`, `Cancel order ${order.order_number}?`), [
+      { text: l('تراجع', 'Keep order'), style: 'cancel' },
+      {
+        text: l('إلغاء الطلب', 'Cancel order'),
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await apiFetch(`/api/orders/${order.id}/cancel`, { method: 'POST' });
+            await loadOrders();
+          } catch {
+            Alert.alert(l('تعذر الإلغاء', 'Could not cancel'), l('يمكن إلغاء الطلب فقط أثناء حالة الانتظار.', 'Orders can only be cancelled while pending.'));
+          }
+        },
+      },
+    ]);
+  }
 
   return (
     <SafeAreaView className='flex-1 bg-background'>
-      <View className='px-6 py-4 border-b border-border flex-row items-center'>
-        <TouchableOpacity onPress={() => router.back()} className='mr-4'>
-          <Text className='text-primary text-2xl font-bold'>{'<'}</Text>
-        </TouchableOpacity>
-        <Text className='text-2xl font-bold text-primary'>??????</Text>
-      </View>
+      <ScreenHeader title={l('طلباتي', 'My orders')} />
 
-      {loading ? (
-        <View className='flex-1 justify-center items-center'>
-          <ActivityIndicator size='large' color='#B8860B' />
+      {!user ? (
+        <View className='flex-1 items-center justify-center px-6'>
+          <Text className='mb-3 text-xl font-bold text-text-primary'>{l('سجّل الدخول لعرض طلباتك', 'Sign in to view your orders')}</Text>
+          <TouchableOpacity className='mt-5 w-full rounded-xl bg-primary p-4' onPress={() => router.replace('/login')}><Text className='text-center font-bold text-[#0F0F0F]'>{l('تسجيل الدخول', 'Sign in')}</Text></TouchableOpacity>
         </View>
+      ) : loading ? (
+        <View className='flex-1 items-center justify-center'><ActivityIndicator size='large' color='#B8860B' /></View>
       ) : (
-        <ScrollView className='flex-1 p-6'>
+        <ScrollView className='flex-1 px-6' contentContainerStyle={{ paddingTop: 24, paddingBottom: 32 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); void loadOrders(); }} tintColor='#B8860B' />}>
           {orders.length === 0 ? (
-            <View className='items-center justify-center py-20'>
-              <Text className='text-text-secondary text-lg font-bold'>?? ???? ????? ?????</Text>
-            </View>
-          ) : (
-            orders.map((order) => (
-              <View key={order.id} className='bg-background-secondary p-4 rounded-xl border border-border mb-4'>
-                <View className='flex-row justify-between items-center mb-2'>
-                  <Text className='text-white font-bold'>??? ?????: #{order.order_number}</Text>
-                  <Text className={\ont-bold \\}>
-                    {getStatusText(order.status)}
-                  </Text>
-                </View>
-                <Text className='text-text-secondary text-sm mb-4'>
-                  {new Date(order.created_at).toLocaleDateString('ar-SY')}
-                </Text>
-                
-                <View className='space-y-2 mb-4'>
-                  {order.order_items?.map((item: any, idx: number) => (
-                    <View key={idx} className='flex-row justify-between'>
-                      <Text className='text-text-primary text-sm flex-1' numberOfLines={1}>
-                        {item.quantity}x {item.products?.name_ar}
-                      </Text>
-                      <Text className='text-primary text-sm font-bold ml-4'>
-                        {item.price_syp.toLocaleString('ar-SY')} ?.?
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-
-                <View className='h-[1px] bg-border mb-4' />
-                
-                <View className='flex-row justify-between items-center'>
-                  <Text className='text-text-secondary'>????????:</Text>
-                  <Text className='text-primary font-bold text-lg'>
-                    {order.total_syp.toLocaleString('ar-SY')} ?.?
-                  </Text>
-                </View>
+            <Text className='py-20 text-center text-lg font-bold text-text-secondary'>{l('لا توجد طلبات بعد', 'No orders yet')}</Text>
+          ) : orders.map((order) => (
+            <TouchableOpacity key={order.id} className='mb-4 rounded-xl border border-border bg-background-secondary p-4' onPress={() => router.push(`/orders/${order.order_number}`)}>
+              <View className='mb-3 flex-row items-center justify-between'>
+                <Text className='font-bold text-text-primary'>{order.order_number}</Text>
+                <Text className='font-bold text-primary'>{orderStatusLabel(order.status, isAr)}</Text>
               </View>
-            ))
-          )}
+              <Text className='mb-3 text-sm text-text-secondary'>{formatDate(order.created_at, false)}</Text>
+              <View className='h-px bg-border' />
+              <View className='mt-3 flex-row items-center justify-between'>
+                <Text className='text-text-secondary'>{l('الإجمالي', 'Total')}</Text>
+                <Text className='text-lg font-bold text-primary'>{formatCurrency(Number(order.total_syp))}</Text>
+              </View>
+              {order.status === 'pending' && (
+                <TouchableOpacity className='mt-4 rounded-lg border border-error/50 bg-error/10 py-3' onPress={() => cancelOrder(order)}><Text className='text-center font-bold text-error'>{l('إلغاء الطلب', 'Cancel order')}</Text></TouchableOpacity>
+              )}
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       )}
     </SafeAreaView>
   );
 }
-

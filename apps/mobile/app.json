@@ -2,10 +2,11 @@
   "expo": {
     "name": "EuroStore",
     "slug": "eurostore-mobile",
+    "scheme": "eurostore",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -24,7 +25,27 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#CFA63D"
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "نحتاج الوصول إلى الصور لإرفاق إثبات حالة المنتج في طلب الاستبدال.",
+          "cameraPermission": "نحتاج الكاميرا لتصوير حالة المنتج في طلب الاستبدال."
+        }
+      ]
     ]
   }
 }

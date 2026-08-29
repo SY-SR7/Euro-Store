@@ -8,9 +8,13 @@ import { useLocale, useTranslations } from 'next-intl';
 type Stats = {
   orders: number;
   revenue_syp: number;
+  daily_sales_syp: number;
+  weekly_sales_syp: number;
   customers: number;
   products: number;
   pending_exchanges: number;
+  usd_rate: number;
+  low_stock_count: number;
 };
 
 type Order = {
@@ -32,9 +36,13 @@ type ExchangeRequest = {
 const EMPTY_STATS: Stats = {
   orders: 0,
   revenue_syp: 0,
+  daily_sales_syp: 0,
+  weekly_sales_syp: 0,
   customers: 0,
   products: 0,
   pending_exchanges: 0,
+  usd_rate: 15000,
+  low_stock_count: 0,
 };
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
@@ -117,13 +125,19 @@ export default function DashboardQuickAdmin() {
     load();
   }, [load]);
 
-  const cards = useMemo(() => [
-    { label: t('cardRevenue'), value: money(stats.revenue_syp, formatLoc, unitSyp), href: '/orders', icon: ShoppingBag },
-    { label: t('cardOrders'), value: stats.orders.toLocaleString(formatLoc), href: '/orders', icon: ClipboardList },
-    { label: t('cardCustomers'), value: stats.customers.toLocaleString(formatLoc), href: '/customers', icon: Users },
-    { label: t('cardProducts'), value: stats.products.toLocaleString(formatLoc), href: '/products', icon: Package },
-    { label: t('cardExchanges'), value: stats.pending_exchanges.toLocaleString(formatLoc), href: '/exchanges', icon: Undo2 },
-  ], [stats, t, formatLoc, unitSyp]);
+  const cards = useMemo(() => {
+    const usd = (val: number) => `~ ${(val / stats.usd_rate).toLocaleString(formatLoc, { maximumFractionDigits: 2 })} $`;
+    return [
+      { label: t('cardRevenue'), value: money(stats.revenue_syp, formatLoc, unitSyp), subValue: usd(stats.revenue_syp), href: '/orders', icon: ShoppingBag },
+      { label: 'المبيعات اليومية', value: money(stats.daily_sales_syp, formatLoc, unitSyp), subValue: usd(stats.daily_sales_syp), href: '/orders', icon: ShoppingBag },
+      { label: 'المبيعات الأسبوعية', value: money(stats.weekly_sales_syp, formatLoc, unitSyp), subValue: usd(stats.weekly_sales_syp), href: '/orders', icon: ShoppingBag },
+      { label: t('cardOrders'), value: stats.orders.toLocaleString(formatLoc), href: '/orders', icon: ClipboardList },
+      { label: t('cardCustomers'), value: stats.customers.toLocaleString(formatLoc), href: '/customers', icon: Users },
+      { label: t('cardProducts'), value: stats.products.toLocaleString(formatLoc), href: '/products', icon: Package },
+      { label: 'نواقص المخزون', value: stats.low_stock_count.toLocaleString(formatLoc), href: '/reports', icon: Package, highlight: stats.low_stock_count > 0 },
+      { label: t('cardExchanges'), value: stats.pending_exchanges.toLocaleString(formatLoc), href: '/exchanges', icon: Undo2, highlight: stats.pending_exchanges > 0 },
+    ];
+  }, [stats, t, formatLoc, unitSyp]);
 
   return (
     <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
@@ -144,16 +158,17 @@ export default function DashboardQuickAdmin() {
 
       {msg ? <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">{msg}</div> : null}
 
-      <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+      <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         {cards.map((card) => {
           const Icon = card.icon;
           return (
-            <Link key={card.label} href={card.href} className="rounded-lg border border-[#E5E0D8] bg-background-card p-4 shadow-sm transition hover:border-primary hover:bg-[#FFFBF0]">
+            <Link key={card.label} href={card.href} className={`rounded-lg border bg-background-card p-4 shadow-sm transition hover:border-primary hover:bg-[#FFFBF0] ${card.highlight ? 'border-red-500 bg-red-50/10' : 'border-[#E5E0D8]'}`}>
               <div className="flex items-center justify-between">
-                <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#F8F6F2] text-primary"><Icon size={18} /></span>
+                <span className={`grid h-10 w-10 place-items-center rounded-lg ${card.highlight ? 'bg-red-100 text-red-600' : 'bg-[#F8F6F2] text-primary'}`}><Icon size={18} /></span>
                 <span className="text-xs font-bold text-[#8B8172]">{t('openBtn')}</span>
               </div>
               <p className="mt-4 text-2xl font-black text-text-primary" dir="ltr">{loading ? '...' : card.value}</p>
+              {card.subValue && <p className="mt-1 text-xs font-bold text-green-600" dir="ltr">{loading ? '...' : card.subValue}</p>}
               <p className="mt-1 text-sm font-bold text-text-secondary">{card.label}</p>
             </Link>
           );

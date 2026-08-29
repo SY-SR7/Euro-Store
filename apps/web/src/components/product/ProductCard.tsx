@@ -1,22 +1,22 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-/* eslint-disable */
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Heart, Eye } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
-import { useCartStore } from '@/lib/cart/cartStore';
-import { QuickViewModal } from '@/components/product/QuickViewModal';
-import { useState } from 'react';
 import type { Database } from '@eurostore/database';
 
 type Product = Database['public']['Tables']['products']['Row'];
 type Brand = Database['public']['Tables']['brands']['Row'];
 
+type ProductCardProduct = Pick<Product, 'id' | 'name_ar' | 'name_en' | 'slug'> & Partial<Product> & {
+  primary_image_url?: string | null;
+  product_images?: Array<{ url: string; is_primary?: boolean | null }> | null;
+  brand?: Pick<Brand, 'name'> | null;
+};
+
 interface ProductCardProps {
-  product: Product & { brand?: Brand | null };
+  product: ProductCardProduct;
   variantPrice?: number;
   isNew?: boolean;
   isOnSale?: boolean;
@@ -37,15 +37,17 @@ const tiltVariants = {
 };
 
 export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductCardProps) {
-  const displayPrice = variantPrice || product.base_price;
+  const displayPrice = variantPrice ?? product.base_price ?? 0;
   const locale = useLocale();
   const t = useTranslations('catalog');
   const isAr = locale === 'ar';
   const productName = isAr ? product.name_ar : (product.name_en || product.name_ar);
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const productImage = product.primary_image_url
+    ?? product.product_images?.find((image) => image.is_primary)?.url
+    ?? product.product_images?.[0]?.url
+    ?? null;
 
   return (
-    <>
     <motion.div
       variants={tiltVariants}
       initial="rest"
@@ -53,9 +55,9 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
       className="group relative bg-background-elevated rounded-2xl overflow-hidden border border-border/60 hover:border-primary/40 transition-colors duration-300 flex flex-col h-full"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-background-secondary">
-        {product.primary_image_url ? (
+        {productImage ? (
           <Image 
-            src={product.primary_image_url}
+            src={productImage}
             alt={productName}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
@@ -66,17 +68,6 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
             {t('noImage')}
           </div>
         )}
-        
-        {/* Hover Actions */}
-        <div className="absolute inset-x-0 bottom-4 flex justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0 px-4">
-          <button 
-            onClick={(e) => { e.preventDefault(); setIsQuickViewOpen(true); }}
-            className="flex-1 bg-white/95 text-text-primary backdrop-blur-md font-bold py-3 px-4 rounded-xl shadow-lg hover:bg-primary hover:text-white transition-colors flex items-center justify-center gap-2"
-          >
-            <Eye size={18} />
-            <span className="text-sm">{isAr ? 'نظرة سريعة' : 'Quick View'}</span>
-          </button>
-        </div>
         
         {/* Badges */}
         <div className="absolute top-3 start-3 flex flex-col gap-2 z-10">
@@ -101,7 +92,7 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
       <div className="p-5 text-center flex flex-col flex-grow justify-between bg-gradient-to-b from-transparent to-background-card/50">
         <div>
           <p className="text-text-muted text-[10px] font-bold uppercase tracking-[0.15em] mb-1.5">
-            {isAr ? (product.brand?.name_ar || product.brand?.name_en || 'EuroStore') : (product.brand?.name_en || product.brand?.name_ar || 'EuroStore')}
+            {product.brand?.name || 'EuroStore'}
           </p>
           <Link href={`/products/${product.slug}`} className="block relative z-20">
             <h3 className="text-text-primary text-sm font-semibold line-clamp-1 hover:text-primary transition-colors">
@@ -114,47 +105,7 @@ export function ProductCard({ product, variantPrice, isNew, isOnSale }: ProductC
         </p>
       </div>
       <Link href={`/products/${product.slug}`} className="absolute inset-0 z-10" aria-label={`${t('viewProduct')} ${productName}`} />
-      
-      {/* Quick Add to Cart Button */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 w-[85%]">
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            // Fallback to product.id as variantId if not variant specific
-            const variantId = product.id; 
-            useCartStore.getState().addItem({
-              variantId,
-              productId: product.id,
-              productSlug: product.slug,
-              nameAr: product.name_ar,
-              nameEn: product.name_en || product.name_ar,
-              sku: product.slug,
-              priceSyp: displayPrice,
-              comparePriceSyp: null,
-              imageUrl: product.primary_image_url
-            });
-            import('sonner').then(({ toast }) => {
-              toast.success(isAr ? 'تمت الإضافة للسلة' : 'Added to cart', {
-                description: productName,
-                style: { backgroundColor: '#1F1B16', color: '#B8860B', borderColor: '#B8860B33' }
-              });
-            });
-          }}
-          className="w-full bg-primary text-[#0F0F0F] font-bold py-2.5 rounded-xl shadow-lg hover:bg-[#9A7209] transition-colors flex items-center justify-center gap-2"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          {isAr ? 'أضف سريعاً' : 'Quick Add'}
-        </button>
-      </div>
     </motion.div>
-    
-    <QuickViewModal 
-      isOpen={isQuickViewOpen} 
-      onClose={() => setIsQuickViewOpen(false)} 
-      product={product} 
-    />
-    </>
   );
 }
 

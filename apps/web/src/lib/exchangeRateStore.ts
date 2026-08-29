@@ -1,0 +1,1 @@
+import { create } from 'zustand'; export const useExchangeRateStore = create<{ rate: number, setRate: (r: number) => void }>((set) => ({ rate: 15000, setRate: (rate) => set({ rate }) }));

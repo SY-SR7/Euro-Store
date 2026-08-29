@@ -1,4 +1,4 @@
-﻿-- Migration: 20260702000018_place_order_atomic.sql
+-- Migration: 20260702000018_place_order_atomic.sql
 
 CREATE OR REPLACE FUNCTION place_order_atomic(
   p_order_number text,

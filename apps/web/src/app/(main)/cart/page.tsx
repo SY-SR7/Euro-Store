@@ -1,13 +1,10 @@
 'use client';
-/* eslint-disable */
-// @ts-nocheck
 import Link from 'next/link';
 import { useCartStore } from '@/lib/cart/cartStore';
 import { useLocale, useTranslations } from 'next-intl';
+import { ShoppingCart } from 'lucide-react';
 
-function fmt(n: number, locale: string) {
-  return Number(n || 0).toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US') + (locale === 'ar' ? ' ل.س' : ' SYP');
-}
+import { PriceDisplay } from '@/components/common/PriceDisplay';
 
 export default function CartPage() {
   const { items, removeItem, updateQty, totalSyp } = useCartStore();
@@ -19,7 +16,7 @@ export default function CartPage() {
     return (
       <main className="min-h-screen bg-background px-4 py-20" dir={isAr ? "rtl" : "ltr"}>
         <div className="mx-auto max-w-xl text-center space-y-6">
-          <div className="text-5xl">🛒</div>
+          <ShoppingCart className="mx-auto h-12 w-12 text-primary" />
           <h1 className="text-2xl font-black text-text-primary">{t('emptyCart')}</h1>
           <p className="text-text-muted">{t('addProducts')}</p>
           <Link href="/products"
@@ -32,7 +29,7 @@ export default function CartPage() {
   }
 
   const total = typeof totalSyp === 'function' ? totalSyp() : totalSyp;
-  const itemCount = items.reduce((s: number, i: any) => s + i.quantity, 0);
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <main className="min-h-screen bg-background px-4 py-10" dir={isAr ? "rtl" : "ltr"}>
@@ -48,8 +45,8 @@ export default function CartPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
           {/* Items */}
           <div className="space-y-3">
-            {items.map((item: any) => (
-              <div key={item.variantId}
+            {items.map((item) => (
+              <div key={`${item.itemType ?? 'variant'}:${item.variantId}`}
                 className="flex flex-col md:flex-row md:items-center gap-4 rounded-2xl border border-border bg-background-card p-4 shadow-sm">
                 
                 {/* Top Section (Mobile) / Left Section (Desktop) */}
@@ -64,8 +61,9 @@ export default function CartPage() {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-text-primary truncate">{isAr ? item.nameAr : (item.nameEn || item.nameAr)}</p>
+                    {item.itemType === 'bundle' && <p className="text-xs font-semibold text-primary">{isAr ? 'حزمة' : 'Bundle'}</p>}
                     <p className="text-xs text-text-muted font-mono mt-0.5">{item.sku}</p>
-                    <p className="text-sm font-bold text-primary mt-1">{fmt(item.priceSyp, locale)}</p>
+                    <div className="text-sm font-bold text-primary mt-1"><PriceDisplay amountSyp={item.priceSyp} className="!text-sm" /></div>
                   </div>
                 </div>
 
@@ -73,16 +71,16 @@ export default function CartPage() {
                 <div className="flex items-center justify-between gap-4 border-t border-border/50 pt-3 md:border-none md:pt-0">
                   {/* Qty + remove */}
                   <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-                    <button onClick={() => updateQty(item.variantId, item.quantity - 1)}
+                    <button type="button" aria-label={isAr ? 'تقليل الكمية' : 'Decrease quantity'} onClick={() => updateQty(item.variantId, item.quantity - 1, item.itemType)}
                       className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-lg font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors">
                       −
                     </button>
                     <span className="w-6 sm:w-8 text-center text-sm font-black text-text-primary">{item.quantity}</span>
-                    <button onClick={() => updateQty(item.variantId, item.quantity + 1)}
+                    <button type="button" aria-label={isAr ? 'زيادة الكمية' : 'Increase quantity'} onClick={() => updateQty(item.variantId, item.quantity + 1, item.itemType)}
                       className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-lg font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors">
                       +
                     </button>
-                    <button onClick={() => removeItem(item.variantId)}
+                    <button type="button" onClick={() => removeItem(item.variantId, item.itemType)}
                       className="ms-2 text-xs font-semibold text-error hover:text-red-700 transition-colors">
                       {t('remove')}
                     </button>
@@ -90,7 +88,7 @@ export default function CartPage() {
 
                   {/* Line total */}
                   <div className="text-sm font-black text-primary shrink-0 min-w-[80px] text-end">
-                    {fmt(item.priceSyp * item.quantity, locale)}
+                    <PriceDisplay amountSyp={item.priceSyp * item.quantity} className="!text-sm" />
                   </div>
                 </div>
               </div>
@@ -108,7 +106,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between border-t border-[#F0ECE6] pt-3 text-base font-black text-text-primary">
                   <span>{t('total')}</span>
-                  <span className="text-primary">{fmt(total, locale)}</span>
+                  <div className="text-primary"><PriceDisplay amountSyp={total} className="!text-base" /></div>
                 </div>
               </div>
               <Link href="/checkout"

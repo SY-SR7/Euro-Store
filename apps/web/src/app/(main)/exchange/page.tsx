@@ -1,8 +1,8 @@
 /* eslint-disable */
-// @ts-nocheck
 import Link from 'next/link';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { createServerSupabaseClient } from '@/supabase-server';
+import { getSessionClient } from '@/supabase-server';
+import { AuthModalButton } from '@/components/auth/AuthAwareLink';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,14 +18,13 @@ export default async function ExchangeIndexPage() {
   const t = await getTranslations('exchange');
   const locale = await getLocale();
   const isAr = locale === 'ar';
-  const supabase = createServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { client: supabase, user } = await getSessionClient();
 
-  let requests: Array<{ id: string; status: string; reason_ar: string; created_at: string }> = [];
+  let requests: Array<{ id: string; status: string; reason_ar: string; reason: string | null; created_at: string }> = [];
   if (user) {
     const { data } = await supabase
       .from('exchange_requests')
-      .select('id, status, reason_ar, created_at')
+      .select('id, status, reason_ar, reason, created_at')
       .eq('customer_id', user.id)
       .order('created_at', { ascending: false });
     requests = (data ?? []) as typeof requests;
@@ -54,9 +53,9 @@ export default async function ExchangeIndexPage() {
         {!user ? (
           <div className="rounded-2xl border border-border bg-background-card p-8 text-center shadow-sm">
             <p className="text-text-muted mb-4">{t('loginToTrack')}</p>
-            <Link href="/auth/login" className="rounded-xl bg-primary px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
+            <AuthModalButton next="/exchange" className="rounded-xl bg-primary px-5 py-2.5 text-sm font-black text-[#1F1B16] hover:bg-[#9A7209] transition-colors">
               {t('login')}
-            </Link>
+            </AuthModalButton>
           </div>
         ) : requests.length === 0 ? (
           <div className="rounded-2xl border border-border bg-background-card p-8 text-center shadow-sm">
@@ -66,15 +65,21 @@ export default async function ExchangeIndexPage() {
           <div className="rounded-2xl border border-border bg-background-card shadow-sm">
             <div className="divide-y divide-[#F0ECE6]">
               {requests.map(req => (
-                <div key={req.id} className="flex items-center justify-between px-5 py-4">
+                <Link key={req.id} href={`/exchange/${req.id}`}
+                  className="flex items-center justify-between px-5 py-4 hover:bg-background-elevated transition-colors">
                   <div>
-                    <p className="font-semibold text-text-primary text-sm">{req.reason_ar ?? '—'}</p>
+                    <p className="font-semibold text-text-primary text-sm">{req.reason ?? req.reason_ar ?? '—'}</p>
                     <p className="mt-1 text-xs text-text-muted">{new Date(req.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US')}</p>
                   </div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_COLOR[req.status] ?? 'bg-stone-100 text-stone-500'}`}>
-                    {t(`status.${req.status}`, { fallback: STATUS_LABEL[req.status] ?? req.status })}
-                  </span>
-                </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`rounded-full px-3 py-1 text-xs font-bold ${STATUS_COLOR[req.status] ?? 'bg-stone-100 text-stone-500'}`}>
+                      {t(`status.${req.status}`, { fallback: STATUS_LABEL[req.status] ?? req.status })}
+                    </span>
+                    <svg className="h-4 w-4 text-text-muted" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>

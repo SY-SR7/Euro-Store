@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { Heart, XCircle, CheckCircle2 } from 'lucide-react';
+import { Heart, XCircle, CheckCircle2, Share2 } from 'lucide-react';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
+import { AuthModalButton } from '@/components/auth/AuthAwareLink';
 
 interface WishlistItem {
   wishlist_id: string;
@@ -22,6 +23,10 @@ export default function WishlistPage() {
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(true);
+  const [shareToken, setShareToken] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareError, setShareError] = useState('');
   const locale = useLocale();
 
   function fmt(n: number | null) {
@@ -37,9 +42,32 @@ export default function WishlistPage() {
       .then((data) => {
         setAuthenticated(!!data.authenticated);
         setItems(data.items ?? []);
+        if (data.share_token) setShareToken(data.share_token);
       })
       .finally(() => setLoading(false));
   }, []);
+
+  async function handleShare() {
+    setSharing(true);
+    setShareError('');
+    try {
+      let token = shareToken;
+      if (!token) {
+        const response = await fetch('/api/wishlist/share', { method: 'POST' });
+        if (!response.ok) throw new Error('share_failed');
+        const data = await response.json();
+        token = data.token;
+        setShareToken(token);
+      }
+      await navigator.clipboard.writeText(`${window.location.origin}/wishlist/${token}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setShareError(isAr ? 'تعذر إنشاء رابط المشاركة.' : 'The share link could not be created.');
+    } finally {
+      setSharing(false);
+    }
+  }
 
   async function remove(productId: string) {
     setItems((prev) => prev.filter((i) => i.product_id !== productId));
@@ -53,10 +81,24 @@ export default function WishlistPage() {
   return (
     <main className={`min-h-screen bg-background px-4 py-10`} dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-5xl space-y-6">
-        <div className="flex items-center gap-3">
-          <Heart className="h-6 w-6 fill-[#C9A84C] text-primary" />
-          <h1 className="text-2xl font-black text-text-primary">{t('wishlist')}</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Heart className="h-6 w-6 fill-[#C9A84C] text-primary" />
+            <h1 className="text-2xl font-black text-text-primary">{t('wishlist')}</h1>
+          </div>
+          {authenticated && items.length > 0 && (
+            <button
+              type="button"
+              onClick={() => void handleShare()}
+              disabled={sharing}
+              className="flex items-center gap-2 rounded-xl border border-border bg-background-card px-4 py-2 text-sm font-bold text-text-primary hover:border-primary transition-colors"
+            >
+              <Share2 className="h-4 w-4" />
+              {sharing ? (isAr ? 'جارٍ التجهيز' : 'Preparing') : copied ? (isAr ? 'تم النسخ!' : 'Copied!') : (isAr ? 'مشاركة القائمة' : 'Share Wishlist')}
+            </button>
+          )}
         </div>
+        {shareError && <p role="alert" className="text-sm font-semibold text-red-700">{shareError}</p>}
 
         {loading && (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -69,10 +111,10 @@ export default function WishlistPage() {
         {!loading && !authenticated && (
           <div className="rounded-2xl border border-[#E5E0D8] bg-background-card p-10 text-center shadow-sm">
             <p className="text-text-secondary">{t('loginToViewWishlist')}</p>
-            <Link href="/auth/login?next=/wishlist"
+            <AuthModalButton next="/wishlist"
               className="mt-4 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-text-primary hover:bg-[#9A7209] transition-colors">
               {t('login')}
-            </Link>
+            </AuthModalButton>
           </div>
         )}
 

@@ -1,16 +1,15 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Heart, Menu, RefreshCw, Search, Star, User, X } from 'lucide-react';
+import { Heart, Star, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { motion, useScroll, useSpring, useTransform, AnimatePresence } from 'framer-motion';
-import { CartBadge } from '@/components/cart/CartBadge';
-import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { ShoppingBag } from 'lucide-react';
 import { SmartSearch } from '@/components/layout/SmartSearch';
+import { AuthAwareLink } from '@/components/auth/AuthAwareLink';
 
 const DESKTOP_LINKS = [
   { href:'/', key:'home' },
@@ -18,18 +17,8 @@ const DESKTOP_LINKS = [
   { href:'/categories', key:'categories' },
 ] as const;
 
-const MOBILE_LINKS = [
-  ...DESKTOP_LINKS,
-  { href:'/loyalty', key:'loyalty' },
-  { href:'/exchange', key:'exchange' },
-  { href:'/orders', key:'orders' },
-  { href:'/wishlist', key:'wishlist' },
-  { href:'/account', key:'account' },
-] as const;
-
 export function Header({ loyaltyPoints = null }: { loyaltyPoints?: number | null }) {
   const t = useTranslations('nav');
-  const [open, setOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const pathname = usePathname();
   const { scrollYProgress } = useScroll();
@@ -77,21 +66,21 @@ export function Header({ loyaltyPoints = null }: { loyaltyPoints?: number | null
             {(pathname === '/' || pathname.startsWith('/products') || pathname.startsWith('/categories')) && (
               <SmartSearch />
             )}
-            <Link href="/wishlist" aria-label={t('wishlist')}
+            <AuthAwareLink href="/wishlist" ariaLabel={t('wishlist')}
               className={`hidden rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary sm:inline-flex ${
                 pathname.startsWith('/wishlist') ? 'bg-primary/15 text-primary ring-1 ring-primary/30 shadow-sm' : 'text-text-secondary'
               }`}>
               <Heart className="h-4 w-4" />
-            </Link>
-            <Link href="/account" aria-label={t('account')}
+            </AuthAwareLink>
+            <AuthAwareLink href="/account" ariaLabel={t('account')}
               className={`hidden md:inline-flex rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary ${
                 pathname.startsWith('/account') ? 'bg-primary/15 text-primary ring-1 ring-primary/30 shadow-sm' : 'text-text-secondary'
               }`}>
               <User className="h-4 w-4" />
-            </Link>
+            </AuthAwareLink>
             
             {/* Cart Button */}
-            <button onClick={() => setIsCartOpen(true)} aria-label="Open Cart" className="relative hidden md:flex items-center justify-center rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary text-text-secondary">
+            <button type="button" onClick={() => setIsCartOpen(true)} aria-label={t('cart')} className="relative hidden md:flex items-center justify-center rounded-full p-2.5 transition-all duration-200 hover:bg-primary/20 hover:text-primary text-text-secondary">
               <ShoppingBag className="h-4 w-4" />
             </button>
 

@@ -16,15 +16,15 @@ export async function loginHelperAction(formData: FormData): Promise<void> {
   }
 
   const supabase = await createServerSupabaseClient();
-  const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
-  const access = getHelperAccess(data?.user);
+  const { error } = await supabase.auth.signInWithPassword(parsed.data);
+  const access = error ? null : await getHelperAccess(supabase);
 
   if (error || !access) {
     if (!error) await supabase.auth.signOut();
     redirect('/login?status=failed');
   }
 
-  redirect('/');
+  redirect('/dashboard');
 }
 
 

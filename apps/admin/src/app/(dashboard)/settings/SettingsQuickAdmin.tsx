@@ -26,6 +26,8 @@ const SETTINGS: SettingConfig[] = [
   { key: 'usd_exchange_rate',            labelKey: 'usd_exchange_rate',            groupKey: 'groupSystem',   fallback: '15000', unitKey: 'unitSyp',     type: 'number' },
   { key: 'max_exchange_days',            labelKey: 'max_exchange_days',            groupKey: 'groupSystem',   fallback: '7',     unitKey: 'unitDays',    type: 'number' },
   { key: 'min_order_value_syp',          labelKey: 'min_order_value_syp',          groupKey: 'groupSystem',   fallback: '0',     unitKey: 'unitSyp',     type: 'number' },
+  { key: 'default_currency',             labelKey: 'default_currency',             groupKey: 'groupSystem',   fallback: 'SYP',   unitKey: 'unitNone',    type: 'text'   },
+  { key: 'free_shipping_global_threshold_syp', labelKey: 'free_shipping_global_threshold_syp', groupKey: 'groupSystem', fallback: '0', unitKey: 'unitSyp', type: 'number' },
   // --- Contact ---
   { key: 'contact_whatsapp',             labelKey: 'contact_whatsapp',             groupKey: 'groupContact',  fallback: '',      unitKey: 'unitNone',    type: 'text'   },
   { key: 'contact_email',                labelKey: 'contact_email',                groupKey: 'groupContact',  fallback: '',      unitKey: 'unitNone',    type: 'text'   },
@@ -35,7 +37,9 @@ const SETTINGS: SettingConfig[] = [
   { key: 'loyalty_point_value_syp',      labelKey: 'loyalty_point_value_syp',      groupKey: 'groupLoyalty',  fallback: '10',    unitKey: 'unitSyp',     type: 'number' },
   { key: 'loyalty_max_redemption_pct',   labelKey: 'loyalty_max_redemption_pct',   groupKey: 'groupLoyalty',  fallback: '30',    unitKey: 'unitPercent', type: 'number' },
   { key: 'loyalty_min_redemption_pts',   labelKey: 'loyalty_min_redemption_pts',   groupKey: 'groupLoyalty',  fallback: '100',   unitKey: 'unitPoints',  type: 'number' },
-  { key: 'referral_bonus_points',        labelKey: 'referral_bonus_points',        groupKey: 'groupLoyalty',  fallback: '50',    unitKey: 'unitPoints',  type: 'number' },
+  // --- Payment ---
+  { key: 'sham_cash_webhook_url',        labelKey: 'sham_cash_webhook_url',        groupKey: 'groupPayment',  fallback: '',      unitKey: 'unitNone',    type: 'text'   },
+  { key: 'sham_cash_secret',             labelKey: 'sham_cash_secret',             groupKey: 'groupPayment',  fallback: '',      unitKey: 'unitNone',    type: 'text'   },
 ];
 
 const inputClass =
@@ -72,11 +76,13 @@ function InlineSetting({
   value,
   onSave,
   unitLabel,
+  ariaLabel,
 }: {
   config: SettingConfig;
   value: string;
   onSave: (value: string) => void | Promise<void>;
   unitLabel: string;
+  ariaLabel: string;
 }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
@@ -95,6 +101,7 @@ function InlineSetting({
     return (
       <div className="flex items-center gap-2">
         <input
+          aria-label={ariaLabel}
           autoFocus
           type={config.type}
           value={draft}
@@ -199,7 +206,7 @@ export default function SettingsQuickAdmin() {
                       <p className="mt-0.5 truncate font-mono text-[11px] text-text-muted" dir="ltr">{config.key}</p>
                       {row?.updated_at ? <p className="mt-1 text-[11px] text-text-muted">{formatDate(row.updated_at, locale === 'ar' ? 'ar-SY' : 'en-US')}</p> : null}
                     </div>
-                    <InlineSetting config={config} value={value} unitLabel={t(config.unitKey)} onSave={(next) => patchSetting(config, next)} />
+                    <InlineSetting config={config} value={value} unitLabel={t(config.unitKey)} ariaLabel={t(config.labelKey)} onSave={(next) => patchSetting(config, next)} />
                   </div>
                 ))}
               </div>

@@ -1,6 +1,5 @@
 'use client';
 /* eslint-disable */
-// @ts-nocheck
 import { useState } from 'react';
 
 export function ContactForm({

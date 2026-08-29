@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET() {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('product_management', 'view');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
@@ -13,12 +13,12 @@ export async function GET() {
     .from('attribute_types')
     .select('id, name_ar, name_en, slug, attribute_values(id, value_ar, value_en, hex_color, sort_order)')
     .order('created_at');
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json(data ?? []);
 }
 
 export async function POST(request: Request) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('product_management', 'create');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 const body = await request.json().catch(() => null) as Record<string, unknown> | null;
   if (!body || typeof body.name_ar !== 'string' || typeof body.slug !== 'string') {
@@ -36,6 +36,6 @@ const body = await request.json().catch(() => null) as Record<string, unknown> |
     .select('id, name_ar, name_en, slug, attribute_values(id, value_ar, value_en, hex_color, sort_order)')
     .single();
 
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json(data, { status: 201 });
 }

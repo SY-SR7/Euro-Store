@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { ConfirmDialog } from '@eurostore/ui';
 
 type AttributeValue = {
   id: string;
@@ -46,11 +47,11 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
-      <div className="flex max-h-[85dvh] w-full max-w-3xl flex-col rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" role="presentation" onKeyDown={(event) => { if (event.key === 'Escape') onClose(); }} onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label={title} className="flex max-h-[85dvh] w-full max-w-3xl flex-col rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
           <h2 className="font-black text-text-primary">{title}</h2>
-          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
+          <button type="button" aria-label="إغلاق / Close" title="إغلاق / Close" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]">
             <X size={17} />
           </button>
         </div>
@@ -94,6 +95,7 @@ function InlineText({
   if (editing) {
     return (
       <input
+        aria-label="تحرير النص / Edit text"
         autoFocus
         value={draft}
         dir={dir}
@@ -132,6 +134,7 @@ function InlineNumber({ value, onSave }: { value: number; onSave: (value: number
   if (editing) {
     return (
       <input
+        aria-label="تحرير الرقم / Edit number"
         autoFocus
         type="number"
         value={draft}
@@ -158,8 +161,9 @@ function InlineColor({ value, onSave }: { value?: string | null; onSave: (value:
 
   return (
     <div className="flex items-center gap-2">
-      <input
-        type="color"
+    <input
+      aria-label="اختيار اللون / Select color"
+      type="color"
         value={color}
         onChange={(event) => void onSave(event.target.value)}
         className="h-9 w-11 cursor-pointer rounded-lg border border-[#E5E0D8] bg-background-card"
@@ -190,6 +194,8 @@ export default function AttributeTypesQuickAdmin() {
   const [showCreate, setShowCreate] = useState(false);
   const [newType, setNewType] = useState({ name_ar: '', name_en: '', slug: '' });
   const [newValue, setNewValue] = useState({ value_ar: '', value_en: '', hex_color: '', sort_order: '0' });
+  const [pendingDelete, setPendingDelete] = useState<{ type: AttributeType; value?: AttributeValue } | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const t = useTranslations('adminCatalog');
   const tCommon = useTranslations('common');
   const locale = useLocale();
@@ -325,16 +331,26 @@ export default function AttributeTypesQuickAdmin() {
   };
 
   const deleteValue = async (type: AttributeType, value: AttributeValue) => {
-    if (!confirm(tCommon('confirmDelete', { fallback: 'تأكيد الحذف؟' }))) return;
-    await fetchJson<{ ok: boolean }>(`/api/catalog/attribute-values/${value.id}`, { method: 'DELETE' });
-    mergeType(type.id, { attribute_values: type.attribute_values.filter((item) => item.id !== value.id) });
+    setDeleting(true);
+    try {
+      await fetchJson<{ ok: boolean }>(`/api/catalog/attribute-values/${value.id}`, { method: 'DELETE' });
+      mergeType(type.id, { attribute_values: type.attribute_values.filter((item) => item.id !== value.id) });
+      setPendingDelete(null);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const deleteType = async (type: AttributeType) => {
-    if (!confirm(tCommon('confirmDelete', { fallback: 'تأكيد الحذف؟' }))) return;
-    await fetchJson<{ deleted: boolean }>(`/api/catalog/attribute-types/${type.id}`, { method: 'DELETE' });
-    closeType();
-    load();
+    setDeleting(true);
+    try {
+      await fetchJson<{ deleted: boolean }>(`/api/catalog/attribute-types/${type.id}`, { method: 'DELETE' });
+      setPendingDelete(null);
+      closeType();
+      load();
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -420,7 +436,7 @@ export default function AttributeTypesQuickAdmin() {
                     ) : (
                       <InlineNumber value={value.sort_order} onSave={(sort_order) => patchValue(selected, value, { sort_order })} />
                     )}
-                    <button type="button" onClick={() => void deleteValue(selected, value)} className="grid h-9 w-9 place-items-center rounded-xl border border-red-200 text-red-600 hover:bg-red-50">
+                    <button type="button" aria-label={tCommon('delete', { fallback: isAr ? 'حذف' : 'Delete' })} title={tCommon('delete', { fallback: isAr ? 'حذف' : 'Delete' })} onClick={() => setPendingDelete({ type: selected, value })} className="grid h-9 w-9 place-items-center rounded-xl border border-red-200 text-red-600 hover:bg-red-50">
                       <X size={15} />
                     </button>
                   </div>
@@ -441,12 +457,27 @@ export default function AttributeTypesQuickAdmin() {
               </div>
             </div>
 
-            <button type="button" onClick={() => void deleteType(selected)} className="rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50">
+            <button type="button" onClick={() => setPendingDelete({ type: selected })} className="rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50">
               {tCommon('delete', { fallback: 'حذف' })}
             </button>
           </div>
         </Modal>
       ) : null}
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title={pendingDelete?.value ? (isAr ? 'حذف قيمة الصفة' : 'Delete attribute value') : (isAr ? 'حذف نوع الصفة' : 'Delete attribute type')}
+        description={isAr ? 'سيتم الحذف نهائياً إذا لم تكن القيمة مستخدمة في منتجات.' : 'The item will be permanently deleted if it is not used by products.'}
+        confirmLabel={deleting ? (isAr ? 'جارٍ الحذف' : 'Deleting') : tCommon('delete', { fallback: 'حذف' })}
+        cancelLabel={tCommon('cancel', { fallback: isAr ? 'إلغاء' : 'Cancel' })}
+        onConfirm={() => {
+          if (!pendingDelete) return;
+          if (pendingDelete.value) void deleteValue(pendingDelete.type, pendingDelete.value);
+          else void deleteType(pendingDelete.type);
+        }}
+        onCancel={() => setPendingDelete(null)}
+        pending={deleting}
+        destructive
+      />
     </div>
   );
 }

@@ -1,7 +1,5 @@
-/* eslint-disable */
-// @ts-nocheck
 import { NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/supabase-server';
+import { createPublicSupabaseClient } from '@/supabase-server';
 import { GOVERNORATES } from '@eurostore/shared';
 
 export const dynamic = 'force-dynamic';
@@ -17,7 +15,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ base_rate_syp: 0, free_shipping_threshold_syp: null });
   }
 
-  const supabase = createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
 
   const { data } = await supabase
     .from('shipping_rates')

@@ -9,7 +9,7 @@ const schema = z.object({
 });
 
 export async function POST(request: Request) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('brand_management', 'create');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 const { admin, userId } = ctx;
 
@@ -19,7 +19,7 @@ const { admin, userId } = ctx;
     if (!parsed.success) return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
 
     const { data, error } = await admin.from('brands').insert(parsed.data).select('id, name, slug, is_active').single();
-    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
     await writeAuditLog({
       admin, actorId: userId, actorRole: 'admin',
@@ -37,11 +37,11 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET() {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('brand_management', 'view');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 const { admin } = ctx;
 
   const { data, error } = await admin.from('brands').select('id, name, slug, is_active').order('name');
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json(data);
 }

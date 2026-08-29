@@ -5,19 +5,19 @@ export const dynamic = 'force-dynamic';
 const LOYALTY_KEYS = ['loyalty_earn_amount_syp','loyalty_earn_points','loyalty_point_value_syp','loyalty_max_redemption_pct','loyalty_min_redemption_pts'];
 
 export async function GET() {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('loyalty_system_config', 'view');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const admin = createAdminSupabaseClient();
   const { data, error } = await admin.from('system_settings').select('key,value').in('key', LOYALTY_KEYS);
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   const obj: Record<string,string> = {};
   for (const row of (data ?? [])) { obj[row.key] = row.value ?? ''; }
   return NextResponse.json(obj);
 }
 
 export async function PATCH(request: Request) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('loyalty_system_config', 'edit');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 const { admin } = ctx;
   const body = await request.json().catch(() => null) as Record<string,string> | null;

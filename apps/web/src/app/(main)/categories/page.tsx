@@ -1,8 +1,7 @@
-/* eslint-disable */
-// @ts-nocheck
+import Image from 'next/image';
 import Link from 'next/link';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { createServerSupabaseClient } from '@/supabase-server';
+import { createPublicSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,13 +9,16 @@ export default async function CategoriesPage(): Promise<JSX.Element> {
   const t = await getTranslations();
   const locale = await getLocale();
   const isAr = locale === 'ar';
-  const supabase = createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
 
   const { data: categories } = await supabase
     .from('categories')
-    .select('id, name_ar, name_en, slug')
+    .select('id, name_ar, name_en, slug, image_url, parent_id')
     .eq('is_active', true)
     .order('sort_order', { ascending: true });
+
+  const mainCategories = (categories ?? []).filter((category) => !category.parent_id);
+  const subcategories = (categories ?? []).filter((category) => category.parent_id);
 
   return (
     <main className="min-h-screen bg-background text-[#1F1B16] px-6 py-12">
@@ -30,28 +32,55 @@ export default async function CategoriesPage(): Promise<JSX.Element> {
         <h1 className="text-3xl font-semibold mb-2">{t('nav.categories')}</h1>
         <p className="text-[#6F6658] text-sm mb-10">{t('catalog.catalogTag')}</p>
 
-        {(!categories || categories.length === 0) ? (
+        {mainCategories.length === 0 ? (
           <div className="rounded-md border border-border bg-background-card p-12 text-center text-[#6F6658]">
             {t('catalog.noProducts')}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {categories.map((cat: any) => (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {mainCategories.map((category) => (
               <Link
-                key={cat.id}
-                href={`/categories/${cat.slug}`}
-                className="group flex flex-col items-center justify-center gap-3 rounded-lg border border-border bg-background-card p-8 text-center hover:border-primary/40 hover:bg-background-secondary transition-all duration-200"
+                key={category.id}
+                href={`/categories/${category.slug}`}
+                className="group overflow-hidden rounded-lg border border-border bg-background-card transition-colors hover:border-primary/50"
               >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="text-primary text-xl">✦</span>
+                <div className="relative aspect-[4/3] overflow-hidden bg-background-secondary">
+                  {category.image_url ? (
+                    <Image
+                      src={category.image_url}
+                      alt={isAr ? category.name_ar : (category.name_en || category.name_ar)}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <span className="absolute inset-0 grid place-items-center text-3xl text-primary" aria-hidden="true">✦</span>
+                  )}
                 </div>
-                <p className="text-sm font-medium text-[#1F1B16] group-hover:text-primary transition-colors">
-                  {isAr ? cat.name_ar : (cat.name_en || cat.name_ar)}
+                <p className="px-5 py-4 text-base font-bold text-[#1F1B16] transition-colors group-hover:text-primary">
+                  {isAr ? category.name_ar : (category.name_en || category.name_ar)}
                 </p>
               </Link>
             ))}
           </div>
         )}
+
+        {subcategories.length > 0 ? (
+          <section className="mt-12 border-t border-border pt-8">
+            <h2 className="mb-5 text-xl font-semibold">{isAr ? 'التصنيفات الفرعية' : 'Subcategories'}</h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {subcategories.map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/categories/${category.slug}`}
+                  className="flex min-h-24 items-center justify-center rounded-lg border border-border bg-background-card px-4 text-center text-sm font-medium transition-colors hover:border-primary/50 hover:text-primary"
+                >
+                  {isAr ? category.name_ar : (category.name_en || category.name_ar)}
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <div className="mt-10 text-center">
           <Link

@@ -14,6 +14,20 @@ type SubAdmin = {
   created_at: string;
 };
 
+type PermissionLevel = 'view_only' | 'edit' | 'full_access';
+type SubAdminPermission = { module: string; permission_level: PermissionLevel };
+
+function parsePermissions(value: unknown): SubAdminPermission[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (!item || typeof item !== 'object') return [];
+    const permission = item as { module?: unknown; permission_level?: unknown };
+    if (typeof permission.module !== 'string') return [];
+    if (permission.permission_level !== 'view_only' && permission.permission_level !== 'edit' && permission.permission_level !== 'full_access') return [];
+    return [{ module: permission.module, permission_level: permission.permission_level }];
+  });
+}
+
 const inputClass =
   'w-full rounded-xl border border-[#E5E0D8] bg-background-card px-3 py-2 text-sm text-text-primary outline-none transition focus:border-primary';
 
@@ -97,6 +111,7 @@ function InlineText({
   if (editing) {
     return (
       <input
+        aria-label="تحرير النص / Edit text"
         autoFocus
         value={draft}
         dir={dir}
@@ -136,6 +151,103 @@ function formatDate(value: string, locale: string) {
   return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(date);
 }
 
+function SubAdminPermissions({ subAdminId }: { subAdminId: string }) {
+  const [permissions, setPermissions] = useState<SubAdminPermission[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<{ ok: boolean; text: string } | null>(null);
+
+  const modules = [
+    'dashboard', 'product_management', 'category_management', 'brand_management',
+    'collection_management', 'bundle_management', 'order_management',
+    'exchange_management', 'customer_management', 'discount_code_management',
+    'loyalty_system_config', 'shipping_configuration', 'homepage_management',
+    'reports', 'system_settings', 'audit_log', 'sub_admins', 'helper_management',
+    'partner_management'
+  ];
+
+  useEffect(() => {
+    fetchJson<unknown>(`/api/admin/sub-admins/${subAdminId}/permissions`)
+      .then((data) => setPermissions(parsePermissions(data)))
+      .catch(() => setPermissions([]))
+      .finally(() => setLoading(false));
+  }, [subAdminId]);
+
+  const togglePermission = (mod: string, level: PermissionLevel) => {
+    setPermissions(prev => {
+      const existing = prev.find(p => p.module === mod);
+      if (existing && existing.permission_level === level) {
+        return prev.filter(p => p.module !== mod);
+      }
+      return [...prev.filter(p => p.module !== mod), { module: mod, permission_level: level }];
+    });
+  };
+
+  const save = async () => {
+    setSaving(true);
+    setSaveMessage(null);
+    try {
+      await fetchJson(`/api/admin/sub-admins/${subAdminId}/permissions`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ permissions })
+      });
+      setSaveMessage({ ok: true, text: 'تم حفظ الصلاحيات بنجاح.' });
+    } catch (error: unknown) {
+      setSaveMessage({ ok: false, text: error instanceof Error ? error.message : 'فشل حفظ الصلاحيات.' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div className="p-4 text-sm text-[#8B8172]">جاري التحميل...</div>;
+
+  return (
+    <div className="mt-4 rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
+      <h3 className="mb-4 font-bold text-text-primary">صلاحيات الوحدات (Modules Permissions)</h3>
+      <div className="grid gap-2 max-h-64 overflow-y-auto pr-2">
+        {modules.map(mod => {
+          const currentLevel = permissions.find(p => p.module === mod)?.permission_level;
+          return (
+            <div key={mod} className="flex items-center justify-between border-b border-[#F0ECE6] pb-2 last:border-0 last:pb-0">
+              <span className="text-sm font-semibold text-text-secondary">{mod}</span>
+              <div className="flex gap-1">
+                {(['view_only', 'edit', 'full_access'] as const).map((level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    onClick={() => togglePermission(mod, level)}
+                    className={`rounded border px-2 py-1 text-xs font-bold transition-colors ${
+                      currentLevel === level
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-[#E5E0D8] bg-background text-[#8B8172] hover:border-primary/50'
+                    }`}
+                  >
+                    {level === 'view_only' ? 'عرض' : level === 'edit' ? 'تعديل' : 'كامل'}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <button
+        type="button"
+        onClick={() => void save()}
+        disabled={saving}
+        className="mt-4 w-full rounded-xl bg-primary px-4 py-2 text-sm font-bold text-text-primary disabled:opacity-50"
+      >
+        {saving ? 'جاري الحفظ...' : 'حفظ الصلاحيات'}
+      </button>
+      {saveMessage && (
+        <p role="status" className={`mt-3 rounded-lg border px-3 py-2 text-sm ${saveMessage.ok ? 'border-green-200 bg-green-50 text-green-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
+          {saveMessage.text}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function SubAdminsQuickAdmin() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -157,7 +269,7 @@ export default function SubAdminsQuickAdmin() {
 
   const load = useCallback(() => {
     setLoading(true);
-    fetchJson<unknown>('/api/sub-admins', { cache: 'no-store' })
+    fetchJson<unknown>('/api/admin/sub-admins', { cache: 'no-store' })
       .then((payload) => setSubAdmins(pickArray<SubAdmin>(payload)))
       .catch(() => setSubAdmins([]))
       .finally(() => setLoading(false));
@@ -189,7 +301,7 @@ export default function SubAdminsQuickAdmin() {
       return;
     }
 
-    fetchJson<SubAdmin>(`/api/sub-admins/${subAdminId}`)
+    fetchJson<SubAdmin>(`/api/admin/sub-admins/${subAdminId}`)
       .then((subAdmin) => {
         setSubAdmins((current) => current.some((item) => item.user_id === subAdmin.user_id) ? current : [subAdmin, ...current]);
         openSubAdmin(subAdmin, false);
@@ -208,7 +320,7 @@ export default function SubAdminsQuickAdmin() {
     setMsg('');
     mergeSubAdmin(subAdmin.user_id, patch);
     try {
-      const updated = await fetchJson<SubAdmin>(`/api/sub-admins/${subAdmin.user_id}`, {
+      const updated = await fetchJson<SubAdmin>(`/api/admin/sub-admins/${subAdmin.user_id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -231,7 +343,7 @@ export default function SubAdminsQuickAdmin() {
     setCreating(true);
     setMsg('');
     try {
-      await fetchJson<{ user_id: string }>('/api/sub-admins', {
+      await fetchJson<{ user_id: string }>('/api/admin/sub-admins', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -270,8 +382,8 @@ export default function SubAdminsQuickAdmin() {
         <form onSubmit={(event) => void createSubAdmin(event)} className="grid gap-3 rounded-2xl border border-[#E5E0D8] bg-background-card p-5 shadow-sm md:grid-cols-3">
           <input value={form.display_name} onChange={(event) => setForm((current) => ({ ...current, display_name: event.target.value }))} placeholder={t('formName')} className={inputClass} dir={isAr ? "rtl" : "ltr"} />
           <input value={form.email} onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))} placeholder={t('formEmail')} type="email" dir="ltr" className={inputClass} />
-          <input value={form.password} onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))} placeholder={t('formPassword')} type="password" dir="ltr" className={inputClass} />
-          <button type="submit" disabled={creating || !form.email.trim() || form.password.length < 8} className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-text-primary disabled:opacity-50 md:col-span-3">
+          <input value={form.password} onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))} placeholder={t('formPassword')} type="password" dir="ltr" className={inputClass} required minLength={12} maxLength={128} pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{12,128}" />
+          <button type="submit" disabled={creating || !form.email.trim() || form.password.length < 12} className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-text-primary disabled:opacity-50 md:col-span-3">
             {creating ? t('formCreating') : t('formCreate')}
           </button>
         </form>
@@ -317,6 +429,7 @@ export default function SubAdminsQuickAdmin() {
                 <Field label={t('fieldCreatedAt')}><span className="block px-3 py-2 text-sm font-semibold text-text-primary">{formatDate(selected.created_at, formatLoc)}</span></Field>
               </div>
             </div>
+            <SubAdminPermissions subAdminId={selected.user_id} />
           </div>
         </Modal>
       ) : null}

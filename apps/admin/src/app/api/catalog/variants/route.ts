@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET(request: Request) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('product_management', 'view');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
@@ -38,18 +38,18 @@ export async function GET(request: Request) {
     .order('price_syp');
   if (product_id) query = query.eq('product_id', product_id);
   const { data, error } = await query;
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json(data ?? []);
 }
 
 export async function POST(request: Request) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('product_management', 'create');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   try {
     const body: unknown = await request.json();
     const parsed = schema.safeParse(body);
-    if (!parsed.success) return NextResponse.json({ error: 'invalid_input', details: parsed.error.flatten() }, { status: 400 });
+    if (!parsed.success) return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
     const admin = createAdminSupabaseClient();
     const { attribute_value_ids, ...variantData } = parsed.data;
     const { data: newVariant, error } = await admin
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
       .insert(variantData)
       .select('id')
       .single();
-    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     // Insert variant_attributes if provided
     if (attribute_value_ids && attribute_value_ids.length > 0) {
       const attrs = attribute_value_ids.map(avid => ({

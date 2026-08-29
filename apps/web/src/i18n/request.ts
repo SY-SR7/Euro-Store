@@ -19,12 +19,12 @@ export default getRequestConfig(async (params: {
         ? await params.requestLocale
         : undefined;
 
-  const cookieStore = cookies();
+  const [cookieStore, requestHeaders] = await Promise.all([cookies(), headers()]);
   const cookieLocale =
     cookieStore.get('NEXT_LOCALE')?.value ??
     cookieStore.get('EUROSTORE_LOCALE')?.value;
 
-  const headerLocale = headers().get('x-eurostore-locale');
+  const headerLocale = requestHeaders.get('x-eurostore-locale');
   const locale = normalizeLocale(params.locale ?? requestLocale ?? cookieLocale ?? headerLocale);
 
   return {

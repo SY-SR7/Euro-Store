@@ -55,9 +55,6 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
         if (!ctx) return;
 
         const { width, height } = canvas;
-        const imgAspect    = img.naturalWidth / img.naturalHeight;
-        const canvasAspect = width / height;
-
         let drawW: number, drawH: number, drawX: number, drawY: number;
 
         const isMobile = width < 768;
@@ -96,8 +93,8 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
       const canvas = canvasRef.current;
       if (!canvas) return;
       const total = frameCount;
-      imagesRef.current = new Array(total).fill(null);
-      loadedRef.current = new Array(total).fill(false);
+      imagesRef.current = Array.from({ length: total }, () => null);
+      loadedRef.current = Array.from({ length: total }, () => false);
 
       const loadOne = (i: number) => {
         if (loadedRef.current[i]) return;
@@ -115,12 +112,11 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
       loadOne(0);
 
       // Lazy load the rest only when the container is near the viewport
-      let observer: IntersectionObserver;
       const scheduleRest = () => {
         for (let i = 1; i < total; i++) loadOne(i);
       };
 
-      observer = new IntersectionObserver(
+      const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
             if (typeof requestIdleCallback !== 'undefined') {
@@ -198,6 +194,7 @@ export const CanvasScrollSequence = forwardRef<CanvasScrollSequenceHandle, Props
     return (
       <canvas
         ref={canvasRef}
+        className={className}
         style={{
           display: 'block',
           position: 'absolute',

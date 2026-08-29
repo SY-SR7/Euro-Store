@@ -1,52 +1,78 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader2, Package, Shapes } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
-import { createSupabaseBrowserClientFromEnv } from '@eurostore/database';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
+type SearchSuggestion = {
+  type: 'product' | 'category';
+  id: string;
+  name: string;
+  slug: string;
+};
+
+function isSearchSuggestion(value: unknown): value is SearchSuggestion {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const suggestion = value as Record<string, unknown>;
+  return (suggestion.type === 'product' || suggestion.type === 'category')
+    && typeof suggestion.id === 'string'
+    && typeof suggestion.name === 'string'
+    && typeof suggestion.slug === 'string';
+}
 
 export function SmartSearch() {
   const t = useTranslations('nav');
   const locale = useLocale();
   const isAr = locale === 'ar';
+  const router = useRouter();
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<SearchSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const supabase = createSupabaseBrowserClientFromEnv();
-
   useEffect(() => {
-    const delayDebounceFn = setTimeout(async () => {
-      if (query.length > 2) {
+    const controller = new AbortController();
+    async function loadSuggestions() {
+      if (query.trim().length >= 2) {
         setIsLoading(true);
-        // We use full text search on search_vector
-        const { data, error } = await supabase
-          .from('products')
-          .select('id, name_ar, product_variants(price_syp), product_images(url)')
-          .textSearch('search_vector', query.split(' ').join(' & '), {
-            type: 'websearch',
-            config: 'arabic'
-          })
-          .eq('is_active', true)
-          .limit(5);
-
-        if (data) {
-          setResults(data);
+        try {
+          const res = await fetch(`/api/search/suggestions?q=${encodeURIComponent(query.trim())}&lang=${locale}`, { signal: controller.signal });
+          if (res.ok) {
+            const data: unknown = await res.json();
+            const suggestions = data && typeof data === 'object' && !Array.isArray(data)
+              ? (data as Record<string, unknown>).suggestions
+              : null;
+            setResults(Array.isArray(suggestions) ? suggestions.filter(isSearchSuggestion) : []);
+          }
+        } catch (error) {
+          if (!(error instanceof DOMException && error.name === 'AbortError')) setResults([]);
         }
         setIsLoading(false);
       } else {
         setResults([]);
       }
-    }, 500);
+    }
+    const delayDebounceFn = setTimeout(() => { void loadSuggestions(); }, 300);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [query]);
+    return () => {
+      clearTimeout(delayDebounceFn);
+      controller.abort();
+    };
+  }, [query, locale]);
+
+  function submitSearch(event: React.FormEvent) {
+    event.preventDefault();
+    const value = query.trim();
+    if (value.length < 2) return;
+    setResults([]);
+    router.push(`/products?search=${encodeURIComponent(value)}`);
+  }
 
   return (
     <div className='relative flex items-center'>
-      <div className={`flex items-center w-full min-w-[200px] sm:min-w-[280px] overflow-hidden bg-background-secondary rounded-full border border-border px-4 py-2`}>
+      <form onSubmit={submitSearch} className="flex w-full min-w-[200px] items-center overflow-hidden rounded-full border border-border bg-background-secondary px-4 py-2 sm:min-w-[280px]">
         <Search className='h-4 w-4 text-text-secondary mr-2 shrink-0' />
         <input
           ref={inputRef}
@@ -56,9 +82,11 @@ export function SmartSearch() {
           placeholder={t('searchPlaceholder', { fallback: 'ابحث عن منتج...' })}
           className='flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 focus:border-transparent text-text-primary text-sm placeholder:text-text-secondary w-full rtl'
           dir={isAr ? 'rtl' : 'ltr'}
+          maxLength={100}
+          autoComplete="off"
         />
         {isLoading && <Loader2 className='h-4 w-4 text-primary animate-spin shrink-0' />}
-      </div>
+      </form>
 
       {/* Results Dropdown */}
       <AnimatePresence>
@@ -71,22 +99,20 @@ export function SmartSearch() {
           >
             <p className='text-xs text-text-secondary mb-3 font-bold px-2'>{t('searchResults', { fallback: 'نتائج البحث' })} ({results.length})</p>
             <div className='flex flex-col gap-2'>
-              {results.map((product) => (
+              {results.map((item, i) => (
                 <Link
-                  key={product.id}
-                  href={`/products/${product.id}`}
+                  key={`${item.type}-${item.id}-${i}`}
+                  href={item.type === 'category' ? `/categories/${item.slug}` : `/products/${item.slug}`}
                   onClick={() => setQuery('')}
                   className='flex items-center gap-3 p-2 rounded-xl hover:bg-background-elevated transition-colors'
                 >
-                  <img
-                    src={product.product_images?.[0]?.url || 'https://via.placeholder.com/50'}
-                    alt={product.name_ar}
-                    className='w-12 h-12 rounded-lg object-cover bg-background'
-                  />
+                  <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-background-elevated text-primary'>
+                    {item.type === 'category' ? <Shapes size={18} /> : <Package size={18} />}
+                  </div>
                   <div>
-                    <p className='text-sm font-bold text-text-primary line-clamp-1'>{product.name_ar}</p>
-                    <p className='text-xs text-primary font-bold mt-1'>
-                      {(product.product_variants?.[0]?.price_syp || 0).toLocaleString('ar-SY')} ل.س
+                    <p className='text-sm font-bold text-text-primary line-clamp-1'>{item.name}</p>
+                    <p className='text-xs text-text-secondary mt-0.5'>
+                      {item.type === 'category' ? t('category', { fallback: 'قسم' }) : t('product', { fallback: 'منتج' })}
                     </p>
                   </div>
                 </Link>

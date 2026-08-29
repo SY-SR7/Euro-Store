@@ -1,12 +1,14 @@
-﻿'use client';
+'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { RefreshCw, History, LogOut } from 'lucide-react';
+import { LayoutDashboard, RefreshCw, History, LogOut, ListCollapse } from 'lucide-react';
 
 const navItems = [
-  { href: '/exchange',         icon: RefreshCw, labelKey: 'partner.exchangeScanner' },
-  { href: '/exchange/history', icon: History,   labelKey: 'partner.exchangeHistory' },
+  { href: '/dashboard',         icon: LayoutDashboard, labelKey: 'partner.dashboardTitle' },
+  { href: '/exchange',         icon: RefreshCw,    labelKey: 'partner.exchangeScanner' },
+  { href: '/exchange/requests',icon: ListCollapse, labelKey: 'partner.exchangeRequests' },
+  { href: '/exchange/history', icon: History,      labelKey: 'partner.exchangeHistory' },
 ];
 
 export function PartnerSidebar() {
@@ -20,7 +22,7 @@ export function PartnerSidebar() {
       </div>
       <nav className="flex-1 p-4 space-y-1">
         {navItems.map(({ href, icon: Icon, labelKey }) => {
-          const active = pathname === href || pathname.startsWith(href);
+          const active = pathname === href || (href !== '/exchange' && pathname.startsWith(href));
           return (
             <Link key={href} href={href} className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
               active ? 'bg-primary/10 text-primary' : 'text-[#9CA3AF] hover:bg-[#1A1A1A] hover:text-[#E2E2E2]'

@@ -54,6 +54,9 @@
     "myAccount": "حسابي",
     "myOrders": "طلباتي",
     "loyaltyPoints": "نقاط الولاء",
+    "welcome": "أهلاً {name}",
+    "customerFallback": "عميل",
+    "qrUnavailable": "رمز الولاء الآمن غير متاح مؤقتاً. يرجى المحاولة بعد قليل.",
     "browseProducts": "تصفح المنتجات",
     "addToWishlist": "أضف للمفضلة"
   },
@@ -222,6 +225,8 @@
     "title": "الأسئلة الشائعة",
     "subtitle": "إجابات لأكثر الأسئلة شيوعاً",
     "anotherQuestion": "هل لديك سؤال آخر؟",
+    "supportText": "فريق خدمة العملاء جاهز لمساعدتك.",
+    "contactAction": "تواصل معنا",
     "q1": {
       "q": "ما هي سياسة الاستبدال؟",
       "a": "يمكنك طلب الاستبدال خلال 7 أيام من الاستلام بشرط أن يكون المنتج بحالته الأصلية."
@@ -232,7 +237,7 @@
     },
     "q3": {
       "q": "ما هي طرق الدفع المتاحة؟",
-      "a": "نقبل الدفع عند الاستلام وشام كاش."
+      "a": "الدفع عند الاستلام متاح دائماً. يظهر خيار شام كاش في صفحة الدفع فقط عند توفر التكامل."
     },
     "q4": {
       "q": "كم تستغرق عملية التوصيل؟",
@@ -310,6 +315,9 @@
     "phone": "رقم الهاتف",
     "loginTitle": "تسجيل الدخول",
     "loggingIn": "جاري تسجيل الدخول...",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "or": "أو",
+    "continueWithGoogle": "المتابعة عبر Google",
     "noAccount": "ليس لديك حساب؟",
     "registerTitle": "إنشاء حساب جديد",
     "namePlaceholder": "الاسم الكامل...",
@@ -425,6 +433,8 @@
     "allProducts": "كل المنتجات"
   },
   "nav": {
+    "product": "منتج",
+    "category": "قسم",
     "logout": "تسجيل الخروج",
     "cart": "السلة",
     "categories": "التصنيفات",
@@ -464,7 +474,16 @@
     "browseProducts": "تصفح المنتجات",
     "shoppingCart": "سلة التسوق",
     "itemsCount": "عدد القطع",
-    "contactConfirmMsg": "سيتم التواصل معك هاتفياً لتأكيد الطلب"
+    "contactConfirmMsg": "سيتم التواصل معك هاتفياً لتأكيد الطلب",
+    "openCart": "فتح السلة",
+    "closeCart": "إغلاق السلة",
+    "freeShippingReached": "مبروك! لقد حصلت على شحن مجاني.",
+    "addForFreeShipping": "أضف",
+    "freeShippingSuffix": "للحصول على شحن مجاني!",
+    "emptyDescription": "لم تقم بإضافة أي منتجات بعد.",
+    "decreaseItem": "إنقاص كمية {name}",
+    "increaseItem": "زيادة كمية {name}",
+    "removeItem": "حذف {name} من السلة"
   },
   "appName": "Euro Store",
   "allProducts": "كل المنتجات",
@@ -640,7 +659,7 @@
     "point": "نقطة",
     "usePointsAsDiscount": "استخدم النقاط كخصم",
     "every": "كل",
-    "discountAtCheckout": "ل.س خصم عند الدفع",
+    "discountAtCheckout": "ل.س خصم عند الدفع (بحد أقصى {percent}% من قيمة الطلب)",
     "getReferralBonus": "مكافأة الإحالة",
     "shareCodeAndGet": "شارك كود الإحالة واحصل على",
     "pointsWhenRegistered": "نقطة عند تسجيل أصدقائك",
@@ -692,6 +711,8 @@
     "addedToCart": "✓ تمت الإضافة إلى السلة",
     "addToCart": "أضف إلى السلة",
     "chooseVariantFirst": "اختر الخيار أولاً",
+    "shareProduct": "مشاركة المنتج",
+    "copyLink": "نسخ رابط المنتج",
     "category": "التصنيف:",
     "similarProducts": "منتجات مشابهة",
     "discoverSimilar": "اكتشف منتجات قد تعجبك",

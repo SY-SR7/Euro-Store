@@ -1,7 +1,6 @@
-/* eslint-disable */
-// @ts-nocheck
-import { NextRequest, NextResponse } from 'next/server';
-import { defaultLocale, locales, type Locale } from '@eurostore/shared';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
+import { apiRateLimitCategory, createContentSecurityPolicy, createCspNonce, defaultLocale, isAllowedMutationOrigin, limitApiRequest, locales, type Locale } from '@eurostore/shared';
 import { createServerClient } from '@supabase/ssr';
 
 // Paths that require the customer to be logged in
@@ -13,6 +12,26 @@ function isProtectedPath(pathname: string): boolean {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const nonce = createCspNonce();
+  const contentSecurityPolicy = createContentSecurityPolicy('web', nonce, process.env.NODE_ENV === 'development');
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', contentSecurityPolicy);
+  const secure = (response: NextResponse) => {
+    response.headers.set('Content-Security-Policy', contentSecurityPolicy);
+    return response;
+  };
+
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/webhooks/') && !isAllowedMutationOrigin(request)) {
+    return secure(NextResponse.json({ error: { code: 'FORBIDDEN', message: 'Cross-origin request rejected.' } }, { status: 403 }));
+  }
+  if (pathname.startsWith('/api/')) {
+    const rate = await limitApiRequest(request, apiRateLimitCategory(pathname, 'web'));
+    if (!rate.success) {
+      const retryAfter = Math.max(1, Math.ceil((rate.reset - Date.now()) / 1000));
+      return secure(NextResponse.json({ error: { code: 'RATE_LIMITED', message: 'Too many requests.' } }, { status: 429, headers: { 'Retry-After': String(retryAfter) } }));
+    }
+  }
 
   // Skip Next.js internals
   if (
@@ -23,7 +42,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  let response = NextResponse.next();
+  let response = NextResponse.next({ request: { headers: requestHeaders } });
 
   // ── Locale cookie (sliding, 1 year) ──────────────────────────────────────
   if (!pathname.startsWith('/api/')) {
@@ -38,12 +57,27 @@ export async function middleware(request: NextRequest) {
       sameSite: 'lax',
       path: '/',
     });
+
+    const ref = request.nextUrl.searchParams.get('ref')?.trim().toUpperCase() ?? '';
+    if (/^[A-Z0-9]{8,12}$/.test(ref)) {
+      response.cookies.set('referral_code', ref, {
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+      });
+    }
   }
 
   // ── Auth guard for customer-only pages ───────────────────────────────────
   if (isProtectedPath(pathname)) {
-    const supabaseUrl  = process.env['NEXT_PUBLIC_SUPABASE_URL']  ?? '';
-    const supabaseAnon = process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'] ?? '';
+    const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL  ?? '';
+    const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+    if (!supabaseUrl || !supabaseAnon) {
+      return secure(new NextResponse('Service unavailable', { status: 503 }));
+    }
 
     if (supabaseUrl && supabaseAnon) {
       const supabase = createServerClient(supabaseUrl, supabaseAnon, {
@@ -54,8 +88,14 @@ export async function middleware(request: NextRequest) {
           },
           setAll(cookiesToSet) {
             cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-            response = NextResponse.next();
-            response.cookies.set('EUROSTORE_LOCALE', response.cookies.get('EUROSTORE_LOCALE')?.value || 'ar'); // Re-apply locale if response recreated
+            response = NextResponse.next({ request: { headers: requestHeaders } });
+            const locale = request.cookies.get('EUROSTORE_LOCALE')?.value;
+            response.cookies.set('EUROSTORE_LOCALE', (locales as readonly string[]).includes(locale ?? '') ? locale! : defaultLocale, {
+              maxAge: 60 * 60 * 24 * 365,
+              httpOnly: false,
+              sameSite: 'lax',
+              path: '/',
+            });
             cookiesToSet.forEach(({ name, value, options }) =>
               response.cookies.set(name, value, options)
             );
@@ -63,17 +103,17 @@ export async function middleware(request: NextRequest) {
         },
       });
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
         const loginUrl = request.nextUrl.clone();
         loginUrl.pathname = '/auth/login';
         loginUrl.search   = `?next=${encodeURIComponent(pathname)}`;
-        return NextResponse.redirect(loginUrl);
+        return secure(NextResponse.redirect(loginUrl));
       }
     }
   }
 
-  return response;
+  return secure(response);
 }
 
 export const config = {

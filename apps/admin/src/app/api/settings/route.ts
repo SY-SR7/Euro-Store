@@ -12,19 +12,19 @@ const ALLOWED_KEYS = [
 ];
 
 export async function GET() {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('system_settings', 'view');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   try {
     const admin = createAdminSupabaseClient();
     const { data, error } = await admin.from('system_settings').select('key,value,description,updated_at').in('key', ALLOWED_KEYS);
-    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     return NextResponse.json(data ?? []);
   } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
 }
 
 export async function PATCH(request: Request) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('system_settings', 'edit');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 const { admin } = ctx;
   const body = await request.json().catch(() => null) as unknown;

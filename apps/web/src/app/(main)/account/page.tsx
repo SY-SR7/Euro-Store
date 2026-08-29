@@ -1,9 +1,8 @@
-// @ts-nocheck
 /* eslint-disable */
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getSessionClient } from '@/supabase-server';
-import { ShoppingBag, Star, RefreshCw, User, LogOut, ChevronLeft, ChevronRight, Phone, ShieldCheck, FileText, Info } from 'lucide-react';
+import { ShoppingBag, Star, RefreshCw, User, LogOut, ChevronLeft, ChevronRight, Phone, ShieldCheck, FileText, Info, MapPin, Bell } from 'lucide-react';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { LogoutButton } from '@/components/common/LogoutButton';
 import { AccountLanguageButton } from '@/components/account/AccountLanguageButton';
@@ -27,10 +26,17 @@ export default async function AccountPage() {
   const { count: orderCount } = await supabase
     .from('orders').select('id', { count: 'exact', head: true }).eq('customer_id', user.id);
 
+  const { count: unreadNotificationCount } = await supabase
+    .from('notifications')
+    .select('id', { count: 'exact', head: true })
+    .eq('recipient_id', user.id)
+    .eq('is_read', false);
+
   const quickLinks = [
     { href:'/orders',   icon:ShoppingBag, label:t('myOrders'),       badge: String(orderCount ?? 0) + ' ' + t('orderWord'),    badgeColor:'bg-blue-50 text-blue-700' },
     { href:'/loyalty',  icon:Star,        label:t('loyaltyPoints'),  badge: String(profile?.loyalty_points ?? 0) + ' ' + t('pointWord'), badgeColor:'bg-amber-50 text-amber-700' },
     { href:'/exchange', icon:RefreshCw,   label:t('exchangeRequests'), badge: null, badgeColor:'' },
+    { href:'/notifications', icon:Bell, label:isAr ? 'الإشعارات' : 'Notifications', badge: unreadNotificationCount ? String(unreadNotificationCount) : null, badgeColor:'bg-red-50 text-red-700' },
   ];
 
   const infoLinks = [
@@ -46,19 +52,22 @@ export default async function AccountPage() {
         <h1 className="text-2xl font-black text-text-primary">{t('myAccount')}</h1>
 
         {/* Profile card */}
-        <div className="rounded-2xl border border-border bg-background-card p-5 shadow-sm flex items-center gap-4">
+        <Link href="/account/profile" className="rounded-2xl border border-border bg-background-card p-5 shadow-sm flex items-center gap-4 hover:border-primary/40 hover:shadow-md transition-all">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#FEF3C7] text-primary shrink-0">
             <User className="h-7 w-7" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="font-bold text-text-primary truncate">{profile?.full_name ?? user.email}</p>
+            <div className="flex items-center justify-between">
+              <p className="font-bold text-text-primary truncate">{profile?.full_name ?? user.email}</p>
+              {isAr ? <ChevronLeft className="h-4 w-4 text-text-muted" /> : <ChevronRight className="h-4 w-4 text-text-muted" />}
+            </div>
             <p className="text-xs text-text-muted truncate">{user.email}</p>
             {profile?.phone && <p className="text-xs text-text-muted mt-0.5">{profile.phone}</p>}
             {profile?.referral_code && (
               <p className="mt-1 font-mono text-xs text-text-muted">{t('referralCode')}: <span className="text-primary font-bold">{profile.referral_code}</span></p>
             )}
           </div>
-        </div>
+        </Link>
 
         {/* Quick links */}
         <div className="grid gap-3">
@@ -77,6 +86,18 @@ export default async function AccountPage() {
               </div>
             </Link>
           ))}
+          <Link href="/account/addresses"
+            className="flex items-center justify-between rounded-2xl border border-border bg-background-card p-4 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FEF3C7] text-primary">
+                <MapPin className="h-5 w-5" />
+              </div>
+              <span className="font-semibold text-text-primary">{isAr ? 'عناويني' : 'My Addresses'}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {isAr ? <ChevronLeft className="h-4 w-4 text-text-muted" /> : <ChevronRight className="h-4 w-4 text-text-muted" />}
+            </div>
+          </Link>
         </div>
 
         {/* Preferences */}

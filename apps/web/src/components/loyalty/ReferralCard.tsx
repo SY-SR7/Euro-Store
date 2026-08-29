@@ -6,10 +6,10 @@ interface ReferralCardProps { referralCode: string; }
 export function ReferralCard({ referralCode }: ReferralCardProps) {
   const t = useTranslations('loyalty');
 
-  function copy() { void (navigator as any).clipboard.writeText(referralCode); }
+  function copy() { void navigator.clipboard.writeText(referralCode); }
 
   function share() {
-    void (navigator as any).share?.({
+    void navigator.share?.({
       text: t('referralMessage', { code: referralCode }),
     });
   }

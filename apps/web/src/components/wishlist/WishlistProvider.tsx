@@ -1,6 +1,7 @@
 'use client';
 /* eslint-disable */
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react';
+import { useAuthModal } from '@/components/auth/AuthModalProvider';
 
 type WishlistContextValue = {
   ids: Set<string>;
@@ -21,6 +22,7 @@ export function useWishlist() {
 }
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
+  const { openAuth } = useAuthModal();
   const [ids, setIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -45,7 +47,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
   const toggle = useCallback(async (productId: string) => {
     if (!loggedIn) {
-      window.location.href = '/auth/login?next=' + encodeURIComponent(window.location.pathname);
+      openAuth(window.location.pathname);
       return;
     }
     // Optimistic update
@@ -62,7 +64,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ product_id: productId }),
       });
       if (res.status === 401) {
-        window.location.href = '/auth/login?next=' + encodeURIComponent(window.location.pathname);
+        openAuth(window.location.pathname);
         return;
       }
       if (!res.ok) throw new Error('failed');
@@ -82,7 +84,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         return next;
       });
     }
-  }, [loggedIn]);
+  }, [loggedIn, openAuth]);
 
   return (
     <WishlistContext.Provider value={{ ids, loading, loggedIn, toggle }}>

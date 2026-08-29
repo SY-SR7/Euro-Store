@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { FormEvent } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { responseError, uploadResponseSchema } from '@/lib/upload-response';
 
 type Category = { id: string; name_ar: string; name_en?: string | null };
 type Brand = { id: string; name: string };
@@ -77,12 +78,15 @@ export default function ProductNewQuickAdmin() {
   const isAr = locale === 'ar';
 
   useEffect(() => {
-    Promise.all([
+    void Promise.all([
       fetchJson<Category[]>('/api/catalog/categories').catch(() => []),
       fetchJson<Brand[]>('/api/catalog/brands').catch(() => []),
     ]).then(([nextCategories, nextBrands]) => {
       setCategories(Array.isArray(nextCategories) ? nextCategories : []);
       setBrands(Array.isArray(nextBrands) ? nextBrands : []);
+    }).catch(() => {
+      setCategories([]);
+      setBrands([]);
     });
   }, []);
 
@@ -94,7 +98,7 @@ export default function ProductNewQuickAdmin() {
     setSaving(true);
     setMsg('');
     try {
-      let media: { type: 'image' | 'video', url: string, isPrimary: boolean, originalName: string }[] = [];
+      const media: { type: 'image' | 'video'; url: string; source: 'upload' | 'url_import'; isPrimary: boolean; originalName: string }[] = [];
       const fileItems = mediaItems.filter((m): m is { type: 'file'; id: string; file: File; isImage: boolean } => m.type === 'file');
       const urlItems = mediaItems.filter((m): m is { type: 'url'; id: string; url: string } => m.type === 'url');
 
@@ -103,19 +107,21 @@ export default function ProductNewQuickAdmin() {
         for (const item of fileItems) {
           formData.append('file', item.file);
         }
-        const uploadRes = await fetch('/api/upload', {
+        const uploadRes = await fetch('/api/upload?purpose=product', {
           method: 'POST',
           body: formData
         });
         if (!uploadRes.ok) {
-          const uErr = await uploadRes.json().catch(() => ({}));
-          throw new Error(uErr.error || 'Failed to upload media');
+          const errorPayload: unknown = await uploadRes.json().catch(() => null);
+          throw new Error(responseError(errorPayload, 'Failed to upload media'));
         }
-        const uploadData = await uploadRes.json();
-        media.push(...uploadData.files.map((f: any) => {
-          const matchItem = fileItems.find(fi => fi.file.name === f.originalName);
+        const rawUploadData: unknown = await uploadRes.json();
+        const uploadData = uploadResponseSchema.parse(rawUploadData);
+        media.push(...uploadData.files.map((file) => {
+          const matchItem = fileItems.find((item) => item.file.name === file.originalName);
           return {
-            ...f,
+            ...file,
+            source: 'upload' as const,
             isPrimary: matchItem ? matchItem.id === primaryMediaId : false
           };
         }));
@@ -125,12 +131,13 @@ export default function ProductNewQuickAdmin() {
         media.push({
           type: 'image',
           url: item.url,
+          source: 'url_import',
           isPrimary: item.id === primaryMediaId,
           originalName: item.url.split('/').pop() || 'image_from_url',
         });
       }
 
-      const product = await fetchJson<{ id?: string }>('/api/catalog/products', {
+      const result = await fetchJson<{ product?: { id?: string } }>('/api/catalog/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -148,7 +155,7 @@ export default function ProductNewQuickAdmin() {
           media,
         }),
       });
-      router.push(product.id ? `/products?open=${product.id}` : '/products');
+      router.push(result.product?.id ? `/products?open=${result.product.id}` : '/products');
     } catch (error) {
       const errMessage = error instanceof Error ? error.message : t('saveFailed', { fallback: 'فشل الحفظ' });
       if (errMessage === 'product_exists') {
@@ -228,6 +235,7 @@ export default function ProductNewQuickAdmin() {
           <div className="grid gap-4">
             <div className="flex flex-col sm:flex-row gap-2">
               <input 
+                aria-label={t('media', { fallback: isAr ? 'صور وفيديوهات المنتج' : 'Product images and videos' })}
                 type="file" 
                 multiple 
                 accept="image/*,video/*"

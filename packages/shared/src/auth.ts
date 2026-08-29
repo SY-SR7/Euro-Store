@@ -1,4 +1,4 @@
-﻿/// <reference lib="dom" />
+/// <reference lib="dom" />
 import { authenticator } from 'otplib';
 import { z } from 'zod';
 import { USER_ROLES, type UserRole } from './constants/roles';
@@ -13,7 +13,7 @@ export type AdminPortalRole = typeof USER_ROLES.ADMIN | typeof USER_ROLES.SUB_AD
 export const ADMIN_PORTAL_ROLES = [USER_ROLES.ADMIN, USER_ROLES.SUB_ADMIN] as const;
 export const ADMIN_TOTP_COOKIE_NAME = 'eurostore_admin_totp';
 
-const passwordSchema = z
+export const strongPasswordSchema = z
   .string()
   .min(12)
   .max(128)
@@ -30,8 +30,8 @@ export const loginSchema = z.object({
 export const registerCustomerSchema = z.object({
   fullName: z.string().trim().min(2).max(120),
   email: z.string().trim().toLowerCase().email().max(254),
-  phone: z.string().trim().min(6).max(32).optional().or(z.literal('')),
-  password: passwordSchema,
+  phone: z.string().trim().min(6).max(32),
+  password: strongPasswordSchema,
   preferredLanguage: z.enum(['ar', 'en']).default('ar'),
 });
 
@@ -108,7 +108,6 @@ function base64UrlToBytes(value: string): Uint8Array {
   return bytes;
 }
 
-// @ts-nocheck-line
 async function importHmacKey(secret: string): Promise<any> {
   return getCrypto().subtle.importKey(
     'raw',
@@ -149,11 +148,22 @@ export async function verifyTotpSessionToken(token: string, secret: string): Pro
     return null;
   }
 
-  const expectedSignature = await signPayload(encodedPayload, secret);
-
-  if (signature !== expectedSignature) {
+  let signatureBytes: Uint8Array;
+  try {
+    signatureBytes = base64UrlToBytes(signature);
+  } catch {
     return null;
   }
+  const signatureBuffer = new ArrayBuffer(signatureBytes.byteLength);
+  new Uint8Array(signatureBuffer).set(signatureBytes);
+  const key = await importHmacKey(secret);
+  const valid = await getCrypto().subtle.verify(
+    'HMAC',
+    key,
+    signatureBuffer,
+    new TextEncoder().encode(encodedPayload),
+  );
+  if (!valid) return null;
 
   const json = new TextDecoder().decode(base64UrlToBytes(encodedPayload));
   const parsed = totpPayloadSchema.safeParse(JSON.parse(json) as unknown);

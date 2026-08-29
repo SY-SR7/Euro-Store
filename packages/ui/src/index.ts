@@ -2,5 +2,7 @@ export * from './components/Button';
 export * from './components/Card';
 export * from './components/Input';
 export * from './components/Modal';
+export * from './components/ConfirmDialog';
 export * from './components/Toast';
 export * from './providers/SmoothScrollProvider';
+export * from './utils/cn';

@@ -5,8 +5,16 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "description": "Supabase database client and types for EuroStore",
+  "scripts": {
+    "type-check": "tsc --noEmit --incremental false"
+  },
   "dependencies": {
-    "@supabase/supabase-js": "latest",
-    "@supabase/ssr": "latest"
+    "@supabase/supabase-js": "2.112.0",
+    "@supabase/ssr": "0.12.4",
+    "pdfkit": "0.19.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/pdfkit": "0.17.6"
   }
 }

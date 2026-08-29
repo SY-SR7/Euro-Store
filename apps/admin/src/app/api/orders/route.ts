@@ -1,36 +1,38 @@
-import { requireAdminContext } from '@/supabase-server';
-﻿import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient } from '@/supabase-server';
+import { requireAdminContext } from '@/supabase-server';
+import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 
+const querySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+  status: z.string().trim().max(40).optional().default(''),
+  search: z.string().trim().max(100).optional().default(''),
+});
+
 export async function GET(request: Request) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('order_management', 'view');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   try {
-    const { searchParams } = new URL(request.url);
-    const page   = Math.max(1, parseInt(searchParams.get('page')  ?? '1'));
-    const limit  = Math.min(50, parseInt(searchParams.get('limit') ?? '20'));
-    const status = searchParams.get('status') ?? '';
-    const search = searchParams.get('search') ?? '';
-    const offset = (page - 1) * limit;
+    const params = Object.fromEntries(new URL(request.url).searchParams.entries());
+    const parsed = querySchema.safeParse(params);
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'invalid_query' }, { status: 400 });
+    }
 
     const supabase = createAdminSupabaseClient();
+    const { data, error } = await supabase.rpc('admin_list_orders', {
+      p_page: parsed.data.page,
+      p_limit: parsed.data.limit,
+      ...(parsed.data.status ? { p_status: parsed.data.status } : {}),
+      ...(parsed.data.search ? { p_search: parsed.data.search } : {}),
+    });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
-    let query = supabase
-      .from('orders')
-      .select('id, order_number, status, payment_status, payment_method, total_syp, created_at, address_snapshot, notes', { count: 'exact' })
-      .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1);
-
-    if (status) query = query.eq('status', status as any);
-    if (search) query = query.or(`order_number.ilike.%${search}%,address_snapshot->>full_name.ilike.%${search}%`);
-
-    const { data, error, count } = await query;
-    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
-
-    return NextResponse.json({ orders: data ?? [], total: count ?? 0, page, limit });
+    return NextResponse.json(data);
   } catch {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });
   }

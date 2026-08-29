@@ -1,0 +1,1711 @@
+{
+  "generatedAt": "2026-08-28T23:31:00.456Z",
+  "apps": {
+    "web": {
+      "pages": [
+        "/",
+        "/account",
+        "/account/addresses",
+        "/account/profile",
+        "/auth/forgot-password",
+        "/auth/login",
+        "/auth/register",
+        "/auth/reset-password",
+        "/auth/verify-email",
+        "/cart",
+        "/categories",
+        "/categories/[slug]",
+        "/checkout",
+        "/checkout/success",
+        "/collections/[slug]",
+        "/contact",
+        "/exchange",
+        "/exchange/[id]",
+        "/exchange/new",
+        "/faq",
+        "/loyalty",
+        "/notifications",
+        "/orders",
+        "/orders/[orderNumber]",
+        "/privacy",
+        "/products",
+        "/products/[slug]",
+        "/terms",
+        "/wishlist",
+        "/wishlist/[token]"
+      ],
+      "apis": [
+        "/api/addresses",
+        "/api/auth/forgot-password",
+        "/api/auth/login",
+        "/api/auth/logout",
+        "/api/auth/me",
+        "/api/auth/refresh",
+        "/api/auth/register",
+        "/api/auth/reset-password",
+        "/api/cart",
+        "/api/cart/apply-discount",
+        "/api/cart/apply-points",
+        "/api/cart/discount",
+        "/api/cart/items",
+        "/api/cart/items/[id]",
+        "/api/cart/merge",
+        "/api/cart/points",
+        "/api/cart/validate",
+        "/api/catalog/filters",
+        "/api/checkout/shipping",
+        "/api/customer/loyalty",
+        "/api/customer/loyalty/transactions",
+        "/api/customer/qr",
+        "/api/exchanges",
+        "/api/exchanges/[id]",
+        "/api/internal/notifications/dispatch",
+        "/api/loyalty/balance",
+        "/api/loyalty/settings",
+        "/api/notifications",
+        "/api/notifications/[id]/read",
+        "/api/notifications/read-all",
+        "/api/notifications/unread-count",
+        "/api/orders",
+        "/api/orders/[id]",
+        "/api/orders/[id]/cancel",
+        "/api/orders/[id]/exchange",
+        "/api/orders/[id]/invoice",
+        "/api/orders/[id]/reorder",
+        "/api/payments/sham-cash/initiate",
+        "/api/payments/sham-cash/status/[transactionId]",
+        "/api/product-variants/[id]/notify-me",
+        "/api/products",
+        "/api/products/[slug]",
+        "/api/products/[slug]/related",
+        "/api/profile",
+        "/api/push-tokens",
+        "/api/reviews",
+        "/api/search",
+        "/api/search/suggestions",
+        "/api/settings/exchange-rate",
+        "/api/webhooks/sham-cash",
+        "/api/wishlist",
+        "/api/wishlist/share",
+        "/auth/callback"
+      ],
+      "references": [
+        {
+          "kind": "fetch",
+          "target": "/api/addresses",
+          "file": "apps/web/src/app/(main)/account/addresses/AddressesClient.tsx",
+          "line": 41
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/addresses?id=",
+          "file": "apps/web/src/app/(main)/account/addresses/AddressesClient.tsx",
+          "line": 58
+        },
+        {
+          "kind": "href",
+          "target": "/account",
+          "file": "apps/web/src/app/(main)/account/addresses/page.tsx",
+          "line": 28
+        },
+        {
+          "kind": "href",
+          "target": "/account/profile",
+          "file": "apps/web/src/app/(main)/account/page.tsx",
+          "line": 55
+        },
+        {
+          "kind": "href",
+          "target": "/account/addresses",
+          "file": "apps/web/src/app/(main)/account/page.tsx",
+          "line": 89
+        },
+        {
+          "kind": "href",
+          "target": "/account",
+          "file": "apps/web/src/app/(main)/account/profile/page.tsx",
+          "line": 27
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/profile",
+          "file": "apps/web/src/app/(main)/account/profile/ProfileForm.tsx",
+          "line": 32
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/cart/page.tsx",
+          "line": 22
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/cart/page.tsx",
+          "line": 39
+        },
+        {
+          "kind": "href",
+          "target": "/checkout",
+          "file": "apps/web/src/app/(main)/cart/page.tsx",
+          "line": 112
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/cart/page.tsx",
+          "line": 116
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/(main)/categories/page.tsx",
+          "line": 24
+        },
+        {
+          "kind": "href",
+          "target": "/categories/__dynamic__",
+          "file": "apps/web/src/app/(main)/categories/page.tsx",
+          "line": 41
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/categories/page.tsx",
+          "line": 57
+        },
+        {
+          "kind": "href",
+          "target": "/categories",
+          "file": "apps/web/src/app/(main)/categories/[slug]/page.tsx",
+          "line": 70
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/checkout/page.tsx",
+          "line": 243
+        },
+        {
+          "kind": "href",
+          "target": "/cart",
+          "file": "apps/web/src/app/(main)/checkout/page.tsx",
+          "line": 259
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/checkout/shipping?gov=",
+          "file": "apps/web/src/app/(main)/checkout/page.tsx",
+          "line": 70
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/addresses",
+          "file": "apps/web/src/app/(main)/checkout/page.tsx",
+          "line": 78
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/loyalty/balance",
+          "file": "apps/web/src/app/(main)/checkout/page.tsx",
+          "line": 89
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/loyalty/settings",
+          "file": "apps/web/src/app/(main)/checkout/page.tsx",
+          "line": 93
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/cart/apply-discount",
+          "file": "apps/web/src/app/(main)/checkout/page.tsx",
+          "line": 151
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/addresses",
+          "file": "apps/web/src/app/(main)/checkout/page.tsx",
+          "line": 188
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/orders",
+          "file": "apps/web/src/app/(main)/checkout/page.tsx",
+          "line": 206
+        },
+        {
+          "kind": "href",
+          "target": "/orders",
+          "file": "apps/web/src/app/(main)/checkout/success/page.tsx",
+          "line": 23
+        },
+        {
+          "kind": "href",
+          "target": "/orders",
+          "file": "apps/web/src/app/(main)/checkout/success/page.tsx",
+          "line": 52
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/checkout/success/page.tsx",
+          "line": 56
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/(main)/contact/page.tsx",
+          "line": 38
+        },
+        {
+          "kind": "href",
+          "target": "/exchange",
+          "file": "apps/web/src/app/(main)/exchange/new/page.tsx",
+          "line": 118
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/exchange/new/page.tsx",
+          "line": 132
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/orders/__dynamic__/exchange",
+          "file": "apps/web/src/app/(main)/exchange/new/page.tsx",
+          "line": 73
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/(main)/exchange/page.tsx",
+          "line": 38
+        },
+        {
+          "kind": "href",
+          "target": "/exchange/new",
+          "file": "apps/web/src/app/(main)/exchange/page.tsx",
+          "line": 41
+        },
+        {
+          "kind": "href",
+          "target": "/exchange/__dynamic__",
+          "file": "apps/web/src/app/(main)/exchange/page.tsx",
+          "line": 68
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/(main)/exchange/[id]/page.tsx",
+          "line": 85
+        },
+        {
+          "kind": "href",
+          "target": "/exchange",
+          "file": "apps/web/src/app/(main)/exchange/[id]/page.tsx",
+          "line": 87
+        },
+        {
+          "kind": "href",
+          "target": "/exchange",
+          "file": "apps/web/src/app/(main)/exchange/[id]/page.tsx",
+          "line": 240
+        },
+        {
+          "kind": "href",
+          "target": "/contact",
+          "file": "apps/web/src/app/(main)/exchange/[id]/page.tsx",
+          "line": 246
+        },
+        {
+          "kind": "href",
+          "target": "/contact",
+          "file": "apps/web/src/app/(main)/faq/page.tsx",
+          "line": 91
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/(main)/loyalty/page.tsx",
+          "line": 99
+        },
+        {
+          "kind": "href",
+          "target": "/orders",
+          "file": "apps/web/src/app/(main)/loyalty/page.tsx",
+          "line": 114
+        },
+        {
+          "kind": "href",
+          "target": "/account",
+          "file": "apps/web/src/app/(main)/notifications/NotificationsClient.tsx",
+          "line": 79
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/notifications",
+          "file": "apps/web/src/app/(main)/notifications/NotificationsClient.tsx",
+          "line": 27
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/notifications/__dynamic__/read",
+          "file": "apps/web/src/app/(main)/notifications/NotificationsClient.tsx",
+          "line": 47
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/notifications/read-all",
+          "file": "apps/web/src/app/(main)/notifications/NotificationsClient.tsx",
+          "line": 62
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/(main)/orders/page.tsx",
+          "line": 36
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/orders/page.tsx",
+          "line": 43
+        },
+        {
+          "kind": "href",
+          "target": "/orders/__dynamic__",
+          "file": "apps/web/src/app/(main)/orders/page.tsx",
+          "line": 51
+        },
+        {
+          "kind": "href",
+          "target": "/products/__dynamic__",
+          "file": "apps/web/src/app/(main)/orders/[orderNumber]/page.tsx",
+          "line": 144
+        },
+        {
+          "kind": "href",
+          "target": "/orders",
+          "file": "apps/web/src/app/(main)/orders/[orderNumber]/page.tsx",
+          "line": 180
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/orders/[orderNumber]/page.tsx",
+          "line": 184
+        },
+        {
+          "kind": "href",
+          "target": "/products?brand_id=",
+          "file": "apps/web/src/app/(main)/page.tsx",
+          "line": 167
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
+          "line": 313
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
+          "line": 322
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
+          "line": 324
+        },
+        {
+          "kind": "href",
+          "target": "/categories/__dynamic__",
+          "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
+          "line": 328
+        },
+        {
+          "kind": "href",
+          "target": "/categories/__dynamic__",
+          "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
+          "line": 640
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/products/__dynamic__",
+          "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
+          "line": 119
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/wishlist/page.tsx",
+          "line": 124
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/wishlist",
+          "file": "apps/web/src/app/(main)/wishlist/page.tsx",
+          "line": 40
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/wishlist/share",
+          "file": "apps/web/src/app/(main)/wishlist/page.tsx",
+          "line": 56
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/wishlist",
+          "file": "apps/web/src/app/(main)/wishlist/page.tsx",
+          "line": 74
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/(main)/wishlist/[token]/page.tsx",
+          "line": 82
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/auth/forgot-password/page.tsx",
+          "line": 22
+        },
+        {
+          "kind": "href",
+          "target": "/auth/login",
+          "file": "apps/web/src/app/auth/forgot-password/page.tsx",
+          "line": 71
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/auth/login/page.tsx",
+          "line": 48
+        },
+        {
+          "kind": "href",
+          "target": "/auth/forgot-password",
+          "file": "apps/web/src/app/auth/login/page.tsx",
+          "line": 66
+        },
+        {
+          "kind": "href",
+          "target": "/auth/register",
+          "file": "apps/web/src/app/auth/login/page.tsx",
+          "line": 96
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/auth/login",
+          "file": "apps/web/src/app/auth/login/page.tsx",
+          "line": 28
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/auth/register/page.tsx",
+          "line": 57
+        },
+        {
+          "kind": "href",
+          "target": "/auth/login",
+          "file": "apps/web/src/app/auth/register/page.tsx",
+          "line": 118
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/auth/register",
+          "file": "apps/web/src/app/auth/register/page.tsx",
+          "line": 32
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/auth/reset-password/page.tsx",
+          "line": 21
+        },
+        {
+          "kind": "href",
+          "target": "/auth/login",
+          "file": "apps/web/src/app/auth/verify-email/page.tsx",
+          "line": 18
+        },
+        {
+          "kind": "href",
+          "target": "/products/__dynamic__",
+          "file": "apps/web/src/app/catalog-components.tsx",
+          "line": 109
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/error.tsx",
+          "line": 20
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/catalog/filters?",
+          "file": "apps/web/src/app/filterable-product-grid.tsx",
+          "line": 94
+        },
+        {
+          "kind": "href",
+          "target": "/",
+          "file": "apps/web/src/app/not-found.tsx",
+          "line": 17
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/web/src/app/not-found.tsx",
+          "line": 20
+        }
+      ]
+    },
+    "admin": {
+      "pages": [
+        "/",
+        "/attribute-types",
+        "/audit-logs",
+        "/brands",
+        "/bundles",
+        "/bundles/[id]",
+        "/bundles/new",
+        "/categories",
+        "/collections",
+        "/collections/[id]",
+        "/collections/new",
+        "/customers",
+        "/dashboard",
+        "/discounts",
+        "/exchanges",
+        "/exchanges/[id]",
+        "/helpers",
+        "/homepage",
+        "/login",
+        "/loyalty-settings",
+        "/notifications",
+        "/orders",
+        "/orders/[id]",
+        "/partners",
+        "/product-requests",
+        "/products",
+        "/products/new",
+        "/reports",
+        "/reviews",
+        "/settings",
+        "/shipping-rates",
+        "/size-guides",
+        "/size-guides/[id]",
+        "/size-guides/new",
+        "/sub-admins",
+        "/totp/setup",
+        "/totp/verify"
+      ],
+      "apis": [
+        "/api/admin/audit-logs",
+        "/api/admin/auth/login",
+        "/api/admin/auth/me",
+        "/api/admin/auth/setup-2fa",
+        "/api/admin/auth/verify-2fa",
+        "/api/admin/bundles",
+        "/api/admin/bundles/[id]",
+        "/api/admin/collections",
+        "/api/admin/collections/[id]",
+        "/api/admin/customers",
+        "/api/admin/customers/[id]/adjust-points",
+        "/api/admin/customers/[id]/block",
+        "/api/admin/dashboard",
+        "/api/admin/exchanges",
+        "/api/admin/exchanges/[id]",
+        "/api/admin/exchanges/[id]/approve",
+        "/api/admin/exchanges/[id]/reject",
+        "/api/admin/exchanges/[id]/status",
+        "/api/admin/helpers",
+        "/api/admin/helpers/[id]",
+        "/api/admin/homepage/banners",
+        "/api/admin/homepage/banners/[id]",
+        "/api/admin/homepage/banners/reorder",
+        "/api/admin/homepage/brands",
+        "/api/admin/homepage/sections/[key]",
+        "/api/admin/orders",
+        "/api/admin/orders/[id]",
+        "/api/admin/orders/[id]/status",
+        "/api/admin/partners",
+        "/api/admin/partners/[id]",
+        "/api/admin/product-requests",
+        "/api/admin/products",
+        "/api/admin/products/[id]",
+        "/api/admin/products/[id]/images",
+        "/api/admin/products/[id]/images/[imageId]",
+        "/api/admin/products/[id]/images/url-import",
+        "/api/admin/products/[id]/status",
+        "/api/admin/reports/[type]",
+        "/api/admin/settings",
+        "/api/admin/shipping-rates",
+        "/api/admin/shipping-rates/[governorate]",
+        "/api/admin/size-guides",
+        "/api/admin/size-guides/[id]",
+        "/api/admin/sub-admins",
+        "/api/admin/sub-admins/[id]",
+        "/api/admin/sub-admins/[id]/permissions",
+        "/api/auth/login",
+        "/api/auth/logout",
+        "/api/catalog/attribute-types",
+        "/api/catalog/attribute-types/[id]",
+        "/api/catalog/attribute-values",
+        "/api/catalog/attribute-values/[id]",
+        "/api/catalog/brands",
+        "/api/catalog/brands/[id]",
+        "/api/catalog/categories",
+        "/api/catalog/categories/[id]",
+        "/api/catalog/homepage",
+        "/api/catalog/homepage/[id]",
+        "/api/catalog/images",
+        "/api/catalog/images/[id]",
+        "/api/catalog/products",
+        "/api/catalog/products/[id]",
+        "/api/catalog/products/[id]/images",
+        "/api/catalog/products/filters",
+        "/api/catalog/variants",
+        "/api/catalog/variants/[id]",
+        "/api/customers",
+        "/api/customers/[id]",
+        "/api/customers/[id]/loyalty",
+        "/api/dashboard/stats",
+        "/api/discounts",
+        "/api/discounts/[id]",
+        "/api/exchanges",
+        "/api/exchanges/[id]",
+        "/api/loyalty-settings",
+        "/api/notifications",
+        "/api/notifications/[id]/read",
+        "/api/notifications/read-all",
+        "/api/notifications/unread-count",
+        "/api/orders",
+        "/api/orders/[id]",
+        "/api/push-tokens",
+        "/api/reports",
+        "/api/reviews",
+        "/api/reviews/[id]",
+        "/api/settings",
+        "/api/shipping-rates",
+        "/api/shipping-rates/[id]",
+        "/api/upload"
+      ],
+      "references": [
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/attribute-types/AttributeTypesQuickAdmin.tsx",
+          "line": 33
+        },
+        {
+          "kind": "href",
+          "target": "/api/admin/audit-logs?",
+          "file": "apps/admin/src/app/(dashboard)/audit-logs/AuditLogsQuickAdmin.tsx",
+          "line": 92
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/audit-logs?",
+          "file": "apps/admin/src/app/(dashboard)/audit-logs/AuditLogsQuickAdmin.tsx",
+          "line": 60
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/brands/BrandsQuickAdmin.tsx",
+          "line": 19
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/upload?purpose=brand",
+          "file": "apps/admin/src/app/(dashboard)/brands/BrandsQuickAdmin.tsx",
+          "line": 85
+        },
+        {
+          "kind": "href",
+          "target": "/bundles",
+          "file": "apps/admin/src/app/(dashboard)/bundles/BundleEditor.tsx",
+          "line": 88
+        },
+        {
+          "kind": "href",
+          "target": "/bundles/new",
+          "file": "apps/admin/src/app/(dashboard)/bundles/page.tsx",
+          "line": 22
+        },
+        {
+          "kind": "href",
+          "target": "/bundles/__dynamic__",
+          "file": "apps/admin/src/app/(dashboard)/bundles/page.tsx",
+          "line": 55
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/categories/CategoriesQuickAdmin.tsx",
+          "line": 27
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/upload?purpose=category",
+          "file": "apps/admin/src/app/(dashboard)/categories/CategoriesQuickAdmin.tsx",
+          "line": 93
+        },
+        {
+          "kind": "href",
+          "target": "/collections",
+          "file": "apps/admin/src/app/(dashboard)/collections/CollectionEditor.tsx",
+          "line": 127
+        },
+        {
+          "kind": "href",
+          "target": "/collections/new",
+          "file": "apps/admin/src/app/(dashboard)/collections/page.tsx",
+          "line": 22
+        },
+        {
+          "kind": "href",
+          "target": "/collections/__dynamic__",
+          "file": "apps/admin/src/app/(dashboard)/collections/page.tsx",
+          "line": 59
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/customers/CustomersQuickAdmin.tsx",
+          "line": 29
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/dashboard/DashboardQuickAdmin.tsx",
+          "line": 52
+        },
+        {
+          "kind": "href",
+          "target": "/notifications",
+          "file": "apps/admin/src/app/(dashboard)/dashboard/DashboardQuickAdmin.tsx",
+          "line": 150
+        },
+        {
+          "kind": "href",
+          "target": "/orders",
+          "file": "apps/admin/src/app/(dashboard)/dashboard/DashboardQuickAdmin.tsx",
+          "line": 182
+        },
+        {
+          "kind": "href",
+          "target": "/orders?open=",
+          "file": "apps/admin/src/app/(dashboard)/dashboard/DashboardQuickAdmin.tsx",
+          "line": 186
+        },
+        {
+          "kind": "href",
+          "target": "/exchanges",
+          "file": "apps/admin/src/app/(dashboard)/dashboard/DashboardQuickAdmin.tsx",
+          "line": 204
+        },
+        {
+          "kind": "href",
+          "target": "/exchanges?open=",
+          "file": "apps/admin/src/app/(dashboard)/dashboard/DashboardQuickAdmin.tsx",
+          "line": 208
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/discounts/DiscountsQuickAdmin.tsx",
+          "line": 37
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/exchanges/ExchangesQuickAdmin.tsx",
+          "line": 43
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/helpers",
+          "file": "apps/admin/src/app/(dashboard)/helpers/page.tsx",
+          "line": 37
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/layout.tsx",
+          "line": 206
+        },
+        {
+          "kind": "href",
+          "target": "/dashboard",
+          "file": "apps/admin/src/app/(dashboard)/layout.tsx",
+          "line": 255
+        },
+        {
+          "kind": "href",
+          "target": "/notifications",
+          "file": "apps/admin/src/app/(dashboard)/layout.tsx",
+          "line": 392
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/auth/me",
+          "file": "apps/admin/src/app/(dashboard)/layout.tsx",
+          "line": 328
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/notifications/unread-count",
+          "file": "apps/admin/src/app/(dashboard)/layout.tsx",
+          "line": 352
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/loyalty-settings/LoyaltySettingsQuickAdmin.tsx",
+          "line": 46
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/notifications?per_page=100",
+          "file": "apps/admin/src/app/(dashboard)/notifications/NotificationsQuickAdmin.tsx",
+          "line": 69
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/notifications/__dynamic__/read",
+          "file": "apps/admin/src/app/(dashboard)/notifications/NotificationsQuickAdmin.tsx",
+          "line": 89
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/notifications/read-all",
+          "file": "apps/admin/src/app/(dashboard)/notifications/NotificationsQuickAdmin.tsx",
+          "line": 94
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/orders/OrdersQuickAdmin.tsx",
+          "line": 86
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/partners",
+          "file": "apps/admin/src/app/(dashboard)/partners/page.tsx",
+          "line": 41
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/product-requests",
+          "file": "apps/admin/src/app/(dashboard)/product-requests/page.tsx",
+          "line": 39
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/product-requests",
+          "file": "apps/admin/src/app/(dashboard)/product-requests/page.tsx",
+          "line": 56
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/products/new/ProductNewQuickAdmin.tsx",
+          "line": 24
+        },
+        {
+          "kind": "href",
+          "target": "/products",
+          "file": "apps/admin/src/app/(dashboard)/products/new/ProductNewQuickAdmin.tsx",
+          "line": 175
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/upload?purpose=product",
+          "file": "apps/admin/src/app/(dashboard)/products/new/ProductNewQuickAdmin.tsx",
+          "line": 110
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/products/ProductQuickAdmin.tsx",
+          "line": 136
+        },
+        {
+          "kind": "href",
+          "target": "/products/new",
+          "file": "apps/admin/src/app/(dashboard)/products/ProductQuickAdmin.tsx",
+          "line": 1186
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/upload?purpose=product",
+          "file": "apps/admin/src/app/(dashboard)/products/ProductQuickAdmin.tsx",
+          "line": 936
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/reports?type=&from=&to=",
+          "file": "apps/admin/src/app/(dashboard)/reports/page.tsx",
+          "line": 147
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/reviews/ReviewsQuickAdmin.tsx",
+          "line": 26
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/settings/SettingsQuickAdmin.tsx",
+          "line": 52
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/shipping-rates/ShippingRatesQuickAdmin.tsx",
+          "line": 29
+        },
+        {
+          "kind": "href",
+          "target": "/size-guides",
+          "file": "apps/admin/src/app/(dashboard)/size-guides/new/page.tsx",
+          "line": 98
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/size-guides",
+          "file": "apps/admin/src/app/(dashboard)/size-guides/new/page.tsx",
+          "line": 78
+        },
+        {
+          "kind": "href",
+          "target": "/size-guides/new",
+          "file": "apps/admin/src/app/(dashboard)/size-guides/page.tsx",
+          "line": 22
+        },
+        {
+          "kind": "href",
+          "target": "/size-guides/__dynamic__",
+          "file": "apps/admin/src/app/(dashboard)/size-guides/page.tsx",
+          "line": 47
+        },
+        {
+          "kind": "href",
+          "target": "/size-guides",
+          "file": "apps/admin/src/app/(dashboard)/size-guides/[id]/page.tsx",
+          "line": 136
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/size-guides/__dynamic__",
+          "file": "apps/admin/src/app/(dashboard)/size-guides/[id]/page.tsx",
+          "line": 45
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/size-guides/__dynamic__",
+          "file": "apps/admin/src/app/(dashboard)/size-guides/[id]/page.tsx",
+          "line": 114
+        },
+        {
+          "kind": "href",
+          "target": "/login",
+          "file": "apps/admin/src/app/(dashboard)/sub-admins/SubAdminsQuickAdmin.tsx",
+          "line": 38
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/auth/login",
+          "file": "apps/admin/src/app/login/page.tsx",
+          "line": 46
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/auth/setup-2fa",
+          "file": "apps/admin/src/app/totp/setup/page.tsx",
+          "line": 37
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/auth/setup-2fa",
+          "file": "apps/admin/src/app/totp/setup/page.tsx",
+          "line": 59
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/admin/auth/verify-2fa",
+          "file": "apps/admin/src/app/totp/verify/page.tsx",
+          "line": 32
+        }
+      ]
+    },
+    "helper": {
+      "pages": [
+        "/",
+        "/dashboard",
+        "/exchange",
+        "/inventory",
+        "/login",
+        "/loyalty",
+        "/product-requests",
+        "/product-requests/new"
+      ],
+      "apis": [
+        "/api/auth/logout",
+        "/api/helper/categories",
+        "/api/helper/exchanges/[id]/approve",
+        "/api/helper/exchanges/[id]/complete",
+        "/api/helper/exchanges/[id]/reject",
+        "/api/helper/exchanges/review",
+        "/api/helper/exchanges/scan-qr",
+        "/api/helper/inventory",
+        "/api/helper/loyalty/earn-offline",
+        "/api/helper/loyalty/preview-earn",
+        "/api/helper/loyalty/preview-redeem",
+        "/api/helper/loyalty/redeem-offline",
+        "/api/helper/loyalty/scan-qr",
+        "/api/helper/partners",
+        "/api/helper/product-requests",
+        "/api/orders",
+        "/api/orders/[id]",
+        "/api/push-tokens"
+      ],
+      "references": [
+        {
+          "kind": "href",
+          "target": "/exchange",
+          "file": "apps/helper/src/app/(dashboard)/dashboard/page.tsx",
+          "line": 88
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/orders",
+          "file": "apps/helper/src/app/(dashboard)/dashboard/page.tsx",
+          "line": 40
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/helper/exchanges/review",
+          "file": "apps/helper/src/app/(dashboard)/dashboard/page.tsx",
+          "line": 41
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/orders/__dynamic__",
+          "file": "apps/helper/src/app/(dashboard)/dashboard/page.tsx",
+          "line": 60
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/helper/exchanges/review",
+          "file": "apps/helper/src/app/(dashboard)/exchange/page.tsx",
+          "line": 69
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/helper/partners",
+          "file": "apps/helper/src/app/(dashboard)/exchange/page.tsx",
+          "line": 81
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/helper/exchanges/__dynamic__/__dynamic__",
+          "file": "apps/helper/src/app/(dashboard)/exchange/page.tsx",
+          "line": 122
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/helper/exchanges/scan-qr",
+          "file": "apps/helper/src/app/(dashboard)/exchange/page.tsx",
+          "line": 149
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/helper/exchanges/__dynamic__/complete",
+          "file": "apps/helper/src/app/(dashboard)/exchange/page.tsx",
+          "line": 174
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/helper/loyalty/scan-qr",
+          "file": "apps/helper/src/app/(dashboard)/loyalty/page.tsx",
+          "line": 57
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/helper/categories",
+          "file": "apps/helper/src/app/(dashboard)/product-requests/new/page.tsx",
+          "line": 28
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/helper/product-requests",
+          "file": "apps/helper/src/app/(dashboard)/product-requests/new/page.tsx",
+          "line": 68
+        },
+        {
+          "kind": "href",
+          "target": "/product-requests/new",
+          "file": "apps/helper/src/app/(dashboard)/product-requests/page.tsx",
+          "line": 56
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/helper/product-requests",
+          "file": "apps/helper/src/app/(dashboard)/product-requests/page.tsx",
+          "line": 36
+        },
+        {
+          "kind": "form-action",
+          "target": "/api/auth/logout",
+          "file": "apps/helper/src/app/components/HelperSidebar.tsx",
+          "line": 39
+        }
+      ]
+    },
+    "partner": {
+      "pages": [
+        "/",
+        "/dashboard",
+        "/exchange",
+        "/exchange/history",
+        "/exchange/requests",
+        "/login"
+      ],
+      "apis": [
+        "/api/auth/logout",
+        "/api/partner/exchanges",
+        "/api/partner/exchanges/[id]/confirm-delivery-pickup",
+        "/api/partner/exchanges/[id]/confirm-receipt",
+        "/api/partner/exchanges/[id]/ready-for-pickup",
+        "/api/partner/exchanges/scan-qr",
+        "/api/push-tokens"
+      ],
+      "references": [
+        {
+          "kind": "href",
+          "target": "/exchange",
+          "file": "apps/partner/src/app/(dashboard)/dashboard/page.tsx",
+          "line": 58
+        },
+        {
+          "kind": "href",
+          "target": "/exchange",
+          "file": "apps/partner/src/app/(dashboard)/dashboard/page.tsx",
+          "line": 73
+        },
+        {
+          "kind": "href",
+          "target": "/exchange/history",
+          "file": "apps/partner/src/app/(dashboard)/dashboard/page.tsx",
+          "line": 79
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/partner/exchanges",
+          "file": "apps/partner/src/app/(dashboard)/dashboard/page.tsx",
+          "line": 15
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/partner/exchanges/scan-qr",
+          "file": "apps/partner/src/app/(dashboard)/exchange/page.tsx",
+          "line": 37
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/partner/exchanges/__dynamic__/__dynamic__",
+          "file": "apps/partner/src/app/(dashboard)/exchange/page.tsx",
+          "line": 78
+        },
+        {
+          "kind": "href",
+          "target": "/exchange",
+          "file": "apps/partner/src/app/(dashboard)/exchange/requests/PartnerExchangeRequestsClient.tsx",
+          "line": 154
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/partner/exchanges",
+          "file": "apps/partner/src/app/(dashboard)/exchange/requests/PartnerExchangeRequestsClient.tsx",
+          "line": 40
+        },
+        {
+          "kind": "fetch",
+          "target": "/api/partner/exchanges/__dynamic__/__dynamic__",
+          "file": "apps/partner/src/app/(dashboard)/exchange/requests/PartnerExchangeRequestsClient.tsx",
+          "line": 59
+        },
+        {
+          "kind": "form-action",
+          "target": "/api/auth/logout",
+          "file": "apps/partner/src/app/(dashboard)/PartnerSidebar.tsx",
+          "line": 37
+        }
+      ]
+    },
+    "mobile": {
+      "pages": [
+        "/",
+        "/account",
+        "/addresses",
+        "/cart",
+        "/categories",
+        "/checkout",
+        "/exchange/new",
+        "/exchanges",
+        "/exchanges/[id]",
+        "/login",
+        "/loyalty",
+        "/notifications",
+        "/onboarding",
+        "/orders",
+        "/orders/[id]",
+        "/products",
+        "/products/[id]",
+        "/profile",
+        "/wishlist"
+      ],
+      "apis": [],
+      "apiProvider": "web",
+      "references": [
+        {
+          "kind": "router",
+          "target": "/checkout",
+          "file": "apps/mobile/app/(tabs)/cart.tsx",
+          "line": 60
+        },
+        {
+          "kind": "router",
+          "target": "/products",
+          "file": "apps/mobile/app/(tabs)/index.tsx",
+          "line": 136
+        },
+        {
+          "kind": "api",
+          "target": "/api/notifications/unread-count",
+          "file": "apps/mobile/app/(tabs)/index.tsx",
+          "line": 34
+        },
+        {
+          "kind": "api",
+          "target": "/api/products?sort=newest&per_page=4",
+          "file": "apps/mobile/app/(tabs)/index.tsx",
+          "line": 43
+        },
+        {
+          "kind": "router",
+          "target": "/login",
+          "file": "apps/mobile/app/(tabs)/profile.tsx",
+          "line": 41
+        },
+        {
+          "kind": "router",
+          "target": "/account",
+          "file": "apps/mobile/app/(tabs)/profile.tsx",
+          "line": 59
+        },
+        {
+          "kind": "router",
+          "target": "/addresses",
+          "file": "apps/mobile/app/(tabs)/profile.tsx",
+          "line": 62
+        },
+        {
+          "kind": "router",
+          "target": "/loyalty",
+          "file": "apps/mobile/app/(tabs)/profile.tsx",
+          "line": 65
+        },
+        {
+          "kind": "router",
+          "target": "/orders",
+          "file": "apps/mobile/app/(tabs)/profile.tsx",
+          "line": 70
+        },
+        {
+          "kind": "router",
+          "target": "/wishlist",
+          "file": "apps/mobile/app/(tabs)/profile.tsx",
+          "line": 77
+        },
+        {
+          "kind": "router",
+          "target": "/exchanges",
+          "file": "apps/mobile/app/(tabs)/profile.tsx",
+          "line": 82
+        },
+        {
+          "kind": "router",
+          "target": "/notifications",
+          "file": "apps/mobile/app/(tabs)/profile.tsx",
+          "line": 85
+        },
+        {
+          "kind": "api",
+          "target": "/api/profile",
+          "file": "apps/mobile/app/account.tsx",
+          "line": 26
+        },
+        {
+          "kind": "api",
+          "target": "/api/profile",
+          "file": "apps/mobile/app/account.tsx",
+          "line": 44
+        },
+        {
+          "kind": "api",
+          "target": "/api/addresses",
+          "file": "apps/mobile/app/addresses.tsx",
+          "line": 29
+        },
+        {
+          "kind": "api",
+          "target": "/api/addresses",
+          "file": "apps/mobile/app/addresses.tsx",
+          "line": 40
+        },
+        {
+          "kind": "api",
+          "target": "/api/addresses?id=",
+          "file": "apps/mobile/app/addresses.tsx",
+          "line": 49
+        },
+        {
+          "kind": "router",
+          "target": "/login",
+          "file": "apps/mobile/app/checkout.tsx",
+          "line": 45
+        },
+        {
+          "kind": "router",
+          "target": "/login",
+          "file": "apps/mobile/app/checkout.tsx",
+          "line": 86
+        },
+        {
+          "kind": "router",
+          "target": "/orders",
+          "file": "apps/mobile/app/checkout.tsx",
+          "line": 119
+        },
+        {
+          "kind": "router",
+          "target": "/",
+          "file": "apps/mobile/app/checkout.tsx",
+          "line": 120
+        },
+        {
+          "kind": "api",
+          "target": "/api/addresses",
+          "file": "apps/mobile/app/checkout.tsx",
+          "line": 52
+        },
+        {
+          "kind": "api",
+          "target": "/api/customer/loyalty",
+          "file": "apps/mobile/app/checkout.tsx",
+          "line": 53
+        },
+        {
+          "kind": "api",
+          "target": "/api/checkout/shipping?gov=",
+          "file": "apps/mobile/app/checkout.tsx",
+          "line": 63
+        },
+        {
+          "kind": "api",
+          "target": "/api/orders",
+          "file": "apps/mobile/app/checkout.tsx",
+          "line": 100
+        },
+        {
+          "kind": "router",
+          "target": "/exchanges/__dynamic__",
+          "file": "apps/mobile/app/exchange/new.tsx",
+          "line": 40
+        },
+        {
+          "kind": "api",
+          "target": "/api/profile",
+          "file": "apps/mobile/app/exchange/new.tsx",
+          "line": 19
+        },
+        {
+          "kind": "api",
+          "target": "/api/orders/__dynamic__/exchange",
+          "file": "apps/mobile/app/exchange/new.tsx",
+          "line": 39
+        },
+        {
+          "kind": "api",
+          "target": "/api/exchanges/__dynamic__",
+          "file": "apps/mobile/app/exchanges/[id].tsx",
+          "line": 20
+        },
+        {
+          "kind": "router",
+          "target": "/exchanges/__dynamic__",
+          "file": "apps/mobile/app/exchanges.tsx",
+          "line": 19
+        },
+        {
+          "kind": "api",
+          "target": "/api/exchanges",
+          "file": "apps/mobile/app/exchanges.tsx",
+          "line": 14
+        },
+        {
+          "kind": "router",
+          "target": "/",
+          "file": "apps/mobile/app/login.tsx",
+          "line": 59
+        },
+        {
+          "kind": "router",
+          "target": "/",
+          "file": "apps/mobile/app/login.tsx",
+          "line": 91
+        },
+        {
+          "kind": "api",
+          "target": "/api/auth/register",
+          "file": "apps/mobile/app/login.tsx",
+          "line": 41
+        },
+        {
+          "kind": "api",
+          "target": "/api/auth/forgot-password",
+          "file": "apps/mobile/app/login.tsx",
+          "line": 75
+        },
+        {
+          "kind": "api",
+          "target": "/api/customer/loyalty",
+          "file": "apps/mobile/app/loyalty.tsx",
+          "line": 18
+        },
+        {
+          "kind": "router",
+          "target": "/login",
+          "file": "apps/mobile/app/notifications.tsx",
+          "line": 61
+        },
+        {
+          "kind": "api",
+          "target": "/api/notifications",
+          "file": "apps/mobile/app/notifications.tsx",
+          "line": 32
+        },
+        {
+          "kind": "api",
+          "target": "/api/notifications/__dynamic__/read",
+          "file": "apps/mobile/app/notifications.tsx",
+          "line": 45
+        },
+        {
+          "kind": "api",
+          "target": "/api/notifications/read-all",
+          "file": "apps/mobile/app/notifications.tsx",
+          "line": 53
+        },
+        {
+          "kind": "router",
+          "target": "/",
+          "file": "apps/mobile/app/onboarding.tsx",
+          "line": 57
+        },
+        {
+          "kind": "router",
+          "target": "/cart",
+          "file": "apps/mobile/app/orders/[id].tsx",
+          "line": 63
+        },
+        {
+          "kind": "api",
+          "target": "/api/orders/__dynamic__",
+          "file": "apps/mobile/app/orders/[id].tsx",
+          "line": 48
+        },
+        {
+          "kind": "api",
+          "target": "/api/orders/__dynamic__/cancel",
+          "file": "apps/mobile/app/orders/[id].tsx",
+          "line": 56
+        },
+        {
+          "kind": "api",
+          "target": "/api/orders/__dynamic__/reorder",
+          "file": "apps/mobile/app/orders/[id].tsx",
+          "line": 63
+        },
+        {
+          "kind": "api",
+          "target": "/api/orders/__dynamic__/invoice",
+          "file": "apps/mobile/app/orders/[id].tsx",
+          "line": 70
+        },
+        {
+          "kind": "api",
+          "target": "/api/reviews",
+          "file": "apps/mobile/app/orders/[id].tsx",
+          "line": 81
+        },
+        {
+          "kind": "router",
+          "target": "/login",
+          "file": "apps/mobile/app/orders.tsx",
+          "line": 71
+        },
+        {
+          "kind": "router",
+          "target": "/orders/__dynamic__",
+          "file": "apps/mobile/app/orders.tsx",
+          "line": 80
+        },
+        {
+          "kind": "api",
+          "target": "/api/orders",
+          "file": "apps/mobile/app/orders.tsx",
+          "line": 34
+        },
+        {
+          "kind": "api",
+          "target": "/api/orders/__dynamic__/cancel",
+          "file": "apps/mobile/app/orders.tsx",
+          "line": 54
+        },
+        {
+          "kind": "router",
+          "target": "/products/__dynamic__",
+          "file": "apps/mobile/app/products/index.tsx",
+          "line": 146
+        },
+        {
+          "kind": "api",
+          "target": "/api/search/suggestions?q=&lang=",
+          "file": "apps/mobile/app/products/index.tsx",
+          "line": 49
+        },
+        {
+          "kind": "api",
+          "target": "/api/products?",
+          "file": "apps/mobile/app/products/index.tsx",
+          "line": 86
+        },
+        {
+          "kind": "router",
+          "target": "/login",
+          "file": "apps/mobile/app/products/[id].tsx",
+          "line": 84
+        },
+        {
+          "kind": "router",
+          "target": "/cart",
+          "file": "apps/mobile/app/products/[id].tsx",
+          "line": 110
+        },
+        {
+          "kind": "router",
+          "target": "/cart",
+          "file": "apps/mobile/app/products/[id].tsx",
+          "line": 130
+        },
+        {
+          "kind": "api",
+          "target": "/api/products/__dynamic__",
+          "file": "apps/mobile/app/products/[id].tsx",
+          "line": 37
+        },
+        {
+          "kind": "api",
+          "target": "/api/reviews?product_id=",
+          "file": "apps/mobile/app/products/[id].tsx",
+          "line": 43
+        },
+        {
+          "kind": "api",
+          "target": "/api/product-variants/__dynamic__/notify-me",
+          "file": "apps/mobile/app/products/[id].tsx",
+          "line": 88
+        },
+        {
+          "kind": "api",
+          "target": "/api/wishlist",
+          "file": "apps/mobile/app/wishlist.tsx",
+          "line": 28
+        },
+        {
+          "kind": "api",
+          "target": "/api/wishlist",
+          "file": "apps/mobile/app/wishlist.tsx",
+          "line": 72
+        },
+        {
+          "kind": "router",
+          "target": "/onboarding",
+          "file": "apps/mobile/app/_layout.tsx",
+          "line": 21
+        },
+        {
+          "kind": "router",
+          "target": "/",
+          "file": "apps/mobile/app/_layout.tsx",
+          "line": 26
+        },
+        {
+          "kind": "router",
+          "target": "/products/__dynamic__",
+          "file": "apps/mobile/components/ProductCard.tsx",
+          "line": 35
+        },
+        {
+          "kind": "api",
+          "target": "/api/wishlist",
+          "file": "apps/mobile/components/ProductCard.tsx",
+          "line": 49
+        },
+        {
+          "kind": "api",
+          "target": "/api/cart",
+          "file": "apps/mobile/contexts/AuthContext.tsx",
+          "line": 45
+        },
+        {
+          "kind": "api",
+          "target": "/api/cart/merge",
+          "file": "apps/mobile/contexts/AuthContext.tsx",
+          "line": 89
+        },
+        {
+          "kind": "api",
+          "target": "/api/cart",
+          "file": "apps/mobile/contexts/AuthContext.tsx",
+          "line": 105
+        },
+        {
+          "kind": "api",
+          "target": "/api/push-tokens",
+          "file": "apps/mobile/utils/pushNotifications.ts",
+          "line": 45
+        },
+        {
+          "kind": "api",
+          "target": "/api/push-tokens",
+          "file": "apps/mobile/utils/pushNotifications.ts",
+          "line": 57
+        }
+      ]
+    }
+  },
+  "issues": []
+}

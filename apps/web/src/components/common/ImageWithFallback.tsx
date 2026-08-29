@@ -14,6 +14,8 @@ import {
   Truck,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import type { ImgHTMLAttributes } from 'react';
+import type { LucideIcon } from 'lucide-react';
 
 type Kind =
   | 'product'
@@ -28,7 +30,7 @@ type Kind =
   | 'empty'
   | 'default';
 
-const kindMap: Record<Kind, any> = {
+const kindMap: Record<Kind, LucideIcon> = {
   product: Package,
   category: Shapes,
   brand: Tag,
@@ -44,6 +46,19 @@ const kindMap: Record<Kind, any> = {
 
 // Removed textMap as we will use translations
 
+interface ImageWithFallbackProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt' | 'className'> {
+  src?: string | null;
+  alt?: string;
+  kind?: Kind;
+  className?: string;
+  fallbackClassName?: string;
+  label?: string;
+  sublabel?: string;
+  fill?: boolean;
+  quality?: number;
+  priority?: boolean;
+}
+
 export function ImageWithFallback({
   src,
   alt,
@@ -52,17 +67,11 @@ export function ImageWithFallback({
   fallbackClassName = '',
   label,
   sublabel,
-  ...props
-}: {
-  src?: string | null;
-  alt?: string;
-  kind?: Kind;
-  className?: string;
-  fallbackClassName?: string;
-  label?: string;
-  sublabel?: string;
-  [key: string]: any;
-}) {
+  fill: _fill,
+  quality: _quality,
+  priority: _priority,
+  ...imgProps
+}: ImageWithFallbackProps) {
   const [failed, setFailed] = useState(false);
   const Icon = useMemo(() => kindMap[kind] ?? ImageIcon, [kind]);
   const t = useTranslations('common.imageFallback');
@@ -95,8 +104,8 @@ export function ImageWithFallback({
       alt={alt || ''}
       className={className}
       onError={() => setFailed(true)}
-      loading={props.loading ?? 'lazy'}
-      {...Object.fromEntries(Object.entries(props).filter(([k]) => k !== 'fill' && k !== 'quality' && k !== 'priority'))}
+      loading={imgProps.loading ?? 'lazy'}
+      {...imgProps}
     />
   );
 }

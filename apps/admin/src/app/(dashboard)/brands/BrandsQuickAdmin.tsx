@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { responseError, uploadResponseSchema } from '@/lib/upload-response';
 
 type Brand = { id: string; name: string; slug: string | null; logo_url?: string | null; is_active: boolean | null };
 
@@ -32,11 +33,11 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
 
 function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" onClick={onClose}>
-      <div className="flex max-h-[85dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3" role="presentation" onKeyDown={(event) => { if (event.key === 'Escape') onClose(); }} onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label={title} className="flex max-h-[85dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-[#E5E0D8] bg-[#FFFCF7] shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-between border-b border-[#F0ECE6] bg-background-card px-5 py-4">
           <h2 className="font-black text-text-primary">{title}</h2>
-          <button type="button" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]"><X size={17} /></button>
+          <button type="button" aria-label="إغلاق / Close" title="إغلاق / Close" onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]"><X size={17} /></button>
         </div>
         <div className="overflow-y-auto p-5">{children}</div>
       </div>
@@ -58,7 +59,7 @@ function InlineText({ value, onSave, dir = 'rtl' }: { value?: string | null; onS
   const [draft, setDraft] = useState(value ?? '');
   useEffect(() => { if (!editing) setDraft(value ?? ''); }, [editing, value]);
   const commit = () => { const next = draft.trim(); setEditing(false); if (next !== (value ?? '')) void onSave(next); };
-  if (editing) return <input autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
+  if (editing) return <input aria-label="تحرير النص / Edit text" autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
   return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">{value || <span className="text-text-muted">—</span>}</button>;
 }
 
@@ -81,10 +82,11 @@ function InlineImage({ value, onSave, dir = 'ltr' }: { value?: string | null; on
     try {
       const formData = new FormData();
       formData.append('file', files[0]);
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      if (!res.ok) throw new Error('Upload failed');
-      const data = await res.json();
-      if (data.files && data.files.length > 0) {
+      const res = await fetch('/api/upload?purpose=brand', { method: 'POST', body: formData });
+      const rawData: unknown = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(responseError(rawData, 'Upload failed'));
+      const data = uploadResponseSchema.parse(rawData);
+      if (data.files.length > 0) {
         const nextUrl = data.files[0].url;
         setDraft(nextUrl);
         setEditing(false);
@@ -102,6 +104,7 @@ function InlineImage({ value, onSave, dir = 'ltr' }: { value?: string | null; on
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <input 
+            aria-label="شعار العلامة / Brand logo"
             type="file" 
             accept="image/*,video/*"
             onChange={(e) => void handleUpload(e.target.files)}

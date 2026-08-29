@@ -1,341 +1,108 @@
-// @ts-nocheck
-/* eslint-disable */
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerSupabaseClient } from '@/supabase-server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
+import { createAdminSupabaseClient } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
-/* -----------------------------------------------------------------------
- * GET /api/catalog/filters
- * Query params (all optional, comma-separated for multi-select):
- *   categories  = "shoes,bags"
- *   brands      = "nike,adidas"
- *   attrs       = "color:red,color:blue,size:42"   (type_slug:value_slug pairs)
- *   minPrice    = 50000
- *   maxPrice    = 200000
- *   q           = "search text"
- *   featured    = "1"
- *
- * Returns:
- *   { products, facets: { categories, brands, attributes, priceRange } }
- * --------------------------------------------------------------------- */
-export async function GET(req: NextRequest) {
+function listParam(searchParams: URLSearchParams, ...names: string[]) {
+  return names.flatMap((name) => searchParams.getAll(name).flatMap((value) => value.split(','))).map((value) => value.trim()).filter(Boolean);
+}
+
+function numericParam(searchParams: URLSearchParams, ...names: string[]) {
+  for (const name of names) {
+    const raw = searchParams.get(name);
+    if (raw !== null && raw !== '') {
+      const value = Number(raw);
+      if (Number.isFinite(value) && value >= 0) return value;
+    }
+  }
+  return null;
+}
+
+function valueSlug(value: string) {
+  return value.trim().toLowerCase().replace(/\s+/g, '-');
+}
+
+export async function GET(request: NextRequest) {
   try {
-    const supabase = createServerSupabaseClient();
-    const { searchParams } = new URL(req.url);
-
-    // ── parse params ──────────────────────────────────────────────────
-    const categorySlugList = (searchParams.get('categories') ?? '').split(',').filter(Boolean);
-    const brandSlugList    = (searchParams.get('brands')     ?? '').split(',').filter(Boolean);
-    const attrPairs        = (searchParams.get('attrs')      ?? '').split(',').filter(Boolean);
-    const minPrice         = searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : null;
-    const maxPrice         = searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : null;
-    const q                = searchParams.get('q')?.trim() ?? '';
-    const featuredOnly     = searchParams.get('featured') === '1';
-
-    // attrPairs → { typeSlug → Set<valueSlug> }
-    const selectedAttrMap: Record<string, Set<string>> = {};
-    for (const pair of attrPairs) {
-      const [typeSlug, valueSlug] = pair.split(':');
-      if (typeSlug && valueSlug) {
-        if (!selectedAttrMap[typeSlug]) selectedAttrMap[typeSlug] = new Set();
-        selectedAttrMap[typeSlug].add(valueSlug);
-      }
-    }
-
-    // ── fetch lookup tables in parallel ───────────────────────────────
-    const [catsRes, brandsRes, attrTypesRes] = await Promise.all([
-      supabase.from('categories').select('id,name_ar,name_en,slug').eq('is_active', true).order('sort_order'),
-      supabase.from('brands').select('id,name,slug').eq('is_active', true).order('name'),
-      supabase.from('attribute_types').select('id,name_ar,name_en,slug').order('slug'),
+    const supabase = createAdminSupabaseClient();
+    const sp = request.nextUrl.searchParams;
+    const search = (sp.get('search') ?? sp.get('q') ?? '').trim();
+    if (search.length > 100) return NextResponse.json({ error: 'search_too_long' }, { status: 400 });
+    const [categoriesResult, brandsResult, typesResult, valuesResult] = await Promise.all([
+      supabase.from('categories').select('id, slug').eq('is_active', true),
+      supabase.from('brands').select('id, slug').eq('is_active', true),
+      supabase.from('attribute_types').select('id, slug'),
+      supabase.from('attribute_values').select('id, attribute_type_id, value_en'),
     ]);
-
-    const allCats    = catsRes.data    ?? [];
-    const allBrands  = brandsRes.data  ?? [];
-    const allAttrTypes = attrTypesRes.data ?? [];
-
-    // ── build lookup maps ─────────────────────────────────────────────
-    const catBySlug:   Record<string, any> = {};
-    const catById:     Record<string, any> = {};
-    const brandBySlug: Record<string, any> = {};
-    const brandById:   Record<string, any> = {};
-    const attrTypeBySlug: Record<string, any> = {};
-
-    for (const c of allCats)   { catBySlug[c.slug] = c; catById[c.id] = c; }
-    for (const b of allBrands) { brandBySlug[b.slug] = b; brandById[b.id] = b; }
-    for (const t of allAttrTypes) { attrTypeBySlug[t.slug] = t; }
-
-    const selectedCatIds   = categorySlugList.map(s => catBySlug[s]?.id).filter(Boolean);
-    const selectedBrandIds = brandSlugList.map(s => brandBySlug[s]?.id).filter(Boolean);
-
-    // ── fetch attribute values for selected types ─────────────────────
-    const selectedTypeIds = Object.keys(selectedAttrMap)
-      .map(s => attrTypeBySlug[s]?.id).filter(Boolean);
-
-    // Fetch ALL attribute values (for building facets)
-    const { data: allAttrValues } = await supabase
-      .from('attribute_values')
-      .select('id,attribute_type_id,value_ar,value_en,hex_color,sort_order')
-      .order('sort_order');
-
-    const attrValueById: Record<string, any> = {};
-    const attrValuesByTypeId: Record<string, any[]> = {};
-    for (const v of (allAttrValues ?? [])) {
-      attrValueById[v.id] = v;
-      if (!attrValuesByTypeId[v.attribute_type_id]) attrValuesByTypeId[v.attribute_type_id] = [];
-      attrValuesByTypeId[v.attribute_type_id].push(v);
+    if (categoriesResult.error || brandsResult.error || typesResult.error || valuesResult.error) {
+      return NextResponse.json({ error: 'catalog_configuration_unavailable' }, { status: 500 });
     }
 
-    // ── fetch ALL active products with their variants and attributes ───
-    let productsQuery = supabase
-      .from('products')
-      .select(`
-        id, name_ar, name_en, slug, description_ar, category_id, brand_id, is_featured, is_active,
-        product_images(url, is_primary),
-        product_variants!inner(
-          id, price_syp, compare_price_syp, stock_quantity, is_active,
-          variant_attributes(
-            attribute_value_id
-          )
-        )
-      `)
-      .eq('is_active', true)
-      .eq('product_variants.is_active', true);
+    const categories = categoriesResult.data ?? [];
+    const brands = brandsResult.data ?? [];
+    const attributeTypes = typesResult.data ?? [];
+    const attributeValues = valuesResult.data ?? [];
+    const categoryTokens = listParam(sp, 'categories', 'category_id');
+    const brandTokens = listParam(sp, 'brands', 'brand_id');
+    const categoryIds = categories.filter((item) => categoryTokens.includes(item.id) || categoryTokens.includes(item.slug)).map((item) => item.id);
+    const brandIds = brands.filter((item) => brandTokens.includes(item.id) || brandTokens.includes(item.slug)).map((item) => item.id);
 
-    const { data: rawProducts } = await productsQuery;
-
-    // ── normalise product data ────────────────────────────────────────
-    type NormProduct = {
-      id: string; name_ar: string; name_en: string; slug: string;
-      description_ar: string; image_url: string;
-      category_id: string; brand_id: string;
-      is_featured: boolean;
-      minPrice: number; maxPrice: number;
-      attrValueIds: Set<string>;
+    const selectedByType = new Map<string, Set<string>>();
+    const addSelection = (typeSlug: string, token: string) => {
+      const type = attributeTypes.find((item) => item.slug === typeSlug);
+      if (!type) return;
+      const ids = attributeValues
+        .filter((value) => value.attribute_type_id === type.id && (value.id === token || valueSlug(value.value_en) === valueSlug(token)))
+        .map((value) => value.id);
+      if (!ids.length) return;
+      const selected = selectedByType.get(type.slug) ?? new Set<string>();
+      ids.forEach((id) => selected.add(id));
+      selectedByType.set(type.slug, selected);
     };
 
-    const products: NormProduct[] = [];
-
-    for (const p of (rawProducts ?? [])) {
-      const variants = Array.isArray(p.product_variants) ? p.product_variants : [];
-      if (!variants.length) continue; // skip products with no active variants
-
-      const prices = variants.map((v: any) => Number(v.price_syp)).filter(n => !isNaN(n));
-      if (!prices.length) continue;
-
-      const attrValueIds = new Set<string>();
-      for (const v of variants) {
-        for (const va of (v.variant_attributes ?? [])) {
-          attrValueIds.add(va.attribute_value_id);
-        }
-      }
-
-      const images = Array.isArray(p.product_images) ? p.product_images : [];
-      const primaryImage = images.find((i: any) => i.is_primary) || images[0];
-
-      const varyingAttributes: { name_ar: string, name_en: string }[] = [];
-      const attrValueIdsArray = Array.from(attrValueIds);
-      
-      const countsByTypeId: Record<string, number> = {};
-      for (const vid of attrValueIdsArray) {
-        const val = attrValueById[vid];
-        if (val) {
-          countsByTypeId[val.attribute_type_id] = (countsByTypeId[val.attribute_type_id] || 0) + 1;
-        }
-      }
-      
-      for (const typeId in countsByTypeId) {
-        if (countsByTypeId[typeId] > 1) {
-          const typeDef = allAttrTypes.find(t => t.id === typeId);
-          if (typeDef) {
-            varyingAttributes.push({ name_ar: typeDef.name_ar, name_en: typeDef.name_en });
-          }
-        }
-      }
-
-      products.push({
-        id:           p.id,
-        name_ar:      p.name_ar,
-        name_en:      p.name_en,
-        slug:         p.slug,
-        description_ar: p.description_ar ?? '',
-        image_url:    primaryImage?.url ?? '',
-        category_id:  p.category_id,
-        brand_id:     p.brand_id,
-        is_featured:  p.is_featured,
-        minPrice:     Math.min(...prices),
-        maxPrice:     Math.max(...prices),
-        attrValueIds,
-        varyingAttributes,
-        variants_count: variants.length,
-        total_stock: variants.reduce((acc: number, v: any) => acc + (v.stock_quantity ?? 0), 0)
-      });
+    for (const pair of listParam(sp, 'attrs')) {
+      const separator = pair.indexOf(':');
+      if (separator > 0) addSelection(pair.slice(0, separator), pair.slice(separator + 1));
     }
-
-    // ── filter predicate ──────────────────────────────────────────────
-    function matchesFilters(
-      p: NormProduct,
-      opts: {
-        skipCategory?: boolean;
-        skipBrand?: boolean;
-        skipAttrTypeId?: string;
-        skipPrice?: boolean;
-      } = {}
-    ): boolean {
-      // text search
-      if (q) {
-        const ql = q.toLowerCase();
-        if (!p.name_ar.toLowerCase().includes(ql) && !p.name_en.toLowerCase().includes(ql)) return false;
-      }
-      // featured
-      if (featuredOnly && !p.is_featured) return false;
-
-      // category filter
-      if (!opts.skipCategory && selectedCatIds.length > 0) {
-        if (!selectedCatIds.includes(p.category_id)) return false;
-      }
-
-      // brand filter
-      if (!opts.skipBrand && selectedBrandIds.length > 0) {
-        if (!selectedBrandIds.includes(p.brand_id)) return false;
-      }
-
-      // price filter
-      if (!opts.skipPrice) {
-        if (minPrice !== null && p.maxPrice < minPrice) return false;
-        if (maxPrice !== null && p.minPrice > maxPrice) return false;
-      }
-
-      // attribute filters (each type is AND, values within a type are OR)
-      for (const [typeSlug, valueSlugSet] of Object.entries(selectedAttrMap)) {
-        if (opts.skipAttrTypeId && attrTypeBySlug[typeSlug]?.id === opts.skipAttrTypeId) continue;
-
-        const typeId = attrTypeBySlug[typeSlug]?.id;
-        if (!typeId) continue;
-
-        const valuesOfType = attrValuesByTypeId[typeId] ?? [];
-        const targetValueIds = valuesOfType
-          .filter(v => valueSlugSet.has(v.value_en?.toLowerCase().replace(/\s+/g, '-') ?? ''))
-          .map(v => v.id);
-
-        // allow matching by id directly too (value sent as id)
-        const targetIds = new Set([
-          ...targetValueIds,
-          ...[...valueSlugSet].filter(s => s.match(/^[0-9a-f-]{36}$/i)),
-        ]);
-
-        if (targetIds.size === 0) continue;
-        if (![...p.attrValueIds].some(id => targetIds.has(id))) return false;
-      }
-
-      return true;
+    for (const type of attributeTypes) {
+      const aliases = type.slug === 'color' ? ['colors', 'color'] : type.slug === 'size' ? ['sizes', 'size'] : [];
+      for (const token of listParam(sp, `custom_${type.slug}`, ...aliases)) addSelection(type.slug, token);
     }
+    const attributes = Object.fromEntries([...selectedByType.entries()].map(([slug, ids]) => [slug, [...ids]]));
+    const page = Math.max(1, Math.floor(numericParam(sp, 'page') ?? 1));
+    const perPage = Math.min(60, Math.max(1, Math.floor(numericParam(sp, 'per_page') ?? 24)));
+    const sort = ['newest', 'price_asc', 'price_desc', 'popular'].includes(sp.get('sort') ?? '') ? sp.get('sort')! : 'newest';
 
-    // ── apply full filter for result products ─────────────────────────
-    const filteredProducts = products.filter(p => matchesFilters(p));
-
-    // ── compute facets ────────────────────────────────────────────────
-
-    // categories facet — exclude category filter to show cross-filtering
-    const catCounts: Record<string, number> = {};
-    for (const p of products) {
-      if (matchesFilters(p, { skipCategory: true })) {
-        catCounts[p.category_id] = (catCounts[p.category_id] ?? 0) + 1;
-      }
-    }
-    const categoriesFacet = allCats
-      .filter(c => catCounts[c.id] !== undefined)
-      .map(c => ({ ...c, count: catCounts[c.id] ?? 0, selected: selectedCatIds.includes(c.id) }));
-
-    // brands facet — exclude brand filter
-    const brandCounts: Record<string, number> = {};
-    for (const p of products) {
-      if (matchesFilters(p, { skipBrand: true })) {
-        brandCounts[p.brand_id] = (brandCounts[p.brand_id] ?? 0) + 1;
-      }
-    }
-    const brandsFacet = allBrands
-      .filter(b => brandCounts[b.id] !== undefined)
-      .map(b => ({ ...b, count: brandCounts[b.id] ?? 0, selected: selectedBrandIds.includes(b.slug) }));
-
-    // attribute facets — dynamic for every attribute type
-    const attributesFacet: any[] = [];
-    for (const attrType of allAttrTypes) {
-      const valuesOfType = attrValuesByTypeId[attrType.id] ?? [];
-      if (!valuesOfType.length) continue;
-
-      const selectedValueSlugs = selectedAttrMap[attrType.slug] ?? new Set();
-
-      const valueCounts: Record<string, number> = {};
-      for (const p of products) {
-        if (!matchesFilters(p, { skipAttrTypeId: attrType.id })) continue;
-        for (const vid of p.attrValueIds) {
-          const val = attrValueById[vid];
-          if (val && val.attribute_type_id === attrType.id) {
-            valueCounts[vid] = (valueCounts[vid] ?? 0) + 1;
-          }
-        }
-      }
-
-      const values = valuesOfType
-        .filter(v => valueCounts[v.id] !== undefined)
-        .map(v => {
-          const valueSlug = v.value_en?.toLowerCase().replace(/\s+/g, '-') ?? v.id;
-          return {
-            id:        v.id,
-            slug:      valueSlug,
-            value_ar:  v.value_ar,
-            value_en:  v.value_en,
-            hex_color: v.hex_color,
-            count:     valueCounts[v.id] ?? 0,
-            selected:  selectedValueSlugs.has(valueSlug) || selectedValueSlugs.has(v.id),
-          };
-        });
-
-      if (values.length === 0) continue;
-
-      attributesFacet.push({
-        id:       attrType.id,
-        slug:     attrType.slug,
-        name_ar:  attrType.name_ar,
-        name_en:  attrType.name_en,
-        values,
-      });
-    }
-
-    // price range facet — from all products matching everything except price
-    const priceProducts = products.filter(p => matchesFilters(p, { skipPrice: true }));
-    const allPrices = priceProducts.flatMap(p => [p.minPrice, p.maxPrice]);
-    const priceRangeFacet = allPrices.length
-      ? { min: Math.min(...allPrices), max: Math.max(...allPrices) }
-      : { min: 0, max: 0 };
-
-    // ── build response products (strip internal fields) ───────────────
-    const responseProducts = filteredProducts.map(p => ({
-      id:           p.id,
-      name_ar:      p.name_ar,
-      name_en:      p.name_en,
-      slug:         p.slug,
-      description_ar: p.description_ar,
-      image_url:    p.image_url,
-      category_id:  p.category_id,
-      brand_id:     p.brand_id,
-      is_featured:  p.is_featured,
-      minPrice:     p.minPrice,
-    }));
-
-    return NextResponse.json({
-      products: responseProducts,
-      total: responseProducts.length,
-      facets: {
-        categories: categoriesFacet,
-        brands:     brandsFacet,
-        attributes: attributesFacet,
-        priceRange: priceRangeFacet,
-      },
+    const { data, error } = await supabase.rpc('catalog_search_with_facets', {
+      p_category_ids: categoryIds,
+      p_brand_ids: brandIds,
+      p_attributes: attributes,
+      ...(numericParam(sp, 'min_price', 'minPrice') !== null ? { p_min_price: numericParam(sp, 'min_price', 'minPrice') ?? undefined } : {}),
+      ...(numericParam(sp, 'max_price', 'maxPrice') !== null ? { p_max_price: numericParam(sp, 'max_price', 'maxPrice') ?? undefined } : {}),
+      ...(numericParam(sp, 'discount_min') !== null ? { p_discount_min: numericParam(sp, 'discount_min') ?? undefined } : {}),
+      ...(search ? { p_search: search } : {}),
+      p_featured_only: sp.get('featured') === '1' || sp.get('featured') === 'true',
+      p_sort: sort,
+      p_page: page,
+      p_per_page: perPage,
     });
-  } catch (err: any) {
-    console.error('[catalog/filters] error:', err);
-    return NextResponse.json({ error: 'server_error', detail: String(err?.message ?? err) }, { status: 500 });
+    if (error || !data || typeof data !== 'object' || Array.isArray(data)) {
+      return NextResponse.json({ error: 'catalog_query_failed' }, { status: 500 });
+    }
+
+    const result = data as Record<string, unknown>;
+    return NextResponse.json({
+      data: Array.isArray(result.data) ? result.data : [],
+      products: Array.isArray(result.data) ? result.data : [],
+      total: Number(result.total ?? 0),
+      page: Number(result.page ?? page),
+      per_page: Number(result.per_page ?? perPage),
+      filters: result.filters ?? {},
+      facets: result.filters ?? {},
+    });
+  } catch (error) {
+    console.error('[GET /api/catalog/filters]', error);
+    return NextResponse.json({ error: 'server_error' }, { status: 500 });
   }
 }

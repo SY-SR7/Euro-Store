@@ -71,7 +71,7 @@ function InlineText({ value, onSave, dir = 'rtl', emptyField = '—' }: { value?
   const [draft, setDraft] = useState(value ?? '');
   useEffect(() => { if (!editing) setDraft(value ?? ''); }, [editing, value]);
   const commit = () => { const next = draft.trim(); setEditing(false); if (next !== (value ?? '')) void onSave(next); };
-  if (editing) return <input autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
+  if (editing) return <input aria-label="تحرير النص / Edit text" autoFocus value={draft} dir={dir} onBlur={commit} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEditing(false); }} className={inputClass} />;
   return <button type="button" onClick={() => setEditing(true)} dir={dir} className="min-h-9 w-full rounded-xl px-3 py-2 text-start text-sm font-semibold text-text-primary transition hover:bg-background">{value || <span className="text-text-muted">{emptyField}</span>}</button>;
 }
 
@@ -109,6 +109,7 @@ function InlineNumber({
   if (editing) {
     return (
       <input
+        aria-label="تحرير السعر / Edit rate"
         autoFocus
         type="number"
         value={draft}

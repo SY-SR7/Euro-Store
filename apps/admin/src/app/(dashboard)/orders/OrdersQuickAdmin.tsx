@@ -109,6 +109,8 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
           <h2 className="font-black text-text-primary">{title}</h2>
           <button
             type="button"
+            aria-label="إغلاق / Close"
+            title="إغلاق / Close"
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F6F2] text-text-secondary hover:bg-[#E5E0D8]"
           >
@@ -186,8 +188,9 @@ function InlineText({
   if (editing) {
     if (multiline) {
       return (
-        <textarea
-          autoFocus
+      <textarea
+        aria-label="تحرير الملاحظات / Edit notes"
+        autoFocus
           rows={3}
           value={draft}
           dir={dir}
@@ -201,6 +204,7 @@ function InlineText({
 
     return (
       <input
+        aria-label="تحرير النص / Edit text"
         autoFocus
         value={draft}
         dir={dir}
@@ -286,7 +290,7 @@ export default function OrdersQuickAdmin() {
     const params = new URLSearchParams({ page: String(page), limit: '25' });
     if (statusFilter) params.set('status', statusFilter);
     if (search) params.set('search', search);
-    fetchJson<{ orders: Order[]; total: number }>(`/api/orders?${params}`)
+    fetchJson<{ orders: Order[]; total: number }>(`/api/orders?${params.toString()}`)
       .then((data) => {
         setOrders(Array.isArray(data.orders) ? data.orders : []);
         setTotal(data.total ?? 0);
@@ -312,7 +316,7 @@ export default function OrdersQuickAdmin() {
     } finally {
       setDetailLoading(false);
     }
-  }, [router]);
+  }, [router, t]);
 
   const close = () => {
     setSelected(null);
@@ -407,8 +411,9 @@ export default function OrdersQuickAdmin() {
             <Search size={16} />
           </div>
         </div>
-        <select
-          value={statusFilter}
+          <select
+            aria-label={t('allStatuses', { fallback: 'كل الحالات' })}
+            value={statusFilter}
           onChange={(event) => {
             setStatusFilter(event.target.value);
             setPage(1);

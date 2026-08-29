@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* eslint-disable */
 import { Suspense } from 'react';
 import { FilterableProductGrid } from '../../filterable-product-grid';

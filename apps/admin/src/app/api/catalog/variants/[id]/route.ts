@@ -1,63 +1,74 @@
-import { requireAdminContext } from '@/supabase-server';
 import { NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/supabase-server';
+import type { TableUpdate } from '@/lib/database-types';
+import { z } from 'zod';
+import { dispatchPendingNotifications, notifyRestockedVariant } from '@eurostore/database';
+import { requireAdminContext, writeAuditLog } from '@/supabase-server';
 
-interface RouteParams { params: { id: string }; }
+interface RouteParams { params: Promise<{ id: string }> }
+
+const updateSchema = z.object({
+  sku: z.string().trim().min(1).max(100).optional(),
+  price_syp: z.number().int().min(0).optional(),
+  price_override: z.number().int().min(0).nullable().optional(),
+  compare_price_syp: z.number().int().min(0).nullable().optional(),
+  stock_quantity: z.number().int().min(0).optional(),
+  low_stock_threshold: z.number().int().min(0).nullable().optional(),
+  is_active: z.boolean().optional(),
+  weight_grams: z.number().int().min(0).nullable().optional(),
+  attribute_value_ids: z.array(z.string().uuid()).max(100).optional(),
+}).strict();
 
 export async function PATCH(request: Request, { params }: RouteParams) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('product_management', 'edit');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  const { id } = await params;
+  const parsed = updateSchema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
 
-  try {
-    const admin = createAdminSupabaseClient();
-    const body = await request.json().catch(() => null) as Record<string, unknown> | null;
-    if (!body) return NextResponse.json({ error: 'Invalid body' }, { status: 400 });
-    const update: Record<string, unknown> = {};
-    if (typeof body.sku === 'string') update.sku = body.sku.trim();
-    if (typeof body.price_syp === 'number') update.price_syp = body.price_syp;
-    if ('compare_price_syp' in body) update.compare_price_syp = body.compare_price_syp ?? null;
-    if (typeof body.stock_quantity === 'number') update.stock_quantity = Math.max(0, Math.floor(body.stock_quantity));
-    if (typeof body.is_active === 'boolean') update.is_active = body.is_active;
-    if (typeof body.weight_grams === 'number') update.weight_grams = body.weight_grams;
+  const { attribute_value_ids: attributeIds, price_override: priceOverride, ...fields } = parsed.data;
+  const update: TableUpdate<'product_variants'> = { ...fields };
+  if (priceOverride !== undefined) update.price_override = priceOverride;
 
-    if (Object.keys(update).length > 0) {
-      const { error } = await admin.from('product_variants').update(update as any).eq('id', params.id);
-      if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+  const { data: before } = await ctx.admin.from('product_variants').select('*').eq('id', id).maybeSingle();
+  if (!before) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+
+  if (Object.keys(update).length) {
+    const { error } = await ctx.admin.from('product_variants').update(update).eq('id', id);
+    if (error) return NextResponse.json({ error: error.code === '23505' ? 'sku_conflict' : 'database_error' }, { status: error.code === '23505' ? 409 : 500 });
+  }
+
+  if (attributeIds) {
+    const { error: deleteError } = await ctx.admin.from('variant_attributes').delete().eq('variant_id', id);
+    if (deleteError) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+    if (attributeIds.length) {
+      const { error } = await ctx.admin.from('variant_attributes').insert(attributeIds.map((attributeValueId) => ({ variant_id: id, attribute_value_id: attributeValueId })));
+      if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     }
+  }
 
-    // Update variant_attributes if provided
-    if (Array.isArray(body.attribute_value_ids)) {
-      await admin.from('variant_attributes').delete().eq('variant_id', params.id);
-      if (body.attribute_value_ids.length > 0) {
-        const attrs = (body.attribute_value_ids as string[]).map(avid => ({
-          variant_id: params.id,
-          attribute_value_id: avid,
-        }));
-        const { error: attrErr } = await admin.from('variant_attributes').insert(attrs);
-        if (attrErr) return NextResponse.json({ error: attrErr?.message || 'database_error' }, { status: 500 });
-      }
-    }
+  const { data, error } = await ctx.admin
+    .from('product_variants')
+    .select('id, sku, price_syp, price_override, compare_price_syp, stock_quantity, low_stock_threshold, weight_grams, is_active, variant_attributes(attribute_value_id, attribute_values(id, value_ar, value_en, hex_color, attribute_types(id, name_ar, slug)))')
+    .eq('id', id)
+    .single();
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
-    const { data, error: selErr } = await admin
-      .from('product_variants')
-      .select(`id, sku, price_syp, compare_price_syp, stock_quantity, weight_grams, is_active,
-        variant_attributes(attribute_value_id, attribute_values(id, value_ar, value_en, hex_color, attribute_types(id, name_ar, slug)))`)
-      .eq('id', params.id)
-      .single();
-    if (selErr) return NextResponse.json({ error: selErr?.message || 'database_error' }, { status: 500 });
-    return NextResponse.json(data);
-  } catch (e: any) { return NextResponse.json({ error: e?.message ?? 'server_error' }, { status: 500 }); }
+  if ((before.stock_quantity ?? 0) <= 0 && (data.stock_quantity ?? 0) > 0) {
+    await notifyRestockedVariant(ctx.admin, id);
+  }
+  await dispatchPendingNotifications(ctx.admin, 100);
+  await writeAuditLog({ admin: ctx.admin, actorId: ctx.userId, actorRole: ctx.role, action: 'variant.updated', entityType: 'product_variants', entityId: id, beforeState: before, afterState: data });
+  return NextResponse.json(data);
 }
 
-export async function DELETE(_: Request, { params }: RouteParams) {
-  const ctx = await requireAdminContext();
+export async function DELETE(_request: Request, { params }: RouteParams) {
+  const ctx = await requireAdminContext('product_management', 'delete');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  try {
-    const admin = createAdminSupabaseClient();
-    await admin.from('variant_attributes').delete().eq('variant_id', params.id);
-    const { error } = await admin.from('product_variants').delete().eq('id', params.id);
-    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
-    return NextResponse.json({ ok: true });
-  } catch { return NextResponse.json({ error: 'server_error' }, { status: 500 }); }
+  const { id } = await params;
+  const { data: before } = await ctx.admin.from('product_variants').select('*').eq('id', id).maybeSingle();
+  if (!before) return NextResponse.json({ error: 'not_found' }, { status: 404 });
+  const { error } = await ctx.admin.from('product_variants').delete().eq('id', id);
+  if (error) return NextResponse.json({ error: 'variant_in_use' }, { status: 409 });
+  await writeAuditLog({ admin: ctx.admin, actorId: ctx.userId, actorRole: ctx.role, action: 'variant.deleted', entityType: 'product_variants', entityId: id, beforeState: before });
+  return NextResponse.json({ success: true });
 }

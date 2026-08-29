@@ -22,14 +22,14 @@ export async function loginPartnerAction(formData: FormData): Promise<void> {
     redirect('/login?status=failed');
   }
 
-  const access = await getPartnerAccess(supabase as any);
+  const access = await getPartnerAccess(supabase);
 
   if (!access) {
     await supabase.auth.signOut();
     redirect('/login?status=failed');
   }
 
-  redirect('/');
+  redirect('/dashboard');
 }
 
 export { loginPartnerAction as loginAction };

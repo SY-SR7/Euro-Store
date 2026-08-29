@@ -54,6 +54,9 @@
     "myAccount": "My Account",
     "myOrders": "My Orders",
     "loyaltyPoints": "Loyalty Points",
+    "welcome": "Welcome, {name}",
+    "customerFallback": "Customer",
+    "qrUnavailable": "Your secure loyalty code is temporarily unavailable. Please try again shortly.",
     "browseProducts": "Browse Products",
     "addToWishlist": "Add to Wishlist"
   },
@@ -222,6 +225,8 @@
     "title": "FAQ",
     "subtitle": "Answers to the most common questions",
     "anotherQuestion": "Have another question?",
+    "supportText": "Our customer support team is ready to help.",
+    "contactAction": "Contact us",
     "q1": {
       "q": "What is the exchange policy?",
       "a": "You can request an exchange within 7 days of receipt, provided the product is in its original condition."
@@ -232,7 +237,7 @@
     },
     "q3": {
       "q": "What payment methods are available?",
-      "a": "We accept cash on delivery and Sham Cash."
+      "a": "Cash on delivery is always available. Sham Cash appears at checkout only when the integration is available."
     },
     "q4": {
       "q": "How long does delivery take?",
@@ -310,6 +315,9 @@
     "phone": "Phone",
     "loginTitle": "Login",
     "loggingIn": "Logging in...",
+    "forgotPassword": "Forgot password?",
+    "or": "OR",
+    "continueWithGoogle": "Continue with Google",
     "noAccount": "No account?",
     "registerTitle": "Create New Account",
     "namePlaceholder": "Full Name...",
@@ -425,6 +433,8 @@
     "allProducts": "All products"
   },
   "nav": {
+    "product": "Product",
+    "category": "Category",
     "logout": "Log out",
     "cart": "Cart",
     "categories": "Categories",
@@ -464,7 +474,16 @@
     "browseProducts": "Browse Products",
     "shoppingCart": "Shopping Cart",
     "itemsCount": "Items Count",
-    "contactConfirmMsg": "You will be contacted by phone to confirm your order"
+    "contactConfirmMsg": "You will be contacted by phone to confirm your order",
+    "openCart": "Open cart",
+    "closeCart": "Close cart",
+    "freeShippingReached": "Congratulations! You have unlocked free shipping.",
+    "addForFreeShipping": "Add",
+    "freeShippingSuffix": "to get free shipping!",
+    "emptyDescription": "You have not added any products yet.",
+    "decreaseItem": "Decrease quantity of {name}",
+    "increaseItem": "Increase quantity of {name}",
+    "removeItem": "Remove {name} from cart"
   },
   "appName": "Euro Store",
   "allProducts": "All products",
@@ -640,7 +659,7 @@
     "point": "point",
     "usePointsAsDiscount": "Use points as discount",
     "every": "Every",
-    "discountAtCheckout": "SYP discount at checkout",
+    "discountAtCheckout": "SYP discount at checkout (up to {percent}% of the order value)",
     "getReferralBonus": "Referral bonus",
     "shareCodeAndGet": "Share code and get",
     "pointsWhenRegistered": "points when friends register",
@@ -692,6 +711,8 @@
     "addedToCart": "✓ Added to Cart",
     "addToCart": "Add to Cart",
     "chooseVariantFirst": "Choose variant first",
+    "shareProduct": "Share product",
+    "copyLink": "Copy product link",
     "category": "Category:",
     "similarProducts": "Similar Products",
     "discoverSimilar": "Discover products you might like",

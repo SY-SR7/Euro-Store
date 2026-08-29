@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { TableRow } from '@/lib/database-types';
 import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
@@ -11,7 +13,7 @@ export const dynamic = 'force-dynamic';
  *   - No RLS restrictions
  * --------------------------------------------------------------------- */
 export async function GET(req: NextRequest) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('product_management', 'view');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 try {
     const supabase = createAdminSupabaseClient();
@@ -47,16 +49,19 @@ try {
     const allAttrTypes = attrTypesRes.data ?? [];
     const allAttrValues = attrValuesRes.data ?? [];
 
-    const catBySlug:   Record<string, any> = {};
-    const catById:     Record<string, any> = {};
-    const brandBySlug: Record<string, any> = {};
-    const brandById:   Record<string, any> = {};
-    const attrTypeBySlug: Record<string, any> = {};
-    const attrValueById:  Record<string, any> = {};
-    const attrValuesByTypeId: Record<string, any[]> = {};
+    type CategoryLookup = Pick<TableRow<'categories'>, 'id' | 'name_ar' | 'name_en' | 'slug'>;
+    type BrandLookup = Pick<TableRow<'brands'>, 'id' | 'name' | 'slug'>;
+    type AttributeTypeLookup = Pick<TableRow<'attribute_types'>, 'id' | 'name_ar' | 'name_en' | 'slug'>;
+    type AttributeValueLookup = Pick<TableRow<'attribute_values'>, 'id' | 'attribute_type_id' | 'value_ar' | 'value_en' | 'hex_color' | 'sort_order'>;
 
-    for (const c of allCats)   { catBySlug[c.slug] = c; catById[c.id] = c; }
-    for (const b of allBrands) { brandBySlug[b.slug] = b; brandById[b.id] = b; }
+    const catBySlug: Record<string, CategoryLookup> = {};
+    const brandBySlug: Record<string, BrandLookup> = {};
+    const attrTypeBySlug: Record<string, AttributeTypeLookup> = {};
+    const attrValueById: Record<string, AttributeValueLookup> = {};
+    const attrValuesByTypeId: Record<string, AttributeValueLookup[]> = {};
+
+    for (const c of allCats) catBySlug[c.slug] = c;
+    for (const b of allBrands) brandBySlug[b.slug] = b;
     for (const t of allAttrTypes) { attrTypeBySlug[t.slug] = t; }
     for (const v of allAttrValues) {
       attrValueById[v.id] = v;
@@ -66,8 +71,8 @@ try {
       }
     }
 
-    const selectedCatIds   = categorySlugList.map(s => catBySlug[s]?.id).filter(Boolean);
-    const selectedBrandIds = brandSlugList.map(s => brandBySlug[s]?.id).filter(Boolean);
+    const selectedCatIds = categorySlugList.flatMap((slug) => catBySlug[slug]?.id ?? []);
+    const selectedBrandIds = brandSlugList.flatMap((slug) => brandBySlug[slug]?.id ?? []);
 
     // Fetch all products + variants + attributes (no is_active filter for admin)
     const { data: rawProducts } = await supabase
@@ -82,17 +87,18 @@ try {
       `)
       .order('created_at', { ascending: false });
 
-    const productIds = (rawProducts ?? []).map((p: any) => p.id).filter(Boolean);
-    const { data: rawImages } = productIds.length
-      ? await supabase
+    const productIds = (rawProducts ?? []).map((product) => product.id);
+    const rawImages = productIds.length
+      ? (await supabase
           .from('product_images')
           .select('product_id,url,is_primary,sort_order')
           .in('product_id', productIds)
-          .order('sort_order')
-      : { data: [] as any[] };
+          .order('sort_order')).data ?? []
+      : [];
 
     const imageByProductId: Record<string, string> = {};
-    for (const img of rawImages ?? []) {
+    for (const img of rawImages) {
+      if (!img.product_id) continue;
       const current = imageByProductId[img.product_id];
       if (!current || img.is_primary) imageByProductId[img.product_id] = img.url;
     }
@@ -108,7 +114,7 @@ try {
     const products: NormProduct[] = [];
     for (const p of (rawProducts ?? [])) {
       const variants = Array.isArray(p.product_variants) ? p.product_variants : [];
-      const prices = variants.map((v: any) => Number(v.price_syp)).filter(n => !isNaN(n));
+      const prices = variants.map((variant) => Number(variant.price_syp)).filter(Number.isFinite);
       const attrValueIds = new Set<string>();
       for (const v of variants) {
         for (const va of (v.variant_attributes ?? [])) {
@@ -117,17 +123,17 @@ try {
       }
       products.push({
         id: p.id, name_ar: p.name_ar, name_en: p.name_en, slug: p.slug,
-        image_url: imageByProductId[p.id] ?? '', is_active: p.is_active, is_featured: p.is_featured,
-        category_id: p.category_id, brand_id: p.brand_id, created_at: p.created_at,
+        image_url: imageByProductId[p.id] ?? '', is_active: p.is_active ?? false, is_featured: p.is_featured ?? false,
+        category_id: p.category_id, brand_id: p.brand_id, created_at: p.created_at ?? '',
         minPrice: prices.length ? Math.min(...prices) : 0,
         maxPrice: prices.length ? Math.max(...prices) : 0,
         attrValueIds,
       });
     }
 
-    function matchesFilters(p: NormProduct, opts: {
+    const matchesFilters = (p: NormProduct, opts: {
       skipCategory?: boolean; skipBrand?: boolean; skipAttrTypeId?: string; skipPrice?: boolean; skipStatus?: boolean;
-    } = {}): boolean {
+    } = {}): boolean => {
       if (q) {
         const ql = q.toLowerCase();
         if (!p.name_ar.toLowerCase().includes(ql) && !p.name_en.toLowerCase().includes(ql) && !p.slug.includes(ql)) return false;
@@ -137,8 +143,8 @@ try {
         if (statusFilter === 'inactive' && p.is_active)   return false;
         if (statusFilter === 'featured' && !p.is_featured) return false;
       }
-      if (!opts.skipCategory && selectedCatIds.length > 0 && !selectedCatIds.includes(p.category_id)) return false;
-      if (!opts.skipBrand    && selectedBrandIds.length > 0 && !selectedBrandIds.includes(p.brand_id)) return false;
+      if (!opts.skipCategory && selectedCatIds.length > 0 && (!p.category_id || !selectedCatIds.includes(p.category_id))) return false;
+      if (!opts.skipBrand && selectedBrandIds.length > 0 && (!p.brand_id || !selectedBrandIds.includes(p.brand_id))) return false;
       if (!opts.skipPrice) {
         if (minPrice !== null && p.maxPrice < minPrice) return false;
         if (maxPrice !== null && p.minPrice > maxPrice) return false;
@@ -155,7 +161,7 @@ try {
         if (targetValueIds.size > 0 && ![...p.attrValueIds].some(id => targetValueIds.has(id))) return false;
       }
       return true;
-    }
+    };
 
     const filteredProducts = products.filter(p => matchesFilters(p));
 
@@ -169,7 +175,21 @@ try {
     const categoriesFacet = allCats.filter(c => catCounts[c.id]).map(c => ({ ...c, count: catCounts[c.id] ?? 0, selected: selectedCatIds.includes(c.id) }));
     const brandsFacet     = allBrands.filter(b => brandCounts[b.id]).map(b => ({ ...b, count: brandCounts[b.id] ?? 0, selected: selectedBrandIds.includes(b.slug) }));
 
-    const attributesFacet: any[] = [];
+    const attributesFacet: Array<{
+      id: string;
+      slug: string;
+      name_ar: string;
+      name_en: string;
+      values: Array<{
+        id: string;
+        slug: string;
+        value_ar: string;
+        value_en: string;
+        hex_color: string | null;
+        count: number;
+        selected: boolean;
+      }>;
+    }> = [];
     for (const attrType of allAttrTypes) {
       const valuesOfType = attrValuesByTypeId[attrType.id] ?? [];
       if (!valuesOfType.length) continue;
@@ -203,7 +223,8 @@ try {
       total: filteredProducts.length,
       facets: { categories: categoriesFacet, brands: brandsFacet, attributes: attributesFacet, priceRange: priceRangeFacet },
     });
-  } catch (err: any) {
-    return NextResponse.json({ error: 'server_error', detail: String(err?.message ?? err) }, { status: 500 });
+  } catch (error: unknown) {
+    const detail = error instanceof Error ? error.message : 'unknown_error';
+    return NextResponse.json({ error: 'server_error', detail }, { status: 500 });
   }
 }

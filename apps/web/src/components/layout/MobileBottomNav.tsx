@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Home, LayoutGrid, ShoppingBag, Heart, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
+import { AuthAwareLink } from '@/components/auth/AuthAwareLink';
 
 export function MobileBottomNav() {
   const pathname = usePathname();
@@ -15,8 +16,8 @@ export function MobileBottomNav() {
     { href: '/', icon: Home, label: tNav('home'), key: 'home' },
     { href: '/categories', icon: LayoutGrid, label: tNav('categories'), key: 'categories' },
     { href: '/cart', icon: ShoppingBag, label: tCart('title'), key: 'cart' },
-    { href: '/wishlist', icon: Heart, label: tNav('wishlist'), key: 'wishlist' },
-    { href: '/account', icon: User, label: tNav('account'), key: 'account' },
+    { href: '/wishlist', icon: Heart, label: tNav('wishlist'), key: 'wishlist', requiresAuth: true },
+    { href: '/account', icon: User, label: tNav('account'), key: 'account', requiresAuth: true },
   ];
 
   return (
@@ -31,7 +32,7 @@ export function MobileBottomNav() {
             whileTap={{ scale: 0.85 }}
             className="flex-1"
           >
-            <Link
+            {item.requiresAuth ? <AuthAwareLink
               href={item.href}
               className={`flex h-full w-full flex-col items-center justify-center gap-1 transition-colors duration-200 ${
                 isActive ? 'text-primary' : 'text-text-secondary hover:text-text-secondary'
@@ -45,7 +46,21 @@ export function MobileBottomNav() {
               <span className={`text-[10px] ${isActive ? 'font-bold' : 'font-medium'}`}>
                 {item.label}
               </span>
-            </Link>
+            </AuthAwareLink> : <Link
+              href={item.href}
+              className={`flex h-full w-full flex-col items-center justify-center gap-1 transition-colors duration-200 ${
+                isActive ? 'text-primary' : 'text-text-secondary hover:text-text-secondary'
+              }`}
+            >
+              <div className={`relative flex items-center justify-center rounded-full p-1.5 transition-colors duration-200 ${
+                isActive ? 'bg-primary/15 ring-1 ring-primary/30 shadow-sm' : ''
+              }`}>
+                <Icon className="h-[22px] w-[22px]" strokeWidth={isActive ? 2.5 : 2} />
+              </div>
+              <span className={`text-[10px] ${isActive ? 'font-bold' : 'font-medium'}`}>
+                {item.label}
+              </span>
+            </Link>}
           </motion.div>
         );
       })}

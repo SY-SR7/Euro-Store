@@ -7,11 +7,11 @@ export const dynamic = 'force-dynamic';
 
 export default async function PartnerExchangeHistoryPage() {
   const t = await getTranslations();
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createSupabaseServerClientFromEnv({
     get(name: string) { return cookieStore.get(name)?.value; },
-    set() {},
-    remove() {}
+    set() { /* Server Components cannot mutate response cookies. */ },
+    remove() { /* Server Components cannot mutate response cookies. */ }
   });
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/login');
@@ -49,7 +49,9 @@ export default async function PartnerExchangeHistoryPage() {
                 {rows.map((log) => (
                   <tr key={log.id}>
                     <td className="px-4 py-3 font-mono text-xs text-primary">{String(log.entity_id).slice(0, 8)}…</td>
-                    <td className="px-4 py-3 text-[#D6D3C7]">{new Date(log.created_at as string).toLocaleDateString('ar-SY')}</td>
+                    <td className="px-4 py-3 text-[#D6D3C7]">
+                      {log.created_at ? new Date(log.created_at).toLocaleDateString('ar-SY') : '-'}
+                    </td>
                   </tr>
                 ))}
               </tbody>

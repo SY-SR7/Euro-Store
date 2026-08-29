@@ -1,5 +1,3 @@
-// @ts-nocheck
-/* eslint-disable */
 import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient, getSessionClient } from '@/supabase-server';
 import { z } from 'zod';
@@ -32,7 +30,7 @@ export async function GET(request: Request) {
 
     if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
 
-    const reviews = (data ?? []) as any[];
+    const reviews = data ?? [];
     const count = reviews.length;
     const average = count > 0
       ? Math.round((reviews.reduce((s, r) => s + Number(r.rating || 0), 0) / count) * 10) / 10
@@ -63,7 +61,7 @@ export async function POST(request: Request) {
     const body: unknown = await request.json();
     const parsed = submitSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: 'invalid_input', details: parsed.error.flatten() }, { status: 400 });
+      return NextResponse.json({ error: 'invalid_input' }, { status: 400 });
     }
     const { product_id, order_id, rating, comment } = parsed.data;
 
@@ -86,7 +84,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'order_not_completed' }, { status: 400 });
     }
 
-    const items = (order.order_items ?? []) as any[];
+    const items = order.order_items ?? [];
     const productInOrder = items.some((i) => i.product_variants?.product_id === product_id);
     if (!productInOrder) {
       return NextResponse.json({ error: 'product_not_in_order' }, { status: 400 });

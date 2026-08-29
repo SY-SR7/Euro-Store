@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { readRequiredEnv } from './env';
+import { safeInternalPath } from './security';
 
 export const deploymentProviderSchema = z.enum([
   'vercel',
@@ -122,5 +123,5 @@ export function getServerRuntimeConfig(env: EnvSource = process.env): ServerRunt
 
 export function buildAppUrl(app: keyof PublicRuntimeConfig['appUrls'], path = '/', env: EnvSource = process.env): string {
   const baseUrl = getPublicRuntimeConfig(env).appUrls[app];
-  return new URL(path, baseUrl).toString();
+  return new URL(safeInternalPath(path), baseUrl).toString();
 }

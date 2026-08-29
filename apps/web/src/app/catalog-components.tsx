@@ -1,4 +1,3 @@
-// @ts-nocheck
 /* eslint-disable */
 'use client';
 
@@ -7,10 +6,7 @@ import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import { Package, Layers3, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
 import { useLocale, useTranslations } from 'next-intl';
-
-function formatSYP(n: number, isAr: boolean, t: any) {
-  return Number(n || 0).toLocaleString(isAr ? 'ar-SY' : 'en-US') + ' ' + t('syp');
-}
+import { PriceDisplay } from '@/components/common/PriceDisplay';
 
 function stockBadge(stock: number | null | undefined, t: any) {
   if (stock == null) return null;
@@ -129,6 +125,16 @@ export function ProductCard({ product, minPrice, variantCount, totalStock, varyi
             {t('featured')}
           </span>
         )}
+        {product.is_new && (
+          <span className="absolute right-2 top-9 rounded-full bg-white px-2 py-0.5 text-[10px] font-black text-text-primary shadow">
+            {t('new')}
+          </span>
+        )}
+        {product.is_on_sale && (
+          <span className="absolute right-2 top-16 rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-black text-white shadow">
+            {t('sale')}
+          </span>
+        )}
 
         <div className="absolute bottom-2 right-2 flex flex-wrap gap-1">
           {stockBadge(stock, t)}
@@ -167,9 +173,10 @@ export function ProductCard({ product, minPrice, variantCount, totalStock, varyi
           </div>
 
           {minPrice != null && Number(minPrice) > 0 ? (
-            <p className="text-base font-black text-primary">
-              {t('startsFrom')} {formatSYP(minPrice, isAr, t)}
-            </p>
+            <div className="flex items-center gap-1.5 text-base font-black text-primary">
+              <span className="text-text-muted text-xs font-bold">{t('startsFrom')}</span>
+              <PriceDisplay amountSyp={minPrice} className="!text-sm" />
+            </div>
           ) : (
             <p className="text-sm font-bold text-text-muted">
               {t('priceInDetails')}

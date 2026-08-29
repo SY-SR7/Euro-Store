@@ -1,26 +1,22 @@
-// @ts-nocheck
 /* eslint-disable */
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { createBrowserClient } from '@supabase/ssr';
-import { createServerSupabaseClient } from '@/supabase-server';
 import { useCartStore } from '@/lib/cart/cartStore';
 import { WishlistButton } from '@/components/wishlist/WishlistButton';
+import { ProductSharing } from '@/components/product/ProductSharing';
+import { PriceDisplay } from '@/components/common/PriceDisplay';
 import { ReviewsSection } from '@/components/product/ReviewsSection';
 import { SimilarProducts } from '@/components/product/SimilarProducts';
-import { RecommendedProducts } from '@/components/product/RecommendedProducts';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import { Layers3, Package, Palette, Ruler, Barcode, Boxes, Info, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react';
 import { useRecentStore } from '@/lib/recentStore';
 import { RecentlyViewed } from '@/components/product/RecentlyViewed';
-import type { Metadata, ResolvingMetadata } from 'next';
-
-function formatSYP(n: number) {
-  return Number(n || 0).toLocaleString('ar-SY') + ' ل.س';
-}
+import { SizeGuideModal } from '@/components/product/sizeguide/SizeGuideModal';
+import { NotifyMeForm } from '@/components/product/notify/NotifyMeForm';
+import { ProductBundlesList } from '@/components/product/bundles/ProductBundlesList';
 
 function variantTitle(v: any, isAr: boolean, td: any) {
   const parts: string[] = [];
@@ -47,7 +43,7 @@ export async function generateMetadata(
   const slug = params?.slug;
   if (!slug) return {};
 
-  const supabase = createServerSupabaseClient();
+  const supabase = createPublicSupabaseClient();
   const { data: product } = await supabase
     .from('products')
     .select('name_ar, name_en, description_ar, description_en')
@@ -83,6 +79,7 @@ export default function ProductPage({ params }: { params: any }) {
   const [product, setProduct] = useState<any>(null);
   const [variants, setVariants] = useState<any[]>([]);
   const [images, setImages] = useState<any[]>([]);
+  const [videos, setVideos] = useState<any[]>([]);
   const [category, setCategory] = useState<any>(null);
   const [brand, setBrand] = useState<any>(null);
   const [selected, setSelected] = useState<any>(null);
@@ -90,6 +87,9 @@ export default function ProductPage({ params }: { params: any }) {
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
+  const [sizeGuide, setSizeGuide] = useState<any>(null);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [bundles, setBundles] = useState<any[]>([]);
   
   const addRecent = useRecentStore((s) => s.addRecent);
   const locale = useLocale();
@@ -98,13 +98,7 @@ export default function ProductPage({ params }: { params: any }) {
   const isAr = locale === 'ar';
 
   const addItem = useCartStore((s: any) => s.addItem);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _wishlistProductId = product?.id ?? null;
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   useEffect(() => {
     let alive = true;
@@ -122,12 +116,9 @@ export default function ProductPage({ params }: { params: any }) {
     (async () => {
       setLoading(true);
 
-      const { data: prod } = await supabase
-        .from('products')
-        .select('id,name_ar,name_en,slug,description_ar,category_id,brand_id,is_featured')
-        .eq('slug', slug)
-        .eq('is_active', true)
-        .maybeSingle();
+      const response = await fetch(`/api/products/${encodeURIComponent(slug)}`);
+      const payload = await response.json().catch(() => null) as { product?: any; size_guide?: any; bundles?: any[] } | null;
+      const prod = response.ok ? payload?.product ?? null : null;
 
       if (!alive) return;
 
@@ -135,46 +126,16 @@ export default function ProductPage({ params }: { params: any }) {
         setProduct(null);
         setVariants([]);
         setImages([]);
+        setVideos([]);
         setSelected(null);
         setMainImage(null);
+        setSizeGuide(null);
+        setBundles([]);
         setLoading(false);
         return;
       }
 
-      const [vRes, iRes, catRes, brRes] = await Promise.all([
-        supabase
-          .from('product_variants')
-          .select(`
-            id, sku, price_syp, compare_price_syp, stock_quantity, is_active,
-            variant_attributes(
-              attribute_values(
-                id, value_ar, value_en, hex_color,
-                attribute_types(id, name_ar, name_en)
-              )
-            )
-          `)
-          .eq('product_id', prod.id)
-          .eq('is_active', true)
-          .order('price_syp'),
-
-        supabase
-          .from('product_images')
-          .select('id,url,alt_ar,is_primary,sort_order')
-          .eq('product_id', prod.id)
-          .order('sort_order'),
-
-        prod.category_id
-          ? supabase.from('categories').select('id,name_ar,slug').eq('id', prod.category_id).maybeSingle()
-          : Promise.resolve({ data: null }),
-
-        prod.brand_id
-          ? supabase.from('brands').select('id,name,slug').eq('id', prod.brand_id).maybeSingle()
-          : Promise.resolve({ data: null }),
-      ]);
-
-      if (!alive) return;
-
-      const vList = (vRes.data ?? []).map((v: any) => {
+      const vList = (prod.product_variants ?? []).map((v: any) => {
         const dynamicAttrs = v.variant_attributes?.map((va: any) => {
           const val = va.attribute_values;
           if (!val) return null;
@@ -191,7 +152,7 @@ export default function ProductPage({ params }: { params: any }) {
           dynamicAttrs
         };
       });
-      const iList = iRes.data ?? [];
+      const iList = prod.product_images ?? [];
       const first = vList.find((v: any) => Number(v.stock_quantity ?? 0) > 0) ?? vList[0] ?? null;
       
       const initialSelectedAttrs: Record<string, string> = {};
@@ -205,9 +166,12 @@ export default function ProductPage({ params }: { params: any }) {
       setProduct(prod);
       setVariants(vList);
       setImages(iList);
-      setCategory(catRes.data ?? null);
-      setBrand(brRes.data ?? null);
+      setVideos(prod.product_videos ?? []);
+      setCategory(prod.categories ?? null);
+      setBrand(prod.brands ?? null);
       setSelected(first);
+      setSizeGuide(payload?.size_guide ?? null);
+      setBundles(payload?.bundles ?? []);
 
       setMainImage(
         iList.find((i: any) => i.is_primary)?.url ??
@@ -216,15 +180,15 @@ export default function ProductPage({ params }: { params: any }) {
       );
 
       // Add to recent store
-      const basePrice = first?.price_syp ?? prod.base_price_syp ?? 0;
+      const basePrice = first?.price_syp ?? prod.base_price ?? 0;
       addRecent({
         id: prod.id,
         slug: prod.slug,
         nameAr: prod.name_ar,
         nameEn: prod.name_en,
         priceSyp: basePrice,
-        imageUrl: prod.image_url,
-        brandName: brRes.data?.name
+        imageUrl: iList.find((image: any) => image.is_primary)?.url ?? iList[0]?.url ?? null,
+        brandName: prod.brands?.name
       });
 
       setLoading(false);
@@ -311,6 +275,7 @@ export default function ProductPage({ params }: { params: any }) {
     if (!selected || !product || selectedStock <= 0) return;
 
     addItem({
+      itemType: 'variant',
       variantId: selected.id,
       productId: product.id,
       productSlug: product.slug,
@@ -320,6 +285,7 @@ export default function ProductPage({ params }: { params: any }) {
       priceSyp: selected.price_syp,
       comparePriceSyp: selected.compare_price_syp ?? null,
       imageUrl: mainImage,
+      maxQuantity: Math.min(selectedStock, 99),
       quantity: 1,
     });
 
@@ -380,10 +346,13 @@ export default function ProductPage({ params }: { params: any }) {
           </div>
 
           <div className="grid grid-cols-5 gap-2">
-            {(images.length ? images : (mainImage ? [{ id: 'fallback', url: mainImage }] : [])).map((img: any) => (
+            {(images.length ? images : (mainImage ? [{ id: 'fallback', url: mainImage }] : [])).map((img: any, index: number) => (
               <button
+                type="button"
                 key={img.id}
                 onClick={() => setMainImage(img.url)}
+                aria-label={`${td('image')} ${index + 1}`}
+                aria-pressed={mainImage === img.url}
                 className={[
                   'aspect-square overflow-hidden rounded-xl border-2 bg-background-card transition-colors',
                   mainImage === img.url ? 'border-primary' : 'border-transparent hover:border-primary/50',
@@ -399,6 +368,22 @@ export default function ProductPage({ params }: { params: any }) {
               </button>
             ))}
           </div>
+
+          {videos.length > 0 && (
+            <div className="space-y-3 pt-3">
+              {videos.map((video: any) => (
+                <video
+                  key={video.id}
+                  controls
+                  preload="metadata"
+                  poster={video.thumbnail_url ?? undefined}
+                  className="aspect-video w-full rounded-lg border border-border bg-black object-contain"
+                >
+                  <source src={video.url} type="video/mp4" />
+                </video>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="space-y-5">
@@ -428,12 +413,28 @@ export default function ProductPage({ params }: { params: any }) {
                   <p className="text-xs font-bold text-text-muted">{td('selectedVariant')}</p>
                   <p className="mt-1 text-lg font-black text-[#1F1B16]">{variantTitle(selected, isAr, td)}</p>
                 </div>
-                <div className="text-left">
-                  <p className="text-2xl font-black text-[#171411]">{formatSYP(selected.price_syp)}</p>
-                  {selected.compare_price_syp && selected.compare_price_syp > selected.price_syp && (
-                    <p className="text-sm text-[#9CA3AF] line-through">{formatSYP(selected.compare_price_syp)}</p>
+                <div className="flex items-center gap-4">
+                  {/* Size Guide Button */}
+                  {sizeGuide && (
+                    <button
+                      onClick={() => setShowSizeGuide(true)}
+                      className="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                    >
+                      <Ruler className="w-4 h-4" />
+                      {isAr ? 'دليل المقاسات' : 'Size Guide'}
+                    </button>
                   )}
                 </div>
+              </div>
+              <div className="mb-6 flex items-end gap-3">
+                <div className="text-2xl font-black text-[#171411]">
+                  <PriceDisplay amountSyp={selected.price_syp} className="!text-2xl" />
+                </div>
+                {selected.compare_price_syp && selected.compare_price_syp > selected.price_syp && (
+                  <div className="text-sm text-[#9CA3AF] line-through">
+                    <PriceDisplay amountSyp={selected.compare_price_syp} className="!text-sm" />
+                  </div>
+                )}
               </div>
 
               <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -482,10 +483,22 @@ export default function ProductPage({ params }: { params: any }) {
                 </div>
               )}
 
-              <div className={`mt-4 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-black ${selectedState.cls}`}>
-                <StockIcon className="h-3.5 w-3.5" />
+              <div className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold w-fit mt-4 ${selectedState.cls}`}>
+                <StockIcon className="h-5 w-5" />
                 {selectedState.text}
               </div>
+
+              {/* Notify Me if out of stock */}
+              {selected && selected.stock_quantity <= 0 && (
+                <div className="mt-4">
+                  <NotifyMeForm variantId={selected.id} isAr={isAr} />
+                </div>
+              )}
+
+              {/* Bundles */}
+              {bundles.length > 0 && (
+                <ProductBundlesList bundles={bundles} isAr={isAr} />
+              )}
             </div>
           ) : (
             <div className="rounded-3xl border border-border bg-background-card p-6 text-center">
@@ -570,12 +583,14 @@ export default function ProductPage({ params }: { params: any }) {
                           : 'border-border bg-background-card hover:border-primary/60',
                       ].join(' ')}
                     >
-                      <p className="font-black text-[#1F1B16]">{variantTitle(v, isAr, td)}</p>
                       <div className="mt-2 flex flex-wrap gap-1 text-[11px] justify-end">
                         {v.sku && <span className="rounded-full bg-background px-2 py-1" dir="ltr">{v.sku}</span>}
                       </div>
+                      <div className="flex justify-between items-center w-full">
+                        <span className="font-bold text-[#1F1B16]">{variantTitle(v, isAr, td)}</span>
+                        <PriceDisplay amountSyp={v.price_syp} className="!text-sm" />
+                      </div>
                       <div className="mt-2 flex items-center justify-between gap-2">
-                        <span className="font-black text-primary">{formatSYP(v.price_syp)}</span>
                         <span className={qty > 0 ? 'text-xs font-bold text-green-700' : 'text-xs font-bold text-red-700'}>
                           {qty > 0 ? `${qty} ${td('pieces')}` : td('outOfStockShort')}
                         </span>
@@ -610,9 +625,12 @@ export default function ProductPage({ params }: { params: any }) {
               </button>
             )}
             {product?.id && (
-              <div className="rounded-2xl border border-border bg-background-card p-2">
-                <WishlistButton productId={product.id} />
-              </div>
+              <>
+                <div className="rounded-2xl border border-border bg-background-card p-2">
+                  <WishlistButton productId={product.id} />
+                </div>
+                <ProductSharing title={isAr ? product.name_ar : product.name_en} />
+              </>
             )}
           </div>
 
@@ -635,18 +653,20 @@ export default function ProductPage({ params }: { params: any }) {
 
       {product?.id && category?.id && (
         <div className="mt-4">
-          <SimilarProducts categoryId={category.id} currentProductId={product.id} />
+          <SimilarProducts productSlug={product.slug} />
         </div>
       )}
 
-      {product?.id && (
-        <div className="mt-4">
-          <RecommendedProducts currentProductId={product.id} />
-        </div>
-      )}
-      
       {/* Recently Viewed Products */}
       <RecentlyViewed />
+      {/* Size Guide Modal */}
+      {sizeGuide && showSizeGuide && (
+        <SizeGuideModal
+          onClose={() => setShowSizeGuide(false)}
+          guide={sizeGuide}
+          isAr={isAr}
+        />
+      )}
     </main>
   );
 }

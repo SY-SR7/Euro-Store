@@ -99,6 +99,7 @@ function InlineText({
     if (multiline) {
       return (
         <textarea
+          aria-label="تحرير رد الإدارة / Edit admin response"
           autoFocus
           rows={4}
           value={draft}
@@ -115,6 +116,7 @@ function InlineText({
     }
     return (
       <input
+        aria-label="تحرير النص / Edit text"
         autoFocus
         value={draft}
         dir={dir}

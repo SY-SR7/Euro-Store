@@ -1,72 +1,27 @@
 'use client';
+
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ShoppingBag, Home } from 'lucide-react';
-import Image from 'next/image';
+import { Home, ShoppingBag } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function NotFound() {
+  const t = useTranslations('errorPages');
   return (
-    <main className="min-h-screen bg-background flex items-center justify-center relative overflow-hidden" dir="rtl">
-      
-      {/* Background Gradient Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-background-elevated rounded-full blur-3xl" />
-
-      <div className="relative z-10 max-w-2xl mx-auto px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative inline-block"
-        >
-          <h1 className="text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-b from-primary via-primary/50 to-background leading-none select-none">
-            404
-          </h1>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full"
-          >
-            <div className="bg-background-card/80 backdrop-blur-md border border-border/50 py-3 px-8 rounded-2xl shadow-2xl rotate-[-5deg]">
-              <p className="text-2xl font-black text-text-primary tracking-widest uppercase">Page Not Found</p>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-        >
-          <h2 className="text-3xl font-bold text-text-primary mt-8 mb-4">
-            عذراً، لم نتمكن من العثور على ما تبحث عنه!
-          </h2>
-          <p className="text-text-secondary text-lg mb-12 leading-relaxed max-w-xl mx-auto">
-            يبدو أن الصفحة التي تحاول الوصول إليها غير موجودة أو تم نقلها. 
-            لا تقلق، يمكنك دائماً العودة لاكتشاف أحدث صيحات الموضة.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link 
-              href="/"
-              className="w-full sm:w-auto bg-primary text-[#0F0F0F] font-black py-4 px-8 rounded-xl hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
-            >
-              <Home size={20} />
-              الرئيسية
-            </Link>
-            
-            <Link 
-              href="/products"
-              className="w-full sm:w-auto bg-background-elevated border border-border/50 text-text-primary font-bold py-4 px-8 rounded-xl hover:border-primary/50 transition-colors flex items-center justify-center gap-2"
-            >
-              <ShoppingBag size={20} />
-              تسوق الآن
-            </Link>
-          </div>
-        </motion.div>
+    <main className="flex min-h-screen items-center justify-center bg-background px-6">
+      <div className="w-full max-w-xl text-center">
+        <p className="text-7xl font-black text-primary">404</p>
+        <p className="mt-2 text-sm font-black uppercase text-text-muted">{t('pageNotFound')}</p>
+        <h1 className="mt-8 text-3xl font-bold text-text-primary">{t('notFoundTitle')}</h1>
+        <p className="mx-auto mt-4 max-w-lg text-base leading-7 text-text-secondary">{t('notFoundDescription')}</p>
+        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link href="/" className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-black text-[#0F0F0F] sm:w-auto">
+            <Home size={19} /> {t('home')}
+          </Link>
+          <Link href="/products" className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background-elevated px-6 py-3 font-bold text-text-primary sm:w-auto">
+            <ShoppingBag size={19} /> {t('shopNow')}
+          </Link>
+        </div>
       </div>
-
     </main>
   );
 }

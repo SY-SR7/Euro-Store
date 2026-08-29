@@ -1,40 +1,14 @@
-import { requireAdminContext } from '@/supabase-server';
 import { NextResponse } from 'next/server';
-import { createAdminSupabaseClient } from '@/supabase-server';
-import { z } from 'zod';
-
-const sectionSchema = z.object({
-  section_key: z.string().min(1),
-  title_ar:    z.string().min(1),
-  title_en:    z.string().min(1),
-  content:     z.record(z.unknown()).optional().default({}),
-  is_active:   z.boolean().default(true),
-  sort_order:  z.number().int().min(0).default(0),
-});
+import { requireAdminContext } from '@/supabase-server';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET() {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('homepage_management', 'view');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
-  const admin = createAdminSupabaseClient();
-  const { data, error } = await admin.from('homepage_sections').select('*').order('sort_order');
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
-  return NextResponse.json(data);
-}
-
-export async function POST(request: Request) {
-  const ctx = await requireAdminContext();
-  if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
-
-  const { admin } = ctx;
-  const body: unknown = await request.json();
-  const parsed = sectionSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data, error } = await admin.from('homepage_sections').insert(parsed.data as any).select().single();
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
-  return NextResponse.json(data, { status: 201 });
+  const { data, error } = await ctx.admin.from('homepage_sections').select('*').order('sort_order');
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
+  return NextResponse.json(data ?? []);
 }

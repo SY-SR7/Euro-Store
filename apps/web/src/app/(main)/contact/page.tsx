@@ -1,14 +1,13 @@
 /* eslint-disable */
-// @ts-nocheck
 import Link from 'next/link';
 import { getTranslations, getLocale } from 'next-intl/server';
-import { createServerSupabaseClient } from '@/supabase-server';
+import { createAdminSupabaseClient } from '@/supabase-server';
 import { ContactForm } from './ContactForm';
 
 export const dynamic = 'force-dynamic';
 
 async function getContactSettings() {
-  const supabase = createServerSupabaseClient();
+  const supabase = createAdminSupabaseClient();
   const { data } = await supabase
     .from('system_settings')
     .select('key, value')

@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest} from 'next/server';
+import { NextResponse } from 'next/server';
 import { requireAdminContext, writeAuditLog } from '@/supabase-server';
 
 function normalizeSlug(value: string) {
@@ -15,7 +16,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET() {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('category_management', 'view');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 const { admin } = ctx;
 
@@ -25,12 +26,12 @@ const { admin } = ctx;
     .order('sort_order', { ascending: true })
     .order('created_at', { ascending: false });
 
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
   return NextResponse.json(data ?? []);
 }
 
 export async function POST(req: NextRequest) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('category_management', 'create');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 const { admin, userId } = ctx;
 
@@ -68,7 +69,7 @@ const { admin, userId } = ctx;
     .select('id, name_ar, name_en, slug, sort_order, is_active, created_at')
     .single();
 
-  if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 400 });
+  if (error) return NextResponse.json({ error: 'database_error' }, { status: 400 });
 
   await writeAuditLog({
     admin, actorId: userId, actorRole: 'admin',

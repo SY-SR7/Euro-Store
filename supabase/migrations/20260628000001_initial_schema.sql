@@ -6,7 +6,7 @@ CREATE TYPE user_role AS ENUM ('customer', 'admin', 'sub_admin', 'helper', 'part
 CREATE TYPE order_status AS ENUM ('pending', 'confirmed', 'processing', 'picked_up', 'shipped', 'delivered', 'completed', 'cancelled', 'rejected');
 CREATE TYPE payment_status AS ENUM ('pending', 'paid', 'failed', 'refunded');
 CREATE TYPE payment_method AS ENUM ('sham_cash', 'cash_on_delivery');
-CREATE TYPE exchange_status AS ENUM ('pending', 'approved', 'qr_generated', 'qr_scanned', 'completed', 'rejected', 'expired');
+CREATE TYPE exchange_status AS ENUM ('pending', 'approved', 'rejected', 'item_received_by_shipping', 'completed');
 CREATE TYPE loyalty_tx_type AS ENUM ('earned_purchase', 'earned_referral', 'earned_offline', 'redeemed', 'adjusted_admin', 'expired');
 CREATE TYPE notification_type AS ENUM ('order_update', 'exchange_update', 'loyalty_update', 'promotional', 'system');
 CREATE TYPE permission_level AS ENUM ('view_only', 'edit', 'full_access');

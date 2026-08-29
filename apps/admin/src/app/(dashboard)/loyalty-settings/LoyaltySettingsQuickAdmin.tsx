@@ -84,12 +84,14 @@ function InlineNumber({
   value,
   onSave,
   unitLabel,
+  ariaLabel,
   locale = 'ar-SY',
 }: {
   field: FieldConfig;
   value: string;
   onSave: (value: string) => void | Promise<void>;
   unitLabel: string;
+  ariaLabel: string;
   locale?: string;
 }) {
   const [editing, setEditing] = useState(false);
@@ -109,6 +111,7 @@ function InlineNumber({
     return (
       <div className="flex items-center gap-2">
         <input
+          aria-label={ariaLabel}
           autoFocus
           type="number"
           min={field.min}
@@ -255,7 +258,7 @@ export default function LoyaltySettingsQuickAdmin() {
                   </div>
                   <span className="rounded-full border border-[#E5E0D8] bg-background-card px-2 py-1 text-[11px] font-black text-[#8B8172]">{t(field.unitKey)}</span>
                 </div>
-                <InlineNumber field={field} value={values[field.key]} unitLabel={t(field.unitKey)} locale={formatLoc} onSave={(value) => patchField(field, value)} />
+                <InlineNumber field={field} value={values[field.key]} unitLabel={t(field.unitKey)} ariaLabel={t(field.labelKey)} locale={formatLoc} onSave={(value) => patchField(field, value)} />
               </div>
             ))}
           </div>

@@ -1,60 +1,99 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { Heart, ShoppingBag } from 'lucide-react-native';
+import { Image, Pressable, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { apiFetch } from '../utils/api';
+import { useAuth } from '../contexts/AuthContext';
+import { usePreferences } from '../contexts/PreferencesContext';
 import { useCartStore } from '../store/cartStore';
 import { useWishlistStore } from '../store/wishlistStore';
-import { router } from 'expo-router';
 
-export function ProductCard({ id, title, price, imageUrl }: { id: string; title: string; price: number; imageUrl: string }) {
+export type ProductCardProps = {
+  id: string;
+  slug: string;
+  title: string;
+  price: number;
+  comparePrice?: number | null;
+  imageUrl: string;
+  maxQuantity: number;
+  variantId: string | null;
+  hasMultipleVariants?: boolean;
+  isNew?: boolean;
+  discountPercentage?: number | null;
+};
+
+export function ProductCard(props: ProductCardProps) {
+  const { id, slug, title, price, comparePrice, imageUrl, maxQuantity, variantId, hasMultipleVariants, isNew, discountPercentage } = props;
   const addItem = useCartStore((state) => state.addItem);
   const { addItem: addWishlist, removeItem: removeWishlist, hasItem } = useWishlistStore();
+  const { user } = useAuth();
+  const { t, formatCurrency } = usePreferences();
   const isWishlisted = hasItem(id);
+  const imageSource = imageUrl ? { uri: imageUrl } : require('../assets/icon.png');
 
-  const handleAddToCart = () => {
-    addItem({ productId: id, title, price, quantity: 1, imageUrl });
-  };
+  function openProduct() {
+    router.push(`/products/${encodeURIComponent(slug)}`);
+  }
 
-  const toggleWishlist = () => {
-    if (isWishlisted) {
-      removeWishlist(id);
-    } else {
-      addWishlist({ productId: id, title, price, imageUrl });
+  function handleAddToCart() {
+    if (maxQuantity <= 0 || !variantId || hasMultipleVariants) {
+      openProduct();
+      return;
     }
-  };
+    addItem({ itemType: 'variant', itemId: variantId, productId: id, variantId, title, price, quantity: 1, imageUrl, maxQuantity });
+  }
+
+  async function toggleWishlist() {
+    if (user) {
+      try {
+        const result = await apiFetch<{ in_wishlist: boolean }>('/api/wishlist', {
+          method: 'POST',
+          body: JSON.stringify({ product_id: id }),
+        });
+        if (result.in_wishlist && variantId) addWishlist({ productId: id, variantId, title, price, imageUrl, maxQuantity });
+        else removeWishlist(id);
+      } catch {
+        return;
+      }
+      return;
+    }
+    if (isWishlisted) removeWishlist(id);
+    else if (variantId) addWishlist({ productId: id, variantId, title, price, imageUrl, maxQuantity });
+  }
 
   return (
-    <TouchableOpacity 
-      className='w-40 mr-4 bg-background-card rounded-2xl overflow-hidden border border-border shadow-sm'
-      onPress={() => router.push(`/products/${id}`)}
-    >
-      <View className='h-48 w-full bg-background-secondary relative'>
-        <Image source={{ uri: imageUrl }} className='w-full h-full' resizeMode='cover' />
-        
-        {/* Wishlist Button */}
-        <TouchableOpacity 
-          className='absolute top-2 left-2 bg-[#0F0F0F]/60 w-8 h-8 rounded-full items-center justify-center z-10'
-          onPress={toggleWishlist}
+    <Pressable accessibilityRole="button" accessibilityLabel={title} className="w-full overflow-hidden rounded-lg border border-border bg-background-card" onPress={openProduct}>
+      <View className="relative h-48 w-full bg-background-secondary">
+        <Image source={imageSource} className="h-full w-full" resizeMode="cover" accessibilityLabel={title} />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={isWishlisted ? `${t('common.delete')} ${title}` : `${t('profile.wishlist')}: ${title}`}
+          onPress={(event) => { event.stopPropagation(); void toggleWishlist(); }}
+          className="absolute start-2 top-2 z-10 h-9 w-9 items-center justify-center rounded-full bg-black/65"
         >
-          <Text className={isWishlisted ? 'text-red-500 font-bold' : 'text-white'}>{isWishlisted ? '♥' : '♡'}</Text>
-        </TouchableOpacity>
-
-        <View className='absolute top-2 right-2 bg-[#0F0F0F]/60 px-2 py-1 rounded-full'>
-          <Text className='text-white text-xs font-bold'>جديد</Text>
+          <Heart size={18} color={isWishlisted ? '#EF4444' : '#FFFFFF'} fill={isWishlisted ? '#EF4444' : 'transparent'} />
+        </Pressable>
+        <View className="absolute end-2 top-2 flex-row gap-1">
+          {discountPercentage && discountPercentage > 0 ? <View className="rounded bg-error px-2 py-1"><Text className="text-xs font-bold text-white">{t('common.sale', { percent: discountPercentage })}</Text></View> : null}
+          {isNew ? <View className="rounded bg-black/70 px-2 py-1"><Text className="text-xs font-bold text-white">{t('common.new')}</Text></View> : null}
         </View>
       </View>
-      <View className='p-3'>
-        <Text className='text-text-primary text-sm font-bold truncate' numberOfLines={1}>
-          {title}
-        </Text>
-        <Text className='text-primary font-bold mt-1'>
-          {price.toLocaleString('ar-SY')} ل.س
-        </Text>
-        <TouchableOpacity 
-          className='mt-3 bg-primary/10 border border-primary/20 py-2 rounded-lg items-center'
-          onPress={handleAddToCart}
+      <View className="p-3">
+        <Text className="text-sm font-bold text-text-primary" numberOfLines={2}>{title}</Text>
+        <View className="mt-2 flex-row flex-wrap items-center gap-2">
+          <Text className="font-bold text-primary">{formatCurrency(price)}</Text>
+          {comparePrice && comparePrice > price ? <Text className="text-xs text-text-muted line-through">{formatCurrency(comparePrice)}</Text> : null}
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`${maxQuantity > 0 ? t('common.addToCart') : t('common.unavailable')}: ${title}`}
+          className={`mt-3 flex-row items-center justify-center gap-2 rounded-lg border py-2 ${maxQuantity > 0 ? 'border-primary/30 bg-primary/10' : 'border-border opacity-60'}`}
+          onPress={(event) => { event.stopPropagation(); handleAddToCart(); }}
         >
-          <Text className='text-primary font-bold text-xs'>أضف للسلة</Text>
-        </TouchableOpacity>
+          <ShoppingBag size={15} color="#B8860B" />
+          <Text className="text-xs font-bold text-primary">{maxQuantity > 0 ? t('common.addToCart') : t('common.unavailable')}</Text>
+        </Pressable>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 }

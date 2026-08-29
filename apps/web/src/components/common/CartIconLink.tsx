@@ -7,11 +7,8 @@ import { useTranslations } from 'next-intl';
 
 export function CartIconLink({ floating = false }: { floating?: boolean }) {
   const t = useTranslations('nav');
-  const items = useCartStore((s: any) => s.items ?? s.cart ?? s.cartItems ?? []);
-
-  const count = Array.isArray(items)
-    ? items.reduce((sum: number, item: any) => sum + Number(item.quantity ?? item.qty ?? 1), 0)
-    : 0;
+  const items = useCartStore((state) => state.items);
+  const count = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <Link

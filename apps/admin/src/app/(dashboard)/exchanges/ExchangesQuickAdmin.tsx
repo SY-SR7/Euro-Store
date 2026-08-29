@@ -5,12 +5,17 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import type { KeyboardEvent, ReactNode } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { ConfirmDialog } from '@eurostore/ui';
+
+const STATUS_OPTIONS = ['pending', 'approved', 'item_received_by_shipping', 'rejected', 'completed'] as const;
+type ExchangeStatus = typeof STATUS_OPTIONS[number];
+type Translator = (key: string, values?: Record<string, string | number>) => string;
 
 type ExchangeRequest = {
   id: string;
   order_id: string | null;
   customer_id: string | null;
-  status: string;
+  status: ExchangeStatus;
   reason_ar: string | null;
   reason_en: string | null;
   notes: string | null;
@@ -20,11 +25,10 @@ type ExchangeRequest = {
   updated_at?: string;
 };
 
-const STATUS_OPTIONS = ['pending', 'approved', 'rejected', 'completed'] as const;
-
 const STATUS_COLOR: Record<string, string> = {
   pending: 'bg-amber-50 text-amber-700 border-amber-200',
   approved: 'bg-blue-50 text-blue-700 border-blue-200',
+  item_received_by_shipping: 'bg-violet-50 text-violet-700 border-violet-200',
   rejected: 'bg-red-50 text-red-700 border-red-200',
   completed: 'bg-green-50 text-green-700 border-green-200',
 };
@@ -127,8 +131,9 @@ function InlineText({
   if (editing) {
     if (multiline) {
       return (
-        <textarea
-          autoFocus
+      <textarea
+        aria-label="تحرير الملاحظات / Edit notes"
+        autoFocus
           rows={3}
           value={draft}
           dir={dir}
@@ -142,6 +147,7 @@ function InlineText({
 
     return (
       <input
+        aria-label="تحرير النص / Edit text"
         autoFocus
         value={draft}
         dir={dir}
@@ -171,12 +177,13 @@ function StatusPills({
   t,
 }: {
   value: string;
-  onSave: (value: string) => Promise<void> | void;
-  t: any;
+  onSave: (value: ExchangeStatus) => Promise<void> | void;
+  t: Translator;
 }) {
   const STATUS_AR: Record<string, string> = {
     pending: t('statusPending', { fallback: 'قيد الانتظار' }),
     approved: t('statusApproved', { fallback: 'تمت الموافقة' }),
+    item_received_by_shipping: t('statusItemReceivedByShipping', { fallback: 'استلمته شركة الشحن' }),
     rejected: t('statusRejected', { fallback: 'مرفوض' }),
     completed: t('statusCompleted', { fallback: 'مكتمل' }),
   };
@@ -214,15 +221,19 @@ export default function ExchangesQuickAdmin() {
 
   const [requests, setRequests] = useState<ExchangeRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'completed'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'item_received_by_shipping' | 'rejected' | 'completed'>('all');
   const [selected, setSelected] = useState<ExchangeRequest | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [msg, setMsg] = useState('');
   const [autoOpenedId, setAutoOpenedId] = useState('');
+  const [rejectReason, setRejectReason] = useState('');
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [transitionPending, setTransitionPending] = useState(false);
 
   const STATUS_AR: Record<string, string> = {
     pending: t('statusPending', { fallback: 'قيد الانتظار' }),
     approved: t('statusApproved', { fallback: 'تمت الموافقة' }),
+    item_received_by_shipping: t('statusItemReceivedByShipping', { fallback: 'استلمته شركة الشحن' }),
     rejected: t('statusRejected', { fallback: 'مرفوض' }),
     completed: t('statusCompleted', { fallback: 'مكتمل' }),
   };
@@ -231,7 +242,7 @@ export default function ExchangesQuickAdmin() {
     setLoading(true);
     const params = new URLSearchParams();
     if (statusFilter !== 'all') params.set('status', statusFilter);
-    fetchJson<ExchangeRequest[]>(`/api/exchanges?${params}`, { cache: 'no-store' })
+    fetchJson<ExchangeRequest[]>(`/api/exchanges?${params.toString()}`, { cache: 'no-store' })
       .then((data) => setRequests(Array.isArray(data) ? data : []))
       .catch(() => setRequests([]))
       .finally(() => setLoading(false));
@@ -287,6 +298,10 @@ export default function ExchangesQuickAdmin() {
 
   const patchRequest = async (patch: Partial<ExchangeRequest>) => {
     if (!selected) return;
+    if (patch.status && patch.status !== selected.status) {
+      await transitionStatus(patch.status);
+      return;
+    }
     const previous = selected;
     setMsg('');
     mergeRequest(selected.id, patch);
@@ -301,6 +316,56 @@ export default function ExchangesQuickAdmin() {
     } catch (error) {
       mergeRequest(previous.id, previous);
       setMsg(error instanceof Error ? error.message : tCommon('saveFailed', { fallback: 'فشل الحفظ' }));
+    }
+  };
+
+  const transitionStatus = async (nextStatus: string, confirmedReason?: string) => {
+    if (!selected) return;
+    const previous = selected;
+    setMsg('');
+
+    let url = '';
+    let body: Record<string, unknown> = {};
+
+    if (selected.status === 'pending' && nextStatus === 'approved') {
+      url = `/api/admin/exchanges/${selected.id}/approve`;
+      body = { resolution_path: 'helper' };
+    } else if (selected.status === 'pending' && nextStatus === 'rejected') {
+      const reason = confirmedReason?.trim();
+      if (!reason) {
+        setRejectDialogOpen(true);
+        return;
+      }
+      url = `/api/admin/exchanges/${selected.id}/reject`;
+      body = { rejection_reason: reason };
+    } else if (
+      (selected.status === 'approved' && nextStatus === 'item_received_by_shipping') ||
+      (selected.status === 'item_received_by_shipping' && nextStatus === 'completed')
+    ) {
+      url = `/api/admin/exchanges/${selected.id}/status`;
+      body = { status: nextStatus };
+    } else {
+      setMsg(t('invalidTransition', { fallback: 'انتقال حالة غير مسموح' }));
+      return;
+    }
+
+    mergeRequest(selected.id, { status: nextStatus });
+    setTransitionPending(true);
+    try {
+      const payload = await fetchJson<{ exchange_request?: ExchangeRequest }>(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      mergeRequest(selected.id, payload.exchange_request ?? { status: nextStatus });
+      setRejectDialogOpen(false);
+      setRejectReason('');
+      setMsg(tCommon('saved', { fallback: 'تم الحفظ' }));
+    } catch (error) {
+      mergeRequest(previous.id, previous);
+      setMsg(error instanceof Error ? error.message : tCommon('saveFailed', { fallback: 'فشل الحفظ' }));
+    } finally {
+      setTransitionPending(false);
     }
   };
 
@@ -320,7 +385,7 @@ export default function ExchangesQuickAdmin() {
             <RefreshCw size={13} />
             {tCommon('refresh', { fallback: 'تحديث' })}
           </button>
-          {(['all', 'pending', 'approved', 'rejected', 'completed'] as const).map((status) => (
+          {(['all', 'pending', 'approved', 'item_received_by_shipping', 'rejected', 'completed'] as const).map((status) => (
             <button
               key={status}
               type="button"
@@ -347,7 +412,7 @@ export default function ExchangesQuickAdmin() {
             <table className="min-w-full text-sm">
               <thead className="bg-[#F8F6F2]">
                 <tr>
-                  {[t('id', { fallback: 'الرقم' }), t('reason', { fallback: 'السبب' }), t('status', { fallback: 'الحالة' }), t('requestDate', { fallback: 'تاريخ الطلب' })].map((heading, index) => (
+                  {[t('id', { fallback: 'الرقم' }), t('reason', { fallback: 'السبب' }), t('tableStatus', { fallback: 'الحالة' }), t('requestDate', { fallback: 'تاريخ الطلب' })].map((heading, index) => (
                     <th
                       key={heading}
                       className={`px-5 py-3 ${isAr ? "text-right" : "text-left"} text-xs font-black text-text-muted ${
@@ -409,7 +474,7 @@ export default function ExchangesQuickAdmin() {
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
                 <section className="rounded-2xl border border-[#E5E0D8] bg-background-card p-4 shadow-sm">
                   <div className="space-y-2">
-                    <Field label={t('status', { fallback: 'الحالة' })}>
+                    <Field label={t('tableStatus', { fallback: 'الحالة' })}>
                       <StatusPills value={selected.status} onSave={(status) => patchRequest({ status })} t={t} />
                     </Field>
                     <Field label={t('reasonAr', { fallback: 'السبب العربي' })}>
@@ -467,6 +532,29 @@ export default function ExchangesQuickAdmin() {
           )}
         </Modal>
       ) : null}
+      <ConfirmDialog
+        open={rejectDialogOpen}
+        title={t('rejectReasonPrompt', { fallback: 'اكتب سبب الرفض' })}
+        description={isAr ? 'سيظهر السبب للعميل ويُسجل في سجل التدقيق.' : 'The reason will be shown to the customer and recorded in the audit log.'}
+        confirmLabel={transitionPending ? (isAr ? 'جارٍ الرفض' : 'Rejecting') : (isAr ? 'رفض الطلب' : 'Reject request')}
+        cancelLabel={tCommon('cancel', { fallback: isAr ? 'إلغاء' : 'Cancel' })}
+        onConfirm={() => void transitionStatus('rejected', rejectReason)}
+        onCancel={() => { setRejectDialogOpen(false); setRejectReason(''); }}
+        pending={transitionPending}
+        confirmDisabled={!rejectReason.trim()}
+        destructive
+      >
+        <label className="block text-sm font-bold text-text-primary">
+          {isAr ? 'سبب الرفض' : 'Rejection reason'}
+          <textarea
+            value={rejectReason}
+            onChange={(event) => setRejectReason(event.target.value.slice(0, 500))}
+            rows={4}
+            maxLength={500}
+            className="mt-2 w-full resize-none rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+          />
+        </label>
+      </ConfirmDialog>
     </div>
   );
 }

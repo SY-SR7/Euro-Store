@@ -4,11 +4,11 @@ import { createAdminSupabaseClient, requireAdminContext } from '@/supabase-serve
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  const ctx = await requireAdminContext();
+  const ctx = await requireAdminContext('product_management', 'view');
   if (!ctx) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
 
   try {
-    const ctx = await requireAdminContext();
+    const ctx = await requireAdminContext('product_management', 'view');
     if (!ctx) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { searchParams } = new URL(request.url);
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     }
 
     const { data, error } = await query;
-    if (error) return NextResponse.json({ error: error?.message || 'database_error' }, { status: 500 });
+    if (error) return NextResponse.json({ error: 'database_error' }, { status: 500 });
     return NextResponse.json(data ?? []);
   } catch {
     return NextResponse.json({ error: 'server_error' }, { status: 500 });

@@ -1,59 +1,50 @@
 import { Stack, useRouter, useSegments } from 'expo-router';
-import { NativeWindStyleSheet } from 'nativewind';
-import { I18nManager } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
+import { PreferencesProvider, usePreferences } from '../contexts/PreferencesContext';
 import { useOnboardingStore } from '../store/onboardingStore';
 import { useEffect } from 'react';
 import '../global.css';
 
-I18nManager.forceRTL(true);
-I18nManager.allowRTL(true);
-
-NativeWindStyleSheet.setOutput({
-  default: 'native',
-});
-
 function RootLayoutNav() {
   const { session, isLoading } = useAuth();
   const hasSeenOnboarding = useOnboardingStore((state) => state.hasSeenOnboarding);
+  const hasHydrated = useOnboardingStore((state) => state.hasHydrated);
   const segments = useSegments();
   const router = useRouter();
+  const { resolvedTheme } = usePreferences();
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || !hasHydrated) return;
 
     if (!hasSeenOnboarding && segments[0] !== 'onboarding') {
       router.replace('/onboarding');
       return;
     }
 
-    const inAuthGroup = segments[0] === '(tabs)';
-    
-    if (!session && inAuthGroup && hasSeenOnboarding) {
-      router.replace('/login');
-    } else if (session && segments[0] === 'login') {
+    if (session && segments[0] === 'login') {
       router.replace('/(tabs)');
     }
-  }, [session, isLoading, segments, hasSeenOnboarding]);
+  }, [session, isLoading, segments, hasSeenOnboarding, hasHydrated, router]);
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: '#0F0F0F' }
-      }}
-    >
-      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="login" options={{ headerShown: false, presentation: 'modal' }} />
-    </Stack>
+    <>
+      <StatusBar style={resolvedTheme === 'dark' ? 'light' : 'dark'} />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: resolvedTheme === 'dark' ? '#0F0F0F' : '#FAF9F7' } }}>
+        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="login" options={{ headerShown: false, presentation: 'modal' }} />
+      </Stack>
+    </>
   );
 }
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <RootLayoutNav />
-    </AuthProvider>
+    <PreferencesProvider>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </PreferencesProvider>
   );
 }
