@@ -128,3 +128,20 @@
 - نجحت 14/14 خطوة عميل حي، و48/48 اختباراً، وفحص TypeScript الكامل، وlint بصفر أخطاء.
 - لم تُشغّل أي عملية build ولم يُستخدم Docker.
 - المرجع: `CODEX_PEOPLE_FREE_PRODUCTION_CATALOG_2026-08-29.md`.
+
+---
+
+## تحديث النشر والتشغيل على Netlify الحقيقي - 2026-08-29 🚀
+
+- **فحص وتدقيق شامل للكود والجلسة:** تم تدقيق كامل الكود والـ PRD، واختبارات Vitest بنجاح 48/48، وTypeScript Type-check بنجاح 9/9 حزم، وESLint بصفر أخطاء.
+- **إصلاح وتهيئة إعدادات Netlify:**
+  - تثبيت وتفعيل `@netlify/plugin-nextjs` عبر كافة التطبيقات (`web`, `admin`, `helper`, `partner`).
+  - إنشاء ملفات `netlify.toml` مخصصة لكل تطبيق وتوجيه الـ Runtime والـ Server Functions.
+  - تصحيح وتحديث متغيرات البيئة السرية والعلنية على Netlify (23 متغيراً لكل موقع) وربطها بمشروع Supabase الحي الفعلي (`szhpqyvxodhaichrrdfb`) بدلاً من المشاريع القديمة.
+- **النشر الإنتاجي المباشر لجميع المواقع الأربعة:**
+  1. **متجر الويب الرئيسي (Storefront):** [https://euro-store.netlify.app](https://euro-store.netlify.app) (200 OK — متصل بالكتالوج الحي وسوبابيس).
+  2. **لوحة التحكم والإدارة (Admin):** [https://euro-store-admin.netlify.app](https://euro-store-admin.netlify.app) (200 OK).
+  3. **بوابة المساعدين (Helper Portal):** [https://euro-store-helper.netlify.app](https://euro-store-helper.netlify.app) (200 OK).
+  4. **بوابة الشركاء (Partner Portal):** [https://euro-store-partner.netlify.app](https://euro-store-partner.netlify.app) (200 OK).
+- **التحقق التشغيلي الميداني:** جميع استعلامات الـ API والـ Products والـ Categories والـ Search تعمل بنجاح 100% على الروابط الحية.
+
