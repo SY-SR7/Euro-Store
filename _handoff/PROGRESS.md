@@ -27,6 +27,12 @@
 - بطاقات فخمة بيضاء مع حدود ذهبية خفيفة وتكبير ناعم (`hover:scale-105`) وروابط مباشرة لكل علامة تجارية.
 - تدرجات ضبابية شفافة على الحواف اليمين واليسار (`Edge Fade Masks`) لظهور واختفاء الشعارات بجمالية فاخرة.
 
+### 6. مطابقة واستيراد كتالوج منتجات أمازون الأصلي 100% (Authentic Amazon Sourcing Pipeline)
+- بناء سكربت متقدم لاستخراج المنتجات الأكثر مبيعاً وأيقونية من Amazon Germany (`amazon.de`) وربطها حصرياً بأشهر الماركات العالمية (Adidas, Nike, Puma, Lacoste, Tommy Hilfiger, Calvin Klein, New Balance, Converse, Vans, Polo Ralph Lauren, Hugo Boss, Ray-Ban, Casio G-Shock, Chanel, Dior, Gucci, Prada, Versace, Michael Kors, Skechers, Reebok, Under Armour, Emporio Armani).
+- مطابقة 100% بين اسم المنتج ووصفه وصورته الرسمية المأخوذة مباشرة من ستوديو أمازون بدقة فائقة 1500px (`m.media-amazon.com/images/I/..._AC_SL1500_.jpg`).
+- إنشاء كافة المتغيرات الواقعية (المقاسات الحقيقية EU 40-45 / S-XXL، الألوان الرسمية، الخامات، الأكواد الفريدة SKUs المشتقة من رمز ASIN، والأسعار الواقعية).
+- حذف وتطهير كافة المنتجات التجريبية القديمة والمدخلات غير المطابقة، ليصبح المتجر بالكامل يحتوي على منتجات أصلية متطابقة تماماً كالتسوق على أمازون.
+
 ---
 
 

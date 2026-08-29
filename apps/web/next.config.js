@@ -20,6 +20,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**.supabase.co', pathname: '/storage/v1/object/public/**' },
+      { protocol: 'https', hostname: 'm.media-amazon.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'images-na.ssl-images-amazon.com', pathname: '/**' },
+      { protocol: 'https', hostname: '**.amazon.com', pathname: '/**' },
+      { protocol: 'https', hostname: '**.amazon.de', pathname: '/**' },
     ],
   },
   async headers() {
