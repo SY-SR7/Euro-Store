@@ -38,8 +38,8 @@ export function Footer() {
             <ul className="space-y-2.5">
               <li>
                 <Link
-                  href="/products?sort=newest"
-                  className="text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block"
+                  href="/new-arrivals"
+                  className="text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block font-medium"
                 >
                   {t('newArrivals')}
                 </Link>
@@ -47,14 +47,14 @@ export function Footer() {
               <li>
                 <Link
                   href="/categories"
-                  className="text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block"
+                  className="text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block font-medium"
                 >
                   {t('categories')}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/products?sale=true"
+                  href="/offers"
                   className="text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 hover:underline transition-colors inline-flex items-center gap-1.5"
                 >
                   <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
@@ -64,7 +64,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/products"
-                  className="text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block"
+                  className="text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block font-medium"
                 >
                   {t('allProducts')}
                 </Link>

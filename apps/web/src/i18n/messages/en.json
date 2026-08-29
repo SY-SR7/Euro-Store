@@ -458,7 +458,9 @@
     "faq": "FAQ",
     "wishlist": "Wishlist",
     "searchPlaceholder": "Search for a product...",
-    "searchResults": "Search Results"
+    "searchResults": "Search Results",
+    "offers": "Offers & Sales",
+    "newArrivals": "New Arrivals"
   },
   "newArrivals": "New arrivals",
   "cart": {

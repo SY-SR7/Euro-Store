@@ -34,9 +34,13 @@ type FilterData = {
 type Props = {
   /** If set, this category is locked (category page) and cannot be changed */
   lockedCategorySlug?: string;
+  initialSaleOnly?: boolean;
+  initialSort?: string;
+  pageTitle?: string;
+  pageSubtitle?: string;
 };
 
-export function FilterableProductGrid({ lockedCategorySlug }: Props) {
+export function FilterableProductGrid({ lockedCategorySlug, initialSaleOnly = false, initialSort = 'newest', pageTitle, pageSubtitle }: Props) {
   const router       = useRouter();
   const pathname     = usePathname();
   const searchParams = useSearchParams();
@@ -62,8 +66,8 @@ export function FilterableProductGrid({ lockedCategorySlug }: Props) {
   });
   const [q,                 setQ]                 = useState(() => searchParams.get('q') ?? '');
   const [featuredOnly,      setFeaturedOnly]      = useState(() => searchParams.get('featured') === '1' || searchParams.get('featured') === 'true');
-  const [saleOnly,          setSaleOnly]          = useState(() => searchParams.get('sale') === 'true' || searchParams.get('sale') === '1' || searchParams.get('has_discount') === 'true');
-  const [sort, setSort] = useState(() => searchParams.get('sort') ?? 'newest');
+  const [saleOnly,          setSaleOnly]          = useState(() => initialSaleOnly || searchParams.get('sale') === 'true' || searchParams.get('sale') === '1' || searchParams.get('has_discount') === 'true');
+  const [sort, setSort] = useState(() => searchParams.get('sort') ?? initialSort);
   const [page, setPage] = useState(() => Math.max(1, Number(searchParams.get('page') ?? 1)));
 
   const [data,    setData]    = useState<FilterData | null>(null);

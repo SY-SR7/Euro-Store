@@ -12,9 +12,11 @@ import { SmartSearch } from '@/components/layout/SmartSearch';
 import { AuthAwareLink } from '@/components/auth/AuthAwareLink';
 
 const DESKTOP_LINKS = [
-  { href:'/', key:'home' },
-  { href:'/products', key:'products' },
-  { href:'/categories', key:'categories' },
+  { href: '/', key: 'home' },
+  { href: '/products', key: 'products' },
+  { href: '/categories', key: 'categories' },
+  { href: '/offers', key: 'offers', isSale: true },
+  { href: '/new-arrivals', key: 'newArrivals' },
 ] as const;
 
 export function Header({ loyaltyPoints = null }: { loyaltyPoints?: number | null }) {
@@ -51,11 +53,17 @@ export function Header({ loyaltyPoints = null }: { loyaltyPoints?: number | null
           <nav className="hidden items-center gap-1 md:flex">
             {DESKTOP_LINKS.map(link => {
               const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+              const isSale = 'isSale' in link && link.isSale;
               return (
                 <Link key={link.href} href={link.href}
-                  className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 hover:bg-primary/20 hover:text-primary ${
-                    isActive ? 'bg-primary/15 text-primary ring-1 ring-primary/30 shadow-sm' : 'text-text-secondary'
+                  className={`rounded-lg px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 inline-flex items-center gap-1.5 ${
+                    isSale
+                      ? 'text-amber-700 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60'
+                      : isActive
+                      ? 'bg-primary/15 text-primary ring-1 ring-primary/30 shadow-sm'
+                      : 'text-text-secondary hover:bg-primary/20 hover:text-primary'
                   }`}>
+                  {isSale && <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />}
                   {t(link.key)}
                 </Link>
               );
