@@ -55,19 +55,19 @@ export default function LoginPage() {
 
           <form onSubmit={(event) => { void handleLogin(event); }} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-text-primary">{t('email')}</label>
-              <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required
+              <label htmlFor="login-email" className="mb-1.5 block text-sm font-semibold text-text-primary">{t('email')}</label>
+              <input id="login-email" name="email" autoComplete="email" spellCheck={false} type="email" value={email} onChange={e=>setEmail(e.target.value)} required
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none transition focus:border-primary placeholder:text-text-muted"
                 placeholder="you@example.com" dir="ltr" />
             </div>
             <div>
               <div className="mb-1.5 flex items-center justify-between">
-                <label className="block text-sm font-semibold text-text-primary">{t('password')}</label>
+                <label htmlFor="login-password" className="block text-sm font-semibold text-text-primary">{t('password')}</label>
                 <Link href="/auth/forgot-password" className="text-xs font-semibold text-primary hover:underline">
                   {t('forgotPassword')}
                 </Link>
               </div>
-              <input type="password" value={password} onChange={e=>setPassword(e.target.value)} required
+              <input id="login-password" name="password" autoComplete="current-password" spellCheck={false} type="password" value={password} onChange={e=>setPassword(e.target.value)} required
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none transition focus:border-primary"
                 placeholder="••••••••" dir="ltr" />
             </div>

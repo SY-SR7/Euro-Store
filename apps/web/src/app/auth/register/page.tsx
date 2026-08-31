@@ -64,33 +64,33 @@ export default function RegisterPage() {
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-text-primary">{t('fullName')}</label>
-              <input type="text" value={name} onChange={e=>setName(e.target.value)} required
+              <label htmlFor="register-name" className="mb-1.5 block text-sm font-semibold text-text-primary">{t('fullName')}</label>
+              <input id="register-name" name="fullName" autoComplete="name" type="text" value={name} onChange={e=>setName(e.target.value)} required
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none transition focus:border-primary placeholder:text-text-muted"
                 placeholder={t('namePlaceholder')} />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-text-primary">{t('email')}</label>
-              <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required
+              <label htmlFor="register-email" className="mb-1.5 block text-sm font-semibold text-text-primary">{t('email')}</label>
+              <input id="register-email" name="email" autoComplete="email" spellCheck={false} type="email" value={email} onChange={e=>setEmail(e.target.value)} required
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none transition focus:border-primary placeholder:text-text-muted"
                 placeholder="you@example.com" dir="ltr" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-text-primary">{t('phone', { fallback: 'رقم الهاتف' })}</label>
-              <input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} required minLength={6} maxLength={32}
+              <label htmlFor="register-phone" className="mb-1.5 block text-sm font-semibold text-text-primary">{t('phone', { fallback: 'رقم الهاتف' })}</label>
+              <input id="register-phone" name="phone" type="tel" value={phone} onChange={e=>setPhone(e.target.value)} required minLength={6} maxLength={32}
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none transition focus:border-primary placeholder:text-text-muted"
                 placeholder="09XXXXXXXX" dir="ltr" autoComplete="tel" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-text-primary">{t('password')}</label>
-              <input type="password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={12} maxLength={128}
+              <label htmlFor="register-password" className="mb-1.5 block text-sm font-semibold text-text-primary">{t('password')}</label>
+              <input id="register-password" name="password" autoComplete="new-password" spellCheck={false} type="password" value={password} onChange={e=>setPassword(e.target.value)} required minLength={12} maxLength={128}
                 pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{12,128}"
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none transition focus:border-primary"
                 placeholder={t('passwordPlaceholder')} dir="ltr" />
             </div>
             <div>
-              <label className="mb-1.5 block text-sm font-semibold text-text-primary">{t('referralCode', { fallback: 'كود الإحالة (اختياري)' })}</label>
-              <input aria-label={t('referralCode', { fallback: 'كود الإحالة (اختياري)' })} type="text" value={referral} onChange={e=>setReferral(e.target.value.toUpperCase())} minLength={8} maxLength={12}
+              <label htmlFor="register-referral" className="mb-1.5 block text-sm font-semibold text-text-primary">{t('referralCode', { fallback: 'كود الإحالة (اختياري)' })}</label>
+              <input id="register-referral" name="referralCode" aria-label={t('referralCode', { fallback: 'كود الإحالة (اختياري)' })} type="text" value={referral} onChange={e=>setReferral(e.target.value.toUpperCase())} minLength={8} maxLength={12}
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm uppercase text-text-primary outline-none transition focus:border-primary placeholder:text-text-muted"
                 dir="ltr" autoComplete="off" />
             </div>

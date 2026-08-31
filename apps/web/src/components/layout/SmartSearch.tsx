@@ -77,6 +77,8 @@ export function SmartSearch() {
         <input
           ref={inputRef}
           type='text'
+          aria-label={t('searchPlaceholder', { fallback: 'ابحث عن منتج...' })}
+          name="storefront-search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t('searchPlaceholder', { fallback: 'ابحث عن منتج...' })}

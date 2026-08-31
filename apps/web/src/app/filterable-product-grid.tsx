@@ -182,6 +182,8 @@ export function FilterableProductGrid({ lockedCategorySlug, initialSaleOnly = fa
           {/* search */}
           <form onSubmit={handleSearch} className="flex gap-2">
             <input
+              aria-label={t('searchPlaceholder')}
+              name="catalog-search"
               value={q}
               onChange={e => setQ(e.target.value)}
               placeholder={t('searchPlaceholder')}
@@ -317,6 +319,8 @@ export function FilterableProductGrid({ lockedCategorySlug, initialSaleOnly = fa
                   <div className="flex-1">
                     <label className="text-[10px] text-text-muted font-bold mb-1 block">{t('from')}</label>
                     <input
+                      aria-label={t('from')}
+                      name="minimum-price"
                       type="number"
                       value={priceMin ?? ''}
                       onChange={e => { setPriceMin(e.target.value ? Number(e.target.value) : null); setPage(1); }}
@@ -327,6 +331,8 @@ export function FilterableProductGrid({ lockedCategorySlug, initialSaleOnly = fa
                   <div className="flex-1">
                     <label className="text-[10px] text-text-muted font-bold mb-1 block">{t('to')}</label>
                     <input
+                      aria-label={t('to')}
+                      name="maximum-price"
                       type="number"
                       value={priceMax ?? ''}
                       onChange={e => { setPriceMax(e.target.value ? Number(e.target.value) : null); setPage(1); }}

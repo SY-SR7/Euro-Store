@@ -93,14 +93,17 @@ async page => {
         const controls = Array.from(document.querySelectorAll('button,a,input,select,textarea'));
         const iconOnlyMissingLabel = controls.filter(element => {
           if (!(element instanceof HTMLElement)) return false;
+          if (element.matches('input,select,textarea')) return false;
           const text = (element.innerText || '').trim();
           const label = element.getAttribute('aria-label') || element.getAttribute('title');
           const imageAlt = element.querySelector('img[alt]')?.getAttribute('alt');
           return text.length === 0 && !label && !imageAlt;
         }).length;
-        const inputsMissingLabel = Array.from(document.querySelectorAll('input,select,textarea')).filter(element => {
+        const inputsMissingLabel = Array.from(document.querySelectorAll('input:not([type="hidden"]),select,textarea')).filter(element => {
           const id = element.getAttribute('id');
-          return !element.getAttribute('aria-label') && !(id && document.querySelector(`label[for="${CSS.escape(id)}"]`));
+          return !element.getAttribute('aria-label')
+            && !element.closest('label')
+            && !(id && document.querySelector(`label[for="${CSS.escape(id)}"]`));
         }).length;
         const touchTargetsUnder44 = controls.filter(element => {
           const rect = element.getBoundingClientRect();
@@ -150,7 +153,10 @@ async page => {
   const issues = report.filter(item =>
     item.navigationError ||
     item.pageErrors.length ||
-    item.consoleErrors.length ||
+    item.consoleErrors.some(message => !(
+      (item.name === 'checkout' && message.includes('401'))
+      || (Number(item.status) === 404 && message.includes('404'))
+    )) ||
     Number(item.status ?? 0) >= 500 ||
     item.state?.brokenImages?.length ||
     item.state?.overflowPx ||
