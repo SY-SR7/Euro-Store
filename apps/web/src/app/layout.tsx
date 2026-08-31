@@ -9,7 +9,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#CFA63D',
+  themeColor: '#B8860B',
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     appleWebApp: {
       capable: true,
-      statusBarStyle: 'black-translucent',
+      statusBarStyle: 'default',
       title: 'EuroStore',
     },
     formatDetection: {
@@ -38,8 +38,6 @@ import { SmoothScroller } from '../components/layout/SmoothScroller';
 import { PageTransitionProvider } from '../components/layout/PageTransitionProvider';
 
 import { Toaster } from 'sonner';
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export default async function RootLayout({
   children
@@ -59,10 +57,7 @@ export default async function RootLayout({
               {children}
             </PageTransitionProvider>
           </SmoothScroller>
-          <Toaster position="bottom-center" toastOptions={{ style: { background: '#1F1B16', color: '#F7F0DF', border: '1px solid #332C24' } }} />
-
-          <Analytics />
-          <SpeedInsights />
+          <Toaster position="bottom-center" toastOptions={{ style: { background: '#FFFDF8', color: '#1C1917', border: '1px solid #E8DCC3' } }} />
         </NextIntlClientProvider>
       </body>
     </html>
