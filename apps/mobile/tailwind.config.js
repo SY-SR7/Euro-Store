@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  presets: [require("nativewind/preset")],
   content: [
     "./app/**/*.{js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}"
@@ -25,8 +26,8 @@ module.exports = {
           DEFAULT: "rgb(var(--color-border) / <alpha-value>)",
           accent: "rgb(var(--color-border-accent) / <alpha-value>)",
         },
-        error: "#EF4444",
-        success: "#22C55E",
+        error: "#DC2626",
+        success: "#15803D",
         warning: "#F59E0B",
       }
     }

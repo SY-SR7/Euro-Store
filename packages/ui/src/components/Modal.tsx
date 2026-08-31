@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -28,7 +28,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
           <div className="flex items-center justify-between mb-4">
             {title != null && <h2 className="text-lg font-semibold text-[#D6D3C7]">{title}</h2>}
             {onClose != null && (
-              <button onClick={onClose} className="text-[#9CA3AF] hover:text-[#D6D3C7]">✕</button>
+              <button onClick={onClose} className="text-text-secondary hover:text-[#D6D3C7]">✕</button>
             )}
           </div>
         )}

@@ -83,7 +83,7 @@ export default function WishlistPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Heart className="h-6 w-6 fill-[#C9A84C] text-primary" />
+            <Heart className="h-6 w-6 fill-primary text-primary" />
             <h1 className="text-2xl font-black text-text-primary">{t('wishlist')}</h1>
           </div>
           {authenticated && items.length > 0 && (

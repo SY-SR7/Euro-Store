@@ -24,7 +24,7 @@ export function WishlistButton({ productId, size = 'md' }: { productId: string; 
     >
       <Heart
         className={`${iconDims} transition-colors ${
-          active ? 'fill-[#C9A84C] text-primary' : 'text-text-secondary'
+          active ? 'fill-primary text-primary' : 'text-text-secondary'
         }`}
       />
     </button>

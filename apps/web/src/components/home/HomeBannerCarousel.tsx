@@ -43,7 +43,7 @@ export function HomeBannerCarousel({ banners, locale }: { banners: HomeBanner[];
         const subtitle = isAr ? banner.subtitle_ar : banner.subtitle_en;
         const ctaLabel = isAr ? banner.cta_label_ar : banner.cta_label_en;
         return (
-          <article key={banner.id} aria-hidden={!visible} className={`absolute inset-0 transition-opacity duration-700 ${visible ? 'z-10 opacity-100' : 'pointer-events-none opacity-0'}`}>
+          <article key={`${banner.id}-${index}`} aria-hidden={!visible} className={`absolute inset-0 transition-opacity duration-700 ${visible ? 'z-10 opacity-100' : 'pointer-events-none opacity-0'}`}>
             {banner.mobile_image_url ? <Image src={banner.mobile_image_url} alt={title || ''} fill priority={index === 0} className="object-cover md:hidden" sizes="100vw" /> : null}
             {banner.video_url ? (
               <video src={banner.video_url} className={`h-full w-full object-cover ${banner.mobile_image_url ? 'hidden md:block' : ''}`} autoPlay={visible} muted loop playsInline preload={visible ? 'metadata' : 'none'} />

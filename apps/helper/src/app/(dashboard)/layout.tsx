@@ -10,9 +10,9 @@ export default async function HelperDashboardLayout({ children }: { children: Re
   if (!access) redirect('/login');
 
   return (
-    <div className="flex h-screen bg-[#0F0F0F]">
+    <div className="flex min-h-screen flex-col bg-background md:h-screen md:flex-row">
       <HelperSidebar />
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <main className="min-w-0 flex-1 overflow-y-auto pb-20 md:pb-0">{children}</main>
     </div>
   );
 }

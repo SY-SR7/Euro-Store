@@ -1,13 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, ChevronDown, Minus, Plus, Ruler, Share2, ShoppingBag, X } from 'lucide-react-native';
-import { Video, ResizeMode } from 'expo-av';
+import { ArrowLeft, ArrowRight, ChevronDown, Heart, Ruler, Share2, ShoppingBag, X } from 'lucide-react-native';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { useLocalSearchParams, router } from 'expo-router';
-import { ActivityIndicator, Alert, FlatList, Image, Modal, Pressable, SafeAreaView, ScrollView, Share, Text, useWindowDimensions, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Image, Modal, Pressable, ScrollView, Share, Text, useWindowDimensions, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
 import { useCartStore } from '../../store/cartStore';
+import { useRecentStore } from '../../store/recentStore';
+import { useWishlistStore } from '../../store/wishlistStore';
 import { apiFetch } from '../../utils/api';
-import type { ProductAttributeValue, ProductBundle, ProductDetailResponse, ProductVariant, ReviewResponse, SizeGuide } from '../../utils/catalog';
+import type { ProductAttributeValue, ProductBundle, ProductDetailResponse, ProductVariant, RelatedProduct, ReviewResponse, SizeGuide } from '../../utils/catalog';
+import { ProductCard, type ProductCardProps } from '../../components/ProductCard';
 
 type MediaItem = { id: string; type: 'image' | 'video'; url: string; alt?: string };
 
@@ -17,10 +21,14 @@ export default function ProductDetailsScreen() {
   const { user } = useAuth();
   const { isAr, t, formatCurrency, formatDate } = usePreferences();
   const addItem = useCartStore((state) => state.addItem);
+  const rememberProduct = useRecentStore((state) => state.remember);
+  const recentProducts = useRecentStore((state) => state.items);
+  const { addItem: addWishlist, removeItem: removeWishlist, hasItem } = useWishlistStore();
   const [payload, setPayload] = useState<ProductDetailResponse | null>(null);
   const [reviews, setReviews] = useState<ReviewResponse>({ average: 0, count: 0, reviews: [] });
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
-  const [quantity, setQuantity] = useState(1);
+  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
+  const [related, setRelated] = useState<ProductCardProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [notifying, setNotifying] = useState(false);
@@ -39,6 +47,36 @@ export default function ProductDetailsScreen() {
         setPayload(detail);
         const firstVariant = detail.product.product_variants.find((variant) => variant.stock_quantity > 0) ?? detail.product.product_variants[0] ?? null;
         setSelectedVariant(firstVariant);
+        setSelectedAttributes(attributesOf(firstVariant));
+        if (firstVariant) {
+          rememberProduct({
+            id: detail.product.id,
+            slug: detail.product.slug,
+            title: isAr ? detail.product.name_ar : detail.product.name_en,
+            price: Number(firstVariant.price_syp ?? 0),
+            comparePrice: Number(firstVariant.compare_price_syp ?? 0) || null,
+            imageUrl: detail.product.product_images[0]?.url ?? '',
+            maxQuantity: Number(firstVariant.stock_quantity ?? 0),
+            variantId: firstVariant.id,
+            hasMultipleVariants: detail.product.product_variants.length > 1,
+          });
+        }
+        apiFetch<{ data: RelatedProduct[] }>(`/api/products/${encodeURIComponent(detail.product.slug)}/related`)
+          .then((result) => {
+            if (!active) return;
+            setRelated((result.data ?? []).map((item) => ({
+              id: item.id,
+              slug: item.slug,
+              title: isAr ? item.name_ar : item.name_en,
+              price: Number(item.min_price ?? 0),
+              imageUrl: item.primary_image_url ?? '',
+              maxQuantity: Number(item.default_variant_stock ?? item.total_stock ?? 0),
+              variantId: item.default_variant_id ?? null,
+              hasMultipleVariants: item.has_multiple_variants,
+              isNew: item.is_new,
+            })));
+          })
+          .catch(() => undefined);
         if (detail.product.id) {
           apiFetch<ReviewResponse>(`/api/reviews?product_id=${encodeURIComponent(detail.product.id)}`)
             .then((result) => { if (active) setReviews(result); })
@@ -52,7 +90,7 @@ export default function ProductDetailsScreen() {
     }
     void load();
     return () => { active = false; };
-  }, [slug]);
+  }, [isAr, rememberProduct, slug]);
 
   const product = payload?.product ?? null;
   const name = product ? (isAr ? product.name_ar : product.name_en) : '';
@@ -67,17 +105,39 @@ export default function ProductDetailsScreen() {
   const price = Number(selectedVariant?.price_syp ?? 0);
   const comparePrice = Number(selectedVariant?.compare_price_syp ?? 0);
   const BackIcon = isAr ? ArrowRight : ArrowLeft;
+  const isWishlisted = product ? hasItem(product.id) : false;
 
   function selectAttribute(value: ProductAttributeValue) {
     if (!product) return;
-    const candidates = product.product_variants.filter((variant) => variant.variant_attributes.some((attribute) => attribute.attribute_values.id === value.id));
+    const slugValue = value.attribute_types.slug;
+    const nextAttributes = { ...selectedAttributes, [slugValue]: value.id };
+    const candidates = product.product_variants.filter((variant) => Object.entries(nextAttributes).every(([groupSlug, id]) => variantHasValue(variant, groupSlug, id)));
     const next = candidates.find((variant) => variant.stock_quantity > 0) ?? candidates[0] ?? null;
+    if (!next) return;
+    setSelectedAttributes(nextAttributes);
     setSelectedVariant(next);
-    setQuantity(1);
   }
 
   function selectedValueId(slugValue: string): string | null {
-    return selectedVariant?.variant_attributes.find((attribute) => attribute.attribute_values.attribute_types.slug === slugValue)?.attribute_values.id ?? null;
+    return selectedAttributes[slugValue] ?? null;
+  }
+
+  function optionAvailable(groupSlug: string, valueId: string) {
+    if (!product) return false;
+    const required = { ...selectedAttributes, [groupSlug]: valueId };
+    return product.product_variants.some((variant) => variant.stock_quantity > 0 && Object.entries(required).every(([slugKey, id]) => variantHasValue(variant, slugKey, id)));
+  }
+
+  async function toggleWishlist() {
+    if (!product || !selectedVariant) return;
+    if (user) {
+      try {
+        const result = await apiFetch<{ in_wishlist: boolean }>('/api/wishlist', { method: 'POST', body: JSON.stringify({ product_id: product.id }) });
+        if (result.in_wishlist) addWishlist({ productId: product.id, slug: product.slug, variantId: selectedVariant.id, title: name, price, imageUrl, maxQuantity });
+        else removeWishlist(product.id);
+      } catch { return; }
+    } else if (isWishlisted) removeWishlist(product.id);
+    else addWishlist({ productId: product.id, slug: product.slug, variantId: selectedVariant.id, title: name, price, imageUrl, maxQuantity });
   }
 
   async function subscribeToStock() {
@@ -102,8 +162,11 @@ export default function ProductDetailsScreen() {
       productId: product.id,
       variantId: selectedVariant.id,
       title: name,
+      nameAr: product.name_ar,
+      nameEn: product.name_en,
+      sku: selectedVariant.sku,
       price,
-      quantity,
+      quantity: 1,
       imageUrl,
       maxQuantity,
     });
@@ -122,6 +185,9 @@ export default function ProductDetailsScreen() {
       productId: bundle.id,
       variantId: bundle.id,
       title: bundleName,
+      nameAr: bundle.name_ar,
+      nameEn: bundle.name_en,
+      sku: '',
       price: Number(bundle.bundle_price),
       quantity: 1,
       imageUrl: bundleImage,
@@ -131,15 +197,15 @@ export default function ProductDetailsScreen() {
   }
 
   if (loading) return <SafeAreaView className="flex-1 items-center justify-center bg-background"><ActivityIndicator size="large" color="#B8860B" /></SafeAreaView>;
-  if (error || !product || !payload) return <SafeAreaView className="flex-1 items-center justify-center bg-background px-6"><Text className="mb-5 text-center text-text-secondary">{error ? t('product.loadError') : t('product.notFound')}</Text><Pressable onPress={() => router.back()} className="rounded-lg bg-primary px-6 py-3"><Text className="font-bold text-[#0F0F0F]">{t('common.back')}</Text></Pressable></SafeAreaView>;
+  if (error || !product || !payload) return <SafeAreaView className="flex-1 items-center justify-center bg-background px-6"><Text className="mb-5 text-center text-text-secondary">{error ? t('product.loadError') : t('product.notFound')}</Text><Pressable accessibilityRole="button" onPress={() => router.back()} className="rounded-lg bg-primary px-6 py-3"><Text className="font-bold text-text-primary">{t('common.back')}</Text></Pressable></SafeAreaView>;
 
   const productUrl = `${(process.env.EXPO_PUBLIC_APP_URL || '').replace(/\/$/, '')}/products/${encodeURIComponent(product.slug)}`;
 
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="absolute start-4 end-4 top-12 z-30 flex-row justify-between">
-        <Pressable accessibilityLabel={t('common.back')} onPress={() => router.back()} className="h-11 w-11 items-center justify-center rounded-full bg-black/70"><BackIcon size={21} color="#FFFFFF" /></Pressable>
-        <Pressable accessibilityLabel={t('product.share')} onPress={() => void Share.share({ message: `${name}\n${productUrl}`, url: productUrl })} className="h-11 w-11 items-center justify-center rounded-full bg-black/70"><Share2 size={20} color="#FFFFFF" /></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel={t('common.back')} onPress={() => router.back()} className="h-11 w-11 items-center justify-center rounded-full bg-black/70"><BackIcon size={21} color="#FFFFFF" /></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel={t('product.share')} onPress={() => void Share.share({ message: `${name}\n${productUrl}`, url: productUrl })} className="h-11 w-11 items-center justify-center rounded-full bg-black/70"><Share2 size={20} color="#FFFFFF" /></Pressable>
       </View>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
@@ -152,7 +218,7 @@ export default function ProductDetailsScreen() {
           renderItem={({ item }) => (
             <View style={{ width: viewportWidth, height: 430 }} className="bg-background-secondary">
               {item.type === 'video' ? (
-                <Video source={{ uri: item.url }} style={{ width: '100%', height: '100%' }} useNativeControls resizeMode={ResizeMode.CONTAIN} />
+                <ProductVideo uri={item.url} />
               ) : (
                 <Image source={item.url ? { uri: item.url } : require('../../assets/icon.png')} className="h-full w-full" resizeMode="cover" accessibilityLabel={item.alt ?? name} />
               )}
@@ -181,22 +247,14 @@ export default function ProductDetailsScreen() {
                   <View className="flex-row flex-wrap gap-2">
                     {group.values.map((value) => {
                       const active = selectedValueId(group.slug) === value.id;
-                      return <Pressable key={value.id} accessibilityState={{ selected: active }} onPress={() => selectAttribute(value)} className={`flex-row items-center gap-2 rounded-lg border px-4 py-3 ${active ? 'border-primary bg-primary/10' : 'border-border bg-background-secondary'}`}>{value.hex_color ? <View style={{ backgroundColor: value.hex_color }} className="h-5 w-5 rounded-full border border-border" /> : null}<Text className={`font-bold ${active ? 'text-primary' : 'text-text-primary'}`}>{isAr ? value.value_ar : value.value_en}</Text></Pressable>;
+                      const available = optionAvailable(group.slug, value.id);
+                      return <Pressable key={value.id} accessibilityRole="button" accessibilityState={{ selected: active, disabled: !available }} disabled={!available} onPress={() => selectAttribute(value)} className={`flex-row items-center gap-2 rounded-lg border px-4 py-3 ${active ? 'border-primary bg-primary/10' : available ? 'border-border bg-background-secondary' : 'border-border bg-background-secondary opacity-40'}`}>{value.hex_color ? <View style={{ backgroundColor: value.hex_color }} className="h-5 w-5 rounded-full border border-border" /> : null}<Text className={`font-bold ${active ? 'text-primary' : 'text-text-primary'} ${!available ? 'line-through' : ''}`}>{isAr ? value.value_ar : value.value_en}</Text></Pressable>;
                     })}
                   </View>
                 </View>
               ))}
             </View>
           ) : null}
-
-          <View className="mt-2 flex-row items-center justify-between border-y border-border py-5">
-            <Text className="font-bold text-text-primary">{t('product.quantity')}</Text>
-            <View className="flex-row items-center gap-4">
-              <Pressable accessibilityLabel="-" disabled={quantity <= 1} onPress={() => setQuantity((value) => Math.max(1, value - 1))} className="h-10 w-10 items-center justify-center rounded-full border border-border disabled:opacity-40"><Minus size={17} color="#B8860B" /></Pressable>
-              <Text className="min-w-8 text-center text-lg font-bold text-text-primary">{quantity}</Text>
-              <Pressable accessibilityLabel="+" disabled={quantity >= maxQuantity} onPress={() => setQuantity((value) => Math.min(maxQuantity, value + 1))} className="h-10 w-10 items-center justify-center rounded-full border border-border disabled:opacity-40"><Plus size={17} color="#B8860B" /></Pressable>
-            </View>
-          </View>
 
           {payload.size_guide ? <Pressable onPress={() => setSizeGuideOpen(true)} className="mt-5 flex-row items-center justify-between border-b border-border py-4"><View className="flex-row items-center gap-3"><Ruler size={20} color="#B8860B" /><Text className="font-bold text-text-primary">{t('product.sizeGuide')}</Text></View><ChevronDown size={18} color="#737373" /></Pressable> : null}
 
@@ -211,17 +269,40 @@ export default function ProductDetailsScreen() {
             <View className="mb-4 flex-row items-end justify-between"><Text className="text-xl font-bold text-text-primary">{t('product.reviews')}</Text><Text className="font-bold text-primary">★ {reviews.average.toFixed(1)} · {t('product.reviewCount', { count: reviews.count })}</Text></View>
             {!reviews.reviews.length ? <Text className="text-text-secondary">{t('product.noReviews')}</Text> : reviews.reviews.map((review) => <View key={review.id} className="border-t border-border py-4"><View className="flex-row justify-between gap-3"><Text className="font-bold text-text-primary">{review.customer_name}</Text><Text className="text-primary">{'★'.repeat(review.rating)}</Text></View>{review.comment ? <Text className="mt-2 leading-6 text-text-secondary">{review.comment}</Text> : null}<Text className="mt-2 text-xs text-text-muted">{formatDate(review.created_at, false)}</Text></View>)}
           </View>
+
+          {related.length ? <ProductRail title={isAr ? 'منتجات مشابهة' : 'Similar products'} products={related} /> : null}
+          {recentProducts.filter((item) => item.id !== product.id).length ? <ProductRail title={isAr ? 'شوهدت مؤخراً' : 'Recently viewed'} products={recentProducts.filter((item) => item.id !== product.id)} /> : null}
         </View>
       </ScrollView>
 
       <View className="absolute bottom-0 start-0 end-0 flex-row items-center justify-between gap-4 border-t border-border bg-background-card px-5 py-4">
-        <View><Text className="text-xs text-text-muted">{t('product.totalPrice')}</Text><Text className="text-lg font-black text-text-primary">{formatCurrency(price * quantity)}</Text></View>
-        <Pressable disabled={!selectedVariant || notifying} onPress={() => { if (maxQuantity > 0) addSelectedVariant(); else void subscribeToStock(); }} className="min-w-48 flex-row items-center justify-center gap-2 rounded-lg bg-primary px-6 py-4 disabled:opacity-50"><ShoppingBag size={19} color="#0F0F0F" /><Text className="font-bold text-[#0F0F0F]">{maxQuantity > 0 ? t('common.addToCart') : notifying ? t('product.notifying') : t('product.notify')}</Text></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel={isWishlisted ? t('common.delete') : t('profile.wishlist')} onPress={() => void toggleWishlist()} className="h-12 w-12 items-center justify-center rounded-lg border border-border bg-background-card"><Heart size={21} color={isWishlisted ? '#B91C1C' : '#57534E'} fill={isWishlisted ? '#B91C1C' : 'transparent'} /></Pressable>
+        <Pressable accessibilityRole="button" disabled={!selectedVariant || notifying} onPress={() => { if (maxQuantity > 0) addSelectedVariant(); else void subscribeToStock(); }} className="flex-1 flex-row items-center justify-center gap-2 rounded-lg bg-primary px-5 py-4 disabled:opacity-50"><ShoppingBag size={19} color="#1C1917" /><Text className="font-bold text-text-primary">{maxQuantity > 0 ? t('common.addToCart') : notifying ? t('product.notifying') : t('product.notify')}</Text></Pressable>
       </View>
 
       <SizeGuideModal guide={payload.size_guide} visible={sizeGuideOpen} onClose={() => setSizeGuideOpen(false)} t={t} />
     </SafeAreaView>
   );
+}
+
+function attributesOf(variant: ProductVariant | null) {
+  return (variant?.variant_attributes ?? []).reduce<Record<string, string>>((result, attribute) => {
+    result[attribute.attribute_values.attribute_types.slug] = attribute.attribute_values.id;
+    return result;
+  }, {});
+}
+
+function variantHasValue(variant: ProductVariant, groupSlug: string, valueId: string) {
+  return variant.variant_attributes.some((attribute) => attribute.attribute_values.attribute_types.slug === groupSlug && attribute.attribute_values.id === valueId);
+}
+
+function ProductRail({ title, products }: { title: string; products: ProductCardProps[] }) {
+  return <View className="mt-10"><Text className="mb-4 text-xl font-bold text-text-primary">{title}</Text><FlatList horizontal showsHorizontalScrollIndicator={false} data={products} keyExtractor={(item) => item.id} contentContainerStyle={{ gap: 12 }} renderItem={({ item }) => <View style={{ width: 174 }}><ProductCard {...item} /></View>} /></View>;
+}
+
+function ProductVideo({ uri }: { uri: string }) {
+  const player = useVideoPlayer(uri);
+  return <VideoView player={player} style={{ width: '100%', height: '100%' }} nativeControls contentFit="contain" allowsFullscreen />;
 }
 
 function collectAttributes(variants: ProductVariant[]) {

@@ -23,7 +23,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     id, name_ar, name_en, slug, base_price, created_at,
     discount_percentage, discount_start_at, discount_end_at,
     product_images(url, is_primary, sort_order),
-    product_variants(price_override, price_syp, stock_quantity, is_active)
+    product_variants(id, price_override, price_syp, stock_quantity, is_active)
   `).eq('status', 'published').neq('id', product.id).limit(8);
   if (product.category_id) query = query.eq('category_id', product.category_id);
   else if (product.brand_id) query = query.eq('brand_id', product.brand_id);
@@ -37,7 +37,9 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
   const newBadgeDays = Math.max(1, Number.parseInt(badgeSetting?.value ?? '30', 10) || 30);
   const now = Date.now();
   const rows = (data ?? []).map((related) => {
-    const prices = related.product_variants.filter((variant) => variant.is_active).map((variant) => variant.price_override ?? variant.price_syp);
+    const activeVariants = related.product_variants.filter((variant) => variant.is_active);
+    const prices = activeVariants.map((variant) => variant.price_override ?? variant.price_syp);
+    const defaultVariant = activeVariants.find((variant) => Number(variant.stock_quantity) > 0) ?? activeVariants[0] ?? null;
     const discountActive = related.discount_percentage !== null
       && (!related.discount_start_at || new Date(related.discount_start_at).getTime() <= now)
       && (!related.discount_end_at || new Date(related.discount_end_at).getTime() >= now);
@@ -47,6 +49,10 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       base_price: related.base_price ?? 0,
       primary_image_url: image?.url ?? null,
       min_price: prices.length ? Math.min(...prices) : related.base_price ?? 0,
+      default_variant_id: defaultVariant?.id ?? null,
+      default_variant_stock: Number(defaultVariant?.stock_quantity ?? 0),
+      total_stock: activeVariants.reduce((sum, variant) => sum + Number(variant.stock_quantity ?? 0), 0),
+      has_multiple_variants: activeVariants.length > 1,
       is_new: related.created_at ? now - new Date(related.created_at).getTime() <= newBadgeDays * 86400000 : false,
       is_on_sale: discountActive,
     };

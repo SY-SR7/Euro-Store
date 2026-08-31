@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, SafeAreaView, TouchableOpacity, ImageBackground, StatusBar } from 'react-native';
+import {
+  ImageBackground,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useOnboardingStore } from '../store/onboardingStore';
 import { LinearGradient } from 'expo-linear-gradient';
-import { supabase } from '../utils/supabase';
+import { apiFetch } from '../utils/api';
 import { usePreferences } from '../contexts/PreferencesContext';
 
 const BASE_SLIDES = [
@@ -37,16 +45,14 @@ export default function OnboardingScreen() {
   const { isAr, l } = usePreferences();
 
   useEffect(() => {
-    supabase.from('homepage_sections').select('content').eq('section_key', 'main_banner').eq('is_active', true).maybeSingle()
-      .then(({ data }) => {
-        const content = data?.content && typeof data.content === 'object' ? data.content as Record<string, unknown> : null;
-        const banners = Array.isArray(content?.banners) ? content.banners as Array<Record<string, unknown>> : [];
+    apiFetch<{ banners: Array<Record<string, unknown>> }>('/api/storefront/home')
+      .then(({ banners }) => {
         const imageUrls = banners
           .filter((banner) => banner.is_active !== false && (typeof banner.mobile_image_url === 'string' || typeof banner.image_url === 'string'))
           .sort((a, b) => Number(a.sort_order ?? 0) - Number(b.sort_order ?? 0))
           .map((banner) => String(banner.mobile_image_url ?? banner.image_url));
         if (imageUrls.length) setSlides(BASE_SLIDES.map((slide, index) => ({ ...slide, image: imageUrls[index % imageUrls.length] })));
-      });
+      }).catch(() => undefined);
   }, []);
 
   const handleNext = () => {
@@ -58,50 +64,91 @@ export default function OnboardingScreen() {
     }
   };
 
+  const handleSkip = () => {
+    completeOnboarding();
+    router.replace('/(tabs)');
+  };
+
   const slide = slides[currentIndex];
 
   return (
-    <SafeAreaView className='flex-1 bg-background'>
-      <StatusBar barStyle='light-content' />
-      
+    <SafeAreaView style={styles.screen}>
+      <StatusBar barStyle='dark-content' backgroundColor='#FAF7EF' />
+
       <ImageBackground
         source={slide.image ? { uri: slide.image } : require('../assets/splash.png')}
-        className='flex-1 justify-end'
-        resizeMode='cover'
-      >
-        <LinearGradient
-          colors={['transparent', 'rgba(15, 15, 15, 0.8)', '#0F0F0F']}
-          className='h-[60%] justify-end px-8 pb-16'
-        >
+        style={styles.background}
+        resizeMode={slide.image ? 'cover' : 'contain'}
+      />
+      <LinearGradient
+        colors={['rgba(250, 247, 239, 0.04)', 'rgba(250, 247, 239, 0.46)', 'rgba(250, 247, 239, 0.99)']}
+        locations={[0, 0.42, 1]}
+        style={StyleSheet.absoluteFill}
+      />
+
+      <View style={styles.content}>
+        <View className='flex-row items-center justify-between'>
+          <View className='border border-border bg-background-card/90 px-3 py-2'>
+            <Text className='text-[11px] font-black tracking-[3px] text-text-primary'>EURO STORE</Text>
+          </View>
+          <Pressable
+            accessibilityRole='button'
+            accessibilityLabel={l('تخطي المقدمة', 'Skip onboarding')}
+            onPress={handleSkip}
+            className='min-h-11 min-w-11 items-center justify-center px-3 active:opacity-60'
+          >
+            <Text className='text-sm font-bold text-text-primary'>{l('تخطي', 'Skip')}</Text>
+          </Pressable>
+        </View>
+
+        <View className='mt-auto'>
           {/* Pagination Indicators */}
-          <View className='flex-row justify-center mb-8 gap-2'>
+          <View className='mb-7 flex-row justify-center gap-2'>
             {slides.map((_, index) => (
-              <View 
-                key={index} 
-                className={`h-1.5 rounded-full transition-all duration-300 ${index === currentIndex ? 'w-8 bg-primary' : 'w-4 bg-white/30'}`}
+              <View
+                key={index}
+                className={`h-1.5 rounded-full ${index === currentIndex ? 'w-9 bg-primary' : 'w-4 bg-border-accent'}`}
               />
             ))}
           </View>
 
-          <Text className='text-4xl font-black text-white text-center mb-4 leading-[50px]'>
+          <Text className='mb-4 text-center text-[34px] font-black leading-[45px] text-text-primary'>
             {isAr ? slide.title : slide.title_en}
           </Text>
-          
-          <Text className='text-text-secondary text-center text-base mb-12 leading-7'>
+
+          <Text className='mb-9 text-center text-base leading-7 text-text-secondary'>
             {isAr ? slide.description : slide.description_en}
           </Text>
 
-          <TouchableOpacity 
-            className='bg-primary py-4 rounded-xl items-center shadow-lg'
+          <Pressable
+            accessibilityRole='button'
             onPress={handleNext}
+            className='min-h-14 items-center justify-center rounded-2xl bg-primary px-5 active:scale-[0.98] active:opacity-90'
           >
-            <Text className='text-[#0F0F0F] font-black text-lg'>
+            <Text className='text-lg font-black text-text-primary'>
               {currentIndex === slides.length - 1 ? l('ابدأ التسوق', 'Start shopping') : l('التالي', 'Next')}
             </Text>
-          </TouchableOpacity>
-
-        </LinearGradient>
-      </ImageBackground>
+          </Pressable>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: '#FAF7EF',
+  },
+  background: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 28,
+    paddingTop: 18,
+    paddingBottom: 42,
+  },
+});

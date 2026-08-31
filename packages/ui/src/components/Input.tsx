@@ -12,18 +12,18 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, id, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-1">
-        {label && <label htmlFor={id} className="text-sm text-[#D6D3C7]">{label}</label>}
+        {label && <label htmlFor={id} className="text-sm font-medium text-text-secondary">{label}</label>}
         <input
           ref={ref}
           id={id}
           className={cn(
-            'bg-[#1A1A1A] border border-[#2A2A2A] rounded px-3 py-2 text-[#D6D3C7] focus:outline-none focus:border-[#C9A84C]',
-            error && 'border-red-500',
+            'rounded-lg border border-border bg-background-elevated px-3 py-2 text-text-primary placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20',
+            error && 'border-error focus-visible:border-error focus-visible:ring-error/20',
             className
           )}
           {...props}
         />
-        {error && <span className="text-xs text-red-500">{error}</span>}
+        {error && <span className="text-xs text-error">{error}</span>}
       </div>
     );
   }

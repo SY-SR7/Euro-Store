@@ -3,25 +3,43 @@
     "name": "EuroStore",
     "slug": "eurostore-mobile",
     "scheme": "eurostore",
-    "version": "1.0.0",
+    "version": "1.0.2",
+    "description": "تطبيق EuroStore الرسمي للتسوق وإدارة الطلبات.",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
+    "jsEngine": "hermes",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0F0F0F"
+      "backgroundColor": "#FAF7EF"
     },
     "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#0F0F0F"
+      "bundleIdentifier": "com.eurostore.mobile",
+      "buildNumber": "3",
+      "supportsTablet": false,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
+    "android": {
+      "package": "com.eurostore.mobile",
+      "versionCode": 3,
+      "softwareKeyboardLayoutMode": "resize",
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FAF7EF"
+      }
+    },
+    "androidNavigationBar": {
+      "backgroundColor": "#FFFDF8",
+      "barStyle": "dark-content"
+    },
     "web": {
+      "bundler": "metro",
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
@@ -30,7 +48,7 @@
         "expo-notifications",
         {
           "icon": "./assets/icon.png",
-          "color": "#CFA63D"
+          "color": "#B8860B"
         }
       ],
       [
@@ -43,9 +61,19 @@
         "expo-image-picker",
         {
           "photosPermission": "نحتاج الوصول إلى الصور لإرفاق إثبات حالة المنتج في طلب الاستبدال.",
-          "cameraPermission": "نحتاج الكاميرا لتصوير حالة المنتج في طلب الاستبدال."
+          "cameraPermission": "نحتاج الكاميرا لتصوير حالة المنتج في طلب الاستبدال.",
+          "microphonePermission": false
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "8b9337ea-b670-4179-8793-e77fa460c620"
+      }
+    },
+    "owner": "ammar2003"
   }
 }

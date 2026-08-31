@@ -91,7 +91,7 @@ export function WriteReviewForm({ productId, orderNumber, productNameAr }: Write
           >
             <Star
               className={`h-5 w-5 ${
-                (hover || rating) >= n ? 'fill-[#B8860B] text-primary' : 'text-[#D6CFC2]'
+                (hover || rating) >= n ? 'fill-primary text-primary' : 'text-[#D6CFC2]'
               }`}
             />
           </button>

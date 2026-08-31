@@ -88,7 +88,7 @@ export default function FAQPage() {
         >
           <h4 className="text-xl font-bold text-text-primary mb-4">{t('anotherQuestion')}</h4>
           <p className="text-text-secondary mb-6">{t('supportText')}</p>
-          <Link href="/contact" className="inline-block bg-primary text-[#0F0F0F] font-black py-3 px-8 rounded-xl hover:bg-primary/90 transition-colors">
+          <Link href="/contact" className="inline-block bg-primary text-text-primary font-black py-3 px-8 rounded-xl hover:bg-primary/90 transition-colors">
             {t('contactAction')}
           </Link>
         </motion.div>

@@ -111,6 +111,21 @@ export type ProductDetailResponse = {
   bundles: ProductBundle[];
 };
 
+export type RelatedProduct = {
+  id: string;
+  slug: string;
+  name_ar: string;
+  name_en: string;
+  min_price: number;
+  primary_image_url?: string | null;
+  default_variant_id?: string | null;
+  default_variant_stock?: number;
+  total_stock?: number;
+  has_multiple_variants?: boolean;
+  is_new?: boolean;
+  is_on_sale?: boolean;
+};
+
 export type ReviewResponse = {
   average: number;
   count: number;

@@ -73,7 +73,7 @@ export default async function SharedWishlistPage({ params }: { params: Promise<{
     <main className={`min-h-screen bg-background px-4 py-10`} dir={isAr ? "rtl" : "ltr"}>
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center gap-3">
-          <Heart className="h-6 w-6 fill-[#C9A84C] text-primary" />
+          <Heart className="h-6 w-6 fill-primary text-primary" />
           <h1 className="text-2xl font-black text-text-primary">{title}</h1>
         </div>
 

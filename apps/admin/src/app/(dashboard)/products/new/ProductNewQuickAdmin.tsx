@@ -277,7 +277,7 @@ export default function ProductNewQuickAdmin() {
                     });
                     setNewUrl('');
                   }}
-                  className="rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-[#9A7209] whitespace-nowrap"
+                  className="rounded-lg bg-primary px-4 py-2 text-xs font-bold text-text-primary hover:bg-[#9A7209] whitespace-nowrap"
                 >
                   {tCommon('add', { fallback: 'إضافة' })}
                 </button>
@@ -297,7 +297,7 @@ export default function ProductNewQuickAdmin() {
                       ) : (
                         <video src={displayUrl} className="h-24 w-full bg-gray-100 object-cover" />
                       )}
-                      <button type="button" onClick={() => setMediaItems(mediaItems.filter(f => f.id !== item.id))} className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-text-primary shadow-sm">×</button>
+                      <button type="button" onClick={() => setMediaItems(mediaItems.filter(f => f.id !== item.id))} className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-white shadow-sm">×</button>
                       <button type="button" onClick={() => setPrimaryMediaId(item.id)} className={`absolute bottom-0 left-0 right-0 py-1 text-center text-[10px] font-bold text-text-primary transition ${isPrimary ? 'bg-primary' : 'bg-black/50 hover:bg-black/70'}`}>
                         {isPrimary ? 'الرئيسية' : 'تعيين رئيسية'}
                       </button>

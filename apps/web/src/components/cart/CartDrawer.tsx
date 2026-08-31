@@ -153,7 +153,7 @@ export function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () =
                 <Link
                   href="/checkout"
                   onClick={onClose}
-                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-sm font-black uppercase tracking-widest text-text-primary transition-all hover:scale-[1.02] hover:bg-[#C9A84C] hover:shadow-lg hover:shadow-primary/20"
+                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-sm font-black uppercase tracking-widest text-text-primary transition-all hover:scale-[1.02] hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20"
                 >
                   {t('checkout')}
                   <ArrowRight size={18} className="transition-transform group-hover:-translate-x-1 rtl:rotate-180" />

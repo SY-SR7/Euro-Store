@@ -121,7 +121,11 @@ export function CategoryBentoShowcase({ isAr = true }: CategoryBentoShowcaseProp
               transition={{ duration: 0.4, delay: idx * 0.08 }}
               className={`group relative overflow-hidden rounded-2xl border border-[#E8DFC8] ${cat.bgTint} shadow-sm transition-all duration-300 hover:border-primary hover:shadow-md ${cat.gridClass}`}
             >
-              <Link href={`/categories/${cat.slug}`} className="absolute inset-0 z-20" />
+              <Link
+                href={`/categories/${cat.slug}`}
+                aria-label={isAr ? `تصفح ${cat.titleAr}` : `Browse ${cat.titleEn}`}
+                className="absolute inset-0 z-20 focus-visible:ring-2 focus-visible:ring-primary"
+              />
 
               {/* Product Image Frame */}
               <div className="absolute end-4 top-1/2 -translate-y-1/2 h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48 transition-transform duration-500 ease-out group-hover:scale-108">

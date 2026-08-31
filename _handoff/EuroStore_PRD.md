@@ -30,7 +30,7 @@
 - **Five synchronized applications** in a Turborepo monorepo: Customer Web (Next.js 14), Customer Mobile (Expo React Native), Admin Panel (Next.js), Helper Portal (Next.js), Partner Portal (Next.js).
 - **Core stack:** Supabase (PostgreSQL + Auth + Storage + Full-Text Search), Vercel hosting, Resend email, Expo + Firebase FCM for push notifications.
 - **Adapter pattern** throughout — every third-party service is swappable with zero business-logic changes.
-- **Arabic RTL primary**, English LTR secondary; user-toggled language and light/dark theme.
+- **Arabic RTL primary**, English LTR secondary; user-toggled language with one fixed light visual identity across all clients.
 - **Currency:** SYP primary, USD secondary (admin-managed exchange rate).
 - **Unique features:** O2O loyalty system (QR-based offline points), in-branch and partner-based exchange flow, single-use time-bound QR codes for exchanges, no-login browsing with login-on-action UX.
 
@@ -2356,40 +2356,30 @@ All UI components, icons, padding, margin, and flex direction must be mirrored f
 Use Tailwind CSS with RTL plugin or logical CSS properties (`margin-inline-start` etc.).
 Date/number formats: localized per language (Arabic-Indic numerals optional).
 
-### 11.2 Color System (Gold Brand + Themes)
+### 11.2 Color System (Canonical Light Identity)
 
 ```css
-/* CSS Custom Properties — set on :root, override in [data-theme="dark"] */
-
-/* Light Mode */
+/* CSS Custom Properties — fixed on :root for every web surface */
 :root {
-  --color-primary:        #C9A84C;  /* Gold — permanent brand color */
-  --color-primary-dark:   #A67C2E;  /* Gold dark variant */
-  --color-primary-light:  #E8D28A;  /* Gold light variant */
-  --color-bg:             #FFFFFF;
-  --color-bg-secondary:   #F7F7F7;
-  --color-bg-card:        #FFFFFF;
-  --color-text-primary:   #1A1A1A;
-  --color-text-secondary: #6B7280;
-  --color-border:         #E5E7EB;
-  --color-error:          #EF4444;
-  --color-success:        #22C55E;
+  --color-primary:        #B8860B;
+  --color-primary-dark:   #9A7209;
+  --color-primary-light:  #D4AF37;
+  --color-bg:             #FAF7EF;
+  --color-bg-secondary:   #F3EEE3;
+  --color-bg-card:        #FFFDF8;
+  --color-bg-elevated:    #FFFFFF;
+  --color-text-primary:   #1C1917;
+  --color-text-secondary: #57534E;
+  --color-text-muted:     #A8A29E;
+  --color-border:         #E8DCC3;
+  --color-border-accent:  #D7BE79;
+  --color-error:          #DC2626;
+  --color-success:        #15803D;
   --color-warning:        #F59E0B;
-}
-
-/* Dark Mode */
-[data-theme="dark"] {
-  --color-bg:             #0F0F0F;
-  --color-bg-secondary:   #1A1A1A;
-  --color-bg-card:        #242424;
-  --color-text-primary:   #F5F5F5;
-  --color-text-secondary: #9CA3AF;
-  --color-border:         #2E2E2E;
-  /* Primary gold colors remain unchanged */
 }
 ```
 
-Theme toggle: stored in localStorage key `eurostore_theme` (`'light' | 'dark'`). Respects `prefers-color-scheme` on first visit.
+`_handoff/DESIGN.md` is the authoritative visual contract. Dark/system themes, theme toggles, and stored theme preferences are intentionally unsupported. Gold is a restrained accent on warm light surfaces, never a black/gold base theme.
 
 ### 11.3 Responsive Breakpoints
 
@@ -2409,7 +2399,7 @@ Product grid:
 ### 11.4 Component Behavior Notes
 
 **Navigation:**
-- Sticky top header: logo, search bar, cart icon (count badge), profile/login, language toggle, theme toggle.
+- Sticky top header: logo, search bar, cart icon (count badge), profile/login, and language toggle.
 - Mobile: bottom tab bar (Home, Categories, Search, Cart, Profile).
 - Category mega-menu on hover (desktop) / slide-in drawer (mobile).
 
@@ -2733,7 +2723,7 @@ interface IShamCashAdapter extends IPaymentAdapter {
 
 - [ ] RTL layout renders correctly for all screens in Arabic mode.
 - [ ] LTR layout correct in English mode.
-- [ ] Dark/light mode toggle works across all apps.
+- [ ] The canonical light identity and semantic tokens render consistently across all apps, with no dark-theme controls or legacy black page surfaces.
 - [ ] Cart persists across page navigations (sessionStorage) but clears on tab close.
 - [ ] Cart merges correctly on login.
 - [ ] Out-of-stock items cannot be purchased (even with direct API call).
@@ -2931,7 +2921,7 @@ NEXT_PUBLIC_APP_URL=                # e.g., https://eurostore.com
 4. Data sharing — Third parties: delivery company (address + order), payment provider (Sham Cash).
 5. Data retention — Order data: 7 years; account data: until deletion request.
 6. User rights — Access, correction, deletion request process.
-7. Cookies — sessionStorage for cart, localStorage for language/theme.
+7. Cookies — sessionStorage for cart and localStorage for language.
 8. Contact — Privacy inquiries contact.
 
 ---

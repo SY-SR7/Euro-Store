@@ -22,6 +22,8 @@ export function ContactForm({
   t_willContactSoon: string;
 }) {
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
 
   if (sent) {
     return (
@@ -35,7 +37,21 @@ export function ContactForm({
   return (
     <form
       className="flex flex-col gap-4"
-      onSubmit={(e) => { e.preventDefault(); setSent(true); }}
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setSending(true);
+        setError('');
+        const form = new FormData(e.currentTarget);
+        try {
+          const response = await fetch('/api/storefront/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: form.get('name'), email: form.get('email'), message: form.get('message') }) });
+          if (!response.ok) throw new Error('send_failed');
+          setSent(true);
+        } catch {
+          setError('تعذر إرسال الرسالة. حاول مرة أخرى.');
+        } finally {
+          setSending(false);
+        }
+      }}
     >
       <label className="flex flex-col gap-1.5 text-sm">
         <span className="text-[#6F6658]">{t_name}</span>
@@ -63,10 +79,12 @@ export function ContactForm({
       </label>
       <button
         type="submit"
-        className="rounded-sm bg-primary py-2.5 text-sm font-semibold text-text-primary hover:bg-[#D8B95F] transition-colors"
+        disabled={sending}
+        className="rounded-sm bg-primary py-2.5 text-sm font-semibold text-text-primary hover:bg-primary-dark transition-colors disabled:opacity-60"
       >
-        {t_submit}
+        {sending ? '…' : t_submit}
       </button>
+      {error ? <p role="alert" className="text-sm font-medium text-red-700">{error}</p> : null}
     </form>
   );
 }

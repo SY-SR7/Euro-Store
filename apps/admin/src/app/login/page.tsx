@@ -136,7 +136,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-black text-[#1F1B16] transition hover:bg-[#D8B95F] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-black text-[#1F1B16] transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
           >
             <LogIn size={17} />
             {loading ? t('loggingIn', { fallback: 'جار تسجيل الدخول...' }) : t('loginBtn', { fallback: 'دخول' })}

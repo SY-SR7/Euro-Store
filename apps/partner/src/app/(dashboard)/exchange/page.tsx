@@ -160,7 +160,7 @@ export default function PartnerExchangePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-12 text-[#E2E2E2]">
+    <main className="min-h-screen bg-background px-6 py-12 text-text-primary">
       {/* QR Scanner Overlay */}
       {state === 'scanning' && (
         <QRScanner
@@ -173,7 +173,7 @@ export default function PartnerExchangePage() {
 
       <div className="mx-auto max-w-lg">
         <h1 className="text-2xl font-semibold mb-2">{t('receiveExchangeTitle')}</h1>
-        <p className="text-sm text-[#9CA3AF] mb-8">{t('receiveExchangeDescription')}</p>
+        <p className="text-sm text-text-secondary mb-8">{t('receiveExchangeDescription')}</p>
 
         {/* Result */}
         {result && (
@@ -185,16 +185,16 @@ export default function PartnerExchangePage() {
             <p className="font-bold text-base">{result.message}</p>
             {result.exchange && (
               <div className="mt-3 space-y-2 text-sm text-[#D6D3C7]">
-                <div className="flex items-center justify-between gap-3 rounded-lg bg-black/20 px-3 py-2">
-                  <span className="text-[#9CA3AF]">{t('status')}</span>
+                <div className="flex items-center justify-between gap-3 rounded-lg bg-background-secondary px-3 py-2">
+                  <span className="text-text-secondary">{t('status')}</span>
                   <span className="font-bold text-primary">{statusLabel(result.exchange.status)}</span>
                 </div>
-                <div className="flex items-center justify-between gap-3 rounded-lg bg-black/20 px-3 py-2">
-                  <span className="text-[#9CA3AF]">{t('partnerStage')}</span>
+                <div className="flex items-center justify-between gap-3 rounded-lg bg-background-secondary px-3 py-2">
+                  <span className="text-text-secondary">{t('partnerStage')}</span>
                   <span className="font-bold text-primary">{stageLabel(result.exchange.partner_stage)}</span>
                 </div>
-                <div className="rounded-lg bg-black/20 px-3 py-2">
-                  <p className="text-[#9CA3AF]">{t('reason')}</p>
+                <div className="rounded-lg bg-background-secondary px-3 py-2">
+                  <p className="text-text-secondary">{t('reason')}</p>
                   <p>{result.exchange.reason ?? result.exchange.reason_ar ?? t('notAvailable')}</p>
                 </div>
               </div>
@@ -208,12 +208,12 @@ export default function PartnerExchangePage() {
             {/* Camera Scan Button */}
             <button
               onClick={() => setState('scanning')}
-              className="w-full flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-primary/40 bg-[#151515] p-10 hover:border-primary hover:bg-primary/5 transition-all"
+              className="w-full flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-primary/40 bg-background-elevated p-10 hover:border-primary hover:bg-primary/5 transition-all"
             >
               <Camera size={56} className="text-primary" />
               <div className="text-center">
-                <p className="font-bold text-lg text-[#E2E2E2]">{t('scanWithCamera')}</p>
-                <p className="text-sm text-[#9CA3AF] mt-1">{t('scanWithCameraDescription')}</p>
+                <p className="font-bold text-lg text-text-primary">{t('scanWithCamera')}</p>
+                <p className="text-sm text-text-secondary mt-1">{t('scanWithCameraDescription')}</p>
               </div>
             </button>
 
@@ -221,28 +221,28 @@ export default function PartnerExchangePage() {
             {!showManual ? (
               <button
                 onClick={() => setShowManual(true)}
-                className="w-full text-center text-sm text-[#9CA3AF] hover:text-primary transition-colors py-2"
+                className="w-full text-center text-sm text-text-secondary hover:text-primary transition-colors py-2"
               >
                 {t('enterTokenManually')}
               </button>
             ) : (
-              <div className="space-y-3 rounded-xl border border-[#2E2E2E] bg-[#151515] p-5">
-                <label className="text-sm text-[#9CA3AF]">{t('pasteToken')}</label>
+              <div className="space-y-3 rounded-xl border border-border bg-background-elevated p-5">
+                <label className="text-sm text-text-secondary">{t('pasteToken')}</label>
                 <textarea
-                  className="w-full rounded-xl border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-3 text-xs font-mono text-[#E2E2E2] h-28 resize-none focus:border-primary focus:outline-none"
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-xs font-mono text-text-primary h-28 resize-none focus:border-primary focus:outline-none"
                   value={manualToken}
                   onChange={e => setManualToken(e.currentTarget.value)}
                   placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…"
                 />
                 <div className="flex gap-2">
                   <button onClick={() => setShowManual(false)}
-                    className="flex-1 rounded-xl border border-[#2E2E2E] py-2.5 text-sm text-[#9CA3AF]">
+                    className="flex-1 rounded-xl border border-border py-2.5 text-sm text-text-secondary">
                     {t('cancel')}
                   </button>
               <button
                 onClick={() => { void handleManualSubmit(); }}
                 disabled={!manualToken.trim()}
-                    className="flex-1 rounded-xl bg-primary py-2.5 text-sm font-bold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors disabled:opacity-50"
+                    className="flex-1 rounded-xl bg-primary py-2.5 text-sm font-bold text-text-primary hover:bg-primary-dark transition-colors disabled:opacity-50"
                   >
                     {t('confirm')}
                   </button>
@@ -253,7 +253,7 @@ export default function PartnerExchangePage() {
             {result?.ok && result.exchange && nextStep(result.exchange) && (
               <button
                 onClick={nextStep(result.exchange)!.onClick}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-text-primary hover:bg-primary-dark transition-colors"
               >
                 {(() => {
                   const Icon = nextStep(result.exchange)!.icon;
@@ -266,7 +266,7 @@ export default function PartnerExchangePage() {
             {result && (
               <button
                 onClick={reset}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#2E2E2E] py-3 text-sm font-bold text-[#9CA3AF] hover:border-primary hover:text-primary transition-colors"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-border py-3 text-sm font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors"
               >
                 <RotateCcw size={16} />
                 {t('newOperation')}
@@ -279,7 +279,7 @@ export default function PartnerExchangePage() {
         {state === 'processing' && (
           <div className="text-center py-12 space-y-4">
             <ScanLine size={42} className="mx-auto animate-pulse text-primary" />
-            <p className="text-[#9CA3AF]">{t('verifyingToken')}</p>
+            <p className="text-text-secondary">{t('verifyingToken')}</p>
           </div>
         )}
       </div>

@@ -307,6 +307,7 @@ export function ProductImageGallery({
                   <button
                     key={img.id || idx}
                     type="button"
+                    aria-label={isAr ? `عرض الصورة ${idx + 1}` : `View image ${idx + 1}`}
                     onClick={() => {
                       setActiveImageIndex(idx);
                       setZoomLevel(1);

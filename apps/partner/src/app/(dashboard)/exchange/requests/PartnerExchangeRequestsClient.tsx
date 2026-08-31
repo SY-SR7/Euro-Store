@@ -93,7 +93,7 @@ export function PartnerExchangeRequestsClient() {
       <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">{t('assignedRequests')}</h1>
-          <p className="mt-1 text-sm text-[#9CA3AF]">{t('assignedRequestsDescription')}</p>
+          <p className="mt-1 text-sm text-text-secondary">{t('assignedRequestsDescription')}</p>
         </div>
         <button type="button" onClick={() => void loadRequests()} disabled={loading} title={t('refresh')}
           className="grid h-10 w-10 shrink-0 place-items-center rounded-md border border-[#3A3A3A] text-[#D6D3C7] hover:border-primary hover:text-primary disabled:opacity-50">
@@ -104,7 +104,7 @@ export function PartnerExchangeRequestsClient() {
       {error && <p role="alert" className="mb-4 rounded-md border border-red-800 bg-red-950/40 px-4 py-3 text-sm text-red-300">{error}</p>}
 
       {!loading && requests.length === 0 ? (
-        <div className="border-y border-[#2E2E2E] py-14 text-center text-[#9CA3AF]">{t('noAssignedRequests')}</div>
+        <div className="border-y border-border py-14 text-center text-text-secondary">{t('noAssignedRequests')}</div>
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
           {requests.map((request) => {
@@ -116,7 +116,7 @@ export function PartnerExchangeRequestsClient() {
               ? snapshot.name_en || snapshot.name_ar
               : snapshot.name_ar || snapshot.name_en;
             return (
-              <article key={request.id} className="rounded-lg border border-[#2E2E2E] bg-[#171717] p-4">
+              <article key={request.id} className="rounded-lg border border-border bg-background-card p-4">
                 <div className="flex gap-4">
                   <div className="grid h-24 w-24 shrink-0 place-items-center overflow-hidden rounded-md bg-[#222] text-[#777]">
                     {imageUrl ? (
@@ -137,27 +137,27 @@ export function PartnerExchangeRequestsClient() {
                   </div>
                 </div>
 
-                {request.reason && <p className="mt-3 text-sm text-[#B8B2A8]"><span className="font-semibold text-[#E2E2E2]">{t('reason')}:</span> {request.reason}</p>}
+                {request.reason && <p className="mt-3 text-sm text-text-secondary"><span className="font-semibold text-text-primary">{t('reason')}:</span> {request.reason}</p>}
 
-                <div className="mt-4 border-t border-[#2E2E2E] pt-3">
-                  <p className="text-xs font-bold text-[#E2E2E2]">{t('conditionChecklist')}</p>
-                  <ul className="mt-2 space-y-1 text-xs text-[#9CA3AF]">
+                <div className="mt-4 border-t border-border pt-3">
+                  <p className="text-xs font-bold text-text-primary">{t('conditionChecklist')}</p>
+                  <ul className="mt-2 space-y-1 text-xs text-text-secondary">
                     <li>{t('conditionOriginal')}</li>
                     <li>{t('conditionTags')}</li>
                     <li>{t('conditionSku')}</li>
                   </ul>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between gap-3 border-t border-[#2E2E2E] pt-4">
+                <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
                   <span className="font-mono text-xs text-[#777]">{request.id.slice(0, 8)}</span>
                   {action?.path === 'scan' && ActionIcon ? (
-                    <Link href="/exchange" className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-bold text-[#0F0F0F]">
+                    <Link href="/exchange" className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-bold text-text-primary">
                       <ActionIcon size={14} />
                       {action.label}
                     </Link>
                   ) : action && ActionIcon ? (
                     <button type="button" onClick={() => void runStep(request.id, action.path)} disabled={updating === request.id}
-                      className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-bold text-[#0F0F0F] disabled:opacity-50">
+                      className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-bold text-text-primary disabled:opacity-50">
                       <ActionIcon size={14} />
                       {updating === request.id ? t('updating') : action.label}
                     </button>

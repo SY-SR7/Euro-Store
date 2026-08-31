@@ -221,7 +221,7 @@ export default function HelperExchangePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
+    <main className="min-h-screen bg-background px-6 py-10 text-text-primary">
       <div className="mx-auto max-w-2xl">
 
         {/* Header */}
@@ -239,7 +239,7 @@ export default function HelperExchangePage() {
           </div>
           <button
             onClick={() => { setScanning(true); setScanResult(null); }}
-            className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors"
+            className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-text-primary hover:bg-primary-dark transition-colors"
           >
             <Camera size={16} /> {t('scanQr')}
           </button>
@@ -256,28 +256,28 @@ export default function HelperExchangePage() {
         )}
 
         {scannedExchange && (
-          <div className="mb-5 space-y-3 rounded-xl border border-[#2E2E2E] bg-[#151515] p-4">
+          <div className="mb-5 space-y-3 rounded-xl border border-border bg-background-elevated p-4">
             <div>
-              <p className="text-xs text-[#9CA3AF]">{t('exchangeRequest')}</p>
+              <p className="text-xs text-text-secondary">{t('exchangeRequest')}</p>
               <p className="font-mono text-sm text-primary">{scannedExchange.id}</p>
             </div>
             <div>
-              <p className="text-xs text-[#9CA3AF]">{t('customer')}</p>
-              <p className="text-sm text-[#E2E2E2]">{scannedExchange.customer_profiles?.full_name ?? t('notAvailable')}</p>
-              <p className="text-xs text-[#9CA3AF]" dir="ltr">{scannedExchange.customer_whatsapp ?? scannedExchange.customer_profiles?.phone ?? ''}</p>
+              <p className="text-xs text-text-secondary">{t('customer')}</p>
+              <p className="text-sm text-text-primary">{scannedExchange.customer_profiles?.full_name ?? t('notAvailable')}</p>
+              <p className="text-xs text-text-secondary" dir="ltr">{scannedExchange.customer_whatsapp ?? scannedExchange.customer_profiles?.phone ?? ''}</p>
             </div>
-            <label className="block text-xs font-bold text-[#9CA3AF]">
+            <label className="block text-xs font-bold text-text-secondary">
               {t('replacementProduct')}
               <input
                 value={replacementSearch}
                 onChange={(event) => setReplacementSearch(event.currentTarget.value)}
-                className="mt-2 w-full rounded-xl border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-3 text-sm text-[#E2E2E2] outline-none focus:border-primary"
+                className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary"
                 placeholder={t('replacementSearchPlaceholder')}
               />
             </label>
             <div className="max-h-56 space-y-2 overflow-y-auto" aria-busy={replacementLoading}>
-              {replacementLoading ? <p className="py-3 text-center text-xs text-[#9CA3AF]">{t('inventorySearching')}</p> : null}
-              {!replacementLoading && replacementOptions.length === 0 ? <p className="py-3 text-center text-xs text-[#9CA3AF]">{t('inventoryNoResults')}</p> : null}
+              {replacementLoading ? <p className="py-3 text-center text-xs text-text-secondary">{t('inventorySearching')}</p> : null}
+              {!replacementLoading && replacementOptions.length === 0 ? <p className="py-3 text-center text-xs text-text-secondary">{t('inventoryNoResults')}</p> : null}
               {replacementOptions.map((option) => {
                 const name = locale === 'ar' ? option.products.name_ar : option.products.name_en;
                 const selectedOption = replacementVariantId === option.id;
@@ -286,13 +286,13 @@ export default function HelperExchangePage() {
                     key={option.id}
                     type="button"
                     onClick={() => setReplacementVariantId(option.id)}
-                    className={`flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 text-start text-sm ${selectedOption ? 'border-primary bg-primary/10' : 'border-[#2E2E2E] bg-[#0F0F0F]'}`}
+                    className={`flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 text-start text-sm ${selectedOption ? 'border-primary bg-primary/10' : 'border-border bg-background'}`}
                   >
                     <span className="min-w-0">
-                      <span className="block truncate font-bold text-[#E2E2E2]">{name || option.sku}</span>
-                      <span className="text-xs text-[#9CA3AF]" dir="ltr">{option.sku}</span>
+                      <span className="block truncate font-bold text-text-primary">{name || option.sku}</span>
+                      <span className="text-xs text-text-secondary" dir="ltr">{option.sku}</span>
                     </span>
-                    <span className="flex shrink-0 items-center gap-2 text-xs text-[#9CA3AF]">
+                    <span className="flex shrink-0 items-center gap-2 text-xs text-text-secondary">
                       {t('availableCount', { count: option.stock_quantity })}
                       {selectedOption ? <Check size={16} className="text-primary" /> : null}
                     </span>
@@ -304,7 +304,7 @@ export default function HelperExchangePage() {
               type="button"
               onClick={() => { void completeScannedExchange(); }}
               disabled={completingExchange || !replacementVariantId.trim()}
-              className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-[#0F0F0F] disabled:opacity-50"
+              className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-text-primary disabled:opacity-50"
             >
               {completingExchange ? t('completingExchange') : t('completeExchange')}
             </button>
@@ -313,25 +313,25 @@ export default function HelperExchangePage() {
 
         {/* ─── LIST VIEW ─── */}
         {view === 'list' && (
-          loading ? <p className="text-[#9CA3AF]">{t('loading')}</p>
+          loading ? <p className="text-text-secondary">{t('loading')}</p>
           : queue.length === 0 ? (
-            <div className="rounded-xl border border-[#2E2E2E] bg-[#151515] p-10 text-center">
-              <Inbox className="mx-auto mb-3 h-10 w-10 text-[#6B7280]" />
-              <p className="text-[#9CA3AF]">{t('noExchangeRequests')}</p>
+            <div className="rounded-xl border border-border bg-background-elevated p-10 text-center">
+              <Inbox className="mx-auto mb-3 h-10 w-10 text-text-muted" />
+              <p className="text-text-secondary">{t('noExchangeRequests')}</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
               {queue.map(ex => (
                 <button key={ex.id}
                   onClick={() => { openDetail(ex); }}
-                  className="w-full text-start rounded-xl border border-[#2E2E2E] bg-[#151515] p-5 hover:border-primary/50 transition-all">
+                  className="w-full text-start rounded-xl border border-border bg-background-elevated p-5 hover:border-primary/50 transition-all">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-[#E2E2E2] truncate">
+                      <p className="font-semibold text-text-primary truncate">
                         {ex.customer_profiles?.full_name ?? ex.customer_id.slice(0, 8)}
                       </p>
-                      <p className="mt-1 text-sm text-[#9CA3AF] line-clamp-1">{ex.reason}</p>
-                      <p className="mt-1 text-xs text-[#6B7280]">
+                      <p className="mt-1 text-sm text-text-secondary line-clamp-1">{ex.reason}</p>
+                      <p className="mt-1 text-xs text-text-muted">
                         {new Date(ex.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-GB')}
                       </p>
                     </div>
@@ -356,8 +356,8 @@ export default function HelperExchangePage() {
             )}
 
             {/* Customer & Order */}
-            <div className="rounded-xl border border-[#2E2E2E] bg-[#151515] p-5 space-y-3">
-              <h2 className="text-xs text-[#9CA3AF] font-bold uppercase tracking-wider">{t('customerDetails')}</h2>
+            <div className="rounded-xl border border-border bg-background-elevated p-5 space-y-3">
+              <h2 className="text-xs text-text-secondary font-bold uppercase tracking-wider">{t('customerDetails')}</h2>
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/20 text-primary text-xl font-bold">
                   {(selected.customer_profiles?.full_name ?? t('customer')).charAt(0)}
@@ -365,26 +365,26 @@ export default function HelperExchangePage() {
                 <div>
                   <p className="font-bold">{selected.customer_profiles?.full_name ?? t('notAvailable')}</p>
                   {selected.customer_profiles?.phone && (
-                    <p className="text-sm text-[#9CA3AF]">{selected.customer_profiles.phone}</p>
+                    <p className="text-sm text-text-secondary">{selected.customer_profiles.phone}</p>
                   )}
                 </div>
               </div>
               <div>
-                <p className="text-xs text-[#9CA3AF] mb-1">{t('exchangeReason')}</p>
+                <p className="text-xs text-text-secondary mb-1">{t('exchangeReason')}</p>
                 <p className="text-sm text-[#D6D3C7] leading-6">{selected.reason}</p>
               </div>
-              <p className="text-xs text-[#6B7280]">
+              <p className="text-xs text-text-muted">
                 {t('requestDate', { date: new Date(selected.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-GB') })}
               </p>
             </div>
 
             {selected.status === 'pending' && !msg?.ok && (
-              <div className="rounded-xl border border-[#2E2E2E] bg-[#151515] p-5 space-y-4">
-                <h2 className="text-sm font-bold text-[#E2E2E2]">{t('makeDecision')}</h2>
+              <div className="rounded-xl border border-border bg-background-elevated p-5 space-y-4">
+                <h2 className="text-sm font-bold text-text-primary">{t('makeDecision')}</h2>
 
                 {/* Resolution Path */}
                 <div className="space-y-2">
-                  <p className="text-xs text-[#9CA3AF]">{t('resolutionMethod')}</p>
+                  <p className="text-xs text-text-secondary">{t('resolutionMethod')}</p>
                   <div className="flex gap-2">
                     {(['helper', 'partner'] as const).map(p => (
                       <button key={p}
@@ -392,14 +392,14 @@ export default function HelperExchangePage() {
                         className={`flex-1 rounded-lg border py-2.5 text-sm font-bold transition-all ${
                           path === p
                             ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-[#2E2E2E] text-[#9CA3AF] hover:border-[#3E3E3E]'
+                            : 'border-border text-text-secondary hover:border-border-accent'
                         }`}>
                         {p === 'helper' ? <><Store size={15} /> {t('branch')}</> : <><Handshake size={15} /> {t('partner')}</>}
                       </button>
                     ))}
                   </div>
                   {path === 'partner' ? (
-                    <select aria-label={locale === 'ar' ? 'الشريك المسؤول' : 'Assigned partner'} value={partnerId} onChange={(event) => setPartnerId(event.target.value)} className="w-full rounded-lg border border-[#2E2E2E] bg-[#0F0F0F] px-3 py-2.5 text-sm text-[#E2E2E2]">
+                    <select aria-label={locale === 'ar' ? 'الشريك المسؤول' : 'Assigned partner'} value={partnerId} onChange={(event) => setPartnerId(event.target.value)} className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-text-primary">
                       <option value="">{t('selectPartner')}</option>
                       {partners.map((partner) => <option key={partner.id} value={partner.id}>{partner.business_name} - {partner.geographic_area}</option>)}
                     </select>
@@ -410,7 +410,7 @@ export default function HelperExchangePage() {
                 <button
                   onClick={() => { void handleDecision('approve'); }}
                   disabled={acting || (path === 'partner' && !partnerId)}
-                  className="w-full rounded-xl bg-primary py-3 font-bold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors disabled:opacity-50"
+                  className="w-full rounded-xl bg-primary py-3 font-bold text-text-primary hover:bg-primary-dark transition-colors disabled:opacity-50"
                 >
                   {acting ? t('processing') : t('approveAndGenerateQr')}
                 </button>
@@ -429,11 +429,11 @@ export default function HelperExchangePage() {
                       value={rejectReason}
                       onChange={e => setRejectReason(e.currentTarget.value)}
                       placeholder={t('rejectionReasonPlaceholder')}
-                      className="w-full rounded-xl border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-3 text-sm text-[#E2E2E2] resize-none h-20 focus:border-red-600 focus:outline-none"
+                      className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary resize-none h-20 focus:border-red-600 focus:outline-none"
                     />
                     <div className="flex gap-2">
                       <button onClick={() => setShowRejectForm(false)}
-                        className="flex-1 rounded-xl border border-[#2E2E2E] py-2.5 text-sm text-[#9CA3AF]">
+                        className="flex-1 rounded-xl border border-border py-2.5 text-sm text-text-secondary">
                         {t('cancel')}
                       </button>
                       <button

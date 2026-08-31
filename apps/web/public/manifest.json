@@ -8,8 +8,8 @@
   "dir": "rtl",
   "categories": ["shopping", "lifestyle"],
   "display": "standalone",
-  "background_color": "#0F0F0F",
-  "theme_color": "#CFA63D",
+  "background_color": "#FAF7EF",
+  "theme_color": "#FFFDF8",
   "orientation": "portrait",
   "icons": [
     {

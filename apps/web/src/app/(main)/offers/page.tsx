@@ -32,7 +32,7 @@ export default async function OffersPage() {
         {/* Luxury Offers Editorial Banner */}
         <div className="relative overflow-hidden rounded-3xl border border-amber-300/70 bg-gradient-to-br from-[#FFFDF9] via-[#FEF3C7]/40 to-[#FDE68A]/20 p-8 md:p-12 shadow-sm">
           <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/50 bg-amber-500/10 px-3.5 py-1 text-xs font-black text-amber-900 dark:text-amber-300 mb-4">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-400/50 bg-amber-500/10 px-3.5 py-1 text-xs font-black text-amber-900">
               <Flame className="h-4 w-4 text-amber-600 animate-bounce" />
               <span>{isAr ? 'عروض وتخفيضات موسمية حصرية' : 'Exclusive Seasonal Offers'}</span>
             </div>

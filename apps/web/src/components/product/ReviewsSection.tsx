@@ -18,7 +18,7 @@ function Stars({ rating, size = 'h-4 w-4' }: { rating: number; size?: string }) 
       {[1, 2, 3, 4, 5].map((n) => (
         <Star
           key={n}
-          className={`${size} ${n <= Math.round(rating) ? 'fill-[#B8860B] text-primary' : 'text-[#D6CFC2]'}`}
+          className={`${size} ${n <= Math.round(rating) ? 'fill-primary text-primary' : 'text-[#D6CFC2]'}`}
         />
       ))}
     </div>

@@ -5,7 +5,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Manrope:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
 
 :root {
-  /* Brand Gold */
+  color-scheme: light;
+  /* Restrained brand accent */
   --color-primary:        #B8860B;
   --color-primary-dark:   #9A7209;
   --color-primary-light:  #D4AF37;
@@ -16,7 +17,7 @@
   --color-bg-card:        #FFFDF8;
   --color-bg-elevated:    #FFFFFF;
   
-  /* Dark text for light theme */
+  /* Text */
   --color-text-primary:   #1C1917;
   --color-text-secondary: #57534E;
   --color-text-muted:     #A8A29E;

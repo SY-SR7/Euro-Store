@@ -497,7 +497,7 @@ function CheckItem({
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="h-3.5 w-3.5 accent-[#B8860B]"
+        className="h-3.5 w-3.5 accent-primary"
       />
       <span className="min-w-0 flex-1 truncate text-xs font-semibold text-text-primary">{label}</span>
       <span className="text-[10px] tabular-nums text-[#8B8172]">{count}</span>
@@ -1184,7 +1184,7 @@ export default function ProductQuickAdmin() {
             </form>
             <Link
               href="/products/new"
-              className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#1C1917] px-4 text-sm font-black text-white transition hover:bg-[#2D2926]"
+              className="inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-black text-text-primary transition hover:bg-primary-dark"
             >
               <Plus size={16} />
               {t('newProduct', { fallback: 'منتج جديد' })}
@@ -1413,7 +1413,7 @@ export default function ProductQuickAdmin() {
                   <button
                     type="button"
                     onClick={() => setShowAddVariant((current) => !current)}
-                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926]"
+                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-primary px-3 text-xs font-black text-text-primary hover:bg-primary-dark"
                   >
                     <Plus size={14} />
                     {t('addVariant', { fallback: 'خيار' })}
@@ -1634,7 +1634,7 @@ export default function ProductQuickAdmin() {
                       type="button"
                       onClick={() => void addImage()}
                       disabled={savingKey === 'image:new' || !newImageUrl.trim()}
-                      className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926] disabled:opacity-50 whitespace-nowrap"
+                      className="inline-flex h-9 items-center gap-2 rounded-xl bg-primary px-3 text-xs font-black text-text-primary hover:bg-primary-dark disabled:opacity-50 whitespace-nowrap"
                     >
                       <ImagePlus size={14} />
                       {tCommon('add', { fallback: 'إضافة' })}

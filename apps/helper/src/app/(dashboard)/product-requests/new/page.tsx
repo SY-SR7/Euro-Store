@@ -83,10 +83,10 @@ export default function HelperProductRequestsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
+    <main className="min-h-screen bg-background px-6 py-10 text-text-primary">
       <div className="mx-auto max-w-xl">
         <h1 className="text-2xl font-semibold mb-2">{t('newProductRequest')}</h1>
-        <p className="text-sm text-[#9CA3AF] mb-8">{t('newProductRequestDescription')}</p>
+        <p className="text-sm text-text-secondary mb-8">{t('newProductRequestDescription')}</p>
 
         {result && (
           <div className={`mb-6 rounded-xl border px-4 py-3 text-sm ${
@@ -98,35 +98,35 @@ export default function HelperProductRequestsPage() {
 
         <form onSubmit={(event) => { void handleSubmit(event); }} className="space-y-5">
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="product-name-ar" className="text-sm text-[#9CA3AF]">{t('productNameAr')} <span className="text-red-400">*</span></label>
+            <label htmlFor="product-name-ar" className="text-sm text-text-secondary">{t('productNameAr')} <span className="text-red-400">*</span></label>
             <input
               id="product-name-ar"
               value={nameAr} onChange={e => setNameAr(e.currentTarget.value)}
-              className="rounded-xl border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-sm focus:border-primary focus:outline-none"
+              className="rounded-xl border border-border bg-background-elevated px-4 py-3 text-sm focus:border-primary focus:outline-none"
               placeholder={t('productNameArPlaceholder')}
               required
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="product-name-en" className="text-sm text-[#9CA3AF]">{t('productNameEn')} <span className="text-[#6B7280] text-xs">{t('optional')}</span></label>
+            <label htmlFor="product-name-en" className="text-sm text-text-secondary">{t('productNameEn')} <span className="text-text-muted text-xs">{t('optional')}</span></label>
             <input
               id="product-name-en"
               value={nameEn} onChange={e => setNameEn(e.currentTarget.value)}
-              className="rounded-xl border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-sm focus:border-primary focus:outline-none"
+              className="rounded-xl border border-border bg-background-elevated px-4 py-3 text-sm focus:border-primary focus:outline-none"
               placeholder={t('productNameEnPlaceholder')}
               dir="ltr"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="suggested-category" className="text-sm text-[#9CA3AF]">{t('suggestedCategory')} <span className="text-[#6B7280] text-xs">{t('optional')}</span></label>
+            <label htmlFor="suggested-category" className="text-sm text-text-secondary">{t('suggestedCategory')} <span className="text-text-muted text-xs">{t('optional')}</span></label>
             <select
               id="suggested-category"
               value={catId}
               onChange={e => setCatId(e.currentTarget.value)}
               onFocus={() => { void loadCategories(); }}
-              className="rounded-xl border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-sm text-[#E2E2E2] focus:border-primary focus:outline-none"
+              className="rounded-xl border border-border bg-background-elevated px-4 py-3 text-sm text-text-primary focus:border-primary focus:outline-none"
             >
               <option value="">{t('selectCategory')}</option>
               {categories.map(c => (
@@ -136,24 +136,24 @@ export default function HelperProductRequestsPage() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="additional-description" className="text-sm text-[#9CA3AF]">{t('additionalDescription')} <span className="text-[#6B7280] text-xs">{t('optional')}</span></label>
+            <label htmlFor="additional-description" className="text-sm text-text-secondary">{t('additionalDescription')} <span className="text-text-muted text-xs">{t('optional')}</span></label>
             <textarea
               id="additional-description"
               value={desc} onChange={e => setDesc(e.currentTarget.value)}
               rows={4}
-              className="rounded-xl border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-sm resize-none focus:border-primary focus:outline-none"
+              className="rounded-xl border border-border bg-background-elevated px-4 py-3 text-sm resize-none focus:border-primary focus:outline-none"
               placeholder={t('additionalDescriptionPlaceholder')}
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="product-images" className="text-sm text-[#9CA3AF]">{t('productImages')} <span className="text-[#6B7280] text-xs">{t('productImagesHint')}</span></label>
+            <label htmlFor="product-images" className="text-sm text-text-secondary">{t('productImages')} <span className="text-text-muted text-xs">{t('productImagesHint')}</span></label>
             {previews.length > 0 && (
               <div className="flex flex-wrap gap-3">
                 {previews.map((src, i) => (
                   <div key={i} className="relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt="" className="h-20 w-20 rounded-xl object-cover border border-[#2E2E2E]" />
+                    <img src={src} alt="" className="h-20 w-20 rounded-xl object-cover border border-border" />
                     <button type="button" onClick={() => removeImage(i)}
                       aria-label={t('removeImage')}
                       className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-white">
@@ -176,7 +176,7 @@ export default function HelperProductRequestsPage() {
                   onChange={e => handleFiles(e.currentTarget.files)}
                 />
                 <button type="button" onClick={() => fileRef.current?.click()}
-                  className="flex items-center gap-2 rounded-xl border border-dashed border-[#3E3E3E] bg-[#151515] px-4 py-3 text-sm text-[#9CA3AF] hover:border-primary hover:text-primary transition-colors w-fit">
+                  className="flex items-center gap-2 rounded-xl border border-dashed border-border-accent bg-background-elevated px-4 py-3 text-sm text-text-secondary hover:border-primary hover:text-primary transition-colors w-fit">
                   <Paperclip className="h-4 w-4" /> {t('addImage')}
                 </button>
               </>
@@ -186,7 +186,7 @@ export default function HelperProductRequestsPage() {
           <button
             type="submit"
             disabled={loading || !nameAr.trim()}
-            className="w-full rounded-xl bg-primary py-3 font-bold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors disabled:opacity-50"
+            className="w-full rounded-xl bg-primary py-3 font-bold text-text-primary hover:bg-primary-dark transition-colors disabled:opacity-50"
           >
             {loading ? t('submitting') : t('submitToAdmin')}
           </button>

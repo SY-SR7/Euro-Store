@@ -10,6 +10,7 @@ export * from "./utils/currency";
 export * from "./utils/qr";
 export * from "./middleware/rate-limit";
 export * from './i18n';
+export * from './legal';
 export const locales = ['ar', 'en'] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = 'ar';

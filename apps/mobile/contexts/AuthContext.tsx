@@ -13,6 +13,7 @@ type ServerCartItem = {
   productId: string;
   nameAr: string;
   nameEn: string;
+  sku?: string;
   priceSyp: number;
   imageUrl: string | null;
   maxQuantity: number;
@@ -50,6 +51,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       productId: item.productId,
       variantId: item.variantId,
       title: (isAr ? item.nameAr : item.nameEn) || item.nameAr || item.nameEn,
+      nameAr: item.nameAr,
+      nameEn: item.nameEn,
+      sku: item.sku,
       price: Number(item.priceSyp),
       quantity: Number(item.quantity),
       imageUrl: item.imageUrl ?? '',

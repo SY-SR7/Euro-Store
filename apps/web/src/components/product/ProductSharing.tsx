@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Share2, Copy, Check, Twitter, Facebook, MessageCircle, Instagram } from 'lucide-react';
+import { AtSign, Camera, Check, Copy, MessageCircle, Send, Share2, Users } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 export function ProductSharing({ url, title }: { url?: string; title?: string }) {
@@ -32,25 +32,25 @@ export function ProductSharing({ url, title }: { url?: string; title?: string })
     },
     {
       name: 'Facebook',
-      icon: Facebook,
+      icon: Users,
       href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
       color: 'bg-blue-100 text-blue-600 hover:bg-blue-200',
     },
     {
       name: 'Instagram',
-      icon: Instagram,
+      icon: Camera,
       href: `https://www.instagram.com/`, // Instagram doesn't have a direct text share URL for web
       color: 'bg-pink-100 text-pink-600 hover:bg-pink-200',
     },
     {
       name: 'X (Twitter)',
-      icon: Twitter,
+      icon: AtSign,
       href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title || '')}`,
       color: 'bg-slate-100 text-slate-600 hover:bg-slate-200',
     },
     {
       name: 'Telegram',
-      icon: Share2, // Generic fallback
+      icon: Send,
       href: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title || '')}`,
       color: 'bg-sky-100 text-sky-600 hover:bg-sky-200',
     },

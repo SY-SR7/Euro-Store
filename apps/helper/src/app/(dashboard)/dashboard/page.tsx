@@ -74,12 +74,12 @@ export default function HelperDashboardPage() {
     <div className="space-y-6 p-6">
       {/* Summary Row */}
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-5 shadow-sm">
-          <p className="text-sm text-[#9CA3AF]">{t('helper.pendingOrders')}</p>
+        <div className="rounded-lg border border-border bg-background-elevated p-5 shadow-sm">
+          <p className="text-sm text-text-secondary">{t('helper.pendingOrders')}</p>
           <p className="mt-2 text-3xl font-black text-primary">{pendingOrdersCount}</p>
         </div>
-        <div className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-5 shadow-sm">
-          <p className="text-sm text-[#9CA3AF]">{t('helper.pendingExchanges')}</p>
+        <div className="rounded-lg border border-border bg-background-elevated p-5 shadow-sm">
+          <p className="text-sm text-text-secondary">{t('helper.pendingExchanges')}</p>
           <p className="mt-2 text-3xl font-black text-amber-500">{pendingExchanges}</p>
         </div>
       </div>
@@ -94,36 +94,36 @@ export default function HelperDashboardPage() {
             </p>
             <p className="text-xs text-amber-400/70">{t('helper.reviewExchanges')}</p>
           </div>
-          <span className="rounded-full bg-amber-500 px-2.5 py-0.5 text-xs font-black text-[#0F0F0F]">
+          <span className="rounded-full bg-amber-500 px-2.5 py-0.5 text-xs font-black text-text-primary">
             {pendingExchanges}
           </span>
         </Link>
       )}
 
       <div className="flex items-center justify-between">
-        <h1 id="order-queue" className="text-2xl font-bold text-[#E2E2E2]">{t('helper.orderQueue')}</h1>
-        <button type="button" onClick={() => void load()} className="inline-flex items-center gap-2 rounded border border-[#2E2E2E] px-4 py-2 text-sm text-[#E2E2E2] hover:border-primary">
+        <h1 id="order-queue" className="text-2xl font-bold text-text-primary">{t('helper.orderQueue')}</h1>
+        <button type="button" onClick={() => void load()} className="inline-flex items-center gap-2 rounded border border-border px-4 py-2 text-sm text-text-primary hover:border-primary">
           <RefreshCw className="h-4 w-4" aria-hidden="true" /> {t('common.refresh')}
         </button>
       </div>
 
       {error && <p className="rounded-lg border border-red-800 bg-red-950/40 p-3 text-sm text-red-300">{error}</p>}
 
-      {loading ? <p className="text-[#9CA3AF]">{t('common.loading')}</p> : orders.length === 0 ? (
-        <div className="rounded-lg border border-[#2E2E2E] p-12 text-center text-[#9CA3AF]">
+      {loading ? <p className="text-text-secondary">{t('common.loading')}</p> : orders.length === 0 ? (
+        <div className="rounded-lg border border-border p-12 text-center text-text-secondary">
           {t('helper.noOrders')}
         </div>
       ) : (
         <div className="grid gap-4">
           {orders.map(o => (
-            <div key={o.id} className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-5">
+            <div key={o.id} className="rounded-lg border border-border bg-background-elevated p-5">
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <span className="font-mono text-primary font-bold">#{o.order_number}</span>
-                  <p className="text-[#E2E2E2] mt-1">{o.address_snapshot.full_name} - {o.address_snapshot.phone}</p>
-                  <p className="text-sm text-[#9CA3AF]">{o.address_snapshot.governorate} - {o.address_snapshot.address}</p>
-                  <p className="text-sm text-[#9CA3AF] mt-1">{formatSYP(Math.round(o.total_syp))}</p>
-                  <p className="text-xs text-[#6B7280] mt-1">{new Date(o.created_at).toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US')}</p>
+                  <p className="text-text-primary mt-1">{o.address_snapshot.full_name} - {o.address_snapshot.phone}</p>
+                  <p className="text-sm text-text-secondary">{o.address_snapshot.governorate} - {o.address_snapshot.address}</p>
+                  <p className="text-sm text-text-secondary mt-1">{formatSYP(Math.round(o.total_syp))}</p>
+                  <p className="text-xs text-text-muted mt-1">{new Date(o.created_at).toLocaleString(locale === 'ar' ? 'ar-SY' : 'en-US')}</p>
                 </div>
                 <div className="flex flex-col items-end gap-3">
                   <span className={`rounded px-2 py-1 text-xs font-medium ${STATUS_COLORS[o.status] ?? ''}`}>{t(`helper.orderStatuses.${o.status}`)}</span>
@@ -132,7 +132,7 @@ export default function HelperDashboardPage() {
                     value={o.status}
                     onChange={(e) => { void updateStatus(o.id, e.target.value); }}
                     disabled={updating === o.id}
-                    className="rounded border border-[#2E2E2E] bg-[#111111] px-3 py-2 text-sm text-[#E2E2E2] outline-none hover:border-primary focus:border-primary disabled:opacity-50"
+                    className="rounded border border-border bg-background-card px-3 py-2 text-sm text-text-primary outline-none hover:border-primary focus:border-primary disabled:opacity-50"
                   >
                     {Object.keys(STATUS_COLORS).map((status) => (
                       <option key={status} value={status}>{t(`helper.orderStatuses.${status}`)}</option>

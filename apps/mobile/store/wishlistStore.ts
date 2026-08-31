@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface WishlistItem {
   productId: string;
+  slug?: string;
   variantId: string;
   title: string;
   price: number;

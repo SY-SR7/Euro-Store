@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { apiFetch } from '../utils/api';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { usePreferences } from '../contexts/PreferencesContext';
@@ -73,7 +74,7 @@ export default function AccountScreen() {
               <TouchableOpacity key={value} onPress={() => setGender(value)} className={`flex-1 rounded-xl border p-4 ${gender === value ? 'border-primary bg-primary/10' : 'border-border bg-background-secondary'}`}><Text className={`text-center font-bold ${gender === value ? 'text-primary' : 'text-text-primary'}`}>{label}</Text></TouchableOpacity>
             ))}
           </View>
-          <TouchableOpacity disabled={saving} onPress={save} className={`rounded-xl bg-primary p-4 ${saving ? 'opacity-60' : ''}`}><Text className='text-center text-lg font-bold text-[#0F0F0F]'>{saving ? l('جارٍ الحفظ...', 'Saving...') : l('حفظ التغييرات', 'Save changes')}</Text></TouchableOpacity>
+          <TouchableOpacity disabled={saving} onPress={save} className={`rounded-xl bg-primary p-4 ${saving ? 'opacity-60' : ''}`}><Text className='text-center text-lg font-bold text-text-primary'>{saving ? l('جارٍ الحفظ...', 'Saving...') : l('حفظ التغييرات', 'Save changes')}</Text></TouchableOpacity>
         </ScrollView>
       )}
     </SafeAreaView>

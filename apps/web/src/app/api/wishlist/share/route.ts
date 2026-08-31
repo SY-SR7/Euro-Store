@@ -1,7 +1,8 @@
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { createAdminSupabaseClient, getSessionClient } from '@/supabase-server';
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     const { user } = await getSessionClient();
     if (!user) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
@@ -20,7 +21,8 @@ export async function POST() {
     });
 
     if (error || !token) return NextResponse.json({ error: 'share_failed' }, { status: 500 });
-    return NextResponse.json({ token, path: `/wishlist/${token}` });
+    const path = `/wishlist/${token}`;
+    return NextResponse.json({ token, path, url: new URL(path, request.nextUrl.origin).toString() });
   } catch (error) {
     console.error('[POST /api/wishlist/share]', error);
     return NextResponse.json({ error: 'server_error' }, { status: 500 });

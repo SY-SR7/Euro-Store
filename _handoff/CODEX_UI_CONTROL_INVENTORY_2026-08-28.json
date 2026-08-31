@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-08-28T23:31:02.668Z",
+  "generatedAt": "2026-08-30T19:22:31.352Z",
   "totals": {
-    "controls": 738,
+    "controls": 775,
     "issues": 0
   },
   "byApp": {
     "web": {
-      "controls": 221,
-      "inputs": 48,
-      "links": 93,
+      "controls": 243,
+      "inputs": 50,
+      "links": 105,
       "modals": 2,
       "issues": 0
     },
@@ -34,8 +34,8 @@
       "issues": 0
     },
     "mobile": {
-      "controls": 100,
-      "inputs": 17,
+      "controls": 115,
+      "inputs": 18,
       "links": 0,
       "modals": 8,
       "issues": 0
@@ -474,39 +474,40 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/categories/page.tsx",
-      "line": 24,
-      "tag": "Link",
-      "text": "{t('common.appName')}",
-      "attributes": {
-        "href": "/",
-        "className": "text-primary text-sm hover:underline"
-      },
-      "inForm": false,
-      "inModal": false
-    },
-    {
-      "app": "web",
-      "file": "apps/web/src/app/(main)/categories/page.tsx",
-      "line": 39,
-      "tag": "Link",
-      "text": "✦ {isAr ? cat.name_ar : (cat.name_en || cat.name_ar)}",
-      "attributes": {
-        "key": "cat.id",
-        "href": "`/categories/${cat.slug}`",
-        "className": "group flex flex-col items-center justify-center gap-3 rounded-lg border border-border bg-background-card p-8 text-center hover:border-primary/40 hover:bg-background-secondary transition-all duration-200"
-      },
-      "inForm": false,
-      "inModal": false
-    },
-    {
-      "app": "web",
-      "file": "apps/web/src/app/(main)/categories/page.tsx",
       "line": 56,
       "tag": "Link",
-      "text": "{t('catalog.allProducts')}",
+      "text": "{isAr ? 'عرض كافة المنتجات' : 'View All Products'} {isAr ? <ArrowLeft className=\"h-3.5 w-3.5\" /> : <ArrowRight className=\"h-3.5 w-3.5\" />}",
       "attributes": {
         "href": "/products",
-        "className": "inline-block rounded-sm border border-border px-6 py-2.5 text-sm text-[#6F6658] hover:border-primary hover:text-[#1F1B16] transition-colors"
+        "className": "text-xs sm:text-sm font-bold text-primary hover:underline inline-flex items-center gap-1"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/app/(main)/categories/page.tsx",
+      "line": 67,
+      "tag": "Link",
+      "text": "{category.image_url ? (\n                    <Image\n                      src={category.image_url}\n                      alt={isAr ? category.name_ar : (category.name_en || category.name_ar)}\n                      fill\n                      ",
+      "attributes": {
+        "key": "category.id",
+        "href": "`/categories/${category.slug}`",
+        "className": "group relative flex flex-col overflow-hidden rounded-2xl border border-[#E8DFC8] bg-white p-4 shadow-sm transition-all duration-300 hover:border-primary hover:shadow-md"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/app/(main)/categories/page.tsx",
+      "line": 107,
+      "tag": "Link",
+      "text": "{isAr ? category.name_ar : (category.name_en || category.name_ar)}",
+      "attributes": {
+        "key": "category.id",
+        "href": "`/categories/${category.slug}`",
+        "className": "flex min-h-[4rem] items-center justify-center rounded-xl border border-[#E8DFC8] bg-white px-4 py-3 text-center text-xs sm:text-sm font-bold text-[#1F1B16] transition-all hover:border-primary hover:bg-[#FAF6EE] hover:text-primary shadow-xs"
       },
       "inForm": false,
       "inModal": false
@@ -514,7 +515,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/categories/[slug]/page.tsx",
-      "line": 70,
+      "line": 72,
       "tag": "Link",
       "text": "{isAr ? '←' : '→'} {t('allCategoriesLink')}",
       "attributes": {
@@ -707,7 +708,7 @@
         "type": "checkbox",
         "checked": "usePoints",
         "onChange": "e => setUsePoints((e.target as HTMLInputElement).checked)",
-        "className": "mt-0.5 h-4 w-4 accent-[#B8860B]"
+        "className": "mt-0.5 h-4 w-4 accent-primary"
       },
       "inForm": true,
       "inModal": false
@@ -734,7 +735,7 @@
       "text": "{t('viewOrders')}",
       "attributes": {
         "href": "/orders",
-        "className": "rounded-2xl bg-primary py-3 text-sm font-black text-text-primary hover:bg-[#D8B95F] transition-colors block"
+        "className": "rounded-2xl bg-primary py-3 text-sm font-black text-text-primary hover:bg-primary-dark transition-colors block"
       },
       "inForm": false,
       "inModal": false
@@ -807,7 +808,7 @@
       "text": "{t_submit}",
       "attributes": {
         "type": "submit",
-        "className": "rounded-sm bg-primary py-2.5 text-sm font-semibold text-text-primary hover:bg-[#D8B95F] transition-colors"
+        "className": "rounded-sm bg-primary py-2.5 text-sm font-semibold text-text-primary hover:bg-primary-dark transition-colors"
       },
       "inForm": true,
       "inModal": false
@@ -1022,7 +1023,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/exchange/[id]/page.tsx",
-      "line": 85,
+      "line": 86,
       "tag": "Link",
       "text": "{t('home')}",
       "attributes": {
@@ -1035,7 +1036,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/exchange/[id]/page.tsx",
-      "line": 87,
+      "line": 88,
       "tag": "Link",
       "text": "{t('exchangeRequests')}",
       "attributes": {
@@ -1048,7 +1049,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/exchange/[id]/page.tsx",
-      "line": 239,
+      "line": 240,
       "tag": "Link",
       "text": "{t('backToList')}",
       "attributes": {
@@ -1061,7 +1062,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/exchange/[id]/page.tsx",
-      "line": 245,
+      "line": 246,
       "tag": "Link",
       "text": "{t('contactUs')}",
       "attributes": {
@@ -1095,7 +1096,7 @@
       "text": "{t('contactAction')}",
       "attributes": {
         "href": "/contact",
-        "className": "inline-block bg-primary text-[#0F0F0F] font-black py-3 px-8 rounded-xl hover:bg-primary/90 transition-colors"
+        "className": "inline-block bg-primary text-text-primary font-black py-3 px-8 rounded-xl hover:bg-primary/90 transition-colors"
       },
       "inForm": false,
       "inModal": false
@@ -1230,7 +1231,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/orders/[orderNumber]/page.tsx",
-      "line": 144,
+      "line": 145,
       "tag": "Link",
       "text": "{isAr ? (nameAr || '—') : (nameEn || nameAr || '—')}",
       "attributes": {
@@ -1243,7 +1244,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/orders/[orderNumber]/page.tsx",
-      "line": 180,
+      "line": 181,
       "tag": "Link",
       "text": "{t('myOrders')}",
       "attributes": {
@@ -1256,7 +1257,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/orders/[orderNumber]/page.tsx",
-      "line": 184,
+      "line": 185,
       "tag": "Link",
       "text": "{t('continueShopping')}",
       "attributes": {
@@ -1269,11 +1270,11 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/page.tsx",
-      "line": 121,
+      "line": 185,
       "tag": "Link",
-      "text": "{isAr ? 'عرض الكل' : 'View all'}",
+      "text": "{isAr ? 'عرض كافة المنتجات' : 'View all products'}",
       "attributes": {
-        "href": "section.section_key === 'sales' ? '/products?discount_min=1' : '/products'",
+        "href": "/products",
         "className": "text-sm font-bold text-primary hover:underline"
       },
       "inForm": false,
@@ -1281,22 +1282,8 @@
     },
     {
       "app": "web",
-      "file": "apps/web/src/app/(main)/page.tsx",
-      "line": 167,
-      "tag": "Link",
-      "text": "{brand.logo_url ? <Image src={brand.logo_url} alt={brand.name} fill className=\"object-contain p-5\" sizes=\"(max-width: 640px) 50vw, 16vw\" /> : <span className=\"text-center text-sm font-black text-text-primary\">{brand.name}</span>}",
-      "attributes": {
-        "key": "brand.id",
-        "href": "`/products?brand_id=${brand.id}`",
-        "className": "relative flex aspect-[3/2] items-center justify-center bg-background p-5 transition hover:bg-background-secondary"
-      },
-      "inForm": false,
-      "inModal": false
-    },
-    {
-      "app": "web",
       "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
-      "line": 313,
+      "line": 387,
       "tag": "Link",
       "text": "{td('backToProducts')}",
       "attributes": {
@@ -1309,7 +1296,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
-      "line": 322,
+      "line": 396,
       "tag": "Link",
       "text": "{td('home')}",
       "attributes": {
@@ -1322,7 +1309,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
-      "line": 324,
+      "line": 398,
       "tag": "Link",
       "text": "{td('products')}",
       "attributes": {
@@ -1335,7 +1322,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
-      "line": 328,
+      "line": 402,
       "tag": "Link",
       "text": "{isAr ? category.name_ar : (category.name_en || category.name_ar)}",
       "attributes": {
@@ -1348,24 +1335,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
-      "line": 350,
-      "tag": "button",
-      "text": "",
-      "attributes": {
-        "type": "button",
-        "key": "img.id",
-        "onClick": "() => setMainImage(img.url)",
-        "aria-label": "`${td('image')} ${index + 1}`",
-        "aria-pressed": "mainImage === img.url",
-        "className": "[\r\n                  'aspect-square overflow-hidden rounded-xl border-2 bg-background-card transition-colors',\r\n                  mainImage === img.url ? 'border-primary' : 'border-transparent hover:border-primary/50',\r\n                ].join(' ')"
-      },
-      "inForm": false,
-      "inModal": false
-    },
-    {
-      "app": "web",
-      "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
-      "line": 419,
+      "line": 465,
       "tag": "button",
       "text": "{isAr ? 'دليل المقاسات' : 'Size Guide'}",
       "attributes": {
@@ -1378,55 +1348,16 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
-      "line": 531,
+      "line": 592,
       "tag": "button",
-      "text": "{isColor ? (\r\n                            <span \r\n                              className=\"absolute inset-1 rounded-full shadow-inner\" \r\n                              style={{ backgroundColor: val.hex }} \r\n                            />\r\n  ",
+      "text": "{isColor ? (\n                            <span \n                              className={`absolute inset-1 rounded-full shadow-inner ${!isAvailable ? 'grayscale-[40%]' : ''}`} \n                              style={{ backgroundColor: val.hex",
       "attributes": {
-        "key": "idx",
-        "onClick": "() => isValid && handleSelectAttribute(attrType.typeAr, val.valueAr)",
-        "disabled": "!isValid",
-        "className": "[\r\n                            'relative shrink-0 transition-all overflow-hidden flex items-center justify-center focus:outline-none',\r\n                            isColor ? 'w-11 h-11 rounded-full border' : 'px-5 py-2.5 rounded-xl border text-sm font-bold',\r\n                            isSelected \r\n                              ? 'border-primary ring-2 ring-primary ring-offset-2 ring-offset-background' \r\n                              : isValid \r\n                                ? 'border-border hover:border-primary/50 bg-background-card hover:scale-[1.03]' \r\n                                : 'border-border/50 bg-background opacity-40 cursor-not-allowed',\r\n                          ].join(' ')",
-        "title": "isAr ? val.valueAr : (val.valueEn || val.valueAr)"
-      },
-      "inForm": false,
-      "inModal": false
-    },
-    {
-      "app": "web",
-      "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
-      "line": 576,
-      "tag": "button",
-      "text": "{v.sku && <span className=\"rounded-full bg-background px-2 py-1\" dir=\"ltr\">{v.sku}</span>} {variantTitle(v, isAr, td)} {qty > 0 ? `${qty} ${td('pieces')}` : td('outOfStockShort')}",
-      "attributes": {
-        "key": "v.id",
-        "onClick": "() => setSelected(v)",
-        "className": "[\r\n                        'rounded-2xl border p-3 text-right transition-all',\r\n                        active\r\n                          ? 'border-primary bg-primary/10 shadow-sm'\r\n                          : 'border-border bg-background-card hover:border-primary/60',\r\n                      ].join(' ')"
-      },
-      "inForm": false,
-      "inModal": false
-    },
-    {
-      "app": "web",
-      "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
-      "line": 613,
-      "tag": "button",
-      "text": "{added ? td('addedToCart') : td('addToCart')}",
-      "attributes": {
-        "onClick": "handleAddToCart",
-        "className": "[\r\n                  'flex-1 rounded-2xl py-4 text-base font-black transition-all',\r\n                  added ? 'bg-green-600 text-text-primary' : 'bg-primary text-text-primary hover:bg-[#D8B95F] active:scale-[0.98]',\r\n                ].join(' ')"
-      },
-      "inForm": false,
-      "inModal": false
-    },
-    {
-      "app": "web",
-      "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
-      "line": 623,
-      "tag": "button",
-      "text": "{selected ? td('outOfStockLong') : td('chooseVariantFirst')}",
-      "attributes": {
-        "disabled": true,
-        "className": "flex-1 rounded-2xl bg-[#E8DCC3] py-4 text-base font-black text-[#9CA3AF]"
+        "type": "button",
+        "key": "val.valueAr",
+        "onClick": "() => isAvailable && handleSelectAttribute(attrType.typeAr, val.valueAr)",
+        "disabled": "!isAvailable",
+        "className": "[\n                            'relative shrink-0 transition-all overflow-hidden flex items-center justify-center focus:outline-none select-none',\n                            isColor ? 'w-11 h-11 rounded-full border' : 'px-5 py-2.5 rounded-xl border text-sm font-bold',\n                            isSelected \n                              ? 'border-primary ring-2 ring-primary ring-offset-2 ring-offset-background scale-105 shadow-sm' \n                              : isAvailable \n                                ? 'border-border hover:border-primary/60 bg-background-card text-[#1F1B16] hover:scale-[1.02] active:scale-[0.98]' \n                                : 'border-dashed border-red-200/80 bg-[#FAF7F2] text-[#9E9689] opacity-45 cursor-not-allowed',\n                          ].join(' ')",
+        "title": "tooltip"
       },
       "inForm": false,
       "inModal": false
@@ -1435,6 +1366,49 @@
       "app": "web",
       "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
       "line": 640,
+      "tag": "button",
+      "text": "{v.sku && <span className=\"rounded-full bg-background px-2 py-1\" dir=\"ltr\">{v.sku}</span>} {variantTitle(v, isAr, td)} {qty > 0 ? `${qty} ${td('pieces')}` : td('outOfStockShort')}",
+      "attributes": {
+        "type": "button",
+        "key": "v.id",
+        "onClick": "() => setSelected(v)",
+        "className": "[\n                        'rounded-2xl border p-3 text-right transition-all',\n                        active\n                          ? 'border-primary bg-primary/10 shadow-sm'\n                          : 'border-border bg-background-card hover:border-primary/60',\n                      ].join(' ')"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
+      "line": 678,
+      "tag": "button",
+      "text": "{added ? td('addedToCart') : td('addToCart')}",
+      "attributes": {
+        "type": "button",
+        "onClick": "handleAddToCart",
+        "className": "[\n                  'flex-1 rounded-2xl py-4 text-base font-black transition-all',\n                  added ? 'bg-green-600 text-text-primary' : 'bg-primary text-text-primary hover:bg-primary-dark active:scale-[0.98]',\n                ].join(' ')"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
+      "line": 689,
+      "tag": "button",
+      "text": "{selected ? td('outOfStockLong') : td('chooseVariantFirst')}",
+      "attributes": {
+        "type": "button",
+        "disabled": true,
+        "className": "flex-1 rounded-2xl bg-[#E8DCC3] py-4 text-base font-black text-text-muted"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/app/(main)/products/[slug]/page.tsx",
+      "line": 706,
       "tag": "Link",
       "text": "{isAr ? category.name_ar : (category.name_en || category.name_ar)}",
       "attributes": {
@@ -1514,7 +1488,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/wishlist/[token]/page.tsx",
-      "line": 82,
+      "line": 83,
       "tag": "Link",
       "text": "{t('browseProducts')}",
       "attributes": {
@@ -1527,7 +1501,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/wishlist/[token]/page.tsx",
-      "line": 92,
+      "line": 93,
       "tag": "Link",
       "text": "{!item.in_stock && (\n                    <div className=\"absolute left-2 top-2 rounded-full bg-black/70 px-2 py-0.5 text-xs font-bold text-white backdrop-blur-sm\">\n                      {t('outOfStock', { fallback: 'Out of Stock' })}\n      ",
       "attributes": {
@@ -1540,7 +1514,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/(main)/wishlist/[token]/page.tsx",
-      "line": 108,
+      "line": 109,
       "tag": "Link",
       "text": "{isAr ? item.name_ar : (item.name_en || item.name_ar)}",
       "attributes": {
@@ -1553,7 +1527,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/auth/forgot-password/page.tsx",
-      "line": 22,
+      "line": 23,
       "tag": "Link",
       "text": "{Euro Store}",
       "attributes": {
@@ -1566,7 +1540,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/auth/forgot-password/page.tsx",
-      "line": 50,
+      "line": 51,
       "tag": "input",
       "text": "",
       "attributes": {
@@ -1584,7 +1558,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/auth/forgot-password/page.tsx",
-      "line": 60,
+      "line": 61,
       "tag": "button",
       "text": "{loading ? 'جاري الإرسال...' : 'إرسال رابط إعادة التعيين'}",
       "attributes": {
@@ -1598,7 +1572,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/auth/forgot-password/page.tsx",
-      "line": 71,
+      "line": 72,
       "tag": "Link",
       "text": "{t('login')}",
       "attributes": {
@@ -1864,7 +1838,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/auth/reset-password/page.tsx",
-      "line": 21,
+      "line": 22,
       "tag": "Link",
       "text": "{Euro Store}",
       "attributes": {
@@ -1877,7 +1851,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/auth/reset-password/page.tsx",
-      "line": 44,
+      "line": 45,
       "tag": "input",
       "text": "",
       "attributes": {
@@ -1898,7 +1872,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/auth/reset-password/page.tsx",
-      "line": 60,
+      "line": 61,
       "tag": "button",
       "text": "{loading ? 'جاري التحديث...' : 'تحديث كلمة المرور'}",
       "attributes": {
@@ -1912,7 +1886,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/auth/verify-email/page.tsx",
-      "line": 17,
+      "line": 18,
       "tag": "Link",
       "text": "Return to Login",
       "attributes": {
@@ -1925,7 +1899,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/catalog-components.tsx",
-      "line": 109,
+      "line": 122,
       "tag": "Link",
       "text": "",
       "attributes": {
@@ -1944,7 +1918,7 @@
       "text": "{t('tryAgain')}",
       "attributes": {
         "onClick": "reset",
-        "className": "inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-black text-[#0F0F0F] sm:w-auto"
+        "className": "inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-black text-text-primary sm:w-auto"
       },
       "inForm": false,
       "inModal": false
@@ -1965,7 +1939,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 150,
+      "line": 156,
       "tag": "button",
       "text": "{sidebarOpen ? t('hideFilters') : t('showFilters')}",
       "attributes": {
@@ -1978,7 +1952,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 169,
+      "line": 175,
       "tag": "button",
       "text": "{t('clearAll')}",
       "attributes": {
@@ -1991,7 +1965,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 178,
+      "line": 184,
       "tag": "input",
       "text": "",
       "attributes": {
@@ -2006,7 +1980,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 184,
+      "line": 190,
       "tag": "button",
       "text": "",
       "attributes": {
@@ -2020,14 +1994,14 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 191,
+      "line": 197,
       "tag": "input",
       "text": "",
       "attributes": {
         "type": "checkbox",
         "checked": "featuredOnly",
         "onChange": "e => { setFeaturedOnly(e.target.checked); setPage(1); }",
-        "className": "accent-[#C9A84C]"
+        "className": "accent-primary"
       },
       "inForm": false,
       "inModal": false
@@ -2035,14 +2009,31 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 240,
-      "tag": "button",
-      "text": "{checked && (\r\n                          <span className=\"absolute inset-0 flex items-center justify-center text-text-primary text-[10px] font-black drop-shadow\">✓</span>\r\n                        )}",
+      "line": 208,
+      "tag": "input",
+      "text": "",
       "attributes": {
+        "type": "checkbox",
+        "checked": "saleOnly",
+        "onChange": "e => { setSaleOnly(e.target.checked); setPage(1); }",
+        "className": "accent-amber-600"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/app/filterable-product-grid.tsx",
+      "line": 263,
+      "tag": "button",
+      "text": "{checked && (\r\n                          <span className=\"absolute inset-0 flex items-center justify-center text-text-primary text-[10px] font-black drop-shadow\">✓</span>\r\n                        )} {isZero && (\r\n                          <",
+      "attributes": {
+        "type": "button",
         "key": "val.id",
-        "title": "`${isAr ? val.value_ar : (val.value_en || val.value_ar)} (${val.count})`",
-        "onClick": "() => toggle(selectedAttrs, attrKey, setSelectedAttrs)",
-        "className": "`relative h-7 w-7 rounded-full border-2 transition-all ${\r\n                          checked ? 'border-[#1F1B16] scale-110 shadow-md' : 'border-border hover:border-primary'\r\n                        }`",
+        "disabled": "isZero",
+        "title": "`${isAr ? val.value_ar : (val.value_en || val.value_ar)} (${val.count})${isZero ? (isAr ? ' - غير متوفر' : ' - Unavailable') : ''}`",
+        "onClick": "(e) => {\r\n                          if (isZero) {\r\n                            e.preventDefault();\r\n                            e.stopPropagation();\r\n                            return;\r\n                          }\r\n                          toggle(selectedAttrs, attrKey, setSelectedAttrs);\r\n                        }",
+        "className": "`relative h-8 w-8 rounded-full border-2 transition-all overflow-hidden flex items-center justify-center ${\r\n                          checked \r\n                            ? 'border-[#1F1B16] scale-110 shadow-md ring-2 ring-primary ring-offset-2' \r\n                            : isZero \r\n                              ? 'border-dashed border-red-300/80 opacity-35 cursor-not-allowed grayscale-[40%]' \r\n                              : 'border-border hover:border-primary hover:scale-105 cursor-pointer shadow-sm'\r\n                        }`",
         "style": "{ backgroundColor: val.hex_color }"
       },
       "inForm": false,
@@ -2051,7 +2042,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 277,
+      "line": 319,
       "tag": "input",
       "text": "",
       "attributes": {
@@ -2067,7 +2058,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 287,
+      "line": 329,
       "tag": "input",
       "text": "",
       "attributes": {
@@ -2083,7 +2074,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 301,
+      "line": 343,
       "tag": "button",
       "text": "{t('clearPrice')}",
       "attributes": {
@@ -2096,7 +2087,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 319,
+      "line": 361,
       "tag": "button",
       "text": "{sidebarOpen ? t('hideFilters') : t('showFilters')}",
       "attributes": {
@@ -2109,7 +2100,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 346,
+      "line": 388,
       "tag": "select",
       "text": "{isAr ? 'الأحدث' : 'Newest'} {isAr ? 'الأكثر طلبا' : 'Most popular'} {isAr ? 'السعر: الأقل' : 'Price: low to high'} {isAr ? 'السعر: الأعلى' : 'Price: high to low'}",
       "attributes": {
@@ -2124,7 +2115,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 374,
+      "line": 416,
       "tag": "button",
       "text": "{t('clearAllFilters')}",
       "attributes": {
@@ -2137,7 +2128,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 394,
+      "line": 436,
       "tag": "button",
       "text": "",
       "attributes": {
@@ -2153,7 +2144,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 396,
+      "line": 438,
       "tag": "button",
       "text": "",
       "attributes": {
@@ -2169,7 +2160,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 412,
+      "line": 454,
       "tag": "button",
       "text": "{title} {open ? '−' : '+'}",
       "attributes": {
@@ -2182,14 +2173,15 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 429,
+      "line": 485,
       "tag": "input",
       "text": "",
       "attributes": {
         "type": "checkbox",
         "checked": "checked",
-        "onChange": "onChange",
-        "className": "h-4 w-4 rounded accent-[#C9A84C] cursor-pointer"
+        "disabled": "isZero",
+        "onChange": "isZero ? undefined : onChange",
+        "className": "h-4 w-4 rounded accent-primary cursor-pointer disabled:cursor-not-allowed"
       },
       "inForm": false,
       "inModal": false
@@ -2197,7 +2189,7 @@
     {
       "app": "web",
       "file": "apps/web/src/app/filterable-product-grid.tsx",
-      "line": 445,
+      "line": 511,
       "tag": "button",
       "text": "×",
       "attributes": {
@@ -2215,7 +2207,7 @@
       "text": "{t('home')}",
       "attributes": {
         "href": "/",
-        "className": "inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-black text-[#0F0F0F] sm:w-auto"
+        "className": "inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-black text-text-primary sm:w-auto"
       },
       "inForm": false,
       "inModal": false
@@ -2493,7 +2485,7 @@
       "attributes": {
         "onClick": "() => !outOfStock && addItem(item)",
         "disabled": "outOfStock",
-        "className": "w-full rounded-sm bg-primary py-3 text-sm font-semibold text-[#111111] hover:bg-[#D8B95F] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        "className": "w-full rounded-lg bg-primary py-3 text-sm font-semibold text-text-primary transition-colors hover:bg-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-40"
       },
       "inForm": false,
       "inModal": false
@@ -2624,7 +2616,7 @@
       "attributes": {
         "href": "/checkout",
         "onClick": "onClose",
-        "className": "group flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-sm font-black uppercase tracking-widest text-text-primary transition-all hover:scale-[1.02] hover:bg-[#C9A84C] hover:shadow-lg hover:shadow-primary/20"
+        "className": "group flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-sm font-black uppercase tracking-widest text-text-primary transition-all hover:scale-[1.02] hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20"
       },
       "inForm": false,
       "inModal": false
@@ -2675,6 +2667,87 @@
     },
     {
       "app": "web",
+      "file": "apps/web/src/components/home/AccessoriesSpotlightSection.tsx",
+      "line": 35,
+      "tag": "Link",
+      "text": "{isAr ? 'عرض كافة الإكسسوارات' : 'View All Accessories'} {isAr ? (\n              <ArrowLeft className=\"h-4 w-4 transition-transform group-hover:-translate-x-1\" />\n            ) : (\n              <ArrowRight className=\"h-4 w-4 transition-tra",
+      "attributes": {
+        "href": "/categories/watches-accessories",
+        "className": "group inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primary-dark transition-colors"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/home/ApparelPoloSpotlight.tsx",
+      "line": 36,
+      "tag": "Link",
+      "text": "{isAr ? 'عرض كافة الملابس' : 'View All Apparel'} {isAr ? (\n              <ArrowLeft className=\"h-4 w-4 transition-transform group-hover:-translate-x-1\" />\n            ) : (\n              <ArrowRight className=\"h-4 w-4 transition-transform g",
+      "attributes": {
+        "href": "/categories/mens",
+        "className": "group inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primary-dark transition-colors"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/home/BrandMarqueeSection.tsx",
+      "line": 55,
+      "tag": "Link",
+      "text": "{isAr ? 'تصفح جميع المنتجات' : 'Browse all catalog'} {isAr ? (\n              <ArrowLeft className=\"h-4 w-4 transition-transform group-hover:-translate-x-1\" />\n            ) : (\n              <ArrowRight className=\"h-4 w-4 transition-transfo",
+      "attributes": {
+        "href": "/products",
+        "className": "group inline-flex items-center gap-1.5 text-xs md:text-sm font-bold text-primary hover:text-primary-dark transition-colors"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/home/BrandMarqueeSection.tsx",
+      "line": 78,
+      "tag": "Link",
+      "text": "{brand.logo_url ? (\n                <img\n                  src={brand.logo_url}\n                  alt={brand.name}\n                  className=\"max-h-full max-w-full object-contain filter drop-shadow-sm transition-transform duration-300 gro",
+      "attributes": {
+        "key": "`${brand.id}-${idx}`",
+        "href": "`/products?brands=${brand.slug}`",
+        "className": "group/brand relative flex h-14 sm:h-16 w-32 sm:w-44 shrink-0 items-center justify-center transition-all duration-300 hover:scale-115 opacity-75 hover:opacity-100",
+        "title": "brand.name"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/home/CategoryBentoShowcase.tsx",
+      "line": 100,
+      "tag": "Link",
+      "text": "{isAr ? 'استعراض كافة الأقسام' : 'View All Categories'} {isAr ? (\n              <ArrowLeft className=\"h-4 w-4 transition-transform group-hover:-translate-x-1\" />\n            ) : (\n              <ArrowRight className=\"h-4 w-4 transition-tran",
+      "attributes": {
+        "href": "/categories",
+        "className": "group inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primary-dark transition-colors"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/home/CategoryBentoShowcase.tsx",
+      "line": 124,
+      "tag": "Link",
+      "text": "",
+      "attributes": {
+        "href": "`/categories/${cat.slug}`",
+        "aria-label": "isAr ? `تصفح ${cat.titleAr}` : `Browse ${cat.titleEn}`",
+        "className": "absolute inset-0 z-20 focus-visible:ring-2 focus-visible:ring-primary"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
       "file": "apps/web/src/components/home/HomeBannerCarousel.tsx",
       "line": 59,
       "tag": "Link",
@@ -2718,6 +2791,19 @@
     },
     {
       "app": "web",
+      "file": "apps/web/src/components/home/LuxuryFragranceVault.tsx",
+      "line": 35,
+      "tag": "Link",
+      "text": "{isAr ? 'تصفح كافة العطور' : 'Explore All Fragrances'} {isAr ? (\n              <ArrowLeft className=\"h-4 w-4 transition-transform group-hover:-translate-x-1\" />\n            ) : (\n              <ArrowRight className=\"h-4 w-4 transition-trans",
+      "attributes": {
+        "href": "/categories/perfumes-beauty",
+        "className": "group inline-flex items-center gap-2 rounded-full border border-primary/40 bg-white px-5 py-2.5 text-sm font-bold text-primary shadow-sm hover:bg-primary hover:text-black transition-all"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
       "file": "apps/web/src/components/home/ScrollCategoryShowcase.tsx",
       "line": 393,
       "tag": "Link",
@@ -2731,13 +2817,60 @@
     },
     {
       "app": "web",
+      "file": "apps/web/src/components/home/SneakersSpotlightSection.tsx",
+      "line": 36,
+      "tag": "Link",
+      "text": "{isAr ? 'عرض كافة الأحذية' : 'View All Sneakers'} {isAr ? (\n              <ArrowLeft className=\"h-4 w-4 transition-transform group-hover:-translate-x-1\" />\n            ) : (\n              <ArrowRight className=\"h-4 w-4 transition-transform ",
+      "attributes": {
+        "href": "/categories/footwear",
+        "className": "group inline-flex items-center gap-2 text-sm font-bold text-primary hover:text-primary-dark transition-colors"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/home/VipClubNewsletter.tsx",
+      "line": 65,
+      "tag": "input",
+      "text": "",
+      "attributes": {
+        "type": "email",
+        "required": true,
+        "name": "email",
+        "autoComplete": "email",
+        "spellCheck": "false",
+        "aria-label": "isAr ? 'البريد الإلكتروني' : 'Email address'",
+        "value": "email",
+        "onChange": "(e) => setEmail(e.target.value)",
+        "placeholder": "isAr ? 'أدخل بريدك الإلكتروني...' : 'Enter your email address...'",
+        "className": "w-full rounded-2xl border border-border bg-background-elevated py-4 pe-4 ps-12 text-sm text-text-primary shadow-inner placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+      },
+      "inForm": true,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/home/VipClubNewsletter.tsx",
+      "line": 78,
+      "tag": "button",
+      "text": "{isAr ? 'انضم الآن' : 'Join Club'} {isAr ? <ArrowLeft className=\"h-4 w-4\" /> : <ArrowRight className=\"h-4 w-4\" />}",
+      "attributes": {
+        "type": "submit",
+        "className": "inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-4 text-sm font-black text-text-primary shadow-lg transition-colors hover:bg-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+      },
+      "inForm": true,
+      "inModal": false
+    },
+    {
+      "app": "web",
       "file": "apps/web/src/components/layout/Footer.tsx",
-      "line": 18,
+      "line": 40,
       "tag": "Link",
       "text": "{t('newArrivals')}",
       "attributes": {
-        "href": "/products",
-        "className": "text-sm text-text-secondary hover:text-primary transition-colors"
+        "href": "/new-arrivals",
+        "className": "text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block font-medium"
       },
       "inForm": false,
       "inModal": false
@@ -2745,12 +2878,12 @@
     {
       "app": "web",
       "file": "apps/web/src/components/layout/Footer.tsx",
-      "line": 19,
+      "line": 48,
       "tag": "Link",
       "text": "{t('categories')}",
       "attributes": {
         "href": "/categories",
-        "className": "text-sm text-text-secondary hover:text-primary transition-colors"
+        "className": "text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block font-medium"
       },
       "inForm": false,
       "inModal": false
@@ -2758,12 +2891,12 @@
     {
       "app": "web",
       "file": "apps/web/src/components/layout/Footer.tsx",
-      "line": 20,
+      "line": 56,
       "tag": "Link",
       "text": "{t('sales')}",
       "attributes": {
-        "href": "/products?sale=true",
-        "className": "text-sm text-text-secondary hover:text-primary transition-colors"
+        "href": "/offers",
+        "className": "inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 transition-colors hover:text-primary hover:underline sm:text-sm"
       },
       "inForm": false,
       "inModal": false
@@ -2771,12 +2904,25 @@
     {
       "app": "web",
       "file": "apps/web/src/components/layout/Footer.tsx",
-      "line": 26,
+      "line": 65,
+      "tag": "Link",
+      "text": "{t('allProducts')}",
+      "attributes": {
+        "href": "/products",
+        "className": "text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block font-medium"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/layout/Footer.tsx",
+      "line": 82,
       "tag": "Link",
       "text": "{t('faq')}",
       "attributes": {
         "href": "/faq",
-        "className": "text-sm text-text-secondary hover:text-primary transition-colors"
+        "className": "text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block"
       },
       "inForm": false,
       "inModal": false
@@ -2784,12 +2930,12 @@
     {
       "app": "web",
       "file": "apps/web/src/components/layout/Footer.tsx",
-      "line": 27,
+      "line": 90,
       "tag": "Link",
       "text": "{t('exchangePolicy')}",
       "attributes": {
         "href": "/exchange",
-        "className": "text-sm text-text-secondary hover:text-primary transition-colors"
+        "className": "text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block"
       },
       "inForm": false,
       "inModal": false
@@ -2797,12 +2943,77 @@
     {
       "app": "web",
       "file": "apps/web/src/components/layout/Footer.tsx",
-      "line": 28,
+      "line": 98,
       "tag": "Link",
       "text": "{t('contact')}",
       "attributes": {
         "href": "/contact",
-        "className": "text-sm text-text-secondary hover:text-primary transition-colors"
+        "className": "text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/layout/Footer.tsx",
+      "line": 115,
+      "tag": "Link",
+      "text": "{t('privacyPolicy')}",
+      "attributes": {
+        "href": "/privacy",
+        "className": "text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/layout/Footer.tsx",
+      "line": 123,
+      "tag": "Link",
+      "text": "{t('termsAndConditions')}",
+      "attributes": {
+        "href": "/terms",
+        "className": "text-xs sm:text-sm text-text-secondary hover:text-primary transition-colors inline-block"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/layout/Footer.tsx",
+      "line": 138,
+      "tag": "Link",
+      "text": "{t('privacyPolicy')}",
+      "attributes": {
+        "href": "/privacy",
+        "className": "hover:text-primary transition-colors"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/layout/Footer.tsx",
+      "line": 142,
+      "tag": "Link",
+      "text": "{t('termsAndConditions')}",
+      "attributes": {
+        "href": "/terms",
+        "className": "hover:text-primary transition-colors"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/layout/Footer.tsx",
+      "line": 146,
+      "tag": "Link",
+      "text": "{t('exchangePolicy')}",
+      "attributes": {
+        "href": "/exchange",
+        "className": "hover:text-primary transition-colors"
       },
       "inForm": false,
       "inModal": false
@@ -2810,7 +3021,7 @@
     {
       "app": "web",
       "file": "apps/web/src/components/layout/Header.tsx",
-      "line": 47,
+      "line": 49,
       "tag": "Link",
       "text": "{Euro Store}",
       "attributes": {
@@ -2823,13 +3034,13 @@
     {
       "app": "web",
       "file": "apps/web/src/components/layout/Header.tsx",
-      "line": 55,
+      "line": 58,
       "tag": "Link",
-      "text": "{t(link.key)}",
+      "text": "{isSale && <span className=\"h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse\" />} {t(link.key)}",
       "attributes": {
         "key": "link.href",
         "href": "link.href",
-        "className": "`rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 hover:bg-primary/20 hover:text-primary ${\r\n                    isActive ? 'bg-primary/15 text-primary ring-1 ring-primary/30 shadow-sm' : 'text-text-secondary'\r\n                  }`"
+        "className": "`rounded-lg px-3.5 py-1.5 text-sm font-semibold transition-all duration-200 inline-flex items-center gap-1.5 ${\n                    isSale\n                      ? 'text-amber-700 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-300/60'\n                      : isActive\n                      ? 'bg-primary/15 text-primary ring-1 ring-primary/30 shadow-sm'\n                      : 'text-text-secondary hover:bg-primary/20 hover:text-primary'\n                  }`"
       },
       "inForm": false,
       "inModal": false
@@ -2837,7 +3048,7 @@
     {
       "app": "web",
       "file": "apps/web/src/components/layout/Header.tsx",
-      "line": 83,
+      "line": 91,
       "tag": "button",
       "text": "",
       "attributes": {
@@ -2852,7 +3063,7 @@
     {
       "app": "web",
       "file": "apps/web/src/components/layout/Header.tsx",
-      "line": 88,
+      "line": 96,
       "tag": "Link",
       "text": "{loyaltyPoints}",
       "attributes": {
@@ -3074,7 +3285,7 @@
     {
       "app": "web",
       "file": "apps/web/src/components/product/ProductCard.tsx",
-      "line": 97,
+      "line": 120,
       "tag": "Link",
       "text": "{productName}",
       "attributes": {
@@ -3086,14 +3297,121 @@
     },
     {
       "app": "web",
-      "file": "apps/web/src/components/product/ProductCard.tsx",
-      "line": 107,
-      "tag": "Link",
+      "file": "apps/web/src/components/product/ProductImageGallery.tsx",
+      "line": 161,
+      "tag": "button",
+      "text": "{img.alt_ar || productName}",
+      "attributes": {
+        "type": "button",
+        "key": "img.id || index",
+        "onClick": "() => setActiveImageIndex(index)",
+        "aria-label": "`${productName} image ${index + 1}`",
+        "aria-pressed": "isActive",
+        "className": "`relative aspect-square w-16 h-16 sm:w-20 sm:h-20 overflow-hidden rounded-2xl border-2 bg-white p-1.5 transition-all flex items-center justify-center ${\n                  isActive\n                    ? 'border-primary shadow-md ring-2 ring-primary/20 scale-105'\n                    : 'border-border/50 hover:border-primary/50 opacity-70 hover:opacity-100'\n                }`"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/product/ProductImageGallery.tsx",
+      "line": 209,
+      "tag": "button",
       "text": "",
       "attributes": {
-        "href": "`/products/${product.slug}`",
-        "className": "absolute inset-0 z-10",
-        "aria-label": "`${t('viewProduct')} ${productName}`"
+        "type": "button",
+        "onClick": "zoomIn",
+        "className": "flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 hover:scale-105",
+        "title": "isAr ? 'تكبير' : 'Zoom In'"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/product/ProductImageGallery.tsx",
+      "line": 217,
+      "tag": "button",
+      "text": "",
+      "attributes": {
+        "type": "button",
+        "onClick": "zoomOut",
+        "className": "flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 hover:scale-105",
+        "title": "isAr ? 'تصغير' : 'Zoom Out'"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/product/ProductImageGallery.tsx",
+      "line": 226,
+      "tag": "button",
+      "text": "",
+      "attributes": {
+        "type": "button",
+        "onClick": "resetZoom",
+        "className": "flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 hover:scale-105",
+        "title": "isAr ? 'إعادة ضبط' : 'Reset'"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/product/ProductImageGallery.tsx",
+      "line": 235,
+      "tag": "button",
+      "text": "",
+      "attributes": {
+        "type": "button",
+        "onClick": "closeLightbox",
+        "className": "flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-red-500/80 hover:scale-105",
+        "title": "isAr ? 'إغلاق' : 'Close'"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/product/ProductImageGallery.tsx",
+      "line": 249,
+      "tag": "button",
+      "text": "{isAr ? <ChevronRight className=\"h-6 w-6\" /> : <ChevronLeft className=\"h-6 w-6\" />}",
+      "attributes": {
+        "type": "button",
+        "onClick": "(e) => {\n                    e.stopPropagation();\n                    isAr ? nextImage() : prevImage();\n                  }",
+        "className": "absolute start-4 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/25 hover:scale-110"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/product/ProductImageGallery.tsx",
+      "line": 260,
+      "tag": "button",
+      "text": "{isAr ? <ChevronLeft className=\"h-6 w-6\" /> : <ChevronRight className=\"h-6 w-6\" />}",
+      "attributes": {
+        "type": "button",
+        "onClick": "(e) => {\n                    e.stopPropagation();\n                    isAr ? prevImage() : nextImage();\n                  }",
+        "className": "absolute end-4 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/25 hover:scale-110"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "web",
+      "file": "apps/web/src/components/product/ProductImageGallery.tsx",
+      "line": 307,
+      "tag": "button",
+      "text": "",
+      "attributes": {
+        "key": "img.id || idx",
+        "type": "button",
+        "aria-label": "isAr ? `عرض الصورة ${idx + 1}` : `View image ${idx + 1}`",
+        "onClick": "() => {\n                      setActiveImageIndex(idx);\n                      setZoomLevel(1);\n                      setPanPosition({ x: 0, y: 0 });\n                    }",
+        "className": "`relative h-14 w-14 overflow-hidden rounded-xl border-2 bg-white p-1 transition-all ${\n                      idx === activeImageIndex\n                        ? 'border-primary ring-2 ring-primary/40 scale-110'\n                        : 'border-white/30 opacity-60 hover:opacity-100'\n                    }`"
       },
       "inForm": false,
       "inModal": false
@@ -3137,7 +3455,7 @@
       "file": "apps/web/src/components/product/RecentlyViewed.tsx",
       "line": 34,
       "tag": "Link",
-      "text": "{item.imageUrl ? <Image\n                    src={item.imageUrl}\n                    alt={isAr ? item.nameAr : item.nameEn}\n                    fill\n                    className='object-cover group-hover:scale-105 transition-transform durat",
+      "text": "{item.imageUrl ? (\n                    <Image\n                      src={item.imageUrl}\n                      alt={isAr ? item.nameAr : item.nameEn}\n                      fill\n                      className='object-contain p-1 group-hover:",
       "attributes": {
         "href": "`/products/${item.slug}`",
         "className": "block"
@@ -3388,7 +3706,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => setShowCreate((value) => !value)",
-        "className": "inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]"
+        "className": "inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-black text-text-primary hover:bg-primary-dark"
       },
       "inForm": false,
       "inModal": false
@@ -3950,7 +4268,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => setShowCreate((value) => !value)",
-        "className": "inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]"
+        "className": "inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-black text-text-primary hover:bg-primary-dark"
       },
       "inForm": false,
       "inModal": false
@@ -4446,7 +4764,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => setShowCreate((value) => !value)",
-        "className": "inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]"
+        "className": "inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-black text-text-primary hover:bg-primary-dark"
       },
       "inForm": false,
       "inModal": false
@@ -4954,7 +5272,7 @@
       "attributes": {
         "type": "button",
         "onClick": "load",
-        "className": "inline-flex items-center gap-2 rounded-lg bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-primary"
+        "className": "inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-black text-text-primary transition-colors hover:bg-primary-dark"
       },
       "inForm": false,
       "inModal": false
@@ -5176,7 +5494,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => setShowCreate((value) => !value)",
-        "className": "inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]"
+        "className": "inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-black text-text-primary hover:bg-primary-dark"
       },
       "inForm": false,
       "inModal": false
@@ -6903,7 +7221,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => {\r\n                    if (!newUrl.trim()) return;\r\n                    const newItem = { type: 'url' as const, id: Math.random().toString(36).substring(2), url: newUrl.trim() };\r\n                    setMediaItems((prev) => {\r\n                      const combined = [...prev, newItem];\r\n                      if (!primaryMediaId) setPrimaryMediaId(newItem.id);\r\n                      return combined;\r\n                    });\r\n                    setNewUrl('');\r\n                  }",
-        "className": "rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-[#9A7209] whitespace-nowrap"
+        "className": "rounded-lg bg-primary px-4 py-2 text-xs font-bold text-text-primary hover:bg-[#9A7209] whitespace-nowrap"
       },
       "inForm": true,
       "inModal": false
@@ -6917,7 +7235,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => setMediaItems(mediaItems.filter(f => f.id !== item.id))",
-        "className": "absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-text-primary shadow-sm"
+        "className": "absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs leading-none text-white shadow-sm"
       },
       "inForm": true,
       "inModal": false
@@ -7153,7 +7471,7 @@
         "type": "checkbox",
         "checked": "checked",
         "onChange": "onChange",
-        "className": "h-3.5 w-3.5 accent-[#B8860B]"
+        "className": "h-3.5 w-3.5 accent-primary"
       },
       "inForm": false,
       "inModal": false
@@ -7290,7 +7608,7 @@
       "text": "{t('newProduct', { fallback: 'منتج جديد' })}",
       "attributes": {
         "href": "/products/new",
-        "className": "inline-flex h-10 items-center gap-2 rounded-xl bg-[#1C1917] px-4 text-sm font-black text-white transition hover:bg-[#2D2926]"
+        "className": "inline-flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-black text-text-primary transition hover:bg-primary-dark"
       },
       "inForm": false,
       "inModal": false
@@ -7363,7 +7681,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => setShowAddVariant((current) => !current)",
-        "className": "inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926]"
+        "className": "inline-flex h-9 items-center gap-2 rounded-xl bg-primary px-3 text-xs font-black text-text-primary hover:bg-primary-dark"
       },
       "inForm": false,
       "inModal": true
@@ -7536,7 +7854,7 @@
         "type": "button",
         "onClick": "() => void addImage()",
         "disabled": "savingKey === 'image:new' || !newImageUrl.trim()",
-        "className": "inline-flex h-9 items-center gap-2 rounded-xl bg-[#1C1917] px-3 text-xs font-black text-white hover:bg-[#2D2926] disabled:opacity-50 whitespace-nowrap"
+        "className": "inline-flex h-9 items-center gap-2 rounded-xl bg-primary px-3 text-xs font-black text-text-primary hover:bg-primary-dark disabled:opacity-50 whitespace-nowrap"
       },
       "inForm": false,
       "inModal": true
@@ -7827,7 +8145,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => { openReview(r); void patchReview({ status: 'approved' }); }",
-        "className": "flex items-center gap-1.5 rounded-xl bg-green-600 px-4 py-2 text-xs font-bold text-text-primary hover:bg-green-700"
+        "className": "flex items-center gap-1.5 rounded-xl bg-green-600 px-4 py-2 text-xs font-bold text-white hover:bg-green-700"
       },
       "inForm": false,
       "inModal": false
@@ -8470,7 +8788,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => setShowCreate((value) => !value)",
-        "className": "inline-flex items-center gap-2 rounded-xl bg-[#1C1917] px-4 py-2 text-sm font-black text-white hover:bg-[#2D2926]"
+        "className": "inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-black text-text-primary hover:bg-primary-dark"
       },
       "inForm": false,
       "inModal": false
@@ -8618,7 +8936,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => setLocale(nextLocale)",
-        "className": "inline-flex h-8 items-center justify-center rounded-lg border border-transparent px-3 text-xs font-bold text-[#6F6658] transition-colors hover:bg-black/5 hover:text-[#1F1B16] dark:hover:bg-background-card/10 dark:hover:text-text-primary",
+        "className": "inline-flex h-8 items-center justify-center rounded-lg border border-transparent px-3 text-xs font-bold text-text-secondary transition-colors hover:bg-background-secondary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
         "aria-label": "label"
       },
       "inForm": false,
@@ -8686,7 +9004,7 @@
       "attributes": {
         "type": "submit",
         "disabled": "loading",
-        "className": "inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-black text-[#1F1B16] transition hover:bg-[#D8B95F] disabled:cursor-not-allowed disabled:opacity-60"
+        "className": "inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-black text-[#1F1B16] transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
       },
       "inForm": true,
       "inModal": false
@@ -8718,7 +9036,7 @@
       "attributes": {
         "type": "submit",
         "disabled": "submitting || !setup || code.length !== 6",
-        "className": "mt-2 rounded-lg bg-primary py-2.5 text-sm font-black text-text-primary transition-colors hover:bg-[#D8B95F] disabled:opacity-50"
+        "className": "mt-2 rounded-lg bg-primary py-2.5 text-sm font-black text-text-primary transition-colors hover:bg-primary-dark disabled:opacity-50"
       },
       "inForm": true,
       "inModal": false
@@ -8750,7 +9068,7 @@
       "attributes": {
         "type": "submit",
         "disabled": "loading || code.length !== 6",
-        "className": "mt-2 rounded-lg bg-primary py-2.5 text-sm font-black text-text-primary transition-colors hover:bg-[#D8B95F] disabled:opacity-50"
+        "className": "mt-2 rounded-lg bg-primary py-2.5 text-sm font-black text-text-primary transition-colors hover:bg-primary-dark disabled:opacity-50"
       },
       "inForm": true,
       "inModal": false
@@ -8765,8 +9083,9 @@
         "name": "email",
         "type": "email",
         "autoComplete": "email",
+        "spellCheck": "false",
         "required": true,
-        "className": "rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-primary"
+        "className": "rounded-lg border border-border bg-background-elevated px-3 py-3 text-text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
       },
       "inForm": true,
       "inModal": false
@@ -8781,8 +9100,9 @@
         "name": "password",
         "type": "password",
         "autoComplete": "current-password",
+        "spellCheck": "false",
         "required": true,
-        "className": "rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-primary"
+        "className": "rounded-lg border border-border bg-background-elevated px-3 py-3 text-text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
       },
       "inForm": true,
       "inModal": false
@@ -8795,7 +9115,7 @@
       "text": "{t('loginBtn')}",
       "attributes": {
         "type": "submit",
-        "className": "mt-2 rounded-sm bg-primary py-2.5 text-sm font-semibold text-text-primary hover:bg-[#D8B95F] transition-colors"
+        "className": "mt-2 min-h-11 rounded-lg bg-primary py-2.5 text-sm font-semibold text-text-primary transition-colors hover:bg-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
       },
       "inForm": true,
       "inModal": false
@@ -8822,7 +9142,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => void load()",
-        "className": "inline-flex items-center gap-2 rounded border border-[#2E2E2E] px-4 py-2 text-sm text-[#E2E2E2] hover:border-primary"
+        "className": "inline-flex items-center gap-2 rounded border border-border px-4 py-2 text-sm text-text-primary hover:border-primary"
       },
       "inForm": false,
       "inModal": false
@@ -8838,7 +9158,7 @@
         "value": "o.status",
         "onChange": "(e) => { void updateStatus(o.id, e.target.value); }",
         "disabled": "updating === o.id",
-        "className": "rounded border border-[#2E2E2E] bg-[#111111] px-3 py-2 text-sm text-[#E2E2E2] outline-none hover:border-primary focus:border-primary disabled:opacity-50"
+        "className": "rounded border border-border bg-background-card px-3 py-2 text-sm text-text-primary outline-none hover:border-primary focus:border-primary disabled:opacity-50"
       },
       "inForm": false,
       "inModal": false
@@ -8864,7 +9184,7 @@
       "text": "{t('scanQr')}",
       "attributes": {
         "onClick": "() => { setScanning(true); setScanResult(null); }",
-        "className": "flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors"
+        "className": "flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-text-primary hover:bg-primary-dark transition-colors"
       },
       "inForm": false,
       "inModal": false
@@ -8892,7 +9212,7 @@
       "attributes": {
         "value": "replacementSearch",
         "onChange": "(event) => setReplacementSearch(event.currentTarget.value)",
-        "className": "mt-2 w-full rounded-xl border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-3 text-sm text-[#E2E2E2] outline-none focus:border-primary",
+        "className": "mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary outline-none focus:border-primary",
         "placeholder": "t('replacementSearchPlaceholder')"
       },
       "inForm": false,
@@ -8908,7 +9228,7 @@
         "key": "option.id",
         "type": "button",
         "onClick": "() => setReplacementVariantId(option.id)",
-        "className": "`flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 text-start text-sm ${selectedOption ? 'border-primary bg-primary/10' : 'border-[#2E2E2E] bg-[#0F0F0F]'}`"
+        "className": "`flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-2 text-start text-sm ${selectedOption ? 'border-primary bg-primary/10' : 'border-border bg-background'}`"
       },
       "inForm": false,
       "inModal": false
@@ -8923,7 +9243,7 @@
         "type": "button",
         "onClick": "() => { void completeScannedExchange(); }",
         "disabled": "completingExchange || !replacementVariantId.trim()",
-        "className": "w-full rounded-xl bg-primary py-3 text-sm font-bold text-[#0F0F0F] disabled:opacity-50"
+        "className": "w-full rounded-xl bg-primary py-3 text-sm font-bold text-text-primary disabled:opacity-50"
       },
       "inForm": false,
       "inModal": false
@@ -8937,7 +9257,7 @@
       "attributes": {
         "key": "ex.id",
         "onClick": "() => { openDetail(ex); }",
-        "className": "w-full text-start rounded-xl border border-[#2E2E2E] bg-[#151515] p-5 hover:border-primary/50 transition-all"
+        "className": "w-full text-start rounded-xl border border-border bg-background-elevated p-5 hover:border-primary/50 transition-all"
       },
       "inForm": false,
       "inModal": false
@@ -8951,7 +9271,7 @@
       "attributes": {
         "key": "p",
         "onClick": "() => setPath(p)",
-        "className": "`flex-1 rounded-lg border py-2.5 text-sm font-bold transition-all ${\n                          path === p\n                            ? 'border-primary bg-primary/10 text-primary'\n                            : 'border-[#2E2E2E] text-[#9CA3AF] hover:border-[#3E3E3E]'\n                        }`"
+        "className": "`flex-1 rounded-lg border py-2.5 text-sm font-bold transition-all ${\n                          path === p\n                            ? 'border-primary bg-primary/10 text-primary'\n                            : 'border-border text-text-secondary hover:border-border-accent'\n                        }`"
       },
       "inForm": false,
       "inModal": false
@@ -8966,7 +9286,7 @@
         "aria-label": "locale === 'ar' ? 'الشريك المسؤول' : 'Assigned partner'",
         "value": "partnerId",
         "onChange": "(event) => setPartnerId(event.target.value)",
-        "className": "w-full rounded-lg border border-[#2E2E2E] bg-[#0F0F0F] px-3 py-2.5 text-sm text-[#E2E2E2]"
+        "className": "w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-text-primary"
       },
       "inForm": false,
       "inModal": false
@@ -8980,7 +9300,7 @@
       "attributes": {
         "onClick": "() => { void handleDecision('approve'); }",
         "disabled": "acting || (path === 'partner' && !partnerId)",
-        "className": "w-full rounded-xl bg-primary py-3 font-bold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors disabled:opacity-50"
+        "className": "w-full rounded-xl bg-primary py-3 font-bold text-text-primary hover:bg-primary-dark transition-colors disabled:opacity-50"
       },
       "inForm": false,
       "inModal": false
@@ -9008,7 +9328,7 @@
         "value": "rejectReason",
         "onChange": "e => setRejectReason(e.currentTarget.value)",
         "placeholder": "t('rejectionReasonPlaceholder')",
-        "className": "w-full rounded-xl border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-3 text-sm text-[#E2E2E2] resize-none h-20 focus:border-red-600 focus:outline-none"
+        "className": "w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-text-primary resize-none h-20 focus:border-red-600 focus:outline-none"
       },
       "inForm": false,
       "inModal": false
@@ -9021,7 +9341,7 @@
       "text": "{t('cancel')}",
       "attributes": {
         "onClick": "() => setShowRejectForm(false)",
-        "className": "flex-1 rounded-xl border border-[#2E2E2E] py-2.5 text-sm text-[#9CA3AF]"
+        "className": "flex-1 rounded-xl border border-border py-2.5 text-sm text-text-secondary"
       },
       "inForm": false,
       "inModal": false
@@ -9066,7 +9386,7 @@
       "attributes": {
         "key": "value",
         "onClick": "() => { setTab(value); reset(); }",
-        "className": "`flex flex-1 items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold ${tab === value ? 'bg-primary text-[#0F0F0F]' : 'text-[#9CA3AF] hover:text-[#E2E2E2]'}`"
+        "className": "`flex flex-1 items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold ${tab === value ? 'bg-primary text-text-primary' : 'text-text-secondary hover:text-text-primary'}`"
       },
       "inForm": false,
       "inModal": false
@@ -9080,7 +9400,7 @@
       "attributes": {
         "onClick": "() => setScanning(true)",
         "disabled": "loading",
-        "className": "flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 font-bold text-[#0F0F0F] disabled:opacity-50"
+        "className": "flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 font-bold text-text-primary disabled:opacity-50"
       },
       "inForm": false,
       "inModal": false
@@ -9096,7 +9416,7 @@
         "min": "1",
         "value": "invoiceAmount",
         "onChange": "(event) => { setInvoiceAmount(event.currentTarget.value); setPreview(null); setOperationId(null); }",
-        "className": "rounded-lg border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-lg font-bold text-[#E2E2E2] focus:border-primary focus:outline-none",
+        "className": "rounded-lg border border-border bg-background-elevated px-4 py-3 text-lg font-bold text-text-primary focus:border-primary focus:outline-none",
         "placeholder": "100000"
       },
       "inForm": false,
@@ -9113,7 +9433,7 @@
         "min": "1",
         "value": "amount",
         "onChange": "(event) => { setAmount(event.currentTarget.value); setPreview(null); setOperationId(null); }",
-        "className": "rounded-lg border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-lg font-bold text-[#E2E2E2] focus:border-primary focus:outline-none",
+        "className": "rounded-lg border border-border bg-background-elevated px-4 py-3 text-lg font-bold text-text-primary focus:border-primary focus:outline-none",
         "placeholder": "tab === 'earn' ? '100000' : '100'"
       },
       "inForm": false,
@@ -9141,7 +9461,7 @@
       "text": "{t('cancel')}",
       "attributes": {
         "onClick": "reset",
-        "className": "flex-1 rounded-lg border border-[#2E2E2E] py-3 text-sm font-bold text-[#9CA3AF]"
+        "className": "flex-1 rounded-lg border border-border py-3 text-sm font-bold text-text-secondary"
       },
       "inForm": false,
       "inModal": false
@@ -9155,7 +9475,7 @@
       "attributes": {
         "onClick": "() => { void handleConfirm(); }",
         "disabled": "loading || !preview",
-        "className": "flex-1 rounded-lg bg-primary py-3 text-sm font-bold text-[#0F0F0F] disabled:opacity-50"
+        "className": "flex-1 rounded-lg bg-primary py-3 text-sm font-bold text-text-primary disabled:opacity-50"
       },
       "inForm": false,
       "inModal": false
@@ -9168,7 +9488,7 @@
       "text": "{t('newOperation')}",
       "attributes": {
         "onClick": "reset",
-        "className": "flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 font-bold text-[#0F0F0F]"
+        "className": "flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 font-bold text-text-primary"
       },
       "inForm": false,
       "inModal": false
@@ -9183,7 +9503,7 @@
         "id": "product-name-ar",
         "value": "nameAr",
         "onChange": "e => setNameAr(e.currentTarget.value)",
-        "className": "rounded-xl border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-sm focus:border-primary focus:outline-none",
+        "className": "rounded-xl border border-border bg-background-elevated px-4 py-3 text-sm focus:border-primary focus:outline-none",
         "placeholder": "t('productNameArPlaceholder')",
         "required": true
       },
@@ -9200,7 +9520,7 @@
         "id": "product-name-en",
         "value": "nameEn",
         "onChange": "e => setNameEn(e.currentTarget.value)",
-        "className": "rounded-xl border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-sm focus:border-primary focus:outline-none",
+        "className": "rounded-xl border border-border bg-background-elevated px-4 py-3 text-sm focus:border-primary focus:outline-none",
         "placeholder": "t('productNameEnPlaceholder')",
         "dir": "ltr"
       },
@@ -9218,7 +9538,7 @@
         "value": "catId",
         "onChange": "e => setCatId(e.currentTarget.value)",
         "onFocus": "() => { void loadCategories(); }",
-        "className": "rounded-xl border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-sm text-[#E2E2E2] focus:border-primary focus:outline-none"
+        "className": "rounded-xl border border-border bg-background-elevated px-4 py-3 text-sm text-text-primary focus:border-primary focus:outline-none"
       },
       "inForm": true,
       "inModal": false
@@ -9234,7 +9554,7 @@
         "value": "desc",
         "onChange": "e => setDesc(e.currentTarget.value)",
         "rows": "4",
-        "className": "rounded-xl border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-sm resize-none focus:border-primary focus:outline-none",
+        "className": "rounded-xl border border-border bg-background-elevated px-4 py-3 text-sm resize-none focus:border-primary focus:outline-none",
         "placeholder": "t('additionalDescriptionPlaceholder')"
       },
       "inForm": true,
@@ -9283,7 +9603,7 @@
       "attributes": {
         "type": "button",
         "onClick": "() => fileRef.current?.click()",
-        "className": "flex items-center gap-2 rounded-xl border border-dashed border-[#3E3E3E] bg-[#151515] px-4 py-3 text-sm text-[#9CA3AF] hover:border-primary hover:text-primary transition-colors w-fit"
+        "className": "flex items-center gap-2 rounded-xl border border-dashed border-border-accent bg-background-elevated px-4 py-3 text-sm text-text-secondary hover:border-primary hover:text-primary transition-colors w-fit"
       },
       "inForm": true,
       "inModal": false
@@ -9297,7 +9617,7 @@
       "attributes": {
         "type": "submit",
         "disabled": "loading || !nameAr.trim()",
-        "className": "w-full rounded-xl bg-primary py-3 font-bold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors disabled:opacity-50"
+        "className": "w-full rounded-xl bg-primary py-3 font-bold text-text-primary hover:bg-primary-dark transition-colors disabled:opacity-50"
       },
       "inForm": true,
       "inModal": false
@@ -9310,7 +9630,7 @@
       "text": "{t('newRequest')}",
       "attributes": {
         "href": "/product-requests/new",
-        "className": "flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[#D8B95F]"
+        "className": "flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-primary-dark"
       },
       "inForm": false,
       "inModal": false
@@ -9324,7 +9644,7 @@
       "attributes": {
         "key": "href",
         "href": "href",
-        "className": "`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${\n              active ? 'bg-primary/10 text-primary' : 'text-[#9CA3AF] hover:bg-[#1A1A1A] hover:text-[#E2E2E2]'\n            }`"
+        "className": "`flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[10px] transition-colors md:min-h-11 md:flex-none md:flex-row md:justify-start md:gap-3 md:px-3 md:py-2.5 md:text-sm ${\n              active ? 'bg-primary/10 text-primary' : 'text-text-secondary hover:bg-background-secondary hover:text-text-primary'\n            }`"
       },
       "inForm": false,
       "inModal": false
@@ -9337,7 +9657,8 @@
       "text": "{t('auth.logout')}",
       "attributes": {
         "type": "submit",
-        "className": "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#9CA3AF] hover:text-red-400 transition-colors"
+        "aria-label": "t('auth.logout')",
+        "className": "flex h-11 w-11 items-center justify-center gap-3 rounded-full border border-border bg-background-elevated text-sm text-text-secondary shadow-md transition-colors hover:bg-error/5 hover:text-error focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error/20 md:w-full md:justify-start md:rounded-lg md:border-0 md:bg-transparent md:px-3 md:py-2.5 md:shadow-none"
       },
       "inForm": true,
       "inModal": false
@@ -9390,7 +9711,7 @@
       "text": "{t('exchangeScanner')} {t('exchangeScannerDesc')}",
       "attributes": {
         "href": "/exchange",
-        "className": "rounded-xl border border-[#2E2E2E] bg-[#151515] p-6 hover:border-primary transition-colors"
+        "className": "rounded-xl border border-border bg-background-elevated p-6 hover:border-primary transition-colors"
       },
       "inForm": false,
       "inModal": false
@@ -9403,7 +9724,7 @@
       "text": "{t('exchangeHistory')} {t('exchangeHistoryDesc')}",
       "attributes": {
         "href": "/exchange/history",
-        "className": "rounded-xl border border-[#2E2E2E] bg-[#151515] p-6 hover:border-primary transition-colors"
+        "className": "rounded-xl border border-border bg-background-elevated p-6 hover:border-primary transition-colors"
       },
       "inForm": false,
       "inModal": false
@@ -9416,7 +9737,7 @@
       "text": "{t('scanWithCamera')} {t('scanWithCameraDescription')}",
       "attributes": {
         "onClick": "() => setState('scanning')",
-        "className": "w-full flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-primary/40 bg-[#151515] p-10 hover:border-primary hover:bg-primary/5 transition-all"
+        "className": "w-full flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-primary/40 bg-background-elevated p-10 hover:border-primary hover:bg-primary/5 transition-all"
       },
       "inForm": false,
       "inModal": false
@@ -9429,7 +9750,7 @@
       "text": "{t('enterTokenManually')}",
       "attributes": {
         "onClick": "() => setShowManual(true)",
-        "className": "w-full text-center text-sm text-[#9CA3AF] hover:text-primary transition-colors py-2"
+        "className": "w-full text-center text-sm text-text-secondary hover:text-primary transition-colors py-2"
       },
       "inForm": false,
       "inModal": false
@@ -9441,7 +9762,7 @@
       "tag": "textarea",
       "text": "",
       "attributes": {
-        "className": "w-full rounded-xl border border-[#2E2E2E] bg-[#0F0F0F] px-4 py-3 text-xs font-mono text-[#E2E2E2] h-28 resize-none focus:border-primary focus:outline-none",
+        "className": "w-full rounded-xl border border-border bg-background px-4 py-3 text-xs font-mono text-text-primary h-28 resize-none focus:border-primary focus:outline-none",
         "value": "manualToken",
         "onChange": "e => setManualToken(e.currentTarget.value)",
         "placeholder": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…"
@@ -9457,7 +9778,7 @@
       "text": "{t('cancel')}",
       "attributes": {
         "onClick": "() => setShowManual(false)",
-        "className": "flex-1 rounded-xl border border-[#2E2E2E] py-2.5 text-sm text-[#9CA3AF]"
+        "className": "flex-1 rounded-xl border border-border py-2.5 text-sm text-text-secondary"
       },
       "inForm": false,
       "inModal": false
@@ -9471,7 +9792,7 @@
       "attributes": {
         "onClick": "() => { void handleManualSubmit(); }",
         "disabled": "!manualToken.trim()",
-        "className": "flex-1 rounded-xl bg-primary py-2.5 text-sm font-bold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors disabled:opacity-50"
+        "className": "flex-1 rounded-xl bg-primary py-2.5 text-sm font-bold text-text-primary hover:bg-primary-dark transition-colors disabled:opacity-50"
       },
       "inForm": false,
       "inModal": false
@@ -9484,7 +9805,7 @@
       "text": "{(() => {\n                  const Icon = nextStep(result.exchange)!.icon;\n                  return <Icon size={17} />;\n                })()} {nextStep(result.exchange)!.label}",
       "attributes": {
         "onClick": "nextStep(result.exchange)!.onClick",
-        "className": "flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-[#0F0F0F] hover:bg-[#A67C2E] transition-colors"
+        "className": "flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-text-primary hover:bg-primary-dark transition-colors"
       },
       "inForm": false,
       "inModal": false
@@ -9497,7 +9818,7 @@
       "text": "{t('newOperation')}",
       "attributes": {
         "onClick": "reset",
-        "className": "flex w-full items-center justify-center gap-2 rounded-xl border border-[#2E2E2E] py-3 text-sm font-bold text-[#9CA3AF] hover:border-primary hover:text-primary transition-colors"
+        "className": "flex w-full items-center justify-center gap-2 rounded-xl border border-border py-3 text-sm font-bold text-text-secondary hover:border-primary hover:text-primary transition-colors"
       },
       "inForm": false,
       "inModal": false
@@ -9526,7 +9847,7 @@
       "text": "{action.label}",
       "attributes": {
         "href": "/exchange",
-        "className": "inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-bold text-[#0F0F0F]"
+        "className": "inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-bold text-text-primary"
       },
       "inForm": false,
       "inModal": false
@@ -9541,7 +9862,7 @@
         "type": "button",
         "onClick": "() => void runStep(request.id, action.path)",
         "disabled": "updating === request.id",
-        "className": "inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-bold text-[#0F0F0F] disabled:opacity-50"
+        "className": "inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-xs font-bold text-text-primary disabled:opacity-50"
       },
       "inForm": false,
       "inModal": false
@@ -9555,7 +9876,7 @@
       "attributes": {
         "key": "href",
         "href": "href",
-        "className": "`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${\n              active ? 'bg-primary/10 text-primary' : 'text-[#9CA3AF] hover:bg-[#1A1A1A] hover:text-[#E2E2E2]'\n            }`"
+        "className": "`flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[10px] transition-colors md:min-h-11 md:flex-none md:flex-row md:justify-start md:gap-3 md:px-3 md:py-2.5 md:text-sm ${\n              active ? 'bg-primary/10 text-primary' : 'text-text-secondary hover:bg-background-secondary hover:text-text-primary'\n            }`"
       },
       "inForm": false,
       "inModal": false
@@ -9568,7 +9889,8 @@
       "text": "{t('auth.logout')}",
       "attributes": {
         "type": "submit",
-        "className": "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-[#9CA3AF] hover:text-red-400 transition-colors"
+        "aria-label": "t('auth.logout')",
+        "className": "flex h-11 w-11 items-center justify-center gap-3 rounded-full border border-border bg-background-elevated text-sm text-text-secondary shadow-md transition-colors hover:bg-error/5 hover:text-error focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error/20 md:w-full md:justify-start md:rounded-lg md:border-0 md:bg-transparent md:px-3 md:py-2.5 md:shadow-none"
       },
       "inForm": true,
       "inModal": false
@@ -9610,8 +9932,9 @@
         "name": "email",
         "type": "email",
         "autoComplete": "email",
+        "spellCheck": "false",
         "required": true,
-        "className": "rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-primary"
+        "className": "rounded-lg border border-border bg-background-elevated px-3 py-3 text-text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
       },
       "inForm": true,
       "inModal": false
@@ -9626,8 +9949,9 @@
         "name": "password",
         "type": "password",
         "autoComplete": "current-password",
+        "spellCheck": "false",
         "required": true,
-        "className": "rounded border border-[#2E2E2E] bg-[#151515] px-3 py-2 outline-none focus:border-primary"
+        "className": "rounded-lg border border-border bg-background-elevated px-3 py-3 text-text-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
       },
       "inForm": true,
       "inModal": false
@@ -9640,7 +9964,7 @@
       "text": "{t('loginBtn')}",
       "attributes": {
         "type": "submit",
-        "className": "mt-2 rounded-sm bg-primary py-2.5 text-sm font-semibold text-text-primary hover:bg-[#D8B95F] transition-colors"
+        "className": "mt-2 min-h-11 rounded-lg bg-primary py-2.5 text-sm font-semibold text-text-primary transition-colors hover:bg-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
       },
       "inForm": true,
       "inModal": false
@@ -9648,29 +9972,13 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/cart.tsx",
-      "line": 34,
-      "tag": "TouchableOpacity",
-      "text": "",
+      "line": 26,
+      "tag": "Pressable",
+      "text": "{l('ابدأ التسوق', 'Start shopping')}",
       "attributes": {
-        "accessibilityLabel": "l('تقليل الكمية', 'Decrease quantity')",
-        "disabled": "item.quantity <= 1",
-        "onPress": "() => updateQuantity(item.id, Math.max(1, item.quantity - 1))",
-        "className": "px-2 disabled:opacity-40"
-      },
-      "inForm": false,
-      "inModal": false
-    },
-    {
-      "app": "mobile",
-      "file": "apps/mobile/app/(tabs)/cart.tsx",
-      "line": 38,
-      "tag": "TouchableOpacity",
-      "text": "",
-      "attributes": {
-        "accessibilityLabel": "l('زيادة الكمية', 'Increase quantity')",
-        "disabled": "item.quantity >= item.maxQuantity",
-        "onPress": "() => updateQuantity(item.id, Math.min(item.maxQuantity, item.quantity + 1))",
-        "className": "px-2 disabled:opacity-40"
+        "accessibilityRole": "button",
+        "onPress": "() => router.push('/(tabs)/categories')",
+        "className": "mt-7 min-h-12 items-center justify-center rounded-lg bg-primary px-7"
       },
       "inForm": false,
       "inModal": false
@@ -9679,11 +9987,14 @@
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/cart.tsx",
       "line": 42,
-      "tag": "TouchableOpacity",
+      "tag": "Pressable",
       "text": "",
       "attributes": {
-        "accessibilityLabel": "l('حذف من السلة', 'Remove from cart')",
-        "onPress": "() => removeItem(item.id)"
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('تقليل الكمية', 'Decrease quantity')",
+        "disabled": "item.quantity <= 1",
+        "onPress": "() => updateQuantity(item.id, Math.max(1, item.quantity - 1))",
+        "className": "min-h-9 min-w-9 items-center justify-center disabled:opacity-40"
       },
       "inForm": false,
       "inModal": false
@@ -9691,11 +10002,43 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/cart.tsx",
-      "line": 58,
-      "tag": "TouchableOpacity",
+      "line": 46,
+      "tag": "Pressable",
+      "text": "",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('زيادة الكمية', 'Increase quantity')",
+        "disabled": "item.quantity >= item.maxQuantity",
+        "onPress": "() => updateQuantity(item.id, Math.min(item.maxQuantity, item.quantity + 1))",
+        "className": "min-h-9 min-w-9 items-center justify-center disabled:opacity-40"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/cart.tsx",
+      "line": 50,
+      "tag": "Pressable",
+      "text": "",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('حذف من السلة', 'Remove from cart')",
+        "onPress": "() => removeItem(item.id)",
+        "className": "h-10 w-10 items-center justify-center rounded-lg bg-error/10"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/cart.tsx",
+      "line": 66,
+      "tag": "Pressable",
       "text": "{l('متابعة الدفع', 'Continue to checkout')}",
       "attributes": {
-        "className": "bg-primary py-4 rounded-xl",
+        "accessibilityRole": "button",
+        "className": "min-h-14 items-center justify-center rounded-lg bg-primary",
         "onPress": "() => router.push('/checkout')"
       },
       "inForm": false,
@@ -9704,13 +10047,60 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/categories.tsx",
-      "line": 54,
-      "tag": "TouchableOpacity",
-      "text": "{isAr ? cat.name_ar : cat.name_en}",
+      "line": 57,
+      "tag": "Pressable",
+      "text": "{t('common.retry')}",
       "attributes": {
-        "key": "cat.id",
-        "className": "w-[48%] bg-background-secondary rounded-2xl overflow-hidden mb-4 border border-border shadow-sm",
-        "onPress": "() => router.push({ pathname: '/products', params: { categoryId: cat.id, title: isAr ? cat.name_ar : cat.name_en } })"
+        "accessibilityRole": "button",
+        "onPress": "() => void fetchCategories()",
+        "className": "mt-6 min-h-12 items-center justify-center rounded-lg bg-primary px-7"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/categories.tsx",
+      "line": 79,
+      "tag": "Pressable",
+      "text": "{l('عرض كافة المنتجات', 'View All Products')} {isAr ? <ArrowLeft size={14} color=\"#B8860B\" /> : <ArrowRight size={14} color=\"#B8860B\" />}",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('عرض كافة المنتجات', 'View All Products')",
+        "onPress": "() => router.push('/products')",
+        "className": "flex-row items-center gap-1"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/categories.tsx",
+      "line": 86,
+      "tag": "Pressable",
+      "text": "{title} {l('تصفح', 'Explore')}",
+      "attributes": {
+        "key": "category.id",
+        "accessibilityRole": "button",
+        "accessibilityLabel": "title",
+        "style": "({ pressed }) => ({\n                    width: '100%',\n                    marginBottom: 20,\n                    padding: 14,\n                    overflow: 'hidden',\n                    borderRadius: 16,\n                    borderWidth: 1,\n                    borderColor: '#E8DCC3',\n                    backgroundColor: '#FFFFFF',\n                    opacity: pressed ? 0.82 : 1,\n                    transform: [{ scale: pressed ? 0.99 : 1 }],\n                  })",
+        "onPress": "() => router.push({ pathname: '/products', params: { categoryId: category.id, title } })"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/categories.tsx",
+      "line": 116,
+      "tag": "Pressable",
+      "text": "{title}",
+      "attributes": {
+        "key": "category.id",
+        "accessibilityRole": "button",
+        "accessibilityLabel": "title",
+        "onPress": "() => router.push({ pathname: '/products', params: { categoryId: category.id, title } })",
+        "className": "mb-3 min-h-16 w-[48.5%] items-center justify-center rounded-xl border border-border bg-white px-3 py-3"
       },
       "inForm": false,
       "inModal": false
@@ -9718,12 +10108,13 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/index.tsx",
-      "line": 99,
-      "tag": "TouchableOpacity",
-      "text": "{unreadCount > 0 && (\r\n                <View className='absolute -top-1 -right-1 bg-error w-5 h-5 rounded-full items-center justify-center border border-background'>\r\n                  <Text className='text-white text-[10px] font-bold'>{unr",
+      "line": 89,
+      "tag": "Pressable",
+      "text": "{t('common.retry')}",
       "attributes": {
-        "className": "w-10 h-10 bg-background/50 rounded-full items-center justify-center relative",
-        "onPress": "() => router.push(user ? '/notifications' : '/login')"
+        "accessibilityRole": "button",
+        "onPress": "() => void loadHome()",
+        "className": "mt-6 min-h-12 items-center justify-center rounded-xl bg-primary px-7"
       },
       "inForm": false,
       "inModal": false
@@ -9731,12 +10122,14 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/index.tsx",
-      "line": 125,
-      "tag": "TouchableOpacity",
-      "text": "{hero?.ctaLabel ?? t('home.shopNow')}",
+      "line": 90,
+      "tag": "Pressable",
+      "text": "{banner.ctaLabel}",
       "attributes": {
-        "className": "bg-primary self-start px-8 py-3 rounded-xl",
-        "onPress": "() => router.push((hero?.ctaUrl ?? '/products') as Href)"
+        "accessibilityRole": "button",
+        "accessibilityLabel": "banner.ctaLabel",
+        "onPress": "() => router.push(banner.ctaUrl as Href)",
+        "className": "mt-5 min-h-12 self-start items-center justify-center bg-white px-7"
       },
       "inForm": false,
       "inModal": false
@@ -9744,11 +10137,111 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/index.tsx",
-      "line": 136,
-      "tag": "TouchableOpacity",
-      "text": "{t('home.viewAll')}",
+      "line": 90,
+      "tag": "Pressable",
+      "text": "",
       "attributes": {
-        "onPress": "() => router.push('/products')"
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('السابق', 'Previous')",
+        "onPress": "() => moveHero(-1)",
+        "className": "h-10 w-10 items-center justify-center"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/index.tsx",
+      "line": 90,
+      "tag": "Pressable",
+      "text": "",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('التالي', 'Next')",
+        "onPress": "() => moveHero(1)",
+        "className": "h-10 w-10 items-center justify-center"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/index.tsx",
+      "line": 91,
+      "tag": "Pressable",
+      "text": "{brand.logo_url ? <Image source={{ uri: brand.logo_url }} style={{ width: 118, height: 52 }} resizeMode=\"contain\" accessibilityLabel={brand.name} /> : <Text className=\"text-center text-sm font-black uppercase text-text-primary\">{brand.name}",
+      "attributes": {
+        "key": "brand.id",
+        "accessibilityRole": "button",
+        "accessibilityLabel": "brand.name",
+        "onPress": "() => router.push('/products')",
+        "className": "h-16 w-32 items-center justify-center"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/index.tsx",
+      "line": 92,
+      "tag": "Pressable",
+      "text": "{isAr ? category.badgeAr : category.badgeEn} {isAr ? category.titleAr : category.titleEn} {isAr ? category.subtitleAr : category.subtitleEn} {l('تصفح القسم', 'Shop Now')} {isAr ? <ArrowLeft size={14} color=\"#B8860B\" /> : <ArrowRight size={1",
+      "attributes": {
+        "key": "category.slug",
+        "accessibilityRole": "button",
+        "accessibilityLabel": "isAr ? category.titleAr : category.titleEn",
+        "onPress": "() => openCategory(category.slug, isAr ? category.titleAr : category.titleEn)",
+        "className": "h-52 overflow-hidden rounded-2xl border border-border"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/index.tsx",
+      "line": 95,
+      "tag": "TextInput",
+      "text": "",
+      "attributes": {
+        "value": "email",
+        "onChangeText": "setEmail",
+        "autoCapitalize": "none",
+        "autoComplete": "email",
+        "keyboardType": "email-address",
+        "placeholder": "l('أدخل بريدك الإلكتروني...', 'Enter your email address...')",
+        "placeholderTextColor": "#A8A29E",
+        "accessibilityLabel": "l('البريد الإلكتروني', 'Email address')",
+        "className": "`${isAr ? 'text-right' : 'text-left'} min-h-14 flex-1 px-3 text-sm text-text-primary`"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/index.tsx",
+      "line": 95,
+      "tag": "Pressable",
+      "text": "{l('انضم الآن', 'Join Club')} {isAr ? <ArrowLeft size={16} color=\"#000\" /> : <ArrowRight size={16} color=\"#000\" />}",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('انضم الآن', 'Join Club')",
+        "onPress": "() => { if (/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) setJoined(true); }",
+        "className": "mt-3 min-h-14 flex-row items-center justify-center gap-2 rounded-2xl bg-primary px-8"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/(tabs)/index.tsx",
+      "line": 101,
+      "tag": "Pressable",
+      "text": "{action} {isAr ? <ArrowLeft size={14} color=\"#B8860B\" /> : <ArrowRight size={14} color=\"#B8860B\" />}",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "action",
+        "onPress": "onAction",
+        "className": "mt-3 self-start flex-row items-center gap-1"
       },
       "inForm": false,
       "inModal": false
@@ -9756,11 +10249,12 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/profile.tsx",
-      "line": 41,
+      "line": 52,
       "tag": "TouchableOpacity",
       "text": "{t('profile.signIn')}",
       "attributes": {
-        "className": "w-full rounded-xl bg-primary p-4",
+        "accessibilityRole": "button",
+        "className": "min-h-14 w-full items-center justify-center rounded-xl bg-primary px-4",
         "onPress": "() => router.push('/login')"
       },
       "inForm": false,
@@ -9769,10 +10263,11 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/profile.tsx",
-      "line": 59,
+      "line": 71,
       "tag": "TouchableOpacity",
       "text": "{t('profile.personal')} {arrow}",
       "attributes": {
+        "accessibilityRole": "button",
         "className": "bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3",
         "onPress": "() => router.push('/account')"
       },
@@ -9782,10 +10277,11 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/profile.tsx",
-      "line": 62,
+      "line": 74,
       "tag": "TouchableOpacity",
       "text": "{t('profile.addresses')} {arrow}",
       "attributes": {
+        "accessibilityRole": "button",
         "className": "bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3",
         "onPress": "() => router.push('/addresses')"
       },
@@ -9795,10 +10291,11 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/profile.tsx",
-      "line": 65,
+      "line": 77,
       "tag": "TouchableOpacity",
       "text": "{t('profile.loyalty')} {arrow}",
       "attributes": {
+        "accessibilityRole": "button",
         "className": "bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3",
         "onPress": "() => router.push('/loyalty')"
       },
@@ -9808,10 +10305,11 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/profile.tsx",
-      "line": 68,
+      "line": 80,
       "tag": "TouchableOpacity",
       "text": "{t('profile.orders')} {arrow}",
       "attributes": {
+        "accessibilityRole": "button",
         "className": "bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3",
         "onPress": "() => router.push('/orders')"
       },
@@ -9821,12 +10319,13 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/profile.tsx",
-      "line": 75,
+      "line": 87,
       "tag": "TouchableOpacity",
       "text": "{t('profile.wishlist')} {arrow}",
       "attributes": {
+        "accessibilityRole": "button",
         "className": "bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3",
-        "onPress": "() => router.push('/wishlist')"
+        "onPress": "() => router.push('/(tabs)/wishlist')"
       },
       "inForm": false,
       "inModal": false
@@ -9834,10 +10333,11 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/profile.tsx",
-      "line": 82,
+      "line": 94,
       "tag": "TouchableOpacity",
       "text": "{t('profile.exchanges')} {arrow}",
       "attributes": {
+        "accessibilityRole": "button",
         "className": "bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-3",
         "onPress": "() => router.push('/exchanges')"
       },
@@ -9847,10 +10347,11 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/profile.tsx",
-      "line": 85,
+      "line": 97,
       "tag": "TouchableOpacity",
       "text": "{t('profile.notifications')} {arrow}",
       "attributes": {
+        "accessibilityRole": "button",
         "className": "bg-background-secondary p-4 rounded-xl border border-border flex-row justify-between items-center mb-6",
         "onPress": "() => router.push('/notifications')"
       },
@@ -9860,10 +10361,11 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/(tabs)/profile.tsx",
-      "line": 93,
+      "line": 105,
       "tag": "TouchableOpacity",
       "text": "{t('profile.signOut')}",
       "attributes": {
+        "accessibilityRole": "button",
         "className": "bg-error/10 border border-error/50 p-4 rounded-xl mb-4",
         "onPress": "handleSignOut"
       },
@@ -10020,7 +10522,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/checkout.tsx",
-      "line": 153,
+      "line": 156,
       "tag": "TouchableOpacity",
       "text": "{saved.label || saved.city || l('عنوان', 'Address')}",
       "attributes": {
@@ -10034,7 +10536,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/checkout.tsx",
-      "line": 153,
+      "line": 156,
       "tag": "TouchableOpacity",
       "text": "{l('استخدام عنوان جديد', 'Use a new address')}",
       "attributes": {
@@ -10047,7 +10549,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/checkout.tsx",
-      "line": 154,
+      "line": 157,
       "tag": "TextInput",
       "text": "",
       "attributes": {
@@ -10063,7 +10565,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/checkout.tsx",
-      "line": 155,
+      "line": 158,
       "tag": "TextInput",
       "text": "",
       "attributes": {
@@ -10080,7 +10582,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/checkout.tsx",
-      "line": 160,
+      "line": 163,
       "tag": "TouchableOpacity",
       "text": "{isAr ? item.ar : item.en}",
       "attributes": {
@@ -10094,7 +10596,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/checkout.tsx",
-      "line": 166,
+      "line": 169,
       "tag": "TextInput",
       "text": "",
       "attributes": {
@@ -10112,7 +10614,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/checkout.tsx",
-      "line": 167,
+      "line": 170,
       "tag": "TextInput",
       "text": "",
       "attributes": {
@@ -10129,7 +10631,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/checkout.tsx",
-      "line": 169,
+      "line": 172,
       "tag": "TouchableOpacity",
       "text": "{usePoints ? '✓' : ''} {l('استخدام نقاط الولاء', 'Use loyalty points')} {canUsePoints ? l(`${pointsToUse.toLocaleString('ar-SY')} نقطة، بقيمة ${formatCurrency(pointsToUse * pointValue)}`, `${pointsToUse.toLocaleString('en-US')} points, wort",
       "attributes": {
@@ -10143,7 +10645,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/checkout.tsx",
-      "line": 179,
+      "line": 182,
       "tag": "TouchableOpacity",
       "text": "{loading ? l('جاري تثبيت الطلب...', 'Placing order...') : l('تأكيد الطلب', 'Place order')}",
       "attributes": {
@@ -10220,7 +10722,7 @@
       "file": "apps/mobile/app/exchange/new.tsx",
       "line": 52,
       "tag": "TouchableOpacity",
-      "text": "{submitting ? <ActivityIndicator color='#0F0F0F' /> : <Text className='text-center text-lg font-bold text-[#0F0F0F]'>{l('إرسال الطلب', 'Submit request')}</Text>}",
+      "text": "{submitting ? <ActivityIndicator color='#1C1917' /> : <Text className='text-center text-lg font-bold text-text-primary'>{l('إرسال الطلب', 'Submit request')}</Text>}",
       "attributes": {
         "disabled": "submitting",
         "onPress": "submit",
@@ -10425,12 +10927,28 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/onboarding.tsx",
-      "line": 94,
-      "tag": "TouchableOpacity",
+      "line": 96,
+      "tag": "Pressable",
+      "text": "{l('تخطي', 'Skip')}",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('تخطي المقدمة', 'Skip onboarding')",
+        "onPress": "handleSkip",
+        "className": "min-h-11 min-w-11 items-center justify-center px-3 active:opacity-60"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/app/onboarding.tsx",
+      "line": 125,
+      "tag": "Pressable",
       "text": "{currentIndex === slides.length - 1 ? l('ابدأ التسوق', 'Start shopping') : l('التالي', 'Next')}",
       "attributes": {
-        "className": "bg-primary py-4 rounded-xl items-center shadow-lg",
-        "onPress": "handleNext"
+        "accessibilityRole": "button",
+        "onPress": "handleNext",
+        "className": "min-h-14 items-center justify-center rounded-2xl bg-primary px-5 active:scale-[0.98] active:opacity-90"
       },
       "inForm": false,
       "inModal": false
@@ -10820,6 +11338,7 @@
       "tag": "Pressable",
       "text": "{t('common.back')}",
       "attributes": {
+        "accessibilityRole": "button",
         "onPress": "() => router.back()",
         "className": "rounded-lg bg-primary px-6 py-3"
       },
@@ -10833,6 +11352,7 @@
       "tag": "Pressable",
       "text": "",
       "attributes": {
+        "accessibilityRole": "button",
         "accessibilityLabel": "t('common.back')",
         "onPress": "() => router.back()",
         "className": "h-11 w-11 items-center justify-center rounded-full bg-black/70"
@@ -10847,6 +11367,7 @@
       "tag": "Pressable",
       "text": "",
       "attributes": {
+        "accessibilityRole": "button",
         "accessibilityLabel": "t('product.share')",
         "onPress": "() => void Share.share({ message: `${name}\\n${productUrl}`, url: productUrl })",
         "className": "h-11 w-11 items-center justify-center rounded-full bg-black/70"
@@ -10876,6 +11397,7 @@
       "tag": "Pressable",
       "text": "",
       "attributes": {
+        "accessibilityRole": "button",
         "accessibilityLabel": "-",
         "disabled": "quantity <= 1",
         "onPress": "() => setQuantity((value) => Math.max(1, value - 1))",
@@ -10891,6 +11413,7 @@
       "tag": "Pressable",
       "text": "",
       "attributes": {
+        "accessibilityRole": "button",
         "accessibilityLabel": "+",
         "disabled": "quantity >= maxQuantity",
         "onPress": "() => setQuantity((value) => Math.min(maxQuantity, value + 1))",
@@ -10919,6 +11442,7 @@
       "tag": "Pressable",
       "text": "{maxQuantity > 0 ? t('common.addToCart') : notifying ? t('product.notifying') : t('product.notify')}",
       "attributes": {
+        "accessibilityRole": "button",
         "disabled": "!selectedVariant || notifying",
         "onPress": "() => { if (maxQuantity > 0) addSelectedVariant(); else void subscribeToStock(); }",
         "className": "min-w-48 flex-row items-center justify-center gap-2 rounded-lg bg-primary px-6 py-4 disabled:opacity-50"
@@ -10929,7 +11453,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/products/[id].tsx",
-      "line": 240,
+      "line": 243,
       "tag": "Pressable",
       "text": "{available ? t('product.bundleAdd') : t('common.unavailable')}",
       "attributes": {
@@ -10943,7 +11467,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/products/[id].tsx",
-      "line": 245,
+      "line": 248,
       "tag": "Modal",
       "text": "{guide?.name ?? t('product.sizeGuide')} {table.headers.length ? <View className=\"flex-row bg-background-elevated\">{table.headers.map((header) => <Text key={header} className=\"w-28 border border-border p-3 text-center font-bold text-text-pri",
       "attributes": {
@@ -10958,7 +11482,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/app/products/[id].tsx",
-      "line": 245,
+      "line": 248,
       "tag": "Pressable",
       "text": "",
       "attributes": {
@@ -10971,26 +11495,16 @@
     },
     {
       "app": "mobile",
-      "file": "apps/mobile/app/wishlist.tsx",
-      "line": 103,
-      "tag": "TouchableOpacity",
-      "text": "{l('أضف للسلة', 'Add to cart')}",
+      "file": "apps/mobile/components/AppTopBar.tsx",
+      "line": 21,
+      "tag": "Pressable",
+      "text": "{l('ابحث عن منتج...', 'Search for a product...')}",
       "attributes": {
-        "className": "bg-primary/20 px-4 py-2 rounded-lg",
-        "onPress": "() => handleAddToCart(item)"
-      },
-      "inForm": false,
-      "inModal": false
-    },
-    {
-      "app": "mobile",
-      "file": "apps/mobile/app/wishlist.tsx",
-      "line": 110,
-      "tag": "TouchableOpacity",
-      "text": "{l('حذف', 'Delete')}",
-      "attributes": {
-        "className": "bg-error/10 px-3 py-2 rounded-lg",
-        "onPress": "() => { void handleRemove(item.productId); }"
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('البحث في المتجر', 'Search the store')",
+        "onPress": "() => router.push('/products')",
+        "className": "`min-h-11 flex-1 items-center rounded-full border border-[#E8E1D3] bg-[#F5F1E8] px-4 ${isAr ? 'flex-row-reverse' : 'flex-row'}`",
+        "style": "({ pressed }) => ({ opacity: pressed ? 0.72 : 1 })"
       },
       "inForm": false,
       "inModal": false
@@ -10998,7 +11512,7 @@
     {
       "app": "mobile",
       "file": "apps/mobile/components/PreferencesPanel.tsx",
-      "line": 23,
+      "line": 18,
       "tag": "TouchableOpacity",
       "text": "{option.label}",
       "attributes": {
@@ -11013,31 +11527,16 @@
     },
     {
       "app": "mobile",
-      "file": "apps/mobile/components/PreferencesPanel.tsx",
-      "line": 37,
-      "tag": "TouchableOpacity",
-      "text": "{option.label}",
-      "attributes": {
-        "key": "option.value",
-        "accessibilityRole": "button",
-        "accessibilityState": "{ selected: theme === option.value }",
-        "onPress": "() => setTheme(option.value)",
-        "className": "`flex-1 border px-2 py-3 ${theme === option.value ? 'border-primary bg-primary/10' : 'border-border bg-background-secondary'}`"
-      },
-      "inForm": false,
-      "inModal": false
-    },
-    {
-      "app": "mobile",
       "file": "apps/mobile/components/ProductCard.tsx",
-      "line": 65,
+      "line": 59,
       "tag": "Pressable",
-      "text": "{discountPercentage && discountPercentage > 0 ? <View className=\"rounded bg-error px-2 py-1\"><Text className=\"text-xs font-bold text-white\">{t('common.sale', { percent: discountPercentage })}</Text></View> : null} {isNew ? <View className=\"",
+      "text": "{isNew ? <View className=\"rounded-full border border-border bg-white px-2 py-1\"><Text className=\"text-[9px] font-black text-text-primary\">{t('common.new')}</Text></View> : null} {discountPercentage && discountPercentage > 0 ? <View classNam",
       "attributes": {
         "accessibilityRole": "button",
         "accessibilityLabel": "title",
-        "className": "w-full overflow-hidden rounded-lg border border-border bg-background-card",
-        "onPress": "openProduct"
+        "className": "h-full w-full",
+        "onPress": "openProduct",
+        "style": "({ pressed }) => ({ opacity: pressed ? 0.82 : 1, transform: [{ scale: pressed ? 0.985 : 1 }] })"
       },
       "inForm": false,
       "inModal": false
@@ -11045,14 +11544,14 @@
     {
       "app": "mobile",
       "file": "apps/mobile/components/ProductCard.tsx",
-      "line": 68,
+      "line": 78,
       "tag": "Pressable",
       "text": "",
       "attributes": {
         "accessibilityRole": "button",
         "accessibilityLabel": "isWishlisted ? `${t('common.delete')} ${title}` : `${t('profile.wishlist')}: ${title}`",
-        "onPress": "(event) => { event.stopPropagation(); void toggleWishlist(); }",
-        "className": "absolute start-2 top-2 z-10 h-9 w-9 items-center justify-center rounded-full bg-black/65"
+        "onPress": "() => void toggleWishlist()",
+        "className": "absolute start-2 top-2 z-10 h-9 w-9 items-center justify-center rounded-full bg-white/90"
       },
       "inForm": false,
       "inModal": false
@@ -11060,14 +11559,13 @@
     {
       "app": "mobile",
       "file": "apps/mobile/components/ProductCard.tsx",
-      "line": 87,
+      "line": 88,
       "tag": "Pressable",
-      "text": "{maxQuantity > 0 ? t('common.addToCart') : t('common.unavailable')}",
+      "text": "{title}",
       "attributes": {
         "accessibilityRole": "button",
-        "accessibilityLabel": "`${maxQuantity > 0 ? t('common.addToCart') : t('common.unavailable')}: ${title}`",
-        "className": "`mt-3 flex-row items-center justify-center gap-2 rounded-lg border py-2 ${maxQuantity > 0 ? 'border-primary/30 bg-primary/10' : 'border-border opacity-60'}`",
-        "onPress": "(event) => { event.stopPropagation(); handleAddToCart(); }"
+        "accessibilityLabel": "title",
+        "onPress": "openProduct"
       },
       "inForm": false,
       "inModal": false
@@ -11083,6 +11581,95 @@
         "accessibilityLabel": "t('common.back')",
         "onPress": "() => router.back()",
         "className": "me-3 h-10 w-10 items-center justify-center rounded-full border border-border"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/components/SectionHeader.tsx",
+      "line": 22,
+      "tag": "Pressable",
+      "text": "{actionLabel}",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "actionLabel",
+        "onPress": "onAction",
+        "hitSlop": "10",
+        "style": "({ pressed }) => ({ opacity: pressed ? 0.55 : 1 })"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/components/WishlistView.tsx",
+      "line": 109,
+      "tag": "Pressable",
+      "text": "{l('استكشف التصنيفات', 'Explore categories')}",
+      "attributes": {
+        "accessibilityRole": "button",
+        "onPress": "() => router.push('/(tabs)/categories')",
+        "className": "mt-7 min-h-12 items-center justify-center rounded-lg bg-primary px-7"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/components/WishlistView.tsx",
+      "line": 120,
+      "tag": "Pressable",
+      "text": "",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "item.title",
+        "onPress": "() => router.push(`/products/${encodeURIComponent(item.slug ?? item.productId)}`)",
+        "style": "({ pressed }) => ({ opacity: pressed ? 0.82 : 1 })"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/components/WishlistView.tsx",
+      "line": 134,
+      "tag": "Pressable",
+      "text": "{item.title}",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "item.title",
+        "onPress": "() => router.push(`/products/${encodeURIComponent(item.slug ?? item.productId)}`)"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/components/WishlistView.tsx",
+      "line": 139,
+      "tag": "Pressable",
+      "text": "{l('أضف للسلة', 'Add to cart')}",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('إضافة إلى السلة', 'Add to cart')",
+        "onPress": "() => addToCart(item)",
+        "className": "min-h-10 flex-1 flex-row items-center justify-center gap-2 rounded-lg bg-primary/10"
+      },
+      "inForm": false,
+      "inModal": false
+    },
+    {
+      "app": "mobile",
+      "file": "apps/mobile/components/WishlistView.tsx",
+      "line": 148,
+      "tag": "Pressable",
+      "text": "",
+      "attributes": {
+        "accessibilityRole": "button",
+        "accessibilityLabel": "l('حذف من المفضلة', 'Remove from wishlist')",
+        "onPress": "() => void remove(item.productId)",
+        "className": "h-10 w-10 items-center justify-center rounded-lg bg-error/10"
       },
       "inForm": false,
       "inModal": false

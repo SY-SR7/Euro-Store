@@ -1,10 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { vars } from 'nativewind';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useColorScheme, View } from 'react-native';
+import { View } from 'react-native';
 
 export type AppLocale = 'ar' | 'en';
-export type ThemePreference = 'system' | 'light' | 'dark';
 
 const STORAGE_KEY = 'eurostore-mobile-preferences-v1';
 
@@ -35,10 +34,6 @@ const messages = {
     'preferences.language': 'اللغة',
     'preferences.arabic': 'العربية',
     'preferences.english': 'English',
-    'preferences.theme': 'المظهر',
-    'preferences.system': 'النظام',
-    'preferences.light': 'فاتح',
-    'preferences.dark': 'داكن',
     'profile.title': 'حسابي',
     'profile.signInTitle': 'سجّل الدخول لإدارة حسابك',
     'profile.guestBody': 'يمكنك متابعة تصفح المنتجات والسلة كضيف.',
@@ -126,10 +121,6 @@ const messages = {
     'preferences.language': 'Language',
     'preferences.arabic': 'العربية',
     'preferences.english': 'English',
-    'preferences.theme': 'Appearance',
-    'preferences.system': 'System',
-    'preferences.light': 'Light',
-    'preferences.dark': 'Dark',
     'profile.title': 'My account',
     'profile.signInTitle': 'Sign in to manage your account',
     'profile.guestBody': 'You can continue browsing products and your cart as a guest.',
@@ -193,45 +184,26 @@ const messages = {
   },
 } as const;
 
-const colorThemes = {
-  dark: {
-    '--color-primary': '207 166 61',
+const lightColors = {
+    '--color-primary': '184 134 11',
     '--color-primary-dark': '154 114 9',
     '--color-primary-light': '212 175 55',
-    '--color-background': '15 15 15',
-    '--color-background-secondary': '26 26 26',
-    '--color-background-card': '28 25 23',
-    '--color-background-elevated': '38 38 38',
-    '--color-text-primary': '242 242 242',
-    '--color-text-secondary': '171 171 171',
-    '--color-text-muted': '115 115 115',
-    '--color-border': '39 39 42',
-    '--color-border-accent': '63 63 70',
-  },
-  light: {
-    '--color-primary': '154 114 9',
-    '--color-primary-dark': '122 86 5',
-    '--color-primary-light': '184 134 11',
-    '--color-background': '250 249 247',
-    '--color-background-secondary': '244 242 238',
-    '--color-background-card': '255 255 255',
-    '--color-background-elevated': '236 232 225',
+    '--color-background': '250 247 239',
+    '--color-background-secondary': '243 238 227',
+    '--color-background-card': '255 253 248',
+    '--color-background-elevated': '255 255 255',
     '--color-text-primary': '28 25 23',
-    '--color-text-secondary': '82 82 78',
-    '--color-text-muted': '113 113 108',
-    '--color-border': '224 220 213',
-    '--color-border-accent': '196 190 180',
-  },
+    '--color-text-secondary': '87 83 78',
+    '--color-text-muted': '168 162 158',
+    '--color-border': '232 220 195',
+    '--color-border-accent': '215 190 121',
 } as const;
 
 type PreferencesContextValue = {
   locale: AppLocale;
   isAr: boolean;
-  theme: ThemePreference;
-  resolvedTheme: 'light' | 'dark';
   hydrated: boolean;
   setLocale: (locale: AppLocale) => void;
-  setTheme: (theme: ThemePreference) => void;
   t: (key: string, params?: Record<string, string | number>) => string;
   l: (arabic: string, english: string) => string;
   formatCurrency: (value: number) => string;
@@ -241,37 +213,28 @@ type PreferencesContextValue = {
 const PreferencesContext = createContext<PreferencesContextValue | null>(null);
 
 export function PreferencesProvider({ children }: { children: React.ReactNode }) {
-  const systemTheme = useColorScheme();
   const [locale, setLocaleState] = useState<AppLocale>('ar');
-  const [theme, setThemeState] = useState<ThemePreference>('system');
   const [hydrated, setHydrated] = useState(false);
-  const resolvedTheme = theme === 'system' ? (systemTheme === 'light' ? 'light' : 'dark') : theme;
 
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY)
       .then((raw) => {
         if (!raw) return;
-        const saved = JSON.parse(raw) as { locale?: AppLocale; theme?: ThemePreference };
+        const saved = JSON.parse(raw) as { locale?: AppLocale };
         if (saved.locale === 'ar' || saved.locale === 'en') setLocaleState(saved.locale);
-        if (saved.theme === 'system' || saved.theme === 'light' || saved.theme === 'dark') setThemeState(saved.theme);
       })
       .catch(() => undefined)
       .finally(() => setHydrated(true));
   }, []);
 
-  const persist = useCallback((nextLocale: AppLocale, nextTheme: ThemePreference) => {
-    void AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ locale: nextLocale, theme: nextTheme }));
+  const persist = useCallback((nextLocale: AppLocale) => {
+    void AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ locale: nextLocale }));
   }, []);
 
   const setLocale = useCallback((next: AppLocale) => {
     setLocaleState(next);
-    persist(next, theme);
-  }, [persist, theme]);
-
-  const setTheme = useCallback((next: ThemePreference) => {
-    setThemeState(next);
-    persist(locale, next);
-  }, [locale, persist]);
+    persist(next);
+  }, [persist]);
 
   const t = useCallback((key: string, params?: Record<string, string | number>) => {
     const table = messages[locale] as Record<string, string>;
@@ -295,22 +258,19 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
   const contextValue = useMemo<PreferencesContextValue>(() => ({
     locale,
     isAr: locale === 'ar',
-    theme,
-    resolvedTheme,
     hydrated,
     setLocale,
-    setTheme,
     t,
     l,
     formatCurrency,
     formatDate,
-  }), [formatCurrency, formatDate, hydrated, l, locale, resolvedTheme, setLocale, setTheme, t, theme]);
+  }), [formatCurrency, formatDate, hydrated, l, locale, setLocale, t]);
 
   return (
     <PreferencesContext.Provider value={contextValue}>
       <View
         className="flex-1 bg-background"
-        style={[vars(colorThemes[resolvedTheme]), { direction: locale === 'ar' ? 'rtl' : 'ltr' }]}
+        style={[vars(lightColors), { direction: locale === 'ar' ? 'rtl' : 'ltr' }]}
       >
         {children}
       </View>

@@ -4,6 +4,7 @@ import { createWritableAuthClient, jsonError } from '../_lib';
 
 const schema = z.object({
   email: z.string().trim().toLowerCase().email(),
+  platform: z.enum(['web', 'mobile']).optional().default('web'),
 });
 
 export async function POST(request: NextRequest) {
@@ -13,8 +14,9 @@ export async function POST(request: NextRequest) {
   }
 
   const supabase = await createWritableAuthClient();
-  const redirectTo =
-    `${process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin}/auth/callback?next=/auth/reset-password`;
+  const redirectTo = parsed.data.platform === 'mobile'
+    ? 'eurostore://reset-password'
+    : `${process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin}/auth/callback?next=/auth/reset-password`;
   await supabase.auth.resetPasswordForEmail(parsed.data.email, { redirectTo });
 
   // Keep this response identical for existing and unknown addresses.

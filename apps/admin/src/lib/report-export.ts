@@ -93,7 +93,7 @@ export async function createPdf(rows: ReportRow[], summary: ReportRow, title: st
     const line = `${key}: ${displayValue(value)}`;
     doc.text(line, { align: hasArabic(line) ? 'right' : 'left' });
   }
-  doc.moveDown().strokeColor('#C9A84C').moveTo(42, doc.y).lineTo(553, doc.y).stroke().moveDown();
+  doc.moveDown().strokeColor('#B8860B').moveTo(42, doc.y).lineTo(553, doc.y).stroke().moveDown();
 
   rows.forEach((row, index) => {
     if (doc.y > 710) doc.addPage();

@@ -104,7 +104,7 @@ export async function createInvoicePdf(order: InvoiceOrder): Promise<Uint8Array>
   const pageHeader = () => {
     doc.fontSize(22).fillColor('#1F1B16').text('Euro Store', left, 42, { width, align: 'left' });
     doc.fontSize(18).fillColor('#766235').text('فاتورة طلب', left, 44, { width, align: 'right' });
-    doc.moveTo(left, 78).lineTo(left + width, 78).strokeColor('#C9A84C').lineWidth(1.5).stroke();
+    doc.moveTo(left, 78).lineTo(left + width, 78).strokeColor('#B8860B').lineWidth(1.5).stroke();
     doc.y = 94;
   };
 

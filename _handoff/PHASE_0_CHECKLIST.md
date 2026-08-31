@@ -164,12 +164,13 @@
   - Manrope (Google Fonts) — body/UI
   - Arabic: Noto Naskh Arabic or IBM Plex Arabic — for Arabic headlines
 - [ ] Configure Tailwind with brand tokens in `packages/config/tailwind-config/index.js`:
-  - Gold: `#C9A84C`, `#A67C2E`, `#E8D28A`
-  - Dark backgrounds: `#0F0F0F`, `#1A1A1A`, `#242424`
+  - Primary accent: `#B8860B`, `#9A7209`, `#D4AF37`
+  - Light surfaces: `#FAF7EF`, `#F3EEE3`, `#FFFDF8`, `#FFFFFF`
+  - Text and border: `#1C1917`, `#57534E`, `#A8A29E`, `#E8DCC3`
   - All CSS custom properties from `DESIGN.md`
 - [ ] Install and configure `tailwindcss-rtl` or use logical CSS properties
-- [ ] Create global CSS file with `:root` and `[data-theme="dark"]` custom properties (from PRD 11.2)
-- [ ] Implement theme toggle logic (localStorage `eurostore_theme`, respects `prefers-color-scheme`)
+- [ ] Create the light-only global CSS variables from `DESIGN.md`; do not add a dark selector or system-theme resolution
+- [ ] Add the theme-contract regression test so legacy dark tokens and theme toggles cannot return
 - [ ] Create base layout component with RTL/LTR direction switching
 
 ---

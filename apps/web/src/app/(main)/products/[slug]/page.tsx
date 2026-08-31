@@ -477,7 +477,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                   <PriceDisplay amountSyp={selected.price_syp} className="!text-2xl" />
                 </div>
                 {selected.compare_price_syp && selected.compare_price_syp > selected.price_syp && (
-                  <div className="text-sm text-[#9CA3AF] line-through">
+                  <div className="text-sm text-text-muted line-through">
                     <PriceDisplay amountSyp={selected.compare_price_syp} className="!text-sm" />
                   </div>
                 )}
@@ -680,13 +680,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                 onClick={handleAddToCart}
                 className={[
                   'flex-1 rounded-2xl py-4 text-base font-black transition-all',
-                  added ? 'bg-green-600 text-text-primary' : 'bg-primary text-text-primary hover:bg-[#D8B95F] active:scale-[0.98]',
+                  added ? 'bg-green-600 text-text-primary' : 'bg-primary text-text-primary hover:bg-primary-dark active:scale-[0.98]',
                 ].join(' ')}
               >
                 {added ? td('addedToCart') : td('addToCart')}
               </button>
             ) : (
-              <button type="button" disabled className="flex-1 rounded-2xl bg-[#E8DCC3] py-4 text-base font-black text-[#9CA3AF]">
+              <button type="button" disabled className="flex-1 rounded-2xl bg-[#E8DCC3] py-4 text-base font-black text-text-muted">
                 {selected ? td('outOfStockLong') : td('chooseVariantFirst')}
               </button>
             )}

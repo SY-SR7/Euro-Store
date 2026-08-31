@@ -11,7 +11,7 @@ export const metadata = {
   description: 'استكشف كافة أقسام وتصنيفات يورو ستور: الأحذية والسنيكرز، الملابس، العطور، الساعات، الإكسسوارات، والجلديات.',
 };
 
-export default async function CategoriesPage(): Promise<JSX.Element> {
+export default async function CategoriesPage() {
   const t = await getTranslations();
   const locale = await getLocale();
   const isAr = locale === 'ar';

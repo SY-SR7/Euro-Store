@@ -1,8 +1,10 @@
 const createNextIntlPlugin = require('next-intl/plugin');
+const path = require('path');
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  outputFileTracingRoot: path.join(__dirname, '../..'),
   serverExternalPackages: ['pdfkit'],
   outputFileTracingIncludes: {
     '/api/orders/*/invoice': ['../../packages/database/assets/NotoSansArabic.ttf'],
@@ -28,7 +30,19 @@ const nextConfig = {
     ],
   },
   async headers() {
+    const developmentMobileCors = process.env.NODE_ENV === 'development'
+      ? [{
+          source: '/api/:path*',
+          headers: [
+            { key: 'Access-Control-Allow-Origin', value: 'http://localhost:8081' },
+            { key: 'Access-Control-Allow-Headers', value: 'Authorization, Content-Type' },
+            { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PATCH, PUT, DELETE, OPTIONS' },
+          ],
+        }]
+      : [];
+
     return [
+      ...developmentMobileCors,
       {
         source: '/(.*)',
         headers: [

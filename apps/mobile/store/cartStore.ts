@@ -9,6 +9,9 @@ export type CartItem = {
   productId: string;
   variantId: string;
   title: string;
+  nameAr?: string;
+  nameEn?: string;
+  sku?: string;
   price: number;
   quantity: number;
   imageUrl: string;

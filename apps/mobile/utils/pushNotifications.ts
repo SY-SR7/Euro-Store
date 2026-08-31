@@ -1,19 +1,31 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 import { apiFetch } from './api';
 
 const TOKEN_STORAGE_KEY = 'eurostore-expo-push-token';
+type NotificationsModule = typeof import('expo-notifications');
+let notificationsPromise: Promise<NotificationsModule> | null = null;
+let notificationHandlerConfigured = false;
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: true,
-  }),
-});
+async function getNotifications(): Promise<NotificationsModule> {
+  notificationsPromise ??= import('expo-notifications');
+  const Notifications = await notificationsPromise;
+  if (!notificationHandlerConfigured) {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
+        shouldPlaySound: false,
+        shouldSetBadge: true,
+      }),
+    });
+    notificationHandlerConfigured = true;
+  }
+  return Notifications;
+}
 
 function expoProjectId(): string | null {
   return Constants.easConfig?.projectId
@@ -23,13 +35,17 @@ function expoProjectId(): string | null {
 
 export async function registerPushNotifications(): Promise<void> {
   if (!Device.isDevice) return;
+  // Expo Go no longer supports Android remote push notifications. The actual
+  // development/preview/production builds continue through the native module.
+  if (Constants.executionEnvironment === 'storeClient') return;
+  const Notifications = await getNotifications();
 
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
       name: 'EuroStore',
       importance: Notifications.AndroidImportance.DEFAULT,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#CFA63D',
+      lightColor: '#B8860B',
     });
   }
 

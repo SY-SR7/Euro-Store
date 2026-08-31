@@ -9,7 +9,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 
     const query = supabase
       .from('orders')
-      .select('*, order_items(id, variant_id, product_snapshot, quantity, unit_price_syp, total_price_syp, product_variants(product_id))')
+      .select('*, order_items(id, variant_id, product_snapshot, quantity, unit_price_syp, total_price_syp, product_variants(product_id, products(slug)))')
       .eq('customer_id', user.id);
 
     const byUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test((await params).id);

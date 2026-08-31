@@ -74,7 +74,7 @@ export function PriceDisplay({
 
       {/* Discount Pill Badge */}
       {hasDiscount && calculatedDiscount && showDiscountBadge && (
-        <span className="inline-flex items-center rounded-md bg-amber-500/15 border border-amber-400/40 px-1.5 py-0.5 text-[10px] font-black text-amber-900 dark:text-amber-300 leading-none">
+        <span className="inline-flex items-center rounded-md border border-amber-400/40 bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-black leading-none text-amber-900">
           -{calculatedDiscount}%
         </span>
       )}

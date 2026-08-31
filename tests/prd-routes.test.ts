@@ -78,7 +78,10 @@ describe('PRD route contracts', () => {
     expect(checkout).toContain("apiFetch<LoyaltyData>('/api/customer/loyalty')");
     expect(checkout).toContain('loyalty_points_to_use');
     expect(checkout).toContain('/api/checkout/shipping?gov=');
-    expect(checkout).toContain('variant_id: item.variantId');
+    expect(checkout).toContain("apiFetch('/api/cart'");
+    expect(checkout).toContain('itemType: item.itemType');
+    expect(checkout).toContain('itemId: item.itemId');
+    expect(checkout).not.toContain('items: items.map');
     expect(checkout).toContain("'Idempotency-Key'");
     expect(checkout).not.toContain(".from('orders')");
     expect(checkout).not.toContain('EURO2026');

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
 import { apiFetch } from '../../utils/api';
 import { apiDownload } from '../../utils/api';
@@ -15,7 +16,7 @@ type OrderItem = {
   quantity: number;
   unit_price_syp: number;
   total_price_syp: number;
-  product_variants: { product_id: string } | null;
+  product_variants: { product_id: string; products?: { slug?: string } | null } | null;
 };
 
 type Order = {
@@ -102,10 +103,10 @@ export default function OrderDetailsScreen() {
           <View className='mb-5 rounded-xl border border-border bg-background-secondary p-4'>
             {order.order_items.map((item) => (
               <View key={item.id} className='mb-5 border-b border-border pb-4'>
-                <View className='flex-row justify-between'><View className='me-4 flex-1'><Text className='font-bold text-text-primary'>{(isAr ? item.product_snapshot?.name_ar : item.product_snapshot?.name_en) ?? item.product_snapshot?.name_ar ?? item.product_snapshot?.name_en ?? l('منتج', 'Product')}</Text><Text className='mt-1 text-xs text-text-secondary'>{item.quantity} × {formatCurrency(Number(item.unit_price_syp))}</Text></View><Text className='font-bold text-primary'>{formatCurrency(Number(item.total_price_syp))}</Text></View>
+                <View className='flex-row justify-between'><View className='me-4 flex-1'><TouchableOpacity accessibilityRole={item.product_variants?.products?.slug ? 'link' : 'text'} disabled={!item.product_variants?.products?.slug} onPress={() => item.product_variants?.products?.slug && router.push(`/products/${encodeURIComponent(item.product_variants.products.slug)}`)}><Text className={`font-bold ${item.product_variants?.products?.slug ? 'text-primary' : 'text-text-primary'}`}>{(isAr ? item.product_snapshot?.name_ar : item.product_snapshot?.name_en) ?? item.product_snapshot?.name_ar ?? item.product_snapshot?.name_en ?? l('منتج', 'Product')}</Text></TouchableOpacity><Text className='mt-1 text-xs text-text-secondary'>{item.product_snapshot?.sku ? `SKU: ${item.product_snapshot.sku} · ` : ''}{item.quantity} × {formatCurrency(Number(item.unit_price_syp))}</Text></View><Text className='font-bold text-primary'>{formatCurrency(Number(item.total_price_syp))}</Text></View>
                 {['delivered', 'completed'].includes(order.status) ? <TouchableOpacity onPress={() => router.push({ pathname: '/exchange/new', params: { orderId: order.id, itemId: item.id } })} className='mt-3 rounded-lg border border-primary px-3 py-2'><Text className='text-center font-bold text-primary'>{l('طلب استبدال هذا المنتج', 'Request an exchange')}</Text></TouchableOpacity> : null}
                 {order.status === 'completed' && item.product_variants?.product_id ? <TouchableOpacity onPress={() => setReviewItemId(reviewItemId === item.id ? null : item.id)} className='mt-2 rounded-lg border border-border px-3 py-2'><Text className='text-center font-bold text-text-primary'>{l('كتابة تقييم', 'Write a review')}</Text></TouchableOpacity> : null}
-                {reviewItemId === item.id ? <View className='mt-3'><View className='mb-3 flex-row justify-center gap-2'>{[1, 2, 3, 4, 5].map((value) => <TouchableOpacity key={value} accessibilityLabel={l(`${value} نجوم`, `${value} stars`)} onPress={() => setRating(value)}><Text className={`text-3xl ${value <= rating ? 'text-primary' : 'text-text-secondary'}`}>★</Text></TouchableOpacity>)}</View><TextInput value={comment} onChangeText={setComment} multiline maxLength={2000} className='mb-3 min-h-20 rounded-lg border border-border bg-background px-3 py-3 text-text-primary' placeholder={l('اكتب رأيك (اختياري)', 'Write your review (optional)')} placeholderTextColor='#737373' /><TouchableOpacity disabled={working} onPress={() => void submitReview(item)} className='rounded-lg bg-primary p-3'><Text className='text-center font-bold text-[#0F0F0F]'>{l('إرسال التقييم', 'Submit review')}</Text></TouchableOpacity></View> : null}
+                {reviewItemId === item.id ? <View className='mt-3'><View className='mb-3 flex-row justify-center gap-2'>{[1, 2, 3, 4, 5].map((value) => <TouchableOpacity key={value} accessibilityLabel={l(`${value} نجوم`, `${value} stars`)} onPress={() => setRating(value)}><Text className={`text-3xl ${value <= rating ? 'text-primary' : 'text-text-secondary'}`}>★</Text></TouchableOpacity>)}</View><TextInput value={comment} onChangeText={setComment} multiline maxLength={2000} className='mb-3 min-h-20 rounded-lg border border-border bg-background px-3 py-3 text-text-primary' placeholder={l('اكتب رأيك (اختياري)', 'Write your review (optional)')} placeholderTextColor='#737373' /><TouchableOpacity disabled={working} onPress={() => void submitReview(item)} className='rounded-lg bg-primary p-3'><Text className='text-center font-bold text-text-primary'>{l('إرسال التقييم', 'Submit review')}</Text></TouchableOpacity></View> : null}
               </View>
             ))}
           </View>
@@ -125,7 +126,7 @@ export default function OrderDetailsScreen() {
           <View className='mt-5 gap-3'>
             <TouchableOpacity disabled={working} onPress={() => void downloadInvoice()} className='rounded-xl border border-primary p-4'><Text className='text-center font-bold text-primary'>{l('تنزيل فاتورة PDF', 'Download PDF invoice')}</Text></TouchableOpacity>
             {order.status === 'pending' ? <TouchableOpacity disabled={working} onPress={cancel} className='rounded-xl border border-error bg-error/10 p-4'><Text className='text-center font-bold text-error'>{l('إلغاء الطلب', 'Cancel order')}</Text></TouchableOpacity> : null}
-            {order.status === 'completed' ? <TouchableOpacity disabled={working} onPress={() => void reorder()} className='rounded-xl bg-primary p-4'><Text className='text-center font-bold text-[#0F0F0F]'>{l('إعادة الطلب', 'Reorder')}</Text></TouchableOpacity> : null}
+            {order.status === 'completed' ? <TouchableOpacity disabled={working} onPress={() => void reorder()} className='rounded-xl bg-primary p-4'><Text className='text-center font-bold text-text-primary'>{l('إعادة الطلب', 'Reorder')}</Text></TouchableOpacity> : null}
           </View>
         </ScrollView>
       )}

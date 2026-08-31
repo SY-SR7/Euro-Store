@@ -4,6 +4,9 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { PreferencesProvider, usePreferences } from '../contexts/PreferencesContext';
 import { useOnboardingStore } from '../store/onboardingStore';
 import { useEffect } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { View } from 'react-native';
+import { GlobalBottomNav } from '../components/GlobalBottomNav';
 import '../global.css';
 
 function RootLayoutNav() {
@@ -12,12 +15,12 @@ function RootLayoutNav() {
   const hasHydrated = useOnboardingStore((state) => state.hasHydrated);
   const segments = useSegments();
   const router = useRouter();
-  const { resolvedTheme } = usePreferences();
 
   useEffect(() => {
     if (isLoading || !hasHydrated) return;
 
-    if (!hasSeenOnboarding && segments[0] !== 'onboarding') {
+    const authFlow = segments[0] === 'login' || segments[0] === 'reset-password' || segments[0] === 'verify-email';
+    if (!hasSeenOnboarding && segments[0] !== 'onboarding' && !authFlow) {
       router.replace('/onboarding');
       return;
     }
@@ -28,23 +31,28 @@ function RootLayoutNav() {
   }, [session, isLoading, segments, hasSeenOnboarding, hasHydrated, router]);
 
   return (
-    <>
-      <StatusBar style={resolvedTheme === 'dark' ? 'light' : 'dark'} />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: resolvedTheme === 'dark' ? '#0F0F0F' : '#FAF9F7' } }}>
-        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="login" options={{ headerShown: false, presentation: 'modal' }} />
-      </Stack>
-    </>
+    <View className="flex-1 bg-background">
+      <StatusBar style="dark" backgroundColor="#FFFDF8" />
+      <View className="flex-1">
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#FAF7EF' } }}>
+          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="login" options={{ headerShown: false, presentation: 'modal' }} />
+        </Stack>
+      </View>
+      <GlobalBottomNav />
+    </View>
   );
 }
 
 export default function RootLayout() {
   return (
-    <PreferencesProvider>
-      <AuthProvider>
-        <RootLayoutNav />
-      </AuthProvider>
-    </PreferencesProvider>
+    <SafeAreaProvider>
+      <PreferencesProvider>
+        <AuthProvider>
+          <RootLayoutNav />
+        </AuthProvider>
+      </PreferencesProvider>
+    </SafeAreaProvider>
   );
 }

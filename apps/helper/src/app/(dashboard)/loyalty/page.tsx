@@ -141,7 +141,7 @@ export default function HelperLoyaltyPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0F0F0F] px-6 py-10 text-[#E2E2E2]">
+    <main className="min-h-screen bg-background px-6 py-10 text-text-primary">
       {scanning ? (
         <QRScanner
           title={tab === 'earn' ? t('scanEarnTitle') : t('scanRedeemTitle')}
@@ -154,14 +154,14 @@ export default function HelperLoyaltyPage() {
       <div className="mx-auto max-w-md">
         <h1 className="mb-6 text-2xl font-semibold">{t('title')}</h1>
 
-        <div className="mb-6 flex rounded-lg border border-[#2E2E2E] bg-[#151515] p-1">
+        <div className="mb-6 flex rounded-lg border border-border bg-background-elevated p-1">
           {(['earn', 'redeem'] as Tab[]).map((value) => {
             const Icon = value === 'earn' ? TrendingUp : TrendingDown;
             return (
               <button
                 key={value}
                 onClick={() => { setTab(value); reset(); }}
-                className={`flex flex-1 items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold ${tab === value ? 'bg-primary text-[#0F0F0F]' : 'text-[#9CA3AF] hover:text-[#E2E2E2]'}`}
+                className={`flex flex-1 items-center justify-center gap-2 rounded-md py-2.5 text-sm font-semibold ${tab === value ? 'bg-primary text-text-primary' : 'text-text-secondary hover:text-text-primary'}`}
               >
                 <Icon size={16} /> {value === 'earn' ? t('earnTab') : t('redeemTab')}
               </button>
@@ -176,10 +176,10 @@ export default function HelperLoyaltyPage() {
         ) : null}
 
         {step === 'scan' ? (
-          <section className="rounded-lg border border-dashed border-[#3E3E3E] bg-[#151515] p-8 text-center">
+          <section className="rounded-lg border border-dashed border-border-accent bg-background-elevated p-8 text-center">
             <Camera className="mx-auto mb-4 h-12 w-12 text-primary" />
-            <p className="mb-6 text-sm leading-6 text-[#9CA3AF]">{tab === 'earn' ? t('earnScanHint') : t('redeemScanHint')}</p>
-            <button onClick={() => setScanning(true)} disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 font-bold text-[#0F0F0F] disabled:opacity-50">
+            <p className="mb-6 text-sm leading-6 text-text-secondary">{tab === 'earn' ? t('earnScanHint') : t('redeemScanHint')}</p>
+            <button onClick={() => setScanning(true)} disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 font-bold text-text-primary disabled:opacity-50">
               <Camera size={17} /> {loading ? t('loading') : t('openCamera')}
             </button>
           </section>
@@ -187,26 +187,26 @@ export default function HelperLoyaltyPage() {
 
         {step === 'confirm' && customer ? (
           <div className="space-y-4">
-            <section className="rounded-lg border border-[#2E2E2E] bg-[#151515] p-5">
+            <section className="rounded-lg border border-border bg-background-elevated p-5">
               <div className="flex items-center gap-3">
                 <UserCircle className="h-11 w-11 text-primary" />
                 <div>
                   <p className="font-bold">{customer.full_name}</p>
-                  <p className="text-sm text-[#9CA3AF]">{t('balance', { points: customer.loyalty_points.toLocaleString(numberLocale) })}</p>
+                  <p className="text-sm text-text-secondary">{t('balance', { points: customer.loyalty_points.toLocaleString(numberLocale) })}</p>
                 </div>
               </div>
             </section>
 
             {tab === 'redeem' ? (
-              <label className="flex flex-col gap-1.5 text-sm text-[#9CA3AF]">
+              <label className="flex flex-col gap-1.5 text-sm text-text-secondary">
                 {t('invoiceBeforeDiscount')}
-                <input type="number" min="1" value={invoiceAmount} onChange={(event) => { setInvoiceAmount(event.currentTarget.value); setPreview(null); setOperationId(null); }} className="rounded-lg border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-lg font-bold text-[#E2E2E2] focus:border-primary focus:outline-none" placeholder="100000" />
+                <input type="number" min="1" value={invoiceAmount} onChange={(event) => { setInvoiceAmount(event.currentTarget.value); setPreview(null); setOperationId(null); }} className="rounded-lg border border-border bg-background-elevated px-4 py-3 text-lg font-bold text-text-primary focus:border-primary focus:outline-none" placeholder="100000" />
               </label>
             ) : null}
 
-            <label className="flex flex-col gap-1.5 text-sm text-[#9CA3AF]">
+            <label className="flex flex-col gap-1.5 text-sm text-text-secondary">
               {tab === 'earn' ? t('invoiceAmount') : t('pointsToRedeem')}
-              <input type="number" min="1" value={amount} onChange={(event) => { setAmount(event.currentTarget.value); setPreview(null); setOperationId(null); }} className="rounded-lg border border-[#2E2E2E] bg-[#151515] px-4 py-3 text-lg font-bold text-[#E2E2E2] focus:border-primary focus:outline-none" placeholder={tab === 'earn' ? '100000' : '100'} />
+              <input type="number" min="1" value={amount} onChange={(event) => { setAmount(event.currentTarget.value); setPreview(null); setOperationId(null); }} className="rounded-lg border border-border bg-background-elevated px-4 py-3 text-lg font-bold text-text-primary focus:border-primary focus:outline-none" placeholder={tab === 'earn' ? '100000' : '100'} />
             </label>
 
             {!preview && amount && (tab === 'earn' || invoiceAmount) ? (
@@ -217,15 +217,15 @@ export default function HelperLoyaltyPage() {
 
             {preview ? (
               <section className="rounded-lg border border-primary/30 bg-primary/5 p-4 text-center">
-                <p className="text-sm text-[#9CA3AF]">{tab === 'earn' ? t('willEarn') : t('willRedeem')}</p>
+                <p className="text-sm text-text-secondary">{tab === 'earn' ? t('willEarn') : t('willRedeem')}</p>
                 <p className="mt-1 text-4xl font-black text-primary">{preview.points.toLocaleString(numberLocale)}</p>
-                <p className="text-sm text-[#9CA3AF]">{tab === 'redeem' ? t('pointsDiscount', { amount: Number(preview.syp ?? 0).toLocaleString(numberLocale) }) : t('points')}</p>
+                <p className="text-sm text-text-secondary">{tab === 'redeem' ? t('pointsDiscount', { amount: Number(preview.syp ?? 0).toLocaleString(numberLocale) }) : t('points')}</p>
               </section>
             ) : null}
 
             <div className="flex gap-3 pt-2">
-              <button onClick={reset} className="flex-1 rounded-lg border border-[#2E2E2E] py-3 text-sm font-bold text-[#9CA3AF]">{t('cancel')}</button>
-              <button onClick={() => { void handleConfirm(); }} disabled={loading || !preview} className="flex-1 rounded-lg bg-primary py-3 text-sm font-bold text-[#0F0F0F] disabled:opacity-50">
+              <button onClick={reset} className="flex-1 rounded-lg border border-border py-3 text-sm font-bold text-text-secondary">{t('cancel')}</button>
+              <button onClick={() => { void handleConfirm(); }} disabled={loading || !preview} className="flex-1 rounded-lg bg-primary py-3 text-sm font-bold text-text-primary disabled:opacity-50">
                 {loading ? t('processing') : tab === 'earn' ? t('confirmEarn') : t('confirmRedeem')}
               </button>
             </div>
@@ -233,10 +233,10 @@ export default function HelperLoyaltyPage() {
         ) : null}
 
         {step === 'done' ? (
-          <section className="space-y-5 rounded-lg border border-[#2E2E2E] bg-[#151515] p-7 text-center">
+          <section className="space-y-5 rounded-lg border border-border bg-background-elevated p-7 text-center">
             {message?.ok ? <CheckCircle2 className="mx-auto h-12 w-12 text-green-400" /> : <AlertTriangle className="mx-auto h-12 w-12 text-red-400" />}
             <p className={`font-bold ${message?.ok ? 'text-green-400' : 'text-red-400'}`}>{message?.text}</p>
-            <button onClick={reset} className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 font-bold text-[#0F0F0F]">
+            <button onClick={reset} className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 font-bold text-text-primary">
               <RotateCcw size={17} /> {t('newOperation')}
             </button>
           </section>

@@ -124,7 +124,7 @@ function getColumns(
 function SummaryCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-border bg-background p-4 text-center space-y-1">
-      <p className="text-xs text-[#9CA3AF]">{label}</p>
+      <p className="text-xs text-text-muted">{label}</p>
       <p className="text-2xl font-black text-primary">{value}</p>
     </div>
   );

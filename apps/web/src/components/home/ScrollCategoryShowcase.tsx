@@ -76,7 +76,7 @@ function ScrollLockedVideo({
   src: string;
   title: string;
   fallbackImage?: string | null;
-  sectionRef: React.RefObject<HTMLElement>;
+  sectionRef: React.RefObject<HTMLElement | null>;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const progressRef = useRef(0);

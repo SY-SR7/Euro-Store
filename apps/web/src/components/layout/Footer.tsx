@@ -55,7 +55,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/offers"
-                  className="text-xs sm:text-sm font-bold text-amber-600 dark:text-amber-400 hover:underline transition-colors inline-flex items-center gap-1.5"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 transition-colors hover:text-primary hover:underline sm:text-sm"
                 >
                   <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
                   {t('sales')}

@@ -149,7 +149,7 @@ function StarPicker({ value, onSave, starsLabel }: { value: number; onSave: (val
           title={starsLabel.replace('{count}', String(n))}
           className="rounded-lg p-1 transition hover:bg-background"
         >
-          <Star size={20} className={n <= value ? 'fill-[#B8860B] text-primary' : 'text-[#E5E0D8]'} />
+          <Star size={20} className={n <= value ? 'fill-primary text-primary' : 'text-[#E5E0D8]'} />
         </button>
       ))}
     </div>
@@ -185,7 +185,7 @@ function Stars({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((n) => (
-        <Star key={n} size={14} className={n <= rating ? 'fill-[#B8860B] text-primary' : 'text-[#E5E0D8]'} />
+        <Star key={n} size={14} className={n <= rating ? 'fill-primary text-primary' : 'text-[#E5E0D8]'} />
       ))}
     </div>
   );
@@ -363,7 +363,7 @@ export default function ReviewsQuickAdmin() {
                     <button
                       type="button"
                       onClick={() => { openReview(r); void patchReview({ status: 'approved' }); }}
-                      className="flex items-center gap-1.5 rounded-xl bg-green-600 px-4 py-2 text-xs font-bold text-text-primary hover:bg-green-700"
+                      className="flex items-center gap-1.5 rounded-xl bg-green-600 px-4 py-2 text-xs font-bold text-white hover:bg-green-700"
                     >
                       <CheckCircle2 size={14} /> {t('approveBtn', { fallback: 'اعتماد' })}
                     </button>

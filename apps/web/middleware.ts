@@ -12,6 +12,10 @@ function isProtectedPath(pathname: string): boolean {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const requestOrigin = request.headers.get('origin');
+  const isLocalMobileDevOrigin = process.env.NODE_ENV !== 'production'
+    && requestOrigin !== null
+    && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(requestOrigin);
   const nonce = createCspNonce();
   const contentSecurityPolicy = createContentSecurityPolicy('web', nonce, process.env.NODE_ENV === 'development');
   const requestHeaders = new Headers(request.headers);
@@ -19,10 +23,19 @@ export async function middleware(request: NextRequest) {
   requestHeaders.set('Content-Security-Policy', contentSecurityPolicy);
   const secure = (response: NextResponse) => {
     response.headers.set('Content-Security-Policy', contentSecurityPolicy);
+    if (pathname.startsWith('/api/') && isLocalMobileDevOrigin && requestOrigin) {
+      response.headers.set('Access-Control-Allow-Origin', requestOrigin);
+      response.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+      response.headers.append('Vary', 'Origin');
+    }
     return response;
   };
 
-  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/webhooks/') && !isAllowedMutationOrigin(request)) {
+  if (pathname.startsWith('/api/') && request.method === 'OPTIONS' && isLocalMobileDevOrigin) {
+    return secure(new NextResponse(null, { status: 204 }));
+  }
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/webhooks/') && !isLocalMobileDevOrigin && !isAllowedMutationOrigin(request)) {
     return secure(NextResponse.json({ error: { code: 'FORBIDDEN', message: 'Cross-origin request rejected.' } }, { status: 403 }));
   }
   if (pathname.startsWith('/api/')) {

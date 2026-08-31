@@ -23,7 +23,7 @@ export function BrandMarqueeSection({
   subtitle,
   brands,
   isAr = true,
-}: BrandMarqueeSectionProps): JSX.Element | null {
+}: BrandMarqueeSectionProps): React.JSX.Element | null {
   if (!brands || brands.length === 0) return null;
 
   // Duplicate list to guarantee seamless 50% infinite loop without any visual break

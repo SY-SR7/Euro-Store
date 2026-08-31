@@ -47,13 +47,13 @@ export default function HelperProductRequestsList() {
   }, [t]);
 
   return (
-    <div className="space-y-6 p-6 min-h-screen text-[#E2E2E2]">
+    <div className="space-y-6 p-6 min-h-screen text-text-primary">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <PackageSearch className="h-6 w-6 text-primary" />
           <h1 className="text-2xl font-bold text-white">{t('productRequestsTitle')}</h1>
         </div>
-        <Link href="/product-requests/new" className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-[#D8B95F]">
+        <Link href="/product-requests/new" className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-primary-dark">
           <PlusCircle className="h-4 w-4" />
           {t('newRequest')}
         </Link>
@@ -64,7 +64,7 @@ export default function HelperProductRequestsList() {
       ) : error ? (
         <p className="rounded-lg border border-red-800 bg-red-950/40 p-4 text-center text-sm text-red-300">{error}</p>
       ) : requests.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-[#333] p-16 text-center text-[#9CA3AF]">
+        <div className="rounded-lg border border-dashed border-border p-16 text-center text-text-secondary">
           <Inbox className="mx-auto mb-3 h-10 w-10" aria-hidden="true" />
           <p>{t('noProductRequests')}</p>
         </div>
@@ -73,11 +73,11 @@ export default function HelperProductRequestsList() {
           {requests.map(req => {
             const Icon = STATUS_ICON[req.status];
             return (
-              <div key={req.id} className="space-y-3 rounded-lg border border-[#333] bg-[#1A1A1A] p-5">
+              <div key={req.id} className="space-y-3 rounded-lg border border-border bg-background-card p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="font-bold text-white text-lg">{locale === 'ar' ? req.product_name_ar : (req.product_name_en || req.product_name_ar)}</p>
-                    {locale === 'ar' && req.product_name_en && <p className="text-sm text-[#9CA3AF]" dir="ltr">{req.product_name_en}</p>}
+                    {locale === 'ar' && req.product_name_en && <p className="text-sm text-text-secondary" dir="ltr">{req.product_name_en}</p>}
                   </div>
                   <span className={`flex items-center gap-1 shrink-0 rounded-full border px-2.5 py-1 text-xs font-bold ${STATUS_STYLE[req.status]}`}>
                     <Icon className="h-3 w-3" />
@@ -85,14 +85,14 @@ export default function HelperProductRequestsList() {
                   </span>
                 </div>
 
-                <p className="text-xs text-[#9CA3AF]">
+                <p className="text-xs text-text-secondary">
                   {t('requestDate', { date: new Date(req.created_at).toLocaleDateString(locale === 'ar' ? 'ar-SY' : 'en-US') })}
                 </p>
 
                 {req.admin_notes && (
                   <div className="mt-3 rounded-lg border border-[#444] bg-[#2A2A2A] p-3 text-sm">
                     <p className="mb-1 text-xs font-semibold text-[#888]">{t('adminNote')}</p>
-                    <p className="text-[#E2E2E2]">{req.admin_notes}</p>
+                    <p className="text-text-primary">{req.admin_notes}</p>
                   </div>
                 )}
               </div>

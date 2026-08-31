@@ -104,7 +104,7 @@ export default function TotpSetupPage() {
             {t('codeInput')}
             <input value={code} onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, 6))} type="text" inputMode="numeric" maxLength={6} required className="rounded-lg border border-border bg-background-card px-3 py-2 outline-none focus:border-primary" />
           </label>
-          <button type="submit" disabled={submitting || !setup || code.length !== 6} className="mt-2 rounded-lg bg-primary py-2.5 text-sm font-black text-text-primary transition-colors hover:bg-[#D8B95F] disabled:opacity-50">
+          <button type="submit" disabled={submitting || !setup || code.length !== 6} className="mt-2 rounded-lg bg-primary py-2.5 text-sm font-black text-text-primary transition-colors hover:bg-primary-dark disabled:opacity-50">
             {submitting ? t('loading', { fallback: 'جار التحقق...' }) : t('activateBtn')}
           </button>
         </form>

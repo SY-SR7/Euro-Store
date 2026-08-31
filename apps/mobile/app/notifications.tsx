@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from '../utils/api';
 import { ScreenHeader } from '../components/ScreenHeader';
@@ -21,6 +22,7 @@ export default function NotificationsScreen() {
   const [items, setItems] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(false);
   const { isAr, l, formatDate } = usePreferences();
 
   const load = useCallback(async () => {
@@ -29,8 +31,11 @@ export default function NotificationsScreen() {
       return;
     }
     try {
+      setError(false);
       const result = await apiFetch<{ data: Notification[] }>('/api/notifications');
       setItems(result.data);
+    } catch {
+      setError(true);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -58,9 +63,11 @@ export default function NotificationsScreen() {
       <ScreenHeader title={l('الإشعارات', 'Notifications')} action={items.some((item) => !item.is_read) ? <TouchableOpacity onPress={markAllRead}><Text className='font-bold text-primary'>{l('قراءة الكل', 'Read all')}</Text></TouchableOpacity> : null} />
 
       {!user ? (
-        <View className='flex-1 items-center justify-center px-6'><Text className='mb-5 text-center text-text-primary'>{l('سجّل الدخول لعرض إشعاراتك.', 'Sign in to view your notifications.')}</Text><TouchableOpacity className='w-full rounded-xl bg-primary p-4' onPress={() => router.replace('/login')}><Text className='text-center font-bold text-[#0F0F0F]'>{l('تسجيل الدخول', 'Sign in')}</Text></TouchableOpacity></View>
+        <View className='flex-1 items-center justify-center px-6'><Text className='mb-5 text-center text-text-primary'>{l('سجّل الدخول لعرض إشعاراتك.', 'Sign in to view your notifications.')}</Text><TouchableOpacity className='w-full rounded-xl bg-primary p-4' onPress={() => router.replace('/login')}><Text className='text-center font-bold text-text-primary'>{l('تسجيل الدخول', 'Sign in')}</Text></TouchableOpacity></View>
       ) : loading ? (
         <View className='flex-1 items-center justify-center'><ActivityIndicator size='large' color='#B8860B' /></View>
+      ) : error ? (
+        <View className='flex-1 items-center justify-center px-6'><Text accessibilityRole='alert' className='mb-5 text-center text-text-secondary'>{l('تعذر تحميل الإشعارات. تحقق من الاتصال.', 'Could not load notifications. Check your connection.')}</Text><TouchableOpacity onPress={() => { setLoading(true); void load(); }} className='min-h-12 items-center justify-center rounded-xl bg-primary px-6'><Text className='font-bold text-text-primary'>{l('إعادة المحاولة', 'Retry')}</Text></TouchableOpacity></View>
       ) : (
         <ScrollView className='flex-1 px-6' contentContainerStyle={{ paddingTop: 24, paddingBottom: 32 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); void load(); }} tintColor='#B8860B' />}>
           {items.length === 0 ? <Text className='py-20 text-center text-text-secondary'>{l('لا توجد إشعارات.', 'No notifications.')}</Text> : items.map((item) => (

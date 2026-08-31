@@ -198,7 +198,7 @@ export function FilterableProductGrid({ lockedCategorySlug, initialSaleOnly = fa
               type="checkbox"
               checked={featuredOnly}
               onChange={e => { setFeaturedOnly(e.target.checked); setPage(1); }}
-              className="accent-[#C9A84C]"
+              className="accent-primary"
             />
             <Star size={15} className="text-primary" /><span className="text-sm font-bold text-text-primary">{t('featuredOnly')}</span>
           </label>
@@ -212,7 +212,7 @@ export function FilterableProductGrid({ lockedCategorySlug, initialSaleOnly = fa
               className="accent-amber-600"
             />
             <span className="text-xs font-black text-amber-600">🏷️</span>
-            <span className="text-sm font-bold text-amber-900 dark:text-amber-300">
+            <span className="text-sm font-bold text-amber-900">
               {isAr ? 'العروض والتخفيضات فقط' : 'Sale Items Only'}
             </span>
           </label>
@@ -487,7 +487,7 @@ function CheckItem({ label, count, checked, onChange, isAr = true }: {
         checked={checked}
         disabled={isZero}
         onChange={isZero ? undefined : onChange}
-        className="h-4 w-4 rounded accent-[#C9A84C] cursor-pointer disabled:cursor-not-allowed"
+        className="h-4 w-4 rounded accent-primary cursor-pointer disabled:cursor-not-allowed"
       />
       <span className={`flex-1 text-sm font-medium ${isZero ? 'line-through decoration-red-500/80 decoration-[1.5px] text-[#8C8275]' : 'text-[#1F1B16]'}`}>
         {label}

@@ -20,6 +20,14 @@
     "main":  "./src/index.ts",
     "types":  "./src/index.ts",
     "exports":  {
+                    "./constants/governorates":  {
+                                                       "types":  "./src/constants/governorates.ts",
+                                                       "default":  "./src/constants/governorates.ts"
+                                                   },
+                    "./legal":  {
+                                    "types":  "./src/legal.ts",
+                                    "default":  "./src/legal.ts"
+                                },
                     "./email/orderConfirmation":  {
                                                       "types":  "./src/email/orderConfirmation.ts",
                                                       "default":  "./src/email/orderConfirmation.ts"

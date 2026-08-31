@@ -4,14 +4,24 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          gold: "#C9A84C",
-          "gold-dark": "#A67C2E",
-          "gold-light": "#E8D28A",
+          primary: "#B8860B",
+          "primary-dark": "#9A7209",
+          "primary-light": "#D4AF37",
         },
-        dark: {
-          900: "#121414",
-          800: "#1A1C1C",
-          700: "#1E2020",
+        surface: {
+          DEFAULT: "#FAF7EF",
+          secondary: "#F3EEE3",
+          card: "#FFFDF8",
+          elevated: "#FFFFFF",
+        },
+        ink: {
+          DEFAULT: "#1C1917",
+          secondary: "#57534E",
+          muted: "#A8A29E",
+        },
+        line: {
+          DEFAULT: "#E8DCC3",
+          accent: "#D7BE79",
         },
       },
       fontFamily: {

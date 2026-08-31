@@ -50,7 +50,7 @@ export default function CheckoutSuccessPage() {
 
         <div className="mt-8 flex flex-col gap-3">
           <Link href="/orders"
-            className="rounded-2xl bg-primary py-3 text-sm font-black text-text-primary hover:bg-[#D8B95F] transition-colors block">
+            className="rounded-2xl bg-primary py-3 text-sm font-black text-text-primary hover:bg-primary-dark transition-colors block">
             {t('viewOrders')}
           </Link>
           <Link href="/products"

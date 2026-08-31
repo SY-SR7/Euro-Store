@@ -368,7 +368,7 @@ export default function CheckoutPage() {
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input type="checkbox" checked={usePoints}
                     onChange={e => setUsePoints((e.target as HTMLInputElement).checked)}
-                    className="mt-0.5 h-4 w-4 accent-[#B8860B]" />
+                    className="mt-0.5 h-4 w-4 accent-primary" />
                   <div className="space-y-0.5">
                     <p className="text-sm font-bold text-text-primary">{t('usePoints')}</p>
                     <p className="text-xs text-text-muted">

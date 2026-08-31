@@ -37,9 +37,9 @@ ISearchAdapter → SupabaseFTSAdapter (today) → AlgoliaAdapter (v2)
 IStorageAdapter → SupabaseStorageAdapter (today) → CloudflareR2Adapter (v2)
 ```
 
-### 2.3 PRD is the Single Source of Truth
+### 2.3 Product and Visual Sources of Truth
 
-The `EuroStore_PRD.md` is the only authoritative specification. If anything in the code contradicts the PRD, the PRD wins. Any deviation requires a PRD update with a changelog entry.
+The `EuroStore_PRD.md` is the authoritative product specification. `_handoff/DESIGN.md` is the authoritative visual specification and supersedes legacy visual descriptions in the PRD or historical reports. Any deviation requires updating the relevant source of truth and its changelog.
 
 ### 2.4 Monorepo Discipline
 
@@ -134,25 +134,29 @@ euro-store/                          # Git repo root
 
 ### 5.1 Brand Identity
 
-**Aesthetic:** "Aura Elegance" — Modern Luxury. Dark mode primary. Editorial layouts. Metallic gold as the signature accent.
+**Aesthetic:** warm, editorial, contemporary retail. The interface is light-only: ivory surfaces, charcoal typography, and restrained antique-gold accents. `_handoff/DESIGN.md` is binding for exact tokens and component behavior.
 
 **Typography:**
 - Headlines: Playfair Display (Serif — Vogue-style authority)
 - Body/UI: Manrope (Sans-serif — readable, geometric)
 - For Arabic headlines: high-contrast Naskh-style serif
 
-**Primary Color:**
-- Gold: `#C9A84C` (brand permanent)
-- Gold Dark: `#A67C2E`
-- Gold Light: `#E8D28A`
-- Dark Background: `#0F0F0F` / `#1A1A1A` / `#242424`
+**Canonical palette:**
+- Primary accent: `#B8860B`
+- Primary dark/pressed: `#9A7209`
+- Primary light: `#D4AF37`
+- Page / section / card: `#FAF7EF` / `#F3EEE3` / `#FFFDF8`
+- Primary / secondary text: `#1C1917` / `#57534E`
+- Border: `#E8DCC3`
+
+Dark mode, system theme resolution, black page surfaces, and black/gold base layouts are prohibited. Dark overlays are reserved for media readability, modal scrims, and camera previews.
 
 ### 5.2 RTL/LTR
 
 - **Default:** Arabic RTL (`<html dir="rtl" lang="ar">`)
 - All components must use CSS logical properties (`margin-inline-start`, etc.)
 - Tailwind RTL plugin required
-- Language toggle: persisted in `localStorage` key `eurostore_theme`
+- Language toggle: persisted using the locale preference key defined by each client; it must never share or create a theme preference key.
 - User preference stored in `customer_profiles`
 
 ---

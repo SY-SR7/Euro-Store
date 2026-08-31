@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Plus, Trash2, MapPin } from 'lucide-react';
 import type { Database } from '@eurostore/database';
 import { ConfirmDialog } from '@eurostore/ui';
+import { GOVERNORATES } from '@eurostore/shared';
 
 type Address = Database['public']['Tables']['customer_addresses']['Row'];
 
@@ -26,13 +27,7 @@ export function AddressesClient({ initialAddresses, isAr }: { initialAddresses: 
     is_default: false
   });
 
-  const govs = [
-    { id: 'damascus', ar: 'دمشق', en: 'Damascus' },
-    { id: 'aleppo', ar: 'حلب', en: 'Aleppo' },
-    { id: 'homs', ar: 'حمص', en: 'Homs' },
-    { id: 'hama', ar: 'حماة', en: 'Hama' },
-    { id: 'latakia', ar: 'اللاذقية', en: 'Latakia' }
-  ];
+  const govs = GOVERNORATES;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

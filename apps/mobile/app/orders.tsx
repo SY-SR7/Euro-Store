@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, RefreshControl, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from '../utils/api';
@@ -43,24 +44,6 @@ export default function OrdersScreen() {
 
   useEffect(() => { void loadOrders(); }, [loadOrders]);
 
-  async function cancelOrder(order: Order) {
-    Alert.alert(l('إلغاء الطلب', 'Cancel order'), l(`هل تريد إلغاء الطلب ${order.order_number}؟`, `Cancel order ${order.order_number}?`), [
-      { text: l('تراجع', 'Keep order'), style: 'cancel' },
-      {
-        text: l('إلغاء الطلب', 'Cancel order'),
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await apiFetch(`/api/orders/${order.id}/cancel`, { method: 'POST' });
-            await loadOrders();
-          } catch {
-            Alert.alert(l('تعذر الإلغاء', 'Could not cancel'), l('يمكن إلغاء الطلب فقط أثناء حالة الانتظار.', 'Orders can only be cancelled while pending.'));
-          }
-        },
-      },
-    ]);
-  }
-
   return (
     <SafeAreaView className='flex-1 bg-background'>
       <ScreenHeader title={l('طلباتي', 'My orders')} />
@@ -68,7 +51,7 @@ export default function OrdersScreen() {
       {!user ? (
         <View className='flex-1 items-center justify-center px-6'>
           <Text className='mb-3 text-xl font-bold text-text-primary'>{l('سجّل الدخول لعرض طلباتك', 'Sign in to view your orders')}</Text>
-          <TouchableOpacity className='mt-5 w-full rounded-xl bg-primary p-4' onPress={() => router.replace('/login')}><Text className='text-center font-bold text-[#0F0F0F]'>{l('تسجيل الدخول', 'Sign in')}</Text></TouchableOpacity>
+          <TouchableOpacity className='mt-5 w-full rounded-xl bg-primary p-4' onPress={() => router.replace('/login')}><Text className='text-center font-bold text-text-primary'>{l('تسجيل الدخول', 'Sign in')}</Text></TouchableOpacity>
         </View>
       ) : loading ? (
         <View className='flex-1 items-center justify-center'><ActivityIndicator size='large' color='#B8860B' /></View>
@@ -88,9 +71,6 @@ export default function OrdersScreen() {
                 <Text className='text-text-secondary'>{l('الإجمالي', 'Total')}</Text>
                 <Text className='text-lg font-bold text-primary'>{formatCurrency(Number(order.total_syp))}</Text>
               </View>
-              {order.status === 'pending' && (
-                <TouchableOpacity className='mt-4 rounded-lg border border-error/50 bg-error/10 py-3' onPress={() => cancelOrder(order)}><Text className='text-center font-bold text-error'>{l('إلغاء الطلب', 'Cancel order')}</Text></TouchableOpacity>
-              )}
             </TouchableOpacity>
           ))}
         </ScrollView>

@@ -7,16 +7,28 @@ import { Mail, Sparkles, CheckCircle2, ArrowLeft, ArrowRight } from 'lucide-reac
 export function VipClubNewsletter({ isAr = true }: { isAr?: boolean }) {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes('@')) return;
-    setSubmitted(true);
+    setSubmitting(true);
+    setError('');
+    try {
+      const response = await fetch('/api/storefront/newsletter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, locale: isAr ? 'ar' : 'en', source: 'web' }) });
+      if (!response.ok) throw new Error('subscription_failed');
+      setSubmitted(true);
+    } catch {
+      setError(isAr ? 'تعذر الاشتراك. حاول مرة أخرى.' : 'Could not subscribe. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <section className="border-t border-primary/20 bg-gradient-to-br from-[#181510] via-background-card to-background px-4 py-20 md:px-8 md:py-28">
-      <div className="mx-auto max-w-5xl overflow-hidden rounded-[2.5rem] border border-primary/30 bg-background/80 p-8 md:p-14 shadow-2xl backdrop-blur-md relative">
+    <section className="border-t border-border bg-background-secondary px-4 py-20 md:px-8 md:py-28">
+      <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[2.5rem] border border-border-accent bg-background-card p-8 shadow-xl md:p-14">
         {/* Glow */}
         <div className="pointer-events-none absolute -end-20 -top-20 h-64 w-64 rounded-full bg-primary/15 blur-[90px]" />
 
@@ -43,14 +55,14 @@ export function VipClubNewsletter({ isAr = true }: { isAr?: boolean }) {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex items-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6 text-emerald-400"
+                className="flex items-center gap-3 rounded-2xl border border-emerald-600/25 bg-emerald-50 p-6 text-emerald-800"
               >
-                <CheckCircle2 className="h-8 w-8 shrink-0 text-emerald-400" />
+                <CheckCircle2 className="h-8 w-8 shrink-0 text-emerald-700" />
                 <div>
                   <h4 className="font-bold text-base">
                     {isAr ? 'تم اشتراكك بنجاح في النادي الذهبي!' : 'Welcome to the VIP Club!'}
                   </h4>
-                  <p className="text-xs text-emerald-300/80 mt-0.5">
+                  <p className="mt-0.5 text-xs text-emerald-700">
                     {isAr
                       ? 'تم تفعيل كود الخصم EURO10 لحسابك'
                       : 'Promo code EURO10 has been activated for you'}
@@ -65,17 +77,22 @@ export function VipClubNewsletter({ isAr = true }: { isAr?: boolean }) {
                     <input
                       type="email"
                       required
+                      name="email"
+                      autoComplete="email"
+                      spellCheck={false}
+                      aria-label={isAr ? 'البريد الإلكتروني' : 'Email address'}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder={isAr ? 'أدخل بريدك الإلكتروني...' : 'Enter your email address...'}
-                      className="w-full rounded-2xl border border-border bg-background-elevated/70 py-4 pe-4 ps-12 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-inner"
+                      className="w-full rounded-2xl border border-border bg-background-elevated py-4 pe-4 ps-12 text-sm text-text-primary shadow-inner placeholder:text-text-muted focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-4 text-sm font-black text-black hover:bg-primary-dark transition-all shadow-lg hover:shadow-primary/20 shrink-0"
+                    disabled={submitting}
+                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-4 text-sm font-black text-text-primary shadow-lg transition-colors hover:bg-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                   >
-                    <span>{isAr ? 'انضم الآن' : 'Join Club'}</span>
+                    <span>{submitting ? '…' : isAr ? 'انضم الآن' : 'Join Club'}</span>
                     {isAr ? <ArrowLeft className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}
                   </button>
                 </div>
@@ -84,6 +101,7 @@ export function VipClubNewsletter({ isAr = true }: { isAr?: boolean }) {
                     ? '🔒 نلتزم بحماية خصوصيتك ولا نرسل رسائل مزعجة.'
                     : '🔒 We respect your privacy. No spam ever.'}
                 </p>
+                {error ? <p role="alert" className="text-xs font-bold text-red-700">{error}</p> : null}
               </form>
             )}
           </div>

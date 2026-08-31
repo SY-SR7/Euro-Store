@@ -12,7 +12,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
       .from('exchange_requests')
       .select(`
         id, order_id, order_item_id, customer_id, reason, reason_ar, reason_en,
-        customer_whatsapp, status, resolution_path, partner_id,
+        customer_whatsapp, status, resolution_path, partner_id, partner_stage,
         qr_code_url, qr_code_expires_at, qr_code_used_at,
         rejection_reason, replacement_variant_id, replacement_order_id,
         created_at, updated_at,
