@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import {
@@ -49,13 +49,7 @@ export default function CheckoutScreen() {
   const [shipping, setShipping] = useState<ShippingData>({ base_rate_syp: 0, free_shipping_threshold_syp: null });
 
   useEffect(() => {
-    if (!user) {
-      Alert.alert(l('تسجيل الدخول مطلوب', 'Sign in required'), l('يمكنك الاحتفاظ بالسلة، لكن إتمام الطلب يتطلب حساباً مفعلاً.', 'Your cart is saved, but checkout requires a verified account.'), [
-        { text: l('العودة', 'Back'), style: 'cancel', onPress: () => router.back() },
-        { text: l('تسجيل الدخول', 'Sign in'), onPress: () => router.replace('/login') },
-      ]);
-      return;
-    }
+    if (!user) return;
     setFullName(String(user.user_metadata?.full_name ?? ''));
     setPhone(String(user.user_metadata?.phone ?? ''));
     void Promise.all([
@@ -160,6 +154,26 @@ export default function CheckoutScreen() {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (!user) {
+    return (
+      <SafeAreaView className='flex-1 bg-background'>
+        <ScreenHeader title={l('إتمام الطلب', 'Checkout')} />
+        <View className='flex-1 justify-center px-6 pb-24'>
+          <View className='rounded-2xl border border-border bg-background-secondary px-5 py-7'>
+            <Text className='text-center text-2xl font-black text-text-primary'>{l('تسجيل الدخول مطلوب', 'Sign in required')}</Text>
+            <Text className='mt-3 text-center leading-6 text-text-secondary'>{l('ستبقى منتجاتك محفوظة في السلة. سجّل الدخول بحساب مفعّل لإتمام الطلب ومتابعته.', 'Your cart stays saved. Sign in with a verified account to place and track the order.')}</Text>
+            <TouchableOpacity accessibilityRole='button' onPress={() => router.replace('/login')} className='mt-6 items-center rounded-xl bg-primary py-4'>
+              <Text className='text-base font-black text-text-primary'>{l('تسجيل الدخول', 'Sign in')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity accessibilityRole='button' onPress={() => router.back()} className='mt-3 items-center rounded-xl border border-border bg-background py-4'>
+              <Text className='text-base font-bold text-text-primary'>{l('العودة إلى السلة', 'Back to cart')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   return (
