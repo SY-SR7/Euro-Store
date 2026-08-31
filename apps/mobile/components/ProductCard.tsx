@@ -1,6 +1,7 @@
 import React from 'react';
+import { Image } from 'expo-image';
 import { CheckCircle2, Heart, Layers3, TriangleAlert } from 'lucide-react-native';
-import { Image, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { apiFetch } from '../utils/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -63,7 +64,15 @@ export const ProductCard = React.memo(function ProductCard(props: ProductCardPro
           onPress={openProduct}
           style={({ pressed }) => ({ opacity: pressed ? 0.82 : 1, transform: [{ scale: pressed ? 0.985 : 1 }] })}
         >
-          <Image source={imageSource} className="h-full w-full" resizeMode="contain" accessibilityLabel={title} />
+          <Image
+            source={imageSource}
+            style={{ width: '100%', height: '100%' }}
+            contentFit="contain"
+            cachePolicy="memory-disk"
+            recyclingKey={id}
+            transition={0}
+            accessibilityLabel={title}
+          />
           <View pointerEvents="none" className="absolute end-2 top-2 items-end gap-1">
             {isNew ? <View className="rounded-full border border-border bg-white px-2 py-1"><Text className="text-[9px] font-black text-text-primary">{t('common.new')}</Text></View> : null}
           </View>

@@ -3,7 +3,7 @@
     "name": "EuroStore",
     "slug": "eurostore-mobile",
     "scheme": "eurostore",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "تطبيق EuroStore الرسمي للتسوق وإدارة الطلبات.",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,7 +16,7 @@
     },
     "ios": {
       "bundleIdentifier": "com.eurostore.mobile",
-      "buildNumber": "5",
+      "buildNumber": "6",
       "supportsTablet": false,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -24,7 +24,7 @@
     },
     "android": {
       "package": "com.eurostore.mobile",
-      "versionCode": 5,
+      "versionCode": 6,
       "softwareKeyboardLayoutMode": "resize",
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO"
